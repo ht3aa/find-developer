@@ -89,7 +89,6 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                 Checkbox::make('availableOnly')
                     ->label('Available only')
                     ->default(true)
-                    ->hidden()
                     ->live()
                     ->afterStateUpdated(fn() => $this->resetPage()),
             ])
@@ -139,9 +138,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             ->when(!empty($filters['maxExperience']), function ($query) use ($filters) {
                 $query->where('years_of_experience', '<=', $filters['maxExperience']);
             })
-            ->when($filters['availableOnly'] ?? false, function ($query) {
-                $query->where('is_available', true);
-            });
+            ->where('is_available', $filters['availableOnly']);
 
         // Get developers by subscription plan
         $premiumDevelopers = (clone $baseQuery)

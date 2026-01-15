@@ -366,6 +366,14 @@ body {
     flex-shrink: 0;
 }
 
+.availability-available {
+    color: #059669;
+}
+
+.availability-unavailable {
+    color: #dc2626;
+}
+
 .developer-bio {
     font-size: 0.875rem;
     color: #6b7280;
