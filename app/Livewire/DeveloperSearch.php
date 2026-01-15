@@ -13,6 +13,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -43,54 +44,59 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     {
         return $schema
             ->components([
-                TextInput::make('search')
-                    ->label('Search')
-                    ->placeholder('Name, email, location, skills...')
-                    ->columnSpanFull()
-                    ->live(debounce: 300)
-                    ->hidden()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
-
-                Grid::make(2)
+                Section::make('Filters')
+                    ->collapsible()
+                    ->description('Filter developers by various criteria')
                     ->schema([
-                        Select::make('jobTitleIds')
-                            ->label('Job Titles')
-                            ->multiple()
-                            ->searchable()
-                            ->options(JobTitle::where('is_active', true)->pluck('name', 'id'))
+                        TextInput::make('search')
+                            ->label('Search')
+                            ->placeholder('Name, email, location, skills...')
+                            ->columnSpanFull()
+                            ->live(debounce: 300)
+                            ->hidden()
+                            ->afterStateUpdated(fn() => $this->resetPage()),
+
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('jobTitleIds')
+                                    ->label('Job Titles')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->options(JobTitle::where('is_active', true)->pluck('name', 'id'))
+                                    ->live()
+                                    ->afterStateUpdated(fn() => $this->resetPage()),
+
+                                Select::make('skillIds')
+                                    ->label('Skills')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->options(Skill::where('is_active', true)->pluck('name', 'id'))
+                                    ->live()
+                                    ->afterStateUpdated(fn() => $this->resetPage()),
+
+                                TextInput::make('minExperience')
+                                    ->label('Min Experience (years)')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->placeholder('0')
+                                    ->live(debounce: 300)
+                                    ->afterStateUpdated(fn() => $this->resetPage()),
+
+                                TextInput::make('maxExperience')
+                                    ->label('Max Experience (years)')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->placeholder('50')
+                                    ->live(debounce: 300)
+                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                            ]),
+
+                        Checkbox::make('availableOnly')
+                            ->label('Available only')
+                            ->default(true)
                             ->live()
                             ->afterStateUpdated(fn() => $this->resetPage()),
-
-                        Select::make('skillIds')
-                            ->label('Skills')
-                            ->multiple()
-                            ->searchable()
-                            ->options(Skill::where('is_active', true)->pluck('name', 'id'))
-                            ->live()
-                            ->afterStateUpdated(fn() => $this->resetPage()),
-
-                        TextInput::make('minExperience')
-                            ->label('Min Experience (years)')
-                            ->numeric()
-                            ->minValue(0)
-                            ->placeholder('0')
-                            ->live(debounce: 300)
-                            ->afterStateUpdated(fn() => $this->resetPage()),
-
-                        TextInput::make('maxExperience')
-                            ->label('Max Experience (years)')
-                            ->numeric()
-                            ->minValue(0)
-                            ->placeholder('50')
-                            ->live(debounce: 300)
-                            ->afterStateUpdated(fn() => $this->resetPage()),
-                    ]),
-
-                Checkbox::make('availableOnly')
-                    ->label('Available only')
-                    ->default(true)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ])
             ])
             ->statePath('filterData');
     }
