@@ -26,9 +26,6 @@
                     FindDeveloper
                 </a>
                         <div class="navbar-menu">
-                            <a href="{{ url('/') }}" class="navbar-link">
-                                Search Developers
-                            </a>
                             <a href="{{ route('register') }}" class="navbar-link">
                                 Register as Developer
                             </a>
