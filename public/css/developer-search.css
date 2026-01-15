@@ -335,11 +335,131 @@ body {
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
-    transition: box-shadow 0.3s;
+    transition: all 0.3s;
+    position: relative;
 }
 
 .developer-card:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Premium Card Styles */
+.developer-card-premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    padding: 2rem;
+}
+
+.developer-card-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0.5rem;
+    padding: 3px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+.developer-card-premium {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 250, 240, 0.95) 100%);
+    border: 3px solid;
+    border-image: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #ffd140 100%) 1;
+    box-shadow: 0 20px 25px -5px rgba(240, 147, 251, 0.3), 0 10px 10px -5px rgba(245, 87, 108, 0.2);
+}
+
+.developer-card-premium:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 30px -5px rgba(240, 147, 251, 0.4), 0 15px 15px -5px rgba(245, 87, 108, 0.3);
+}
+
+/* Pro Card Styles */
+.developer-card-pro {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(240, 249, 255, 1) 100%);
+    border: 2px solid #3b82f6;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+}
+
+.developer-card-pro:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 20px -3px rgba(59, 130, 246, 0.3);
+}
+
+/* Premium Badge */
+.premium-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(245, 87, 108, 0.4);
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.premium-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+}
+
+/* Pro Badge */
+.pro-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pro-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Premium Card Text */
+.developer-card-premium .developer-name {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.developer-card-premium .job-title-badge {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    font-weight: 600;
 }
 
 .developer-header {
