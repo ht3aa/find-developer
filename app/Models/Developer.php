@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Scopes\ApprovedScope;
 
 #[ScopedBy([ApprovedScope::class])]
@@ -54,6 +55,11 @@ class Developer extends Model
     {
         return $this->belongsToMany(Skill::class, 'developer_skill')
             ->withTimestamps();
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(DeveloperProject::class);
     }
 
     public function scopeAvailable($query)

@@ -134,7 +134,8 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         $filters = $this->filterData;
 
         $baseQuery = Developer::query()
-            ->with(['jobTitle', 'skills'])
+            ->with(['jobTitle', 'skills', 'projects'])
+            ->withCount('projects')
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
                     $q->where('name', 'like', '%' . $filters['search'] . '%')

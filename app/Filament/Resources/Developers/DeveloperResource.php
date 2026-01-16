@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Developers;
 use App\Filament\Resources\Developers\Pages\CreateDeveloper;
 use App\Filament\Resources\Developers\Pages\EditDeveloper;
 use App\Filament\Resources\Developers\Pages\ListDevelopers;
+use App\Filament\Resources\Developers\RelationManagers\ProjectsRelationManager;
 use App\Filament\Resources\Developers\Schemas\DeveloperForm;
 use App\Filament\Resources\Developers\Tables\DevelopersTable;
 use App\Models\Developer;
@@ -44,7 +45,7 @@ class DeveloperResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProjectsRelationManager::class,
         ];
     }
 

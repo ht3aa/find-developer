@@ -22,11 +22,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        // Seed job titles and skills first, then developers
+        // Seed job titles and skills first, then developers, then developer projects
         $this->call([
             JobTitlesSeeder::class,
             SkillsSeeder::class,
             DevelopersSeeder::class,
+            DeveloperProjectsSeeder::class,
         ]);
     }
 }

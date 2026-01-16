@@ -15,46 +15,25 @@
             <div class="developer-work-section">
                 <h4 class="work-section-title">Portfolio & Work</h4>
                 <div class="work-items">
-                    @if($developer->portfolio_url)
+                    @foreach($developer->projects as $project)
                         <div class="work-item">
-                            <h5 class="work-item-title">Portfolio Website</h5>
-                            <p class="work-item-description">View my complete portfolio showcasing all my projects and work.</p>
-                            <a href="{{ $developer->portfolio_url }}" target="_blank" class="work-item-link">
-                                Visit Portfolio
-                                <svg class="work-item-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                            </a>
+                            <h5 class="work-item-title">{{ $project->title }}</h5>
+                            @if($project->description)
+                                <p class="work-item-description">{{ $project->description }}</p>
+                            @endif
+                            @if($project->link)
+                                <a href="{{ $project->link }}" target="_blank" class="work-item-link">
+                                    View Project
+                                    <svg class="work-item-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </a>
+                            @endif
                         </div>
-                    @endif
+                    @endforeach
 
-                    @if($developer->github_url)
-                        <div class="work-item">
-                            <h5 class="work-item-title">GitHub Projects</h5>
-                            <p class="work-item-description">Explore my code repositories and open-source contributions.</p>
-                            <a href="{{ $developer->github_url }}" target="_blank" class="work-item-link">
-                                View on GitHub
-                                <svg class="work-item-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                            </a>
-                        </div>
-                    @endif
 
-                    @if($developer->linkedin_url)
-                        <div class="work-item">
-                            <h5 class="work-item-title">LinkedIn Profile</h5>
-                            <p class="work-item-description">Connect with me and view my professional experience and achievements.</p>
-                            <a href="{{ $developer->linkedin_url }}" target="_blank" class="work-item-link">
-                                View Profile
-                                <svg class="work-item-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                            </a>
-                        </div>
-                    @endif
-
-                    @if(!$developer->portfolio_url && !$developer->github_url && !$developer->linkedin_url)
+                    @if($developer->projects_count === 0)
                         <div class="work-item-empty">
                             <svg class="work-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
