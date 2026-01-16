@@ -73,9 +73,26 @@
 
     <!-- Bio for normal -->
     @if($developer->bio)
-        <p class="developer-bio">
-            {{ $developer->bio }}
-        </p>
+        <div x-data="{ expanded: false }" class="bio-container">
+            @php
+                $bioLength = strlen($developer->bio);
+                $maxLength = 150;
+                $truncatedBio = $bioLength > $maxLength ? substr($developer->bio, 0, $maxLength) . '...' : $developer->bio;
+            @endphp
+            <p class="developer-bio">
+                <span x-show="!expanded">{{ $truncatedBio }}</span>
+                <span x-show="expanded" x-cloak>{{ $developer->bio }}</span>
+            </p>
+            @if($bioLength > $maxLength)
+                <button 
+                    @click="expanded = !expanded"
+                    class="bio-read-more"
+                >
+                    <span x-show="!expanded">Read more</span>
+                    <span x-show="expanded" x-cloak>Show less</span>
+                </button>
+            @endif
+        </div>
     @endif
 
     <!-- Skills for normal -->

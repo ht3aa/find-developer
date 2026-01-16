@@ -740,15 +740,42 @@ body {
 }
 
 /* Developer Bio */
+.bio-container {
+    margin-bottom: var(--spacing-md);
+}
+
 .developer-bio {
     font-size: var(--font-size-sm);
     color: var(--color-gray-600);
-    margin-bottom: var(--spacing-md);
     line-height: 1.6;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    margin: 0;
+}
+
+.bio-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-primary);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.bio-read-more:hover {
+    color: var(--color-primary-dark);
+    background: #eef2ff;
+    transform: translateY(-1px);
+}
+
+.bio-read-more:active {
+    transform: translateY(0);
 }
 
 /* Skills */
