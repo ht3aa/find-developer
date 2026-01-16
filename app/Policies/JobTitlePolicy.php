@@ -12,7 +12,7 @@ class JobTitlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('ViewAny:JobTitles');
     }
 
     /**
@@ -20,7 +20,7 @@ class JobTitlePolicy
      */
     public function view(User $user, JobTitle $jobTitle): bool
     {
-        return true;
+        return $user->can('View:JobTitles');
     }
 
     /**
@@ -28,7 +28,7 @@ class JobTitlePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('Create:JobTitles');
     }
 
     /**
@@ -36,7 +36,7 @@ class JobTitlePolicy
      */
     public function update(User $user, JobTitle $jobTitle): bool
     {
-        return true;
+        return $user->can('Update:JobTitles');
     }
 
     /**
@@ -44,7 +44,7 @@ class JobTitlePolicy
      */
     public function delete(User $user, JobTitle $jobTitle): bool
     {
-        return false;
+        return $user->can('Delete:JobTitles');
     }
 
     /**
@@ -52,7 +52,7 @@ class JobTitlePolicy
      */
     public function deleteAny(User $user): bool
     {
-        return false;
+        return $user->can('DeleteAny:JobTitles');
     }
 
     /**
@@ -60,7 +60,7 @@ class JobTitlePolicy
      */
     public function restore(User $user, JobTitle $jobTitle): bool
     {
-        return true;
+        return $user->can('Restore:JobTitles');
     }
 
     /**
@@ -68,6 +68,6 @@ class JobTitlePolicy
      */
     public function forceDelete(User $user, JobTitle $jobTitle): bool
     {
-        return true;
+        return $user->can('ForceDelete:JobTitles');
     }
 }

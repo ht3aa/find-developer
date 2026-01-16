@@ -13,16 +13,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Scopes\ApprovedScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 #[ScopedBy([ApprovedScope::class])]
 class Developer extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'name',
         'email',
         'phone',
+        'user_id',
         'job_title_id',
         'years_of_experience',
         'bio',
@@ -48,6 +51,11 @@ class Developer extends Model
         'location' => WorldGovernorate::class,
         'salary_currency' => SalaryCurrency::class,
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function jobTitle(): BelongsTo
     {
@@ -99,5 +107,13 @@ class Developer extends Model
     public function getCurrencyAttribute(): string
     {
         return $this->salary_currency?->value ?? SalaryCurrency::IQD->value;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->logOnly(['*']);
     }
 }

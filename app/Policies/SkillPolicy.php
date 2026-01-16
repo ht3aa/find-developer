@@ -12,7 +12,7 @@ class SkillPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('ViewAny:Skills');
     }
 
     /**
@@ -20,7 +20,7 @@ class SkillPolicy
      */
     public function view(User $user, Skill $skill): bool
     {
-        return true;
+        return $user->can('View:Skills');
     }
 
     /**
@@ -28,7 +28,7 @@ class SkillPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('Create:Skills');
     }
 
     /**
@@ -36,7 +36,7 @@ class SkillPolicy
      */
     public function update(User $user, Skill $skill): bool
     {
-        return true;
+        return $user->can('Update:Skills');
     }
 
     /**
@@ -44,7 +44,7 @@ class SkillPolicy
      */
     public function delete(User $user, Skill $skill): bool
     {
-        return false;
+        return $user->can('Delete:Skills');
     }
 
     /**
@@ -52,7 +52,7 @@ class SkillPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return false;
+        return $user->can('DeleteAny:Skills');
     }
 
     /**
@@ -60,7 +60,7 @@ class SkillPolicy
      */
     public function restore(User $user, Skill $skill): bool
     {
-        return true;
+        return $user->can('Restore:Skills');
     }
 
     /**
@@ -68,6 +68,6 @@ class SkillPolicy
      */
     public function forceDelete(User $user, Skill $skill): bool
     {
-        return true;
+        return $user->can('ForceDelete:Skills');
     }
 }

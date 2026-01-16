@@ -8,6 +8,7 @@ use App\Enums\SalaryCurrency;
 use App\Enums\SubscriptionPlan;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
+use App\Models\User;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -24,6 +25,13 @@ class DeveloperForm
             ->components([
                 Section::make('Personal Information')
                     ->schema([
+                        Select::make('user_id')
+                            ->label('User')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255),

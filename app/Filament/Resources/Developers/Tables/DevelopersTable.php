@@ -26,6 +26,12 @@ class DevelopersTable
     {
         return $table
             ->columns([
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
