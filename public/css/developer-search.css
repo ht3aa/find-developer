@@ -126,6 +126,42 @@ body {
     font-size: var(--font-size-lg);
     color: var(--color-gray-600);
     font-weight: 400;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Hero Register Button */
+.hero-register-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow-lg), 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+    transition: all var(--transition-slow);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.hero-register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2xl), 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+    color: white;
+}
+
+.hero-register-btn:active {
+    transform: translateY(-1px);
+}
+
+.hero-btn-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
