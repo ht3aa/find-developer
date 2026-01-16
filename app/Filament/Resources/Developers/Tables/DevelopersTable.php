@@ -48,13 +48,19 @@ class DevelopersTable
 
                 TextColumn::make('expected_salary_from')
                     ->label('Salary From')
-                    ->formatStateUsing(fn($state) => $state ? number_format($state) . ' IQD' : '-')
+                    ->formatStateUsing(function ($state, $record) {
+                        if (!$state) return '-';
+                        return number_format($state) . ' ' . $record->currency;
+                    })
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('expected_salary_to')
                     ->label('Salary To')
-                    ->formatStateUsing(fn($state) => $state ? number_format($state) . ' IQD' : '-')
+                    ->formatStateUsing(function ($state, $record) {
+                        if (!$state) return '-';
+                        return number_format($state) . ' ' . $record->currency;
+                    })
                     ->sortable()
                     ->toggleable(),
 

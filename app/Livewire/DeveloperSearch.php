@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\IraqiGovernorate;
+use App\Enums\WorldGovernorate;
 use App\Enums\SubscriptionPlan;
 use App\Models\Developer;
 use App\Models\JobTitle;
@@ -81,7 +81,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->multiple()
                                     ->searchable()
                                     ->options(
-                                        collect(IraqiGovernorate::cases())->mapWithKeys(
+                                        collect(WorldGovernorate::cases())->mapWithKeys(
                                             fn($case) => [$case->value => $case->getLabel()]
                                         )
                                     )

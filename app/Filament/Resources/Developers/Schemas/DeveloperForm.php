@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\Developers\Schemas;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\IraqiGovernorate;
+use App\Enums\WorldGovernorate;
+use App\Enums\SalaryCurrency;
 use App\Enums\SubscriptionPlan;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -35,7 +36,7 @@ class DeveloperForm
                             ->maxLength(255),
 
                         Select::make('location')
-                            ->options(IraqiGovernorate::class)
+                            ->options(WorldGovernorate::class)
                             ->searchable(),
                     ])
                     ->columns(2),
@@ -64,18 +65,22 @@ class DeveloperForm
                             ->required(),
 
                         TextInput::make('expected_salary_from')
-                            ->label('Expected Salary From (IQD)')
+                            ->label('Expected Salary From')
                             ->numeric()
-                            ->suffix('IQD')
                             ->step(1000)
                             ->minValue(0),
 
                         TextInput::make('expected_salary_to')
-                            ->label('Expected Salary To (IQD)')
+                            ->label('Expected Salary To')
                             ->numeric()
-                            ->suffix('IQD')
                             ->step(1000)
                             ->minValue(0),
+
+                        Select::make('salary_currency')
+                            ->label('Salary Currency')
+                            ->options(SalaryCurrency::class)
+                            ->searchable()
+                            ->default(SalaryCurrency::IQD),
 
                         Select::make('status')
                             ->options(DeveloperStatus::class)

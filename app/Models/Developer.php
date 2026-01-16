@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\IraqiGovernorate;
+use App\Enums\WorldGovernorate;
+use App\Enums\SalaryCurrency;
 use App\Enums\SubscriptionPlan;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,7 @@ class Developer extends Model
         'location',
         'expected_salary_from',
         'expected_salary_to',
+        'salary_currency',
         'is_available',
         'status',
         'subscription_plan',
@@ -43,7 +45,8 @@ class Developer extends Model
         'is_available' => 'boolean',
         'status' => DeveloperStatus::class,
         'subscription_plan' => SubscriptionPlan::class,
-        'location' => IraqiGovernorate::class,
+        'location' => WorldGovernorate::class,
+        'salary_currency' => SalaryCurrency::class,
     ];
 
     public function jobTitle(): BelongsTo
@@ -91,5 +94,10 @@ class Developer extends Model
         }
 
         return $query;
+    }
+
+    public function getCurrencyAttribute(): string
+    {
+        return $this->salary_currency?->value ?? SalaryCurrency::IQD->value;
     }
 }

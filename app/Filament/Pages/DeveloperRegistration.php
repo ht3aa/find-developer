@@ -3,7 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\IraqiGovernorate;
+use App\Enums\WorldGovernorate;
+use App\Enums\SalaryCurrency;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Skill;
@@ -67,7 +68,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             ->maxLength(255),
 
                         Select::make('location')
-                            ->options(IraqiGovernorate::class)
+                            ->options(WorldGovernorate::class)
                             ->searchable(),
                     ])
                     ->columns(2),
@@ -89,18 +90,22 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             ->required(),
 
                         TextInput::make('expected_salary_from')
-                            ->label('Expected Salary From (IQD)')
+                            ->label('Expected Salary From')
                             ->numeric()
-                            ->suffix('IQD')
                             ->step(1000)
                             ->minValue(0),
 
                         TextInput::make('expected_salary_to')
-                            ->label('Expected Salary To (IQD)')
+                            ->label('Expected Salary To')
                             ->numeric()
-                            ->suffix('IQD')
                             ->step(1000)
                             ->minValue(0),
+
+                        Select::make('salary_currency')
+                            ->label('Salary Currency')
+                            ->options(SalaryCurrency::class)
+                            ->searchable()
+                            ->default(SalaryCurrency::IQD),
 
                         Textarea::make('bio')
                             ->label('Bio / About You')
