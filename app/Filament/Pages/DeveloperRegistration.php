@@ -95,6 +95,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             ->stripCharacters(',')
                             ->label('Expected Salary From')
                             ->lt('expected_salary_to')
+                            ->regex('/^\d+$/')
                             ->minValue(0),
 
                         TextInput::make('expected_salary_to')
@@ -102,6 +103,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             ->stripCharacters(',')
                             ->label('Expected Salary To')
                             ->gt('expected_salary_from')
+                            ->regex('/^\d+$/')
                             ->minValue(0),
 
                         Select::make('salary_currency')

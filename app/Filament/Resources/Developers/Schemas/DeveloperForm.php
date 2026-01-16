@@ -69,12 +69,14 @@ class DeveloperForm
                             ->label('Expected Salary From')
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
+                            ->regex('/^\d+$/')
                             ->minValue(0),
 
                         TextInput::make('expected_salary_to')
                             ->label('Expected Salary To')
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
+                            ->regex('/^\d+$/')
                             ->minValue(0),
 
                         Select::make('salary_currency')
