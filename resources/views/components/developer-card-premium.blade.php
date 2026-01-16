@@ -8,21 +8,9 @@
         Premium
     </div>
 
-    <!-- Three Column Layout for Premium -->
+    <!-- Two Column Layout for Premium -->
     <div class="premium-card-grid">
-        <!-- Column 1: Image -->
-        <div class="premium-column premium-column-image">
-            <div class="developer-image-placeholder">
-                <div class="developer-image-content">
-                    @php
-                        $initials = collect(explode(' ', $developer->name))->map(fn($name) => mb_substr($name, 0, 1))->take(2)->implode('');
-                    @endphp
-                    <span class="developer-initials">{{ strtoupper($initials) }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Column 2: Portfolio/Work -->
+        <!-- Column 1: Portfolio/Work -->
         <div class="premium-column premium-column-work">
             <div class="developer-work-section">
                 <h4 class="work-section-title">Portfolio & Work</h4>
@@ -78,7 +66,7 @@
             </div>
         </div>
 
-        <!-- Column 3: Main Content -->
+        <!-- Column 2: Main Content -->
         <div class="premium-column premium-column-content">
             <!-- Header -->
             <div class="developer-header">
