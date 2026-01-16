@@ -125,10 +125,10 @@
                         $maxLength = 150;
                         $truncatedBio = $bioLength > $maxLength ? substr($developer->bio, 0, $maxLength) . '...' : $developer->bio;
                     @endphp
-                    <p class="developer-bio">
+                <p class="developer-bio">
                         <span x-show="!expanded">{{ $truncatedBio }}</span>
                         <span x-show="expanded" x-cloak>{{ $developer->bio }}</span>
-                    </p>
+                </p>
                     @if($bioLength > $maxLength)
                         <button 
                             @click="expanded = !expanded"

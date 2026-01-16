@@ -174,9 +174,7 @@
             </div>
 
             <!-- Modern Pagination -->
-            <div class="pagination-modern">
-                {{ $freeDevelopers->links() }}
-            </div>
+            <x-pagination-custom :paginator="$freeDevelopers" />
         </div>
     @endif
 

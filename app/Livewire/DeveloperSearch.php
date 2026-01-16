@@ -216,7 +216,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         $freeDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::FREE)
             ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->paginate(15);
 
         $totalCount = $premiumDevelopers->count() + $proDevelopers->count() + $freeDevelopers->total();
 
