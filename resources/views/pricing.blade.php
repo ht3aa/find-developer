@@ -42,6 +42,7 @@
                     <div class="pricing-card-price">
                         <span class="pricing-price-amount">5,000</span>
                         <span class="pricing-price-currency">IQD</span>
+                        <span class="pricing-price-period">/month</span>
                     </div>
                 </div>
                 <div class="pricing-card-body">
@@ -69,6 +70,7 @@
                     <div class="pricing-card-price">
                         <span class="pricing-price-amount">10,000</span>
                         <span class="pricing-price-currency">IQD</span>
+                        <span class="pricing-price-period">/month</span>
                     </div>
                 </div>
                 <div class="pricing-card-body">

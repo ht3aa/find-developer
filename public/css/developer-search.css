@@ -1357,6 +1357,12 @@ body {
     font-weight: 600;
 }
 
+.pricing-price-period {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-500);
+    font-weight: 500;
+}
+
 .pricing-card-body {
     display: flex;
     flex-direction: column;
