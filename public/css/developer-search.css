@@ -1538,6 +1538,14 @@ button.pagination-link {
     padding: var(--spacing-3xl) var(--spacing-lg);
 }
 
+.pricing-section {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.pricing-section:last-child {
+    margin-bottom: 0;
+}
+
 .pricing-header {
     text-align: center;
     margin-bottom: var(--spacing-3xl);
@@ -1598,6 +1606,23 @@ button.pagination-link {
     border-image: linear-gradient(135deg, var(--color-premium-start) 0%, var(--color-premium-end) 100%) 1;
 }
 
+.pricing-card-student-basic {
+    border-color: var(--color-secondary);
+    border-width: 2px;
+}
+
+.pricing-card-student-standard {
+    border-color: var(--color-primary);
+    border-width: 3px;
+}
+
+.pricing-card-student-premium {
+    border-color: transparent;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+    border-width: 3px;
+    border-image: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%) 1;
+}
+
 .pricing-card-badge {
     position: absolute;
     top: -12px;
@@ -1617,6 +1642,14 @@ button.pagination-link {
     background: var(--color-pro);
 }
 
+.pricing-card-student-standard .pricing-card-badge {
+    background: var(--color-primary);
+}
+
+.pricing-card-student-premium .pricing-card-badge {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+}
+
 .pricing-card-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -1633,6 +1666,13 @@ button.pagination-link {
 
 .pricing-card-premium .pricing-card-title {
     background: linear-gradient(135deg, var(--color-premium-start) 0%, var(--color-premium-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pricing-card-student-premium .pricing-card-title {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1696,6 +1736,21 @@ button.pagination-link {
 
 .pricing-card-pro .pricing-price-amount {
     color: var(--color-pro);
+}
+
+.pricing-card-student-basic .pricing-price-amount {
+    color: var(--color-secondary);
+}
+
+.pricing-card-student-standard .pricing-price-amount {
+    color: var(--color-primary);
+}
+
+.pricing-card-student-premium .pricing-price-amount {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .pricing-price-currency {
@@ -1787,6 +1842,43 @@ button.pagination-link {
 }
 
 .pricing-button-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.pricing-button-student-basic {
+    background: var(--color-secondary);
+    color: white;
+    border-color: var(--color-secondary);
+}
+
+.pricing-button-student-basic:hover {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pricing-button-student-standard {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.pricing-button-student-standard:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pricing-button-student-premium {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+    color: white;
+    border: none;
+}
+
+.pricing-button-student-premium:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     opacity: 0.95;

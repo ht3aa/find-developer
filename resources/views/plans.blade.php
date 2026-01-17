@@ -4,12 +4,152 @@
 
 @section('content')
     <div class="pricing-container">
-        <div class="pricing-header">
-            <h1 class="pricing-title">Choose Your Plan</h1>
-            <p class="pricing-subtitle">Select the perfect plan for your needs</p>
+        <!-- Students Plans Section -->
+        <div class="pricing-section">
+            <div class="pricing-header">
+                <h1 class="pricing-title">Students Plans</h1>
+                <p class="pricing-subtitle">Create Your Portfolio</p>
+            </div>
+
+            <div class="pricing-cards">
+                <!-- Basic Portfolio Plan -->
+                <div class="pricing-card pricing-card-student-basic">
+                    <div class="pricing-card-header">
+                        <h3 class="pricing-card-title">Basic Portfolio</h3>
+                        <div class="pricing-card-price-wrapper">
+                            <div class="pricing-price-original-container">
+                                <span class="pricing-price-original">100,000 IQD</span>
+                                <span class="pricing-discount-badge">25% OFF</span>
+                            </div>
+                            <div class="pricing-card-price">
+                                <span class="pricing-price-amount">75,000</span>
+                                <span class="pricing-price-currency">IQD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul class="pricing-features">
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>An AI-designed portfolio managed by an expert developer</span>
+                            </li>
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A domain with yourname.find-domain.com suffix</span>
+                            </li>
+                        </ul>
+                        <a href="https://wa.me/9647708246418?text=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Basic%20Portfolio%20plan" 
+                           target="_blank" 
+                           class="pricing-button pricing-button-student-basic">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Standard Portfolio Plan -->
+                <div class="pricing-card pricing-card-student-standard">
+                    <div class="pricing-card-badge">Popular</div>
+                    <div class="pricing-card-header">
+                        <h3 class="pricing-card-title">Standard Portfolio</h3>
+                        <div class="pricing-card-price-wrapper">
+                            <div class="pricing-price-original-container">
+                                <span class="pricing-price-original">200,000 IQD</span>
+                                <span class="pricing-discount-badge">25% OFF</span>
+                            </div>
+                            <div class="pricing-card-price">
+                                <span class="pricing-price-amount">150,000</span>
+                                <span class="pricing-price-currency">IQD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul class="pricing-features">
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A simple UI/UX design done by an expert designer</span>
+                            </li>
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A front end developer who will programme the design</span>
+                            </li>
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A domain with yourname.find-domain.com suffix</span>
+                            </li>
+                        </ul>
+                        <a href="https://wa.me/9647708246418?text=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Standard%20Portfolio%20plan" 
+                           target="_blank" 
+                           class="pricing-button pricing-button-student-standard">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Premium Portfolio Plan -->
+                <div class="pricing-card pricing-card-student-premium">
+                    <div class="pricing-card-badge">Best Value</div>
+                    <div class="pricing-card-header">
+                        <h3 class="pricing-card-title">Premium Portfolio</h3>
+                        <div class="pricing-card-price-wrapper">
+                            <div class="pricing-price-original-container">
+                                <span class="pricing-price-original">400,000 IQD</span>
+                                <span class="pricing-discount-badge">25% OFF</span>
+                            </div>
+                            <div class="pricing-card-price">
+                                <span class="pricing-price-amount">300,000</span>
+                                <span class="pricing-price-currency">IQD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul class="pricing-features">
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A detailed and unique UI/UX design done by expert designer</span>
+                            </li>
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A front end developer who will programme the design</span>
+                            </li>
+                            <li class="pricing-feature">
+                                <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>A custom domain specific for you</span>
+                            </li>
+                        </ul>
+                        <a href="https://wa.me/9647708246418?text=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Premium%20Portfolio%20plan" 
+                           target="_blank" 
+                           class="pricing-button pricing-button-student-premium">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="pricing-cards">
+        <!-- Developer Plans Section -->
+        <div class="pricing-section">
+            <div class="pricing-header">
+                <h1 class="pricing-title">Developer Plans</h1>
+                <p class="pricing-subtitle">Choose Your Plan</p>
+            </div>
+
+            <div class="pricing-cards">
             <!-- Free Plan -->
             <div class="pricing-card pricing-card-free">
                 <div class="pricing-card-header">
