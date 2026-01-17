@@ -45,26 +45,26 @@ class DeveloperProjectForm
 
     public static function getDeveloperField()
     {
-        if (auth()->user()->isDeveloper()) {
-            return;
+        if (auth()->user()->isSuperAdmin()) {
+            return Select::make('developer_id')
+                ->label('Developer')
+                ->relationship('developer', 'name')
+                ->required()
+                ->searchable()
+                ->default(auth()->user()->developer?->id)
+                ->disabled(auth()->user()->isDeveloper())
+                ->preload()
+                ->createOptionForm([
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('email')
+                        ->email()
+                        ->required()
+                        ->maxLength(255),
+                ]);
         }
 
-        return Select::make('developer_id')
-            ->label('Developer')
-            ->relationship('developer', 'name')
-            ->required()
-            ->searchable()
-            ->default(auth()->user()->developer?->id)
-            ->disabled(auth()->user()->isDeveloper())
-            ->preload()
-            ->createOptionForm([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return;
     }
 }
