@@ -39,10 +39,16 @@
                 <div class="pricing-card-badge">Popular</div>
                 <div class="pricing-card-header">
                     <h3 class="pricing-card-title">Pro</h3>
-                    <div class="pricing-card-price">
-                        <span class="pricing-price-amount">5,000</span>
-                        <span class="pricing-price-currency">IQD</span>
-                        <span class="pricing-price-period">/month</span>
+                    <div class="pricing-card-price-wrapper">
+                        <div class="pricing-price-original-container">
+                            <span class="pricing-price-original">10,000 IQD</span>
+                            <span class="pricing-discount-badge">50% OFF</span>
+                        </div>
+                        <div class="pricing-card-price">
+                            <span class="pricing-price-amount">5,000</span>
+                            <span class="pricing-price-currency">IQD</span>
+                            <span class="pricing-price-period">/month</span>
+                        </div>
                     </div>
                 </div>
                 <div class="pricing-card-body">
@@ -67,10 +73,16 @@
                 <div class="pricing-card-badge">Best Value</div>
                 <div class="pricing-card-header">
                     <h3 class="pricing-card-title">Premium</h3>
-                    <div class="pricing-card-price">
-                        <span class="pricing-price-amount">10,000</span>
-                        <span class="pricing-price-currency">IQD</span>
-                        <span class="pricing-price-period">/month</span>
+                    <div class="pricing-card-price-wrapper">
+                        <div class="pricing-price-original-container">
+                            <span class="pricing-price-original">25,000 IQD</span>
+                            <span class="pricing-discount-badge">60% OFF</span>
+                        </div>
+                        <div class="pricing-card-price">
+                            <span class="pricing-price-amount">10,000</span>
+                            <span class="pricing-price-currency">IQD</span>
+                            <span class="pricing-price-period">/month</span>
+                        </div>
                     </div>
                 </div>
                 <div class="pricing-card-body">

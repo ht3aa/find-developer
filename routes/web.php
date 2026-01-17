@@ -9,9 +9,9 @@ Route::get('/', function () {
 
 Route::get('/register', DeveloperRegistration::class)->name('register');
 
-Route::get('/pricing', function () {
-    return view('pricing');
-})->name('pricing');
+Route::get('/plans', function () {
+    return view('plans');
+})->name('plans');
 
 Route::get('/about', function () {
     return view('about');

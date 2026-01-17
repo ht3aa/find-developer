@@ -1638,6 +1638,42 @@ button.pagination-link {
     background-clip: text;
 }
 
+.pricing-card-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+}
+
+.pricing-price-original-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pricing-price-original {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-400);
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.pricing-discount-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
 .pricing-card-price {
     display: flex;
     align-items: baseline;

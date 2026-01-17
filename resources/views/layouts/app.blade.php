@@ -59,8 +59,8 @@
                     x-transition:leave-end="opacity-0 -translate-y-2"
                     @click.away="mobileMenuOpen = false"
                 >
-                    <a href="{{ route('pricing') }}" class="navbar-link" @click="mobileMenuOpen = false">
-                        Pricing
+                    <a href="{{ route('plans') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Plans
                     </a>
                     <a href="{{ route('about') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         About Us
