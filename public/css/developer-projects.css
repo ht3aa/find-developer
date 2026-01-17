@@ -13,7 +13,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-lg);
@@ -30,11 +30,12 @@
 }
 
 .developer-info-card {
-    background: white;
+    background: var(--bg-primary);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl);
     box-shadow: var(--shadow-lg);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .developer-info-main {
@@ -44,7 +45,7 @@
 .developer-name-large {
     font-size: var(--font-size-3xl);
     font-weight: 700;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
     margin-bottom: var(--spacing-md);
     line-height: 1.2;
 }
@@ -73,8 +74,8 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-md);
-    background: var(--color-gray-100);
-    color: var(--color-gray-700);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
     border-radius: var(--radius-full);
     font-size: var(--font-size-sm);
 }
@@ -87,7 +88,7 @@
 
 .developer-bio-large {
     font-size: var(--font-size-base);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     line-height: 1.7;
     margin: 0;
 }
@@ -97,7 +98,7 @@
     gap: var(--spacing-md);
     flex-wrap: wrap;
     padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-gray-200);
+    border-top: 1px solid var(--border-primary);
 }
 
 .contact-button {
@@ -109,14 +110,14 @@
     text-decoration: none;
     font-weight: 500;
     font-size: var(--font-size-sm);
-    background: var(--color-gray-100);
-    color: var(--color-gray-700);
-    border: 1px solid var(--color-gray-300);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-secondary);
     transition: all var(--transition-base);
 }
 
 .contact-button:hover {
-    background: var(--color-gray-200);
+    background: var(--bg-secondary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -142,13 +143,13 @@
 .projects-title {
     font-size: var(--font-size-2xl);
     font-weight: 700;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
     margin: 0;
 }
 
 .projects-count {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -159,11 +160,11 @@
 }
 
 .project-card {
-    background: white;
+    background: var(--bg-primary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
     transition: all var(--transition-base);
     display: flex;
     flex-direction: column;
@@ -182,7 +183,7 @@
 .project-title {
     font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
     margin: 0 0 var(--spacing-sm) 0;
 }
 
@@ -193,7 +194,7 @@
 
 .project-description p {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     line-height: 1.6;
     margin: 0;
 }
@@ -201,7 +202,7 @@
 .project-actions {
     margin-top: auto;
     padding-top: var(--spacing-md);
-    border-top: 1px solid var(--color-gray-200);
+    border-top: 1px solid var(--border-primary);
 }
 
 .project-link-button {
@@ -237,10 +238,11 @@
 .projects-empty {
     text-align: center;
     padding: var(--spacing-3xl) var(--spacing-lg);
-    background: white;
+    background: var(--bg-primary);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid var(--border-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .projects-empty-icon {
@@ -253,13 +255,13 @@
 .projects-empty-title {
     font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--color-gray-900);
+    color: var(--text-primary);
     margin: 0 0 var(--spacing-sm) 0;
 }
 
 .projects-empty-text {
     font-size: var(--font-size-base);
-    color: var(--color-gray-600);
+    color: var(--text-secondary);
     margin: 0;
 }
 
