@@ -67,6 +67,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             ->maxLength(255)
                             ->required()
                             ->unique('developers', 'slug')
+                            ->readonly()
                             ->helperText('Leave empty to auto-generate from name')
                             ->alphaDash(),
 

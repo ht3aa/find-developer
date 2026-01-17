@@ -47,6 +47,7 @@ class DeveloperForm
                             ->label('URL Slug')
                             ->maxLength(255)
                             ->unique('developers', 'slug', ignoreRecord: true)
+                            ->readonly()
                             ->helperText('Leave empty to auto-generate from name'),
 
                         TextInput::make('email')
