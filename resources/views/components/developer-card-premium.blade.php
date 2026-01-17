@@ -41,7 +41,7 @@
                         </div>
                     @elseif($developer->projects_count > 6)
                         <div class="work-item-view-all">
-                            <a href="{{ route('developer.projects', $developer->id) }}" class="work-view-all-link">
+                            <a href="{{ route('developer.projects', $developer->slug) }}" class="work-view-all-link">
                                 View All Projects ({{ $developer->projects_count }})
                                 <svg class="work-item-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -199,12 +199,14 @@
                     </svg>
                 </a>
 
-                <a href="{{ route('developer.projects', $developer->id) }}" class="social-link projects" title="View All Projects">
+                @if($developer->slug)
+                <a href="{{ route('developer.projects', $developer->slug) }}" class="social-link projects" title="View All Projects">
                     View All Projects ({{ $developer->projects_count }})
                     <svg class="social-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
                 </a>
+                @endif
             </div>
         </div>
     </div>

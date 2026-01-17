@@ -26,5 +26,5 @@ Route::get('/robots.txt', function () {
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 
-Route::get('/developer/{id}/projects', [DeveloperProjectsController::class, 'show'])
+Route::get('/developer/{developerSlug}/projects', [DeveloperProjectsController::class, 'show'])
     ->name('developer.projects');

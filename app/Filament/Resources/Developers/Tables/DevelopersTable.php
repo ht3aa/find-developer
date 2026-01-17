@@ -36,6 +36,11 @@ class DevelopersTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('slug')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable()

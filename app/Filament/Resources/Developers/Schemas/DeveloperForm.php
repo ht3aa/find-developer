@@ -15,7 +15,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+
+
 
 class DeveloperForm
 {
@@ -34,7 +38,16 @@ class DeveloperForm
 
                         TextInput::make('name')
                             ->required()
+                            ->afterStateUpdatedJs(<<<'JS'
+                            $set('slug', ($state).replaceAll(' ', '-').toLowerCase());
+                            JS)
                             ->maxLength(255),
+
+                        TextInput::make('slug')
+                            ->label('URL Slug')
+                            ->maxLength(255)
+                            ->unique('developers', 'slug', ignoreRecord: true)
+                            ->helperText('Leave empty to auto-generate from name'),
 
                         TextInput::make('email')
                             ->email()

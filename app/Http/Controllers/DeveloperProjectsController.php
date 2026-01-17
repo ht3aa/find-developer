@@ -9,12 +9,12 @@ use Illuminate\Http\Request;
 
 class DeveloperProjectsController extends Controller
 {
-    public function show($id)
+    public function show($developerSlug)
     {
 
         $developer = Developer::with(['jobTitle', 'projects' => function ($query) {
             $query->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc');
-        }])->findOrFail($id);
+        }])->where('slug', $developerSlug)->firstOrFail();
 
 
         if ($developer->subscription_plan !== SubscriptionPlan::PREMIUM) {

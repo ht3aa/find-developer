@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Scopes\ApprovedScope;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -23,6 +24,7 @@ class Developer extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'email',
         'phone',
         'user_id',
@@ -55,6 +57,23 @@ class Developer extends Model
         'location' => WorldGovernorate::class,
         'salary_currency' => SalaryCurrency::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($developer) {
+            if (empty($developer->slug)) {
+                $developer->slug = Str::slug($developer->name);
+            }
+        });
+
+        static::updating(function ($developer) {
+            if ($developer->isDirty('name') && empty($developer->slug)) {
+                $developer->slug = Str::slug($developer->name);
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {

@@ -57,7 +57,18 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->schema([
                         TextInput::make('name')
                             ->required()
+                            ->afterStateUpdatedJs(<<<'JS'
+                            $set('slug', ($state).replaceAll(' ', '-').toLowerCase());
+                            JS)
                             ->maxLength(255),
+
+                        TextInput::make('slug')
+                            ->label('URL Slug')
+                            ->maxLength(255)
+                            ->required()
+                            ->unique('developers', 'slug')
+                            ->helperText('Leave empty to auto-generate from name')
+                            ->alphaDash(),
 
                         TextInput::make('email')
                             ->email()
