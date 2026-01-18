@@ -45,8 +45,4 @@ jobs:
             php artisan route:cache
             php artisan view:cache
             php artisan icon:cache
-            sudo php artisan api:changelog
-            sudo supervisorctl reread
-            sudo supervisorctl update
-            sudo supervisorctl restart laravel-worker:*
-            sudo systemctl restart nginx php-fpm
+            sudo systemctl restart nginx php8.4-fpm
