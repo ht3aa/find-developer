@@ -28,20 +28,43 @@
             </div>
         @endif
 
-        @if($developer->expected_salary_from || $developer->expected_salary_to)
-            <div class="detail-item">
-                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                @if($developer->expected_salary_from && $developer->expected_salary_to)
-                    {{ number_format($developer->expected_salary_from) }} - {{ number_format($developer->expected_salary_to) }} {{ $developer->currency }}/month
-                @elseif($developer->expected_salary_from)
-                    From {{ number_format($developer->expected_salary_from) }} {{ $developer->currency }}/year
-                @else
-                    Up to {{ number_format($developer->expected_salary_to) }} {{ $developer->currency }}/year
-                @endif
-            </div>
-        @endif
+        @auth
+            @if((auth()->user()->isAdmin() || auth()->user()->isSuperAdmin()) && ($developer->expected_salary_from || $developer->expected_salary_to))
+                <div class="detail-item">
+                    <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    @if($developer->expected_salary_from && $developer->expected_salary_to)
+                        {{ number_format($developer->expected_salary_from) }} - {{ number_format($developer->expected_salary_to) }} {{ $developer->currency }}/month
+                    @elseif($developer->expected_salary_from)
+                        From {{ number_format($developer->expected_salary_from) }} {{ $developer->currency }}/year
+                    @else
+                        Up to {{ number_format($developer->expected_salary_to) }} {{ $developer->currency }}/year
+                    @endif
+                </div>
+            @elseif(!auth()->user()->isAdmin() && !auth()->user()->isSuperAdmin() && ($developer->expected_salary_from || $developer->expected_salary_to))
+                <div class="detail-item">
+                    <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <a href="https://wa.me/9647708246418" target="_blank" style="text-decoration: none; color: inherit;">
+                        You need to subscribe to see the salary
+                    </a>
+                </div>
+            @endif
+        @endauth
+        @guest
+            @if($developer->expected_salary_from || $developer->expected_salary_to)
+                <div class="detail-item">
+                    <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <a href="https://wa.me/9647708246418" target="_blank" style="text-decoration: none; color: inherit;">
+                        You need to subscribe to see the salary
+                    </a>
+                </div>
+            @endif
+        @endguest
 
         <div class="detail-item">
             @if($developer->is_available)

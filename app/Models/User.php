@@ -69,6 +69,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->user_type === UserType::DEVELOPER && $this->developer()->exists();
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->can_access_admin_panel && $this->user_type === UserType::ADMIN;
+    }
+
     public function developer(): HasOne
     {
         return $this->hasOne(Developer::class);
