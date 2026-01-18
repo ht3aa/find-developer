@@ -1,0 +1,27 @@
+# Add 'feature' label to any PR where the head branch name starts with `feature` or has a `feature` section in the name
+feature:
+ - head-branch: ['^feature', 'feature']
+
+fix:
+ - head-branch: ['^fix', 'fix']
+
+refactor:
+ - head-branch: ['^refactor', 'refactor']
+
+enhancement:
+ - head-branch: ['^enhancement', 'enhancement']
+
+api:
+  - head-branch: ['^api', 'api']
+
+api-change:
+  - head-branch: ['^api-change', 'api-change']
+
+api-update:
+  - head-branch: ['^api-update', 'api-update']
+
+api-enhancement:
+  - head-branch: ['^api-enhancement', 'api-enhancement']
+
+hotfix:
+  - head-branch: ['^hotfix', 'hotfix']

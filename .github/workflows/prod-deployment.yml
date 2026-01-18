@@ -1,0 +1,52 @@
+name: Deploy Laravel to EC2 prod server
+
+on:
+  release:
+    types: [published]
+  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH command on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PROD_SSH_KEY }}
+          script: |
+            # Ignore tags that start with 'pre-main'
+            if [[ "${{ github.event.release.tag_name }}" == "monthly-work"* ]]; then
+              echo "monthly-work tag detected, ignoring deployment..."
+              exit 0
+            fi
+
+            if [[ "${{ github.event.release.tag_name }}" == *"main"* ]]; then
+              echo "main tag detected, proceeding with deployment..."
+            else
+              echo "Tag does not contain 'main', exiting..."
+              exit 0
+            fi
+            cd /var/www/html/find-developer
+            sudo git fetch --tags
+            echo "tag_name: ${{ github.event.release.tag_name }}"
+            sudo git checkout -B release-${{ github.event.release.tag_name }} refs/tags/${{ github.event.release.tag_name }}
+            sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
+            composer install --no-dev --optimize-autoloader
+            sudo npm install --omit=dev
+            sudo npm update --omit=dev
+            php artisan env:set APP_VERSION "${{ github.event.release.tag_name }}"
+            php artisan optimize:clear
+            composer dump-autoload
+            php artisan migrate
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan icon:cache
+            sudo php artisan api:changelog
+            sudo supervisorctl reread
+            sudo supervisorctl update
+            sudo supervisorctl restart laravel-worker:*
+            sudo systemctl restart nginx php-fpm

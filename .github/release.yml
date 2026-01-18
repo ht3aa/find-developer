@@ -1,0 +1,43 @@
+changelog:
+  # PRs with these labels will be excluded from release update
+  exclude:
+    labels:
+      - "ignore-for-release"
+      - "docs"
+      - "tests"
+
+  # Categories for grouping PRs in release notes
+  categories:
+    - title: "🚀 New Features"
+      labels:
+        - "feature"
+    - title: "🔄 Enhancements"
+      labels:
+        - "enhancement"
+    - title: "🔄 Hot Fixes"
+      labels:
+        - "hotfix"
+    - title: "🔄 API Changes"
+      labels:
+        - "api-change"
+    - title: "🔄 API Enhancement"
+      labels:
+        - "api-enhancement"
+    - title: "🐛 Bug Fixes"
+      labels:
+        - "bug"
+        - "fix"
+    - title: "⚠️ Hot Fixes"
+      labels:
+        - "hotfix"
+    - title: "🧰 Maintenance"
+      labels: 
+        - "chore"
+        - "refactor"
+    - title: "📖 Documentation"
+      labels:
+        - "documentation"
+    - title: "🔒 Security & Dependencies"
+      labels:
+        - "security"
+        - "dependencies"
