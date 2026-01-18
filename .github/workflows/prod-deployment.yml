@@ -35,8 +35,8 @@ jobs:
             sudo git checkout -B release-${{ github.event.release.tag_name }} refs/tags/${{ github.event.release.tag_name }}
             sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
             composer install --no-dev --optimize-autoloader
-            sudo npm install --omit=dev
-            sudo npm update --omit=dev
+            npm install --omit=dev
+            npm update --omit=dev
             php artisan env:set APP_VERSION "${{ github.event.release.tag_name }}"
             php artisan optimize:clear
             composer dump-autoload
