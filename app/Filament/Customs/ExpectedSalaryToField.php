@@ -17,4 +17,14 @@ class ExpectedSalaryToField
             ->regex('/^\d+$/')
             ->minValue(0);
     }
+
+    public static function makeWithoutGt(string $name = 'expected_salary_to'): TextInput
+    {
+        return TextInput::make($name)
+            ->mask(RawJs::make('$money($input)'))
+            ->stripCharacters(',')
+            ->label('Expected Salary To')
+            ->regex('/^\d+$/')
+            ->minValue(0);
+    }
 }

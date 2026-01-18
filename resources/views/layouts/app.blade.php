@@ -69,6 +69,7 @@
 
         <!-- Custom CSS -->
         <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
+        @stack('styles')
 
         <!-- Filament Styles -->
         @filamentStyles
@@ -118,6 +119,9 @@
                     </a>
                     <a href="{{ route('about') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         About Us
+                    </a>
+                    <a href="{{ route('jobs') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Jobs
                     </a>
                     <a href="{{ route('register') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Register as Developer
