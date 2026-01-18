@@ -1461,10 +1461,9 @@ button.pagination-link {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradientShift 3s ease infinite, textShineGlow 2s ease-in-out infinite;
+    animation: gradientShift 3s ease infinite;
     font-weight: 600;
     overflow: visible;
-    isolation: isolate;
 }
 
 .navbar-star-icon {
@@ -1474,37 +1473,6 @@ button.pagination-link {
     animation: rotate 3s linear infinite;
     filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.8));
     flex-shrink: 0;
-}
-
-.navbar-link-recommended::after {
-    content: 'Recommended';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 30%, rgba(255, 255, 255, 0.9) 50%, transparent 70%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: textShineSweep 2.5s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 1;
-}
-
-@keyframes textShineSweep {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
-@keyframes textShineGlow {
-    0%, 100% { 
-        opacity: 1;
-    }
-    50% { 
-        opacity: 1.2;
-    }
 }
 
 .navbar-link-recommended:hover {
