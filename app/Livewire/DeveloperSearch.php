@@ -33,24 +33,29 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     use InteractsWithSchemas;
     use InteractsWithActions;
 
-    #[Url]
-    public ?array $filterData = [];
 
-    public function mount(): void
-    {
-        $this->filterData = [
-            'search' => '',
-            'jobTitleIds' => [],
-            'skillIds' => [],
-            'locationIds' => [],
-            'minExperience' => null,
-            'maxExperience' => null,
-            'expected_salary_from' => null,
-            'expected_salary_to' => null,
-            'salary_currency' => null,
-            'availableOnly' => true,
-        ];
-    }
+    #[Url]
+    public string $search = '';
+    #[Url]
+    public array $jobTitleIds = [];
+    #[Url]
+    public array $skillIds = [];
+    #[Url]
+    public array $locationIds = [];
+    #[Url]
+    public int $minExperience = 0;
+    #[Url]
+    public int $maxExperience = 50;
+    #[Url]
+    public int $expected_salary_from = 0;
+    #[Url]
+    public int $expected_salary_to = 0;
+    #[Url]
+    public ?SalaryCurrency $salary_currency = null;
+
+    #[Url]
+    public bool $availableOnly = true;
+
 
     public function form(Schema $schema): Schema
     {
@@ -140,30 +145,18 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                             ->live()
                             ->afterStateUpdated(fn() => $this->resetPage()),
                     ])
-            ])
-            ->statePath('filterData');
+            ]);
     }
 
     public function clearFilters(): void
     {
-        $this->filterData = [
-            'search' => '',
-            'jobTitleIds' => [],
-            'skillIds' => [],
-            'locationIds' => [],
-            'minExperience' => null,
-            'maxExperience' => null,
-            'expected_salary_from' => null,
-            'expected_salary_to' => null,
-            'salary_currency' => null,
-            'availableOnly' => true,
-        ];
-        $this->resetPage();
+        $this->reset();
     }
 
     public function render()
     {
-        $filters = $this->filterData;
+        $filters = $this->all();
+
 
         $baseQuery = Developer::with(['jobTitle', 'skills'])
             ->with(['projects' => function ($query) {

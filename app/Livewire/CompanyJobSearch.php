@@ -27,19 +27,18 @@ class CompanyJobSearch extends Component implements HasSchemas
     use InteractsWithSchemas;
 
     #[Url]
-    public ?array $filterData = [];
+    public string $search = '';
+    #[Url]
+    public array $jobTitleIds = [];
+    #[Url]
+    public array $locationIds = [];
+    #[Url]
+    public int $salary_from = 0;
+    #[Url]
+    public int $salary_to = 0;
 
-    public function mount(): void
-    {
-        $this->filterData = [
-            'search' => '',
-            'jobTitleIds' => [],
-            'locationIds' => [],
-            'salary_from' => null,
-            'salary_to' => null,
-            'salary_currency' => null,
-        ];
-    }
+    #[Url]
+    public ?SalaryCurrency $salary_currency = null;
 
     public function form(Schema $schema): Schema
     {
@@ -97,26 +96,17 @@ class CompanyJobSearch extends Component implements HasSchemas
                                     ->afterStateUpdated(fn() => $this->resetPage()),
                             ]),
                     ])
-            ])
-            ->statePath('filterData');
+            ]);
     }
 
     public function clearFilters(): void
     {
-        $this->filterData = [
-            'search' => '',
-            'jobTitleIds' => [],
-            'locationIds' => [],
-            'salary_from' => null,
-            'salary_to' => null,
-            'salary_currency' => null,
-        ];
-        $this->resetPage();
+        $this->reset();
     }
 
     public function render()
     {
-        $filters = $this->filterData;
+        $filters = $this->all();
 
         $query = CompanyJob::with('jobTitle')
             ->approved()
