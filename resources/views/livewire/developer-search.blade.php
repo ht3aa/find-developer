@@ -23,7 +23,7 @@
             </div>
             <input 
                 type="text" 
-                wire:model.live.debounce.300ms="filterData.search"
+                wire:model.live.debounce.300ms="search"
                 placeholder="Search by name, email, location, or skills..."
                 class="search-input"
             />
