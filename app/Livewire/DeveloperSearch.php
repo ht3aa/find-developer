@@ -37,11 +37,11 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     #[Url]
     public string $search = '';
     #[Url]
-    public array $jobTitleIds = [];
+    public array $jobTitles = [];
     #[Url]
-    public array $skillIds = [];
+    public array $skills = [];
     #[Url]
-    public array $locationIds = [];
+    public array $locations = [];
     #[Url]
     public int $minExperience = 0;
     #[Url]
@@ -75,27 +75,27 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
 
                         Grid::make(2)
                             ->schema([
-                                Select::make('jobTitleIds')
+                                Select::make('jobTitles')
                                     ->label('Job Titles')
                                     ->multiple()
                                     ->searchable()
-                                    ->options(JobTitle::active()->limit(50)->pluck('name', 'id'))
+                                    ->options(JobTitle::active()->limit(50)->pluck('name', 'name'))
                                     ->preload()
-                                    ->getSearchResultsUsing(fn(string $query) => JobTitle::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                                    ->getSearchResultsUsing(fn(string $query) => JobTitle::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'name'))
                                     ->live()
                                     ->afterStateUpdated(fn() => $this->resetPage()),
 
-                                Select::make('skillIds')
+                                Select::make('skills')
                                     ->label('Skills')
                                     ->multiple()
                                     ->searchable()
-                                    ->options(Skill::active()->limit(50)->pluck('name', 'id'))
+                                    ->options(Skill::active()->limit(50)->pluck('name', 'name'))
                                     ->preload()
-                                    ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                                    ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'name'))
                                     ->live()
                                     ->afterStateUpdated(fn() => $this->resetPage()),
 
-                                Select::make('locationIds')
+                                Select::make('locations')
                                     ->label('Locations')
                                     ->multiple()
                                     ->searchable()
@@ -175,16 +175,18 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                         });
                 });
             })
-            ->when(!empty($filters['jobTitleIds']), function ($query) use ($filters) {
-                $query->whereIn('job_title_id', $filters['jobTitleIds']);
-            })
-            ->when(!empty($filters['skillIds']), function ($query) use ($filters) {
-                $query->whereHas('skills', function ($skillQuery) use ($filters) {
-                    $skillQuery->whereIn('skills.id', $filters['skillIds']);
+            ->when(!empty($filters['jobTitles']), function ($query) use ($filters) {
+                $query->whereHas('jobTitle', function ($jobTitleQuery) use ($filters) {
+                    $jobTitleQuery->whereIn('name', $filters['jobTitles']);
                 });
             })
-            ->when(!empty($filters['locationIds']), function ($query) use ($filters) {
-                $query->whereIn('location', $filters['locationIds']);
+            ->when(!empty($filters['skills']), function ($query) use ($filters) {
+                $query->whereHas('skills', function ($skillQuery) use ($filters) {
+                    $skillQuery->whereIn('name', $filters['skills']);
+                });
+            })
+            ->when(!empty($filters['locations']), function ($query) use ($filters) {
+                $query->whereIn('location', $filters['locations']);
             })
             ->when(!empty($filters['minExperience']), function ($query) use ($filters) {
                 $query->where('years_of_experience', '>=', $filters['minExperience']);
