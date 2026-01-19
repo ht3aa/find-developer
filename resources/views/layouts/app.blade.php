@@ -153,6 +153,27 @@
             </div>
         </nav>
 
+        <!-- Developer Promotion Banner -->
+        <div class="developer-promotion-banner">
+            <div class="developer-promotion-banner-container">
+                <div class="developer-promotion-banner-content">
+                    <div class="developer-promotion-banner-text-wrapper">
+                        <svg class="developer-promotion-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <p class="developer-promotion-banner-text">
+                            To make your profile good and increase the chance to hire/getting work you can do it with only <strong>10,000 IQD</strong> every month.
+                        </p>
+                    </div>
+                    <a href="https://wa.me/9647708246418?text=Hello,%20I%20would%20like%20to%20improve%20my%20developer%20profile" 
+                       target="_blank" 
+                       class="developer-promotion-banner-button">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+
         @if($currentRoute === 'home')
             <!-- Info Banner -->
             <div class="info-banner">

@@ -1700,6 +1700,142 @@ html.dark .dark-mode-icon.moon-icon {
     }
 }
 
+/* Developer Promotion Banner */
+.developer-promotion-banner {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+    padding: var(--spacing-md) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.developer-promotion-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.developer-promotion-banner:hover::before {
+    opacity: 1;
+}
+
+.developer-promotion-banner-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    position: relative;
+    z-index: 1;
+}
+
+.developer-promotion-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.developer-promotion-banner-text-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+    min-width: 0;
+}
+
+.developer-promotion-banner-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.developer-promotion-banner-text {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.developer-promotion-banner-text strong {
+    color: var(--color-primary);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.developer-promotion-banner-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.developer-promotion-banner-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+}
+
+.developer-promotion-banner-button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .developer-promotion-banner {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .developer-promotion-banner-container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .developer-promotion-banner-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+    
+    .developer-promotion-banner-text-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .developer-promotion-banner-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    
+    .developer-promotion-banner-text {
+        font-size: var(--font-size-sm);
+    }
+    
+    .developer-promotion-banner-button {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+    }
+}
+
 /* Main Content */
 .main-content {
     min-height: calc(100vh - 70px - 120px);
