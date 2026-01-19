@@ -1,7 +1,7 @@
 <div class="services-container">
     <div class="services-header">
         <h1 class="services-title">Our Services</h1>
-        <p class="services-subtitle">Professional development services offered by our HR partners</p>
+        <p class="services-subtitle">Professional development services offered by our partners</p>
     </div>
 
     @if($services->isEmpty())
