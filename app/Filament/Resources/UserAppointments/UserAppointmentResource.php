@@ -22,6 +22,11 @@ class UserAppointmentResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    public static function getNavigationLabel(): string
+    {
+        return 'Appointments';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UserAppointmentForm::configure($schema);

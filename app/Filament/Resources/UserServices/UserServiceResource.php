@@ -22,6 +22,11 @@ class UserServiceResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    public static function getNavigationLabel(): string
+    {
+        return 'Services';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UserServiceForm::configure($schema);
