@@ -83,6 +83,21 @@
                 </span>
             @endif
         </div>
+
+        @if($developer->availability_type && count($developer->availability_type) > 0)
+            <div class="detail-item availability-types">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div class="availability-type-badges">
+                    @foreach($developer->availability_type as $type)
+                        <span class="availability-type-badge availability-type-{{ $type->value }}">
+                            {{ $type->getLabel() }}
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 
     <!-- Bio for normal -->

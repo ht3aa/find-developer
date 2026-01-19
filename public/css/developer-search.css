@@ -833,6 +833,66 @@ body {
     gap: var(--spacing-xs);
 }
 
+/* Availability Types */
+.availability-types {
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.availability-type-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.availability-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all var(--transition-base);
+}
+
+.availability-type-badge.availability-type-full-time {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.availability-type-badge.availability-type-part-time {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.availability-type-badge.availability-type-freelance {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+html.dark .availability-type-badge.availability-type-full-time {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+html.dark .availability-type-badge.availability-type-part-time {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+html.dark .availability-type-badge.availability-type-freelance {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
 /* Developer Bio */
 .bio-container {
     margin-bottom: var(--spacing-md);
