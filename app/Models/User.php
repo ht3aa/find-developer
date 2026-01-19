@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
@@ -32,6 +33,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'can_access_admin_panel',
         'user_type',
+        'linkedin_url',
     ];
 
     /**
@@ -77,6 +79,16 @@ class User extends Authenticatable implements FilamentUser
     public function developer(): HasOne
     {
         return $this->hasOne(Developer::class);
+    }
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(UserService::class);
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(UserAppointment::class);
     }
 
     public function canAccessPanel(Panel $panel): bool

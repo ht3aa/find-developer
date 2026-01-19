@@ -28,6 +28,14 @@ class UserForm
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
 
+                        TextInput::make('linkedin_url')
+                            ->label('LinkedIn URL')
+                            ->url()
+                            ->nullable()
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-link')
+                            ->helperText('Enter the full LinkedIn profile URL (e.g., https://linkedin.com/in/username)'),
+
                         Select::make('user_type')
                             ->label('User Type')
                             ->options(UserType::class)

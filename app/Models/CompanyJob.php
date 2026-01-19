@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\JobStatus;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +36,7 @@ class CompanyJob extends Model
 
     protected $casts = [
         'status' => JobStatus::class,
-        'salary_currency' => SalaryCurrency::class,
+        'salary_currency' => Currency::class,
         'location' => WorldGovernorate::class,
     ];
 

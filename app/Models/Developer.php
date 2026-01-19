@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
 use App\Casts\AvailabilityTypeArray;
@@ -60,7 +60,7 @@ class Developer extends Model
         'status' => DeveloperStatus::class,
         'subscription_plan' => SubscriptionPlan::class,
         'location' => WorldGovernorate::class,
-        'salary_currency' => SalaryCurrency::class,
+        'salary_currency' => Currency::class,
         'availability_type' => AvailabilityTypeArray::class,
     ];
 
@@ -102,6 +102,11 @@ class Developer extends Model
         return $this->hasMany(DeveloperProject::class);
     }
 
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(UserAppointment::class);
+    }
+
     public function scopeAvailable($query)
     {
         return $query->where('is_available', true);
@@ -140,7 +145,7 @@ class Developer extends Model
 
     public function getCurrencyAttribute(): string
     {
-        return $this->salary_currency?->value ?? SalaryCurrency::IQD->value;
+        return $this->salary_currency?->value ?? Currency::IQD->value;
     }
 
     public function getActivitylogOptions(): LogOptions

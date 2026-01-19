@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Developers\Schemas;
 
 use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
 use App\Filament\Customs\ExpectedSalaryFromField;
@@ -72,9 +72,9 @@ class DeveloperProfileForm
 
                         Select::make('salary_currency')
                             ->label('Salary Currency')
-                            ->options(SalaryCurrency::class)
+                            ->options(Currency::class)
                             ->searchable()
-                            ->default(SalaryCurrency::IQD),
+                            ->default(Currency::IQD),
 
                         Select::make('status')
                             ->options(DeveloperStatus::class)

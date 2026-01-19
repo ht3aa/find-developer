@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\JobStatus;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
@@ -38,7 +38,7 @@ class CompanyJobSearch extends Component implements HasSchemas
     public int $salary_to = 0;
 
     #[Url]
-    public ?SalaryCurrency $salary_currency = null;
+    public ?Currency $salary_currency = null;
 
     public function form(Schema $schema): Schema
     {
@@ -90,7 +90,7 @@ class CompanyJobSearch extends Component implements HasSchemas
 
                                 Select::make('salary_currency')
                                     ->label('Salary Currency')
-                                    ->options(SalaryCurrency::class)
+                                    ->options(Currency::class)
                                     ->searchable()
                                     ->live()
                                     ->afterStateUpdated(fn() => $this->resetPage()),

@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
@@ -52,7 +52,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     #[Url]
     public int $expected_salary_to = 0;
     #[Url]
-    public ?SalaryCurrency $salary_currency = null;
+    public ?Currency $salary_currency = null;
 
     #[Url]
     public array $availability_type = [];
@@ -137,7 +137,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
 
                                 Select::make('salary_currency')
                                     ->label('Salary Currency')
-                                    ->options(SalaryCurrency::class)
+                                    ->options(Currency::class)
                                     ->searchable()
                                     ->live()
                                     ->afterStateUpdated(fn() => $this->resetPage()),

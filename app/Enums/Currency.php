@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum SalaryCurrency: string implements HasLabel
+enum Currency: string implements HasLabel
 {
     case USD = 'USD';
     case IQD = 'IQD';

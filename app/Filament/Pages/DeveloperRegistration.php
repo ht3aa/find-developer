@@ -4,7 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\AvailabilityType;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
@@ -110,9 +110,9 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
                         Select::make('salary_currency')
                             ->label('Salary Currency')
-                            ->options(SalaryCurrency::class)
+                            ->options(Currency::class)
                             ->searchable()
-                            ->default(SalaryCurrency::IQD),
+                            ->default(Currency::IQD),
 
                         Select::make('availability_type')
                             ->label('Availability Type')

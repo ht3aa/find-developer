@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Jobs\Schemas;
 
 use App\Enums\JobStatus;
-use App\Enums\SalaryCurrency;
+use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
@@ -88,9 +88,9 @@ class CompanyJobForm
 
                         Select::make('salary_currency')
                             ->label('Salary Currency')
-                            ->options(SalaryCurrency::class)
+                            ->options(Currency::class)
                             ->searchable()
-                            ->default(SalaryCurrency::IQD),
+                            ->default(Currency::IQD),
 
                         Select::make('status')
                             ->options(JobStatus::class)

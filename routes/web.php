@@ -28,6 +28,10 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
+Route::get('/services', function () {
+    return view('services');
+})->name('services');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {

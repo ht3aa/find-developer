@@ -10,14 +10,14 @@ enum UserType: string implements HasLabel, HasColor, HasIcon
 {
     case DEVELOPER = 'developer';
     case ADMIN = 'admin';
-    case CLIENT = 'client';
+    case HR = 'hr';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::DEVELOPER => 'Developer',
             self::ADMIN => 'Admin',
-            self::CLIENT => 'Client',
+            self::HR => 'HR',
         };
     }
 
@@ -26,7 +26,7 @@ enum UserType: string implements HasLabel, HasColor, HasIcon
         return match ($this) {
             self::DEVELOPER => 'info',
             self::ADMIN => 'danger',
-            self::CLIENT => 'success',
+            self::HR => 'success',
         };
     }
 
@@ -35,7 +35,7 @@ enum UserType: string implements HasLabel, HasColor, HasIcon
         return match ($this) {
             self::DEVELOPER => 'heroicon-o-code-bracket',
             self::ADMIN => 'heroicon-o-shield-check',
-            self::CLIENT => 'heroicon-o-user',
+            self::HR => 'heroicon-o-briefcase',
         };
     }
 }

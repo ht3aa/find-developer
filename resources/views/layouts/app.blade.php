@@ -120,6 +120,9 @@
                     <a href="{{ route('about') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         About Us
                     </a>
+                    <a href="{{ route('services') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Services
+                    </a>
                     <a href="{{ route('jobs') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Jobs
                     </a>
