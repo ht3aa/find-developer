@@ -58,7 +58,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     public array $availability_type = [];
 
     #[Url]
-    public bool $availableOnly = true;
+    public ?int $availableOnly = null;
 
 
     public function form(Schema $schema): Schema
@@ -152,10 +152,14 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->afterStateUpdated(fn() => $this->resetPage()),
                             ]),
 
-                        Checkbox::make('availableOnly')
+                        Select::make('availableOnly')
                             ->label('Available only')
-                            ->default(true)
+                            ->options([
+                                1 => 'Available only',
+                                0 => 'Unavailable',
+                            ])
                             ->live()
+                            ->placeholder('All')
                             ->afterStateUpdated(fn() => $this->resetPage()),
                     ])
             ]);
@@ -230,7 +234,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                     }
                 });
             })
-            ->where('is_available', $filters['availableOnly']);
+            ->when(!empty($filters['availableOnly']), function ($query) use ($filters) {
+                $query->where('is_available', $filters['availableOnly']);
+            });
 
         // Get developers by subscription plan
         $premiumDevelopers = (clone $baseQuery)
