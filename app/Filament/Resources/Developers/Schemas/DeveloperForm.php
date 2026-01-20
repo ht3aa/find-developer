@@ -138,6 +138,14 @@ class DeveloperForm
                             ->searchable()
                             ->preload()
                             ->columnSpanFull(),
+
+                        Select::make('badges')
+                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            ->helperText('Select badges earned by this developer'),
                     ])
                     ->columns(2),
 

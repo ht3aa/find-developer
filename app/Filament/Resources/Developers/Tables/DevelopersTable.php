@@ -114,6 +114,13 @@ class DevelopersTable
                     ->sortable()
                     ->toggleable(),
 
+                TextColumn::make('badges.name')
+                    ->label('Badges')
+                    ->badge()
+                    ->color('success')
+                    ->searchable()
+                    ->toggleable(),
+
                 ToggleColumn::make('recommended_by_us')
                     ->label('Recommended By Us')
                     ->sortable(),

@@ -107,6 +107,12 @@ class Developer extends Model
         return $this->hasMany(UserAppointment::class);
     }
 
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'developer_badge')
+            ->withTimestamps();
+    }
+
     public function scopeAvailable($query)
     {
         return $query->where('is_available', true);

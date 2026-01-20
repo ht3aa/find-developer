@@ -11,7 +11,7 @@ class Services extends Component
 {
     public function render()
     {
-        $services = UserService::with(['user', 'appointments'])
+        $services = UserService::with(['user', 'appointments', 'badges'])
             ->withoutGlobalScopes([UserScope::class])
             ->withCount('appointments')
             ->whereHas('user', function ($query) {

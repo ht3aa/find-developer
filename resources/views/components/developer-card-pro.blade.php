@@ -8,6 +8,22 @@
         Pro
     </div>
 
+    <!-- Badges at the top -->
+    @if($developer->badges->count() > 0)
+        <div class="developer-badges-top">
+            @foreach($developer->badges as $badge)
+                <a href="{{ route('badges') }}" class="developer-badge-top-item">
+                    <div class="badge-icon-wrapper-small" @if($badge->color) style="background: {{ $badge->color }}20; border-color: {{ $badge->color }}40;" @endif>
+                        <svg class="badge-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" @if($badge->color) style="color: {{ $badge->color }};" @endif>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <span class="developer-badge-name-small" @if($badge->color) style="color: {{ $badge->color }};" @endif>{{ $badge->name }}</span>
+                </a>
+            @endforeach
+        </div>
+    @endif
+
     <!-- Header for pro -->
     <div class="developer-header">
         <h3 class="developer-name">{{ $developer->name }}</h3>
@@ -157,6 +173,7 @@
             @endif
         </div>
     @endif
+
 
     <!-- Links for pro -->
     <div class="developer-links">

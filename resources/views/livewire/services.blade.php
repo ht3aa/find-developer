@@ -41,6 +41,22 @@
                         <div class="service-list">
                             @foreach($userServices as $service)
                                 <div class="service-card">
+                                    <!-- Badges at the top -->
+                                    @if($service->badges->isNotEmpty())
+                                        <div class="service-badges-top">
+                                            @foreach($service->badges as $badge)
+                                                <a href="{{ route('badges') }}" class="service-badge-top-item">
+                                                    <div class="badge-icon-wrapper-small" @if($badge->color) style="background: {{ $badge->color }}20; border-color: {{ $badge->color }}40;" @endif>
+                                                        <svg class="badge-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" @if($badge->color) style="color: {{ $badge->color }};" @endif>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <span class="service-badge-name-small" @if($badge->color) style="color: {{ $badge->color }};" @endif>{{ $badge->name }}</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
                                     <div class="service-card-header">
                                         <h4 class="service-name">{{ $service->name }}</h4>
                                         @if($service->is_active)
@@ -49,7 +65,7 @@
                                             <span class="service-badge service-badge-inactive">Inactive</span>
                                         @endif
                                     </div>
-                                    
+
                                     @if($service->description)
                                         <div x-data="{ expanded: false }" class="service-description-container">
                                             @php

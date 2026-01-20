@@ -123,6 +123,9 @@
                     <a href="{{ route('services') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Services
                     </a>
+                    <a href="{{ route('badges') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Badges
+                    </a>
                     <a href="{{ route('jobs') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Jobs
                     </a>

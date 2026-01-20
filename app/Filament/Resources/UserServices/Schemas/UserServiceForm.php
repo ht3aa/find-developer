@@ -73,6 +73,16 @@ class UserServiceForm
                             ->nullable()
                             ->helperText('Leave empty if duration is not applicable')
                             ->minValue(0),
+
+                        Select::make('badges')
+                            ->label('Earnable Badges')
+                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                            ->searchable()
+                            ->preload()
+                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->multiple()
+                            ->nullable()
+                            ->helperText('Select one or more badges that developers can earn by purchasing this service'),
                     ])
                     ->columns(2),
             ]);

@@ -50,6 +50,13 @@ class UserServicesTable
                     ->sortable()
                     ->toggleable(),
 
+                TextColumn::make('badges.name')
+                    ->label('Earnable Badges')
+                    ->badge()
+                    ->color('success')
+                    ->searchable()
+                    ->toggleable(),
+
                 TextColumn::make('appointments_count')
                     ->label('Appointments')
                     ->counts('appointments')

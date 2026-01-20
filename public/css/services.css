@@ -191,6 +191,127 @@
     border: 1px solid rgba(107, 114, 128, 0.2);
 }
 
+/* Service Badges at Top */
+.service-badges-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.service-badge-top-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+    transition: all var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+}
+
+.service-badge-top-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.service-badge-name-small {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+html.dark .service-badge-top-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--border-primary);
+}
+
+html.dark .service-badge-top-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.service-badges-container {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 2px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--color-primary);
+}
+
+.service-badges-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.service-badge-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.service-badges-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.service-badges-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.service-badge-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    transition: all var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+}
+
+.service-badge-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateX(2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.service-badge-name {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+html.dark .service-badge-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+html.dark .service-badge-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
 .service-description-container {
     margin-bottom: var(--spacing-lg);
 }
@@ -357,3 +478,4 @@ html.dark .service-card:hover {
     background: var(--bg-tertiary);
     border-color: var(--color-primary);
 }
+
