@@ -117,6 +117,25 @@
     margin: 0;
 }
 
+.badge-description-read-more {
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    padding: var(--spacing-xs) 0;
+    margin-top: var(--spacing-xs);
+    transition: all var(--transition-base);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.badge-description-read-more:hover {
+    color: var(--color-secondary);
+    text-decoration: none;
+}
+
 .badge-card-footer {
     padding-top: var(--spacing-md);
     border-top: 1px solid var(--border-primary);
@@ -147,57 +166,6 @@
     line-height: 16px;
     font-size: 10px;
     font-weight: 700;
-}
-
-/* Show More Button */
-.badges-show-more-container {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--spacing-2xl);
-    padding-top: var(--spacing-xl);
-}
-
-.badges-show-more-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-xl);
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    color: white;
-    border: none;
-    border-radius: var(--radius-full);
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-md);
-}
-
-.badges-show-more-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.badges-show-more-btn:active {
-    transform: translateY(0);
-}
-
-.badges-show-more-icon {
-    width: 20px;
-    height: 20px;
-    transition: transform var(--transition-base);
-}
-
-.badges-show-more-icon.rotate-180 {
-    transform: rotate(180deg);
-}
-
-html.dark .badges-show-more-btn {
-    box-shadow: var(--shadow-lg);
-}
-
-html.dark .badges-show-more-btn:hover {
-    box-shadow: var(--shadow-xl);
 }
 
 /* Empty State */

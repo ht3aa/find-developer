@@ -1,4 +1,4 @@
-<div class="badges-container" x-data="{ showAll: false, initialCount: 9 }">
+<div class="badges-container">
     <div class="badges-header">
         <h1 class="badges-title">Developer Badges</h1>
         <p class="badges-subtitle">Earn badges to showcase your achievements and stand out to potential clients</p>
@@ -14,17 +14,8 @@
         </div>
     @else
         <div class="badges-grid">
-            @foreach($badges as $index => $badge)
-                <div 
-                    class="badge-card"
-                    x-show="showAll || {{ $index }} < initialCount"
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 transform scale-95"
-                    x-transition:enter-end="opacity-100 transform scale-100"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 transform scale-100"
-                    x-transition:leave-end="opacity-0 transform scale-95"
-                >
+            @foreach($badges as $badge)
+                <div class="badge-card">
                     <div class="badge-card-header">
                         <div class="badge-icon-wrapper" @if($badge->color) style="background: {{ $badge->color }}20; border-color: {{ $badge->color }}40;" @endif>
                             <svg class="badge-icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24" @if($badge->color) style="color: {{ $badge->color }};" @endif>
@@ -37,9 +28,26 @@
                     </div>
                     <div class="badge-card-body">
                         @if($badge->description)
-                            <div class="badge-description">
+                            <div class="badge-description" x-data="{ expanded: false }">
                                 <h3 class="badge-description-title">Benefits:</h3>
-                                <p class="badge-description-text">{{ $badge->description }}</p>
+                                @php
+                                    $descLength = strlen($badge->description);
+                                    $maxLength = 150;
+                                    $truncatedDesc = $descLength > $maxLength ? substr($badge->description, 0, $maxLength) . '...' : $badge->description;
+                                @endphp
+                                <p class="badge-description-text">
+                                    <span x-show="!expanded">{{ $truncatedDesc }}</span>
+                                    <span x-show="expanded" x-cloak>{{ $badge->description }}</span>
+                                </p>
+                                @if($descLength > $maxLength)
+                                    <button 
+                                        @click="expanded = !expanded"
+                                        class="badge-description-read-more"
+                                    >
+                                        <span x-show="!expanded">Read more</span>
+                                        <span x-show="expanded" x-cloak>Show less</span>
+                                    </button>
+                                @endif
                             </div>
                         @else
                             <div class="badge-description">
@@ -53,26 +61,5 @@
                 </div>
             @endforeach
         </div>
-
-        @if($badges->count() > 9)
-            <div class="badges-show-more-container">
-                <button 
-                    @click="showAll = !showAll"
-                    class="badges-show-more-btn"
-                >
-                    <span x-show="!showAll">Show More Badges ({{ $badges->count() - 9 }} more)</span>
-                    <span x-show="showAll" x-cloak>Show Less</span>
-                    <svg 
-                        class="badges-show-more-icon" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                        :class="{ 'rotate-180': showAll }"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-            </div>
-        @endif
     @endif
 </div>
