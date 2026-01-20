@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Developers\Tables;
 
 use App\Enums\DeveloperStatus;
 use App\Enums\AvailabilityType;
+use App\Enums\UserType;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -11,7 +13,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,6 +25,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules\Unique;
+use Spatie\Permission\Models\Role;
 
 class DevelopersTable
 {
@@ -172,6 +179,85 @@ class DevelopersTable
             ])
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('create_user')
+                        ->label('Create User')
+                        ->icon('heroicon-o-user-plus')
+                        ->color('primary')
+                        ->visible(fn($record) => !$record->user_id)
+                        ->schema([
+                            TextInput::make('name')
+                                ->required()
+                                ->maxLength(255)
+                                ->default(fn($record) => $record->name),
+
+                            TextInput::make('email')
+                                ->email()
+                                ->required()
+                                ->rules([
+                                    new Unique(User::class, 'email')
+                                ])
+                                ->maxLength(255)
+                                ->default(fn($record) => $record->email),
+
+                            TextInput::make('linkedin_url')
+                                ->label('LinkedIn URL')
+                                ->url()
+                                ->nullable()
+                                ->maxLength(255)
+                                ->prefixIcon('heroicon-o-link')
+                                ->helperText('Enter the full LinkedIn profile URL (e.g., https://linkedin.com/in/username)')
+                                ->default(fn($record) => $record->linkedin_url),
+
+                            Select::make('user_type')
+                                ->label('User Type')
+                                ->options(UserType::class)
+                                ->default(UserType::DEVELOPER)
+                                ->required()
+                                ->searchable(),
+
+                            TextInput::make('password')
+                                ->password()
+                                ->rules([Password::default()])
+                                ->required()
+                                ->dehydrateStateUsing(fn($state) => bcrypt($state)),
+
+                            Toggle::make('can_access_admin_panel')
+                                ->label('Can Access Admin Panel')
+                                ->default(false)
+                                ->required(),
+
+                            Select::make('role')
+                                ->label('Role')
+                                ->options(fn() => Role::all()->pluck('name', 'name'))
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function ($record, array $data) {
+                            $user = User::create([
+                                'name' => $data['name'],
+                                'email' => $data['email'],
+                                'password' => $data['password'],
+                                'linkedin_url' => $data['linkedin_url'] ?? null,
+                                'user_type' => $data['user_type'],
+                                'can_access_admin_panel' => $data['can_access_admin_panel'],
+                            ]);
+
+                            // Assign role
+                            if (!empty($data['role'])) {
+                                $user->assignRole($data['role']);
+                            }
+
+                            // Link user to developer
+                            $record->update(['user_id' => $user->id]);
+
+                            Notification::make()
+                                ->title('User Created')
+                                ->body("User account has been created for {$record->name}.")
+                                ->success()
+                                ->send();
+                        }),
+
                     Action::make('approve')
                         ->label('Approve')
                         ->icon('heroicon-o-check-circle')
