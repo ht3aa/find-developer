@@ -703,9 +703,10 @@ body {
 @media (max-width: 768px) {
     .premium-column-work {
         border-right: none;
-        border-bottom: 1px solid var(--color-gray-200);
+        border-top: 1px solid var(--color-gray-200);
         padding-right: 0;
-        padding-bottom: var(--spacing-lg);
+        padding-top: var(--spacing-lg);
+        order: 2; /* Portfolio & Work column appears second on small screens */
     }
 }
 
@@ -716,7 +717,8 @@ body {
 @media (max-width: 768px) {
     .premium-column-content {
         padding-left: 0;
-        padding-top: var(--spacing-lg);
+        padding-top: 0;
+        order: 1; /* Information column appears first on small screens */
     }
 }
 
