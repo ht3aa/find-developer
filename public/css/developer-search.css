@@ -2814,9 +2814,10 @@ html.dark .dark-mode-icon.moon-icon {
 @media (max-width: 768px) {
     .recommended-column-work {
         border-right: none;
-        border-bottom: 1px solid var(--border-primary);
+        border-top: 1px solid var(--border-primary);
         padding-right: 0;
-        padding-bottom: var(--spacing-lg);
+        padding-top: var(--spacing-lg);
+        order: 2; /* Portfolio & Work column appears second on small screens */
     }
 }
 
@@ -2827,7 +2828,8 @@ html.dark .dark-mode-icon.moon-icon {
 @media (max-width: 768px) {
     .recommended-column-content {
         padding-left: 0;
-        padding-top: var(--spacing-lg);
+        padding-top: 0;
+        order: 1; /* Information column appears first on small screens */
     }
 }
 
