@@ -39,6 +39,10 @@ Route::get('/badges', function () {
     return view('badges');
 })->name('badges');
 
+Route::get('/charts', function () {
+    return view('charts');
+})->name('charts');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {

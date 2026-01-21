@@ -128,6 +128,9 @@
                     <a href="{{ route('services') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Services
                     </a>
+                    <a href="{{ route('charts') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Charts
+                    </a>
                     <a href="{{ route('jobs') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Jobs
                     </a>

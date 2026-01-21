@@ -98,4 +98,33 @@ enum WorldGovernorate: string implements HasLabel
             self::YEMEN_TAIZ => 'Taiz (تعز)',
         };
     }
+
+    /**
+     * Get all Iraqi governorates
+     *
+     * @return array<WorldGovernorate>
+     */
+    public static function getIraqLocations(): array
+    {
+        return [
+            self::BAGHDAD,
+            self::BASRA,
+            self::NINEVEH,
+            self::ERBIL,
+            self::NAJAF,
+            self::KARBALA,
+            self::BABYLON,
+            self::WASIT,
+            self::QADISIYYA,
+            self::MUTHANNA,
+            self::MESAN,
+            self::DHI_QAR,
+            self::SALAH_AL_DIN,
+            self::KIRKUK,
+            self::DIYALA,
+            self::ANBAR,
+            self::SULAYMANIYAH,
+            self::DUHOK,
+        ];
+    }
 }
