@@ -24,5 +24,9 @@
         <div class="chart-item">
             @livewire(\App\Filament\Widgets\DevelopersByExperienceChart::class)
         </div>
+
+        <div class="chart-item">
+            @livewire(\App\Filament\Widgets\AverageSalaryByExperienceChart::class)
+        </div>
     </div>
 </div>
