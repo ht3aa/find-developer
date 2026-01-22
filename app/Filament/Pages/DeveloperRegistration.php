@@ -139,6 +139,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->columns(2),
 
                 Section::make('Links (Optional)')
+                    ->description('The links are important for verification process of getting your login credentials. you can leave them empty if you don\'t have them.')
                     ->schema([
                         TextInput::make('portfolio_url')
                             ->url()

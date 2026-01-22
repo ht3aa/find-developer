@@ -18,7 +18,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div class="info-content">
-                <p class="info-title">Why we don't have register page?</p>
+                <p class="info-title">Why you need to contact us to get your login credentials?</p>
                 <p class="info-text">
                     To ensure our platform remains trustworthy and delivers accurate, high-quality results, we carefully verify all developers before granting other actions privileges. This verification process helps us maintain the integrity of our community and ensures that actions come from verified, credible sources.
                 </p>
