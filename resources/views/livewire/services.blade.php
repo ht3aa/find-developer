@@ -67,17 +67,22 @@
                                     </div>
 
                                     @if($service->description)
+                                        @php
+                                            $descFull = $service->description;
+                                            $descPlain = strip_tags($descFull);
+                                            $descLong = strlen($descPlain) > 150;
+                                        @endphp
                                         <div x-data="{ expanded: false }" class="service-description-container">
-                                            @php
-                                                $descriptionLength = strlen($service->description);
-                                                $maxLength = 150;
-                                                $truncatedDescription = $descriptionLength > $maxLength ? substr($service->description, 0, $maxLength) . '...' : $service->description;
-                                            @endphp
-                                            <p class="service-description">
-                                                <span x-show="!expanded">{{ $truncatedDescription }}</span>
-                                                <span x-show="expanded" x-cloak>{{ $service->description }}</span>
-                                            </p>
-                                            @if($descriptionLength > $maxLength)
+                                            <div 
+                                                class="service-description"
+                                                :class="{ 'service-description-collapsed': !expanded }"
+                                                x-transition:enter="transition ease-out duration-200"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                            >
+                                                {!! $descFull !!}
+                                            </div>
+                                            @if($descLong)
                                                 <button 
                                                     @click="expanded = !expanded"
                                                     class="service-description-read-more"

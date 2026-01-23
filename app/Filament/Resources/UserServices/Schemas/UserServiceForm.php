@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -45,9 +46,16 @@ class UserServiceForm
                             ->readonly()
                             ->helperText('Leave empty to auto-generate from name'),
 
-                        Textarea::make('description')
-                            ->rows(3)
-                            ->columnSpanFull(),
+                        RichEditor::make('description')
+                            ->label('Description')
+                            ->columnSpanFull()
+                            ->placeholder('Describe the service...')
+                            ->toolbarButtons([
+                                ['bold', 'italic', 'underline'],
+                                ['bulletList', 'orderedList'],
+                                ['link'],
+                                ['undo', 'redo'],
+                            ]),
 
                         ExpectedPriceField::make('price')
                             ->nullable()

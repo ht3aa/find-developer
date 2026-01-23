@@ -323,6 +323,60 @@ html.dark .service-badge-item:hover {
     margin-bottom: var(--spacing-xs);
 }
 
+.service-description-collapsed {
+    max-height: 4.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.service-description-collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2rem;
+    background: linear-gradient(to bottom, transparent, var(--bg-primary, #ffffff));
+    pointer-events: none;
+}
+
+.service-description :deep(ul),
+.service-description :deep(ol) {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.service-description :deep(li) {
+    margin: 0.25rem 0;
+}
+
+.service-description :deep(p) {
+    margin: 0.5rem 0;
+}
+
+.service-description :deep(p:first-child) {
+    margin-top: 0;
+}
+
+.service-description :deep(p:last-child) {
+    margin-bottom: 0;
+}
+
+.service-description :deep(strong),
+.service-description :deep(b) {
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+}
+
+.service-description :deep(a) {
+    color: var(--color-primary, #6366f1);
+    text-decoration: underline;
+}
+
+.service-description :deep(a:hover) {
+    color: var(--color-primary-dark, #4f46e5);
+}
+
 .service-description-read-more {
     background: transparent;
     border: none;
