@@ -22,6 +22,7 @@ class ExperienceTask extends Model
         'title',
         'slug',
         'description',
+        'requirements',
         'required_developers_count',
         'status',
         'price',

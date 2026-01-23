@@ -26,6 +26,11 @@ class ExperienceTasksTable
                     ->searchable()
                     ->toggleable(),
 
+                TextColumn::make('requirements')
+                    ->limit(50)
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('required_developers_count')
                     ->label('Required')
                     ->sortable(),

@@ -9,6 +9,7 @@ use App\Filament\Customs\ExpectedPriceField;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -37,6 +38,18 @@ class ExperienceTaskForm
                             ->required()
                             ->rows(5)
                             ->columnSpanFull(),
+
+                        RichEditor::make('requirements')
+                            ->label('Requirements')
+                            ->columnSpanFull()
+                            ->placeholder('List the requirements for this task...')
+                            ->helperText('Optional: Specify any requirements or prerequisites for developers')
+                            ->toolbarButtons([
+                                ['bold', 'italic', 'underline'],
+                                ['bulletList', 'orderedList'],
+                                ['link'],
+                                ['undo', 'redo'],
+                            ]),
 
                         TextInput::make('required_developers_count')
                             ->label('Required Developers')

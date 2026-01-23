@@ -32,7 +32,8 @@ class ExperienceTasksList extends Component
             ->when($this->search, function ($q) {
                 $q->where(function ($q) {
                     $q->where('title', 'like', '%' . $this->search . '%')
-                        ->orWhere('description', 'like', '%' . $this->search . '%');
+                        ->orWhere('description', 'like', '%' . $this->search . '%')
+                        ->orWhere('requirements', 'like', '%' . $this->search . '%');
                 });
             })
             ->orderBy('created_at', 'desc');

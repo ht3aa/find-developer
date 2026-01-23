@@ -19,7 +19,7 @@
             <input
                 type="text"
                 wire:model.live.debounce.300ms="search"
-                placeholder="Search by title or description..."
+                placeholder="Search by title, description, or requirements..."
                 class="search-input"
             />
         </div>
@@ -94,6 +94,27 @@
                                 <button type="button" @click="expanded = !expanded" class="xp-task-read-more" x-text="expanded ? 'Read less' : 'Read more'"></button>
                             @endif
                         </div>
+
+                        @if($task->requirements)
+                            @php
+                                $reqFull = $task->requirements;
+                                $reqPlain = strip_tags($reqFull);
+                                $reqLong = strlen($reqPlain) > 150;
+                            @endphp
+                            <div class="xp-task-requirements" x-data="{ expanded: false }">
+                                <strong class="xp-task-requirements-title">Requirements:</strong>
+                                <div 
+                                    class="xp-task-requirements-text"
+                                    :class="{ 'xp-task-requirements-collapsed': !expanded }"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                >
+                                    {!! $reqFull !!}
+                                </div>
+                                <button type="button" @click="expanded = !expanded" class="xp-task-read-more" x-text="expanded ? 'Read less' : 'Read more'"></button>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="xp-task-card-footer">

@@ -132,6 +132,81 @@ html.dark .xp-task-badge-in_progress {
     text-decoration: underline;
 }
 
+.xp-task-requirements {
+    margin-top: var(--spacing-md, 1rem);
+    padding-top: var(--spacing-md, 1rem);
+    border-top: 1px solid var(--border-primary, #e5e7eb);
+}
+
+.xp-task-requirements-title {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #111827);
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+}
+
+.xp-task-requirements-text {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary, #4b5563);
+    line-height: 1.6;
+    font-size: var(--font-size-sm, 0.875rem);
+}
+
+.xp-task-requirements-collapsed {
+    max-height: 4.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.xp-task-requirements-collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2rem;
+    background: linear-gradient(to bottom, transparent, var(--bg-primary, #ffffff));
+    pointer-events: none;
+}
+
+.xp-task-requirements-text :deep(ul),
+.xp-task-requirements-text :deep(ol) {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.xp-task-requirements-text :deep(li) {
+    margin: 0.25rem 0;
+}
+
+.xp-task-requirements-text :deep(p) {
+    margin: 0.5rem 0;
+}
+
+.xp-task-requirements-text :deep(p:first-child) {
+    margin-top: 0;
+}
+
+.xp-task-requirements-text :deep(p:last-child) {
+    margin-bottom: 0;
+}
+
+.xp-task-requirements-text :deep(strong),
+.xp-task-requirements-text :deep(b) {
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+}
+
+.xp-task-requirements-text :deep(a) {
+    color: var(--color-primary, #6366f1);
+    text-decoration: underline;
+}
+
+.xp-task-requirements-text :deep(a:hover) {
+    color: var(--color-primary-dark, #4f46e5);
+}
+
 .xp-task-card-footer {
     display: flex;
     justify-content: space-between;
