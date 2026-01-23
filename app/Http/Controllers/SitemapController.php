@@ -27,6 +27,9 @@ class SitemapController extends Controller
         // Register page
         $sitemap .= $this->urlElement(route('register'), now()->subDays(1), '0.8', 'weekly');
 
+        // Get Experience page
+        $sitemap .= $this->urlElement(route('experience-tasks'), now()->subDays(1), '0.8', 'weekly');
+
         $sitemap .= '</urlset>';
 
         return response($sitemap, 200)

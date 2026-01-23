@@ -131,8 +131,8 @@
                     <a href="{{ route('charts') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Charts
                     </a>
-                    <a href="{{ route('jobs') }}" class="navbar-link" @click="mobileMenuOpen = false">
-                        Jobs
+                    <a href="{{ route('experience-tasks') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Get Experience
                     </a>
                     <a href="{{ route('recommended') }}" class="navbar-link navbar-link-recommended" @click="mobileMenuOpen = false">
                         <svg class="navbar-star-icon" fill="currentColor" viewBox="0 0 20 20">

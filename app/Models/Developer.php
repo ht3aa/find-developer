@@ -123,6 +123,12 @@ class Developer extends Model
         return $this->hasMany(DeveloperRecommendation::class, 'recommended_id');
     }
 
+    public function experienceTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')
+            ->withTimestamps();
+    }
+
     public function recommendedDevelopers(): BelongsToMany
     {
         return $this->belongsToMany(

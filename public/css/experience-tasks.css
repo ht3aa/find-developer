@@ -1,0 +1,173 @@
+/* ============================================
+   Experience Tasks (Get Experience) - UI
+   Complements developer-search.css
+   ============================================ */
+
+/* Header note (below subtitle) */
+.modern-subtitle-note {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-tertiary, #6b7280);
+    margin: 0 0 var(--spacing-xl, .5rem);
+}
+
+/* Tasks grid & cards */
+.xp-tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-lg, 1.5rem);
+    margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.xp-task-card {
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-primary, #e5e7eb);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--spacing-lg, 1.5rem);
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+    transition: all var(--transition-base, 200ms ease-in-out);
+}
+
+.xp-task-card:hover {
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06));
+    transform: translateY(-2px);
+}
+
+.xp-task-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md, 1rem);
+    gap: var(--spacing-md, 1rem);
+}
+
+.xp-task-card-title {
+    font-size: var(--font-size-xl, 1.25rem);
+    font-weight: 600;
+    color: var(--text-primary, #111827);
+    margin: 0;
+    flex: 1;
+    line-height: 1.4;
+}
+
+.xp-task-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm, 0.375rem);
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.xp-task-badge-open {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+}
+
+html.dark .xp-task-badge-open {
+    background: rgba(16, 185, 129, 0.25);
+    color: #34d399;
+}
+
+.xp-task-badge-in_progress {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+html.dark .xp-task-badge-in_progress {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+}
+
+.xp-task-card-body {
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.xp-task-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.xp-task-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--text-secondary, #4b5563);
+    font-size: var(--font-size-sm, 0.875rem);
+}
+
+.xp-task-info-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: var(--text-tertiary, #6b7280);
+}
+
+.xp-task-description {
+    color: var(--text-primary, #111827);
+    line-height: 1.6;
+    font-size: 0.9375rem;
+}
+
+.xp-task-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-md, 1rem);
+    border-top: 1px solid var(--border-primary, #e5e7eb);
+    gap: var(--spacing-md, 1rem);
+}
+
+.xp-task-email-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--color-primary, #6366f1) 0%, var(--color-secondary, #8b5cf6) 100%);
+    border: none;
+    border-radius: var(--radius-md, 0.5rem);
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+    transition: all var(--transition-base, 200ms ease-in-out);
+}
+
+.xp-task-email-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.4);
+}
+
+.xp-task-email-btn:active {
+    transform: translateY(0);
+}
+
+.xp-task-email-btn-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.xp-task-date {
+    color: var(--text-tertiary, #6b7280);
+    font-size: var(--font-size-sm, 0.875rem);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .xp-tasks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xp-task-card-header {
+        flex-direction: column;
+    }
+
+    .xp-task-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -28,6 +28,11 @@ class SeoHelper
         $default = self::getDefaultSeo();
 
         $pages = [
+            'experience-tasks' => [
+                'title' => 'Get Experience - FindDeveloper | Build Experience with Small Tasks',
+                'description' => 'Browse small tasks to build your experience, earn XP, and grow as a developer.',
+                'keywords' => 'get experience, developer tasks, build experience, earn XP, practice projects',
+            ],
             'home' => [
                 'title' => 'FindDeveloper - Find Your Perfect Developer | Developer Search Platform',
                 'description' => 'Search and discover talented developers in Iraq. Filter by skills, experience, location, and job title. Connect with developers for your projects.',

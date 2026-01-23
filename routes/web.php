@@ -19,6 +19,10 @@ Route::get('/register', DeveloperRegistration::class)->name('register');
 
 Route::get('/jobs', [JobsController::class, 'index'])->name('jobs');
 
+Route::get('/get-experience', function () {
+    return view('experience-tasks');
+})->name('experience-tasks');
+
 Route::get('/recommended', [RecommendedDevelopersController::class, 'index'])->name('recommended');
 
 Route::get('/post-job', CompanyJobRegistration::class)->name('post-job');
