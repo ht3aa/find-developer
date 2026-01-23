@@ -31,6 +31,10 @@ class ExperienceTasksTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('rewards')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('required_developers_count')
                     ->label('Required')
                     ->sortable(),

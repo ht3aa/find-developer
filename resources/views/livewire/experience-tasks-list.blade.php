@@ -19,7 +19,7 @@
             <input
                 type="text"
                 wire:model.live.debounce.300ms="search"
-                placeholder="Search by title, description, or requirements..."
+                placeholder="Search by title, description, requirements, or rewards..."
                 class="search-input"
             />
         </div>
@@ -57,7 +57,7 @@
                                     <svg class="xp-task-info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
-                                    <span>{{ $task->experience_gain->getLabel() }} XP per developer</span>
+                                    <span>{{ $task->experience_gain->getLabel() }} XP </span>
                                 </div>
                             @endif
 
@@ -113,6 +113,13 @@
                                     {!! $reqFull !!}
                                 </div>
                                 <button type="button" @click="expanded = !expanded" class="xp-task-read-more" x-text="expanded ? 'Read less' : 'Read more'"></button>
+                            </div>
+                        @endif
+
+                        @if($task->rewards)
+                            <div class="xp-task-rewards">
+                                <strong class="xp-task-rewards-title">Rewards:</strong>
+                                <span class="xp-task-rewards-text">{{ $task->rewards }}</span>
                             </div>
                         @endif
                     </div>

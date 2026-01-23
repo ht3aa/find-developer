@@ -51,6 +51,13 @@ class ExperienceTaskForm
                                 ['undo', 'redo'],
                             ]),
 
+                        TextInput::make('rewards')
+                            ->label('Rewards')
+                            ->maxLength(255)
+                            ->columnSpanFull()
+                            ->placeholder('e.g., Certificate, Badge, Recognition...')
+                            ->helperText('Optional: Specify any rewards or benefits for completing this task'),
+
                         TextInput::make('required_developers_count')
                             ->label('Required Developers')
                             ->numeric()

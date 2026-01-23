@@ -207,6 +207,26 @@ html.dark .xp-task-badge-in_progress {
     color: var(--color-primary-dark, #4f46e5);
 }
 
+.xp-task-rewards {
+    margin-top: var(--spacing-md, 1rem);
+    padding-top: var(--spacing-md, 1rem);
+    border-top: 1px solid var(--border-primary, #e5e7eb);
+}
+
+.xp-task-rewards-title {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #111827);
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+}
+
+.xp-task-rewards-text {
+    color: var(--text-secondary, #4b5563);
+    line-height: 1.6;
+    font-size: var(--font-size-sm, 0.875rem);
+}
+
 .xp-task-card-footer {
     display: flex;
     justify-content: space-between;
