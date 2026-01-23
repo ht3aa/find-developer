@@ -183,7 +183,7 @@
         </nav>
 
         <!-- Developer Promotion Banner -->
-        <div class="developer-promotion-banner">
+        {{-- <div class="developer-promotion-banner">
             <div class="developer-promotion-banner-container">
                 <div class="developer-promotion-banner-content">
                     <div class="developer-promotion-banner-text-wrapper">
@@ -206,7 +206,7 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         @if($currentRoute === 'home')
             <!-- Info Banner -->
