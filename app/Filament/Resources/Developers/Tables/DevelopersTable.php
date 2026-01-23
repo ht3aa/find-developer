@@ -303,6 +303,25 @@ class DevelopersTable
             ])
             ->bulkActions([
                 BulkActionGroup::make([
+                    BulkAction::make('copy_emails')
+                        ->label('Copy Emails')
+                        ->icon('heroicon-o-clipboard-document')
+                        ->color('gray')
+                        ->modalHeading('Copy Emails')
+                        ->modalDescription('Click the copy button next to the field to copy all selected developers\' emails to your clipboard.')
+                        ->modalSubmitAction(false)
+                        ->schema([
+                            TextInput::make('emails')
+                                ->label('Developer emails')
+                                ->readOnly()
+                                ->copyable(copyMessage: 'Emails copied to clipboard')
+                                ->columnSpanFull(),
+                        ])
+                        ->fillForm(fn(Collection $records): array => [
+                            'emails' => $records->pluck('email')->filter()->implode(', '),
+                        ])
+                        ->action(fn() => null),
+
                     BulkAction::make('approve')
                         ->label('Approve Selected')
                         ->icon('heroicon-o-check-circle')
