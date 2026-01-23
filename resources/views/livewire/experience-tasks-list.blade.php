@@ -4,7 +4,7 @@
         <div class="header-content">
             <h1 class="modern-title">Get Experience</h1>
             <p class="modern-subtitle">Small tasks to build your experience and earn XP.</p>
-            <p class="modern-subtitle-note">Note: the price of the tasks is split between the developers. Also all the tasks will be supervised by the owner of the task and our team.</p>
+            <p class="modern-subtitle-note">Note: All the tasks will be supervised by the owner of the task and our team.</p>
         </div>
     </div>
 
