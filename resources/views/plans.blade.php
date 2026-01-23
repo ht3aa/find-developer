@@ -215,7 +215,7 @@
         <div class="pricing-section">
             <div class="pricing-header">
                 <h1 class="pricing-title">Developer Plans</h1>
-                <p class="pricing-subtitle">Choose Your Plan</p>
+                <p class="pricing-subtitle">Choose Your Plan (You should have good profile in order to get these subscriptions.)</p>
             </div>
 
             <div class="pricing-cards">

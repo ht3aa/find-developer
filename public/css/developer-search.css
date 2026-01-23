@@ -1922,10 +1922,16 @@ html.dark .dark-mode-icon.moon-icon {
 
 .developer-promotion-banner-text-wrapper {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-sm);
     flex: 1;
     min-width: 0;
+}
+
+.developer-promotion-banner-text-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .developer-promotion-banner-icon {
@@ -1950,6 +1956,14 @@ html.dark .dark-mode-icon.moon-icon {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.developer-promotion-banner-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary, #6b7280);
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 .developer-promotion-banner-button {

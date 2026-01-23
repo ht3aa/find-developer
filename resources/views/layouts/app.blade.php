@@ -190,9 +190,14 @@
                         <svg class="developer-promotion-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        <p class="developer-promotion-banner-text">
-                            To make your profile good and increase the chance to hire/getting work you can do it with only <strong>10,000 IQD</strong> 
-                        </p>
+                        <div class="developer-promotion-banner-text-block">
+                            <p class="developer-promotion-banner-text">
+                                To make your profile good and increase the chance to hire/getting work you can do it with only <strong>10,000 IQD</strong> 
+                            </p>
+                            <p class="developer-promotion-banner-note">
+                                You should have good profile in order to get this subscription.
+                            </p>
+                        </div>
                     </div>
                     <a href="mailto:ht3aa2001@gmail.com?subject=Developer%20Profile%20Improvement&body=Hello,%20I%20would%20like%20to%20improve%20my%20developer%20profile" 
                        target="_blank" 
