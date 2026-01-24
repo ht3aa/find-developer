@@ -97,6 +97,11 @@ return [
             'retry_after' => 60,
         ],
 
+        'mailtrap' => [
+            'transport' => 'mailtrap',
+            'secret' => env('MAILTRAP_SECRET'),
+        ],
+
     ],
 
     /*

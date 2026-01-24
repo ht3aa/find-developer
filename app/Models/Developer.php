@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Scopes\ApprovedScope;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -22,7 +23,7 @@ use Spatie\Activitylog\LogOptions;
 #[ScopedBy([ApprovedScope::class])]
 class Developer extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, Notifiable;
 
     protected $fillable = [
         'name',

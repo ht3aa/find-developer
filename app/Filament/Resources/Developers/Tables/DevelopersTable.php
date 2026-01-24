@@ -6,6 +6,8 @@ use App\Enums\DeveloperStatus;
 use App\Enums\AvailabilityType;
 use App\Enums\UserType;
 use App\Models\User;
+use App\Notifications\MailtrapNotification;
+use App\Notifications\MailtrapBulkNotification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -14,6 +16,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -297,6 +300,97 @@ class DevelopersTable
                                 ->send();
                         }),
 
+                    Action::make('send_email')
+                        ->label('Send Email')
+                        ->icon('heroicon-o-envelope')
+                        ->color('info')
+                        ->visible(fn($record) => !empty($record->email))
+                        ->schema([
+                            TextInput::make('subject')
+                                ->label('Subject')
+                                ->required()
+                                ->maxLength(255)
+                                ->default('Message from Find Developer'),
+
+                            Textarea::make('message')
+                                ->label('Message')
+                                ->required()
+                                ->rows(5)
+                                ->columnSpanFull(),
+
+                            TextInput::make('category')
+                                ->label('Category')
+                                ->maxLength(255)
+                                ->placeholder('Optional category for tracking')
+                                ->helperText('Optional: Add a category to track this email type'),
+                        ])
+                        ->action(function ($record, array $data) {
+                            try {
+                                $record->notify(new MailtrapNotification(
+                                    subject: $data['subject'],
+                                    message: $data['message'],
+                                    category: $data['category'] ?? 'Admin Message'
+                                ));
+
+                                Notification::make()
+                                    ->title('Email Sent')
+                                    ->body("Email has been sent to {$record->email}.")
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Email Failed')
+                                    ->body("Failed to send email: {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
+                    Action::make('send_credentials_email')
+                        ->label('Send User Credentials')
+                        ->icon('heroicon-o-key')
+                        ->color('success')
+                        ->visible(fn($record) => !empty($record->email))
+                        ->schema([
+                            TextInput::make('secret_url')
+                                ->label('Secret URL')
+                                ->required()
+                                ->url()
+                                ->maxLength(500)
+                                ->placeholder('https://example.com/reset-password?token=...')
+                                ->helperText('Enter the URL for user credentials (password reset or account activation link)'),
+                        ])
+                        ->action(function ($record, array $data) {
+                            try {
+                                $message = "Hello {$record->name}\n\n";
+                                $message .= "Thank you for the information. You have been accepted and this is your user credentials\n";
+                                $message .= $data['secret_url'] . "\n\n";
+                                $message .= "You can edit your information via admin dashboard\n";
+                                $message .= "www.find-developer.com/admin\n\n";
+                                $message .= "You can now also recommend other developers. Please use the recommendation feature only on the developers you well known\n\n";
+                                $message .= "Best Regards\n";
+                                $message .= "Hasan Tahseen an Admin in find-developer.com platform";
+
+                                $record->notify(new MailtrapNotification(
+                                    subject: 'User Credentials Created',
+                                    message: $message,
+                                    category: 'User Credentials'
+                                ));
+
+                                Notification::make()
+                                    ->title('Credentials Email Sent')
+                                    ->body("User credentials email has been sent to {$record->email}.")
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Email Failed')
+                                    ->body("Failed to send credentials email: {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),
@@ -321,6 +415,73 @@ class DevelopersTable
                             'emails' => $records->pluck('email')->filter()->implode(', '),
                         ])
                         ->action(fn() => null),
+
+                    BulkAction::make('send_bulk_email')
+                        ->label('Send Bulk Email')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->color('info')
+                        ->requiresConfirmation()
+                        ->modalHeading('Send Bulk Email')
+                        ->modalDescription(fn(Collection $records) => "Send an email to {$records->filter(fn($record) => !empty($record->email))->count()} developer(s) with email addresses.")
+                        ->schema([
+                            TextInput::make('subject')
+                                ->label('Subject')
+                                ->required()
+                                ->maxLength(255)
+                                ->default('Message from Find Developer'),
+
+                            Textarea::make('message')
+                                ->label('Message')
+                                ->required()
+                                ->rows(5)
+                                ->columnSpanFull(),
+
+                            TextInput::make('category')
+                                ->label('Category')
+                                ->maxLength(255)
+                                ->placeholder('Optional category for tracking')
+                                ->helperText('Optional: Add a category to track this email type'),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            // Filter records that have email addresses
+                            $developersWithEmail = $records->filter(fn($record) => !empty($record->email));
+                            
+                            if ($developersWithEmail->isEmpty()) {
+                                Notification::make()
+                                    ->title('No Emails Found')
+                                    ->body('None of the selected developers have email addresses.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            $emails = $developersWithEmail->pluck('email')->toArray();
+                            $count = count($emails);
+
+                            try {
+                                // Use the first developer as notifiable (emails come from notification message)
+                                $notifiable = $developersWithEmail->first();
+                                
+                                $notifiable->notify(new MailtrapBulkNotification(
+                                    emails: $emails,
+                                    subject: $data['subject'],
+                                    message: $data['message'],
+                                    category: $data['category'] ?? 'Bulk Email'
+                                ));
+
+                                Notification::make()
+                                    ->title('Bulk Email Sent')
+                                    ->body("Email has been sent to {$count} developer(s) via Mailtrap Bulk API.")
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Bulk Email Failed')
+                                    ->body("Failed to send bulk email: {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
 
                     BulkAction::make('approve')
                         ->label('Approve Selected')
