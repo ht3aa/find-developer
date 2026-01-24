@@ -170,6 +170,56 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         $this->reset();
     }
 
+    public function getActiveFiltersCount(): int
+    {
+        $count = 0;
+
+        // Count search filter
+        if (!empty($this->search)) {
+            $count++;
+        }
+
+        // Count array filters
+        if (!empty($this->jobTitles)) {
+            $count++;
+        }
+        if (!empty($this->skills)) {
+            $count++;
+        }
+        if (!empty($this->locations)) {
+            $count++;
+        }
+        if (!empty($this->availability_type)) {
+            $count++;
+        }
+
+        // Count experience filters
+        if ($this->minExperience > 0) {
+            $count++;
+        }
+        if ($this->maxExperience < 50) {
+            $count++;
+        }
+
+        // Count salary filters
+        if (!empty($this->expected_salary_from) && $this->expected_salary_from !== '0') {
+            $count++;
+        }
+        if (!empty($this->expected_salary_to) && $this->expected_salary_to !== '0') {
+            $count++;
+        }
+        if ($this->salary_currency !== null) {
+            $count++;
+        }
+
+        // Count availability filter
+        if ($this->availableOnly !== null) {
+            $count++;
+        }
+
+        return $count;
+    }
+
     public function render()
     {
         $filters = $this->all();
@@ -261,6 +311,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             'proDevelopers' => $proDevelopers,
             'freeDevelopers' => $freeDevelopers,
             'totalCount' => $totalCount,
+            'activeFiltersCount' => $this->getActiveFiltersCount(),
         ]);
     }
 }
