@@ -7,7 +7,6 @@ use App\Enums\AvailabilityType;
 use App\Enums\UserType;
 use App\Models\User;
 use App\Notifications\MailtrapNotification;
-use App\Notifications\MailtrapBulkNotification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -443,9 +442,8 @@ class DevelopersTable
                                 ->helperText('Optional: Add a category to track this email type'),
                         ])
                         ->action(function (Collection $records, array $data) {
-                            // Filter records that have email addresses
                             $developersWithEmail = $records->filter(fn($record) => !empty($record->email));
-                            
+
                             if ($developersWithEmail->isEmpty()) {
                                 Notification::make()
                                     ->title('No Emails Found')
@@ -455,23 +453,21 @@ class DevelopersTable
                                 return;
                             }
 
-                            $emails = $developersWithEmail->pluck('email')->toArray();
-                            $count = count($emails);
+                            $count = $developersWithEmail->count();
+                            $category = $data['category'] ?? 'Bulk Email';
 
                             try {
-                                // Use the first developer as notifiable (emails come from notification message)
-                                $notifiable = $developersWithEmail->first();
-                                
-                                $notifiable->notify(new MailtrapBulkNotification(
-                                    emails: $emails,
-                                    subject: $data['subject'],
-                                    message: $data['message'],
-                                    category: $data['category'] ?? 'Bulk Email'
-                                ));
+                                foreach ($developersWithEmail as $developer) {
+                                    $developer->notify(new MailtrapNotification(
+                                        subject: $data['subject'],
+                                        message: $data['message'],
+                                        category: $category
+                                    ));
+                                }
 
                                 Notification::make()
                                     ->title('Bulk Email Sent')
-                                    ->body("Email has been sent to {$count} developer(s) via Mailtrap Bulk API.")
+                                    ->body("Email has been sent to {$count} developer(s).")
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
