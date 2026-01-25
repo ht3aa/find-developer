@@ -104,6 +104,12 @@
             <span class="results-number">{{ $totalCount }}</span>
             <span class="results-label">developer{{ $totalCount !== 1 ? 's' : '' }}</span>
         </div>
+        <div class="results-order-info">
+            <svg class="order-info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="order-info-text">Results are ordered by number of recommendations</span>
+        </div>
     </div>
 
     <!-- Loading Indicator -->

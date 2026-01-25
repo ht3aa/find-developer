@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\RecommendationStatus;
 use App\Models\Developer;
 use App\Models\Scopes\DeveloperScope;
 use Livewire\Component;
@@ -24,8 +25,11 @@ class RecommendedDevelopers extends Component
                 $query->withoutGlobalScopes([DeveloperScope::class])
                     ->where('show_project', true);
             }])
+            ->withCount(['recommendationsReceived' => function ($query) {
+                $query->where('status', RecommendationStatus::APPROVED);
+            }])
             ->recommended()
-            ->orderBy('projects_count', 'desc')
+            ->orderBy('recommendations_received_count', 'desc')
             ->paginate(15);
 
         return view('livewire.recommended-developers', [

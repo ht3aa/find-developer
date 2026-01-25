@@ -477,6 +477,26 @@ body {
     color: var(--color-primary);
 }
 
+.results-order-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.order-info-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.order-info-text {
+    font-weight: 400;
+}
+
 /* Loading Indicator */
 .modern-loading {
     display: flex;
@@ -2933,6 +2953,26 @@ html.dark .dark-mode-icon.moon-icon {
 /* Recommended Developers Section */
 .recommended-developers-section {
     margin-top: var(--spacing-2xl);
+}
+
+.recommended-order-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.recommended-order-info .order-info-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.recommended-order-info .order-info-text {
+    font-weight: 400;
 }
 
 .recommended-grid {

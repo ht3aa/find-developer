@@ -7,6 +7,7 @@ use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
+use App\Enums\RecommendationStatus;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Developer;
@@ -235,6 +236,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                 $query->withoutGlobalScopes([DeveloperScope::class])
                     ->where('show_project', true);
             }])
+            ->withCount(['recommendationsReceived' => function ($query) {
+                $query->where('status', RecommendationStatus::APPROVED);
+            }])
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
                     $q->where('name', 'like', '%' . $filters['search'] . '%')
@@ -294,17 +298,17 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         // Get developers by subscription plan
         $premiumDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::PREMIUM)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('recommendations_received_count', 'desc')
             ->get();
 
         $proDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::PRO)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('recommendations_received_count', 'desc')
             ->get();
 
         $freeDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::FREE)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('recommendations_received_count', 'desc')
             ->paginate(15);
 
 
