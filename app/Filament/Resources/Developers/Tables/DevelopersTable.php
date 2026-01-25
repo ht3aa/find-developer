@@ -386,7 +386,7 @@ class DevelopersTable
                                 $message = "Hello {$record->name}\n\n";
                                 $message .= "Thank you for the information. You have been accepted and this is your user credentials\n";
                                 $message .= $data['secret_url'] . "\n\n";
-                                $message .= "You can edit your information via admin dashboard\n";
+                                $message .= "You can edit your information via and do more actions in the admin dashboard\n";
                                 $message .= "www.find-developer.com/admin\n\n";
                                 $message .= "You can now also recommend other developers. Please use the recommendation feature only on the developers you well known\n\n";
                                 $message .= "Best Regards\n";
