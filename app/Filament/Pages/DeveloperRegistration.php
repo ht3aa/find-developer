@@ -11,6 +11,7 @@ use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Skill;
+use Illuminate\Validation\Rule;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -92,7 +93,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->schema([
                         Select::make('job_title_id')
                             ->label('Job Title')
-                            ->options(JobTitle::active()->pluck('name', 'id'))
+                            ->options(fn() => JobTitle::active()->pluck('name', 'id'))
                             ->required()
                             ->searchable(),
 
@@ -130,7 +131,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
                         Select::make('skills')
                             ->multiple()
-                            ->options(Skill::active()->limit(50)->pluck('name', 'id'))
+                            ->options(fn() => Skill::active()->pluck('name', 'id'))
                             ->preload()
                             ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
                             ->searchable()
@@ -172,32 +173,33 @@ class DeveloperRegistration extends SimplePage implements HasForms
     {
         $this->validate();
 
-        $data = $this->form->getState();
 
-        // Extract skills before creating developer
-        $skills = $data['skills'] ?? [];
-        unset($data['skills']);
+        // $data = $this->form->getState();
 
-        // Create developer with pending status
-        $data['status'] = DeveloperStatus::PENDING;
-        $developer = Developer::create($data);
+        // // Extract skills before creating developer
+        // $skills = $data['skills'] ?? [];
+        // unset($data['skills']);
 
-        // Attach skills
-        if (!empty($skills)) {
-            $developer->skills()->attach($skills);
-        }
+        // // Create developer with pending status
+        // $data['status'] = DeveloperStatus::PENDING;
+        // $developer = Developer::create($data);
 
-        // Show success notification
-        Notification::make()
-            ->title('Registration Submitted Successfully!')
-            ->body('Your registration has been submitted and is pending approval. We\'ll review your profile soon!')
-            ->success()
-            ->send();
+        // // Attach skills
+        // if (!empty($skills)) {
+        //     $developer->skills()->attach($skills);
+        // }
 
-        // Reset form
-        $this->form->fill();
+        // // Show success notification
+        // Notification::make()
+        //     ->title('Registration Submitted Successfully!')
+        //     ->body('Your registration has been submitted and is pending approval. We\'ll review your profile soon!')
+        //     ->success()
+        //     ->send();
 
-        $this->redirect(route('home'));
+        // // Reset form
+        // $this->form->fill();
+
+        // $this->redirect(route('home'));
     }
 
     public function getTitle(): string
