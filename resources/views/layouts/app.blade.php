@@ -187,27 +187,6 @@
             </div>
         </nav>
 
-        <!-- Developer Promotion Banner -->
-        <div class="developer-promotion-banner">
-            <div class="developer-promotion-banner-container">
-                <div class="developer-promotion-banner-content">
-                    <div class="developer-promotion-banner-text-wrapper">
-                        <svg class="developer-promotion-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <div class="developer-promotion-banner-text-block">
-                            <p class="developer-promotion-banner-text">
-                                If You find this platform useful, you can support us by sponsoring us or donating to us. Qi Card Number is <strong>5862997060</strong>
-                            </p>
-                            <p class="developer-promotion-banner-note">
-                                We will use the money to improve by marketing the platform and add new features.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         @if($currentRoute === 'home')
             <!-- Info Banner -->
             <div class="info-banner">
@@ -231,6 +210,26 @@
 
         <!-- Footer -->
         <footer class="footer">
+            <!-- Developer Promotion Banner -->
+            <div class="developer-promotion-banner">
+                <div class="developer-promotion-banner-container">
+                    <div class="developer-promotion-banner-content">
+                        <div class="developer-promotion-banner-text-wrapper">
+                            <svg class="developer-promotion-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <div class="developer-promotion-banner-text-block">
+                                <p class="developer-promotion-banner-text">
+                                    If You find this platform useful, you can support us by sponsoring us or donating to us. Qi Card Number is <strong>5862997060</strong>
+                                </p>
+                                <p class="developer-promotion-banner-note">
+                                    We will use the money to improve by marketing the platform and add new features.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="footer-container">
                 <div class="footer-links">
                     <a href="{{ route('plans') }}" class="footer-link">
