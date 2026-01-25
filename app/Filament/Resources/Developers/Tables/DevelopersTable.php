@@ -317,6 +317,16 @@ class DevelopersTable
                                 ->rows(5)
                                 ->columnSpanFull(),
 
+                            Toggle::make('add_default_header')
+                                ->label('Add default header to the mail')
+                                ->default(true)
+                                ->helperText('Adds "Hello {name}" at the beginning of the message'),
+
+                            Toggle::make('add_default_footer')
+                                ->label('Add default footer')
+                                ->default(true)
+                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in www.find-developer.com" at the end of the message'),
+
                             TextInput::make('category')
                                 ->label('Category')
                                 ->maxLength(255)
@@ -325,9 +335,21 @@ class DevelopersTable
                         ])
                         ->action(function ($record, array $data) {
                             try {
+                                $message = $data['message'];
+
+                                // Add header if enabled
+                                if ($data['add_default_header'] ?? true) {
+                                    $message = "Hello {$record->name}\n\n" . $message;
+                                }
+
+                                // Add footer if enabled
+                                if ($data['add_default_footer'] ?? true) {
+                                    $message .= "\n\nBest Regards\nHasan Tahseen an admin in www.find-developer.com";
+                                }
+
                                 $record->notify(new MailtrapNotification(
                                     subject: $data['subject'],
-                                    message: $data['message'],
+                                    message: $message,
                                     category: $data['category'] ?? 'Admin Message'
                                 ));
 
@@ -435,6 +457,16 @@ class DevelopersTable
                                 ->rows(5)
                                 ->columnSpanFull(),
 
+                            Toggle::make('add_default_header')
+                                ->label('Add default header to the mail')
+                                ->default(true)
+                                ->helperText('Adds "Hello {name}" at the beginning of the message'),
+
+                            Toggle::make('add_default_footer')
+                                ->label('Add default footer')
+                                ->default(true)
+                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in www.find-developer.com" at the end of the message'),
+
                             TextInput::make('category')
                                 ->label('Category')
                                 ->maxLength(255)
@@ -455,12 +487,26 @@ class DevelopersTable
 
                             $count = $developersWithEmail->count();
                             $category = $data['category'] ?? 'Bulk Email';
+                            $addHeader = $data['add_default_header'] ?? true;
+                            $addFooter = $data['add_default_footer'] ?? true;
 
                             try {
                                 foreach ($developersWithEmail as $developer) {
+                                    $message = $data['message'];
+
+                                    // Add header if enabled
+                                    if ($addHeader) {
+                                        $message = "Hello {$developer->name}\n\n" . $message;
+                                    }
+
+                                    // Add footer if enabled
+                                    if ($addFooter) {
+                                        $message .= "\n\nBest Regards\nHasan Tahseen an admin in www.find-developer.com";
+                                    }
+
                                     $developer->notify(new MailtrapNotification(
                                         subject: $data['subject'],
-                                        message: $data['message'],
+                                        message: $message,
                                         category: $category
                                     ));
                                 }
