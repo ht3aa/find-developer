@@ -174,32 +174,32 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $this->validate();
 
 
-        // $data = $this->form->getState();
+        $data = $this->form->getState();
 
-        // // Extract skills before creating developer
-        // $skills = $data['skills'] ?? [];
-        // unset($data['skills']);
+        // Extract skills before creating developer
+        $skills = $data['skills'] ?? [];
+        unset($data['skills']);
 
-        // // Create developer with pending status
-        // $data['status'] = DeveloperStatus::PENDING;
-        // $developer = Developer::create($data);
+        // Create developer with pending status
+        $data['status'] = DeveloperStatus::PENDING;
+        $developer = Developer::create($data);
 
-        // // Attach skills
-        // if (!empty($skills)) {
-        //     $developer->skills()->attach($skills);
-        // }
+        // Attach skills
+        if (!empty($skills)) {
+            $developer->skills()->attach($skills);
+        }
 
-        // // Show success notification
-        // Notification::make()
-        //     ->title('Registration Submitted Successfully!')
-        //     ->body('Your registration has been submitted and is pending approval. We\'ll review your profile soon!')
-        //     ->success()
-        //     ->send();
+        // Show success notification
+        Notification::make()
+            ->title('Registration Submitted Successfully!')
+            ->body('Your registration has been submitted and is pending approval. We\'ll review your profile soon!')
+            ->success()
+            ->send();
 
-        // // Reset form
-        // $this->form->fill();
+        // Reset form
+        $this->form->fill();
 
-        // $this->redirect(route('home'));
+        $this->redirect(route('home'));
     }
 
     public function getTitle(): string
