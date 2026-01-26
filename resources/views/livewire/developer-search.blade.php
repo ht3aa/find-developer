@@ -129,8 +129,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="section-title-modern">Premium Developers</h2>
-                        <p class="section-subtitle-modern">Featured developers with premium profiles</p>
+                        <h2 class="section-title-modern">Must to have Developers</h2>
+                        <p class="section-subtitle-modern">Must to have developers with premium profiles</p>
                     </div>
                 </div>
             </div>
@@ -153,8 +153,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="section-title-modern">Pro Developers</h2>
-                        <p class="section-subtitle-modern">Featured developers with pro profiles</p>
+                        <h2 class="section-title-modern">Nice to Have Developers</h2>
+                        <p class="section-subtitle-modern">Nice to have developers with pro profiles</p>
                     </div>
                 </div>
             </div>
