@@ -241,6 +241,9 @@
                     <a href="{{ route('charts') }}" class="footer-link">
                         Charts
                     </a>
+                    <a href="{{ route('badges') }}" class="footer-link">
+                        Badges
+                    </a>
                 </div>
                 <p class="footer-text">
                     &copy; {{ date('Y') }} FindDeveloper. All rights reserved.
