@@ -133,6 +133,9 @@
                     x-transition:leave-end="opacity-0 -translate-y-2"
                     @click.away="mobileMenuOpen = false"
                 >
+                    <a href="{{ route('plans') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        Plans
+                    </a>
                     <a href="{{ route('services') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Services
                     </a>
@@ -232,9 +235,6 @@
             </div>
             <div class="footer-container">
                 <div class="footer-links">
-                    <a href="{{ route('plans') }}" class="footer-link">
-                        Plans
-                    </a>
                     <a href="{{ route('about') }}" class="footer-link">
                         About Us
                     </a>

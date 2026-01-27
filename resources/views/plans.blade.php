@@ -20,6 +20,155 @@
         }
     </style>
     <div class="pricing-container">
+        <!-- Developer Plans Section -->
+        <div class="pricing-section">
+            <div class="pricing-header">
+                <h1 class="pricing-title">Developer Plans</h1>
+            </div>
+
+            <div class="pricing-cards">
+            <!-- Hosting Plan -->
+            <div class="pricing-card pricing-card-hosting" style="position: relative; border: 2px solid var(--color-primary); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);">
+                <div class="pricing-card-header">
+                    <h3 class="pricing-card-title" style="color: var(--color-primary); font-size: 2rem; font-weight: 700;">Hosting</h3>
+                    <div class="pricing-card-price-wrapper">
+                        <div class="pricing-card-price">
+                            <span class="pricing-price-amount" style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">10,000</span>
+                            <span class="pricing-price-currency" style="font-size: 1.25rem; font-weight: 600; color: var(--text-tertiary);">IQD</span>
+                            <span class="pricing-price-period" style="font-size: 1rem; color: var(--text-muted);">/month</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pricing-card-body">
+                    <ul class="pricing-features">
+                        <li class="pricing-feature" style="padding: 1rem 0; border-bottom: 1px solid rgba(99, 102, 241, 0.1);">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.5rem; height: 1.5rem; color: var(--color-primary); margin-right: 0.75rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span style="font-weight: 500; color: var(--text-secondary);">Hosting Your Portfolio with a subdomain (e.g., yourname.find-developer.com or <a href="https://hasan-tahseen.find-developer.com/" target="_blank" style="color: var(--color-primary); text-decoration: underline;">hasan-tahseen.find-developer.com</a>)</span>
+                        </li>
+                    </ul>
+                    <a href="mailto:ht3aa2001@gmail.com?subject=Hosting%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Hosting%20plan" 
+                       target="_blank" 
+                       class="pricing-button pricing-button-hr" 
+                       style="display: block; width: 100%; text-align: center; padding: 1rem 2rem; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; text-decoration: none; margin-top: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+
+            {{-- <!-- Free Plan -->
+            <div class="pricing-card pricing-card-free">
+                <div class="pricing-card-header">
+                    <h3 class="pricing-card-title">Free</h3>
+                    <div class="pricing-card-price">
+                        <span class="pricing-price-amount">0</span>
+                        <span class="pricing-price-currency">IQD</span>
+                    </div>
+                </div>
+                <div class="pricing-card-body">
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Create a developer card to be displayed in the website</span>
+                        </li>
+                    </ul>
+                    <a href="{{ route('register') }}" class="pricing-button pricing-button-free">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card pricing-card-pro">
+                <div class="pricing-card-badge">Popular</div>
+                <div class="pricing-card-header">
+                    <h3 class="pricing-card-title">Pro</h3>
+                    <div class="pricing-card-price-wrapper">
+                        <div class="pricing-price-original-container">
+                            <span class="pricing-price-original">10,000 IQD</span>
+                            <span class="pricing-discount-badge">50% OFF</span>
+                        </div>
+                        <div class="pricing-card-price">
+                            <span class="pricing-price-amount">5,000</span>
+                            <span class="pricing-price-currency">IQD</span>
+                            <span class="pricing-price-period">/month</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pricing-card-body">
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Be in the pro section of the website</span>
+                        </li>
+                    </ul>
+                    <a href="mailto:ht3aa2001@gmail.com?subject=Pro%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Pro%20plan" 
+                       target="_blank" 
+                       class="pricing-button pricing-button-pro">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="pricing-card pricing-card-premium">
+                <div class="pricing-card-badge">Best Value</div>
+                <div class="pricing-card-header">
+                    <h3 class="pricing-card-title">Premium</h3>
+                    <div class="pricing-card-price-wrapper">
+                        <div class="pricing-price-original-container">
+                            <span class="pricing-price-original">25,000 IQD</span>
+                            <span class="pricing-discount-badge">60% OFF</span>
+                        </div>
+                        <div class="pricing-card-price">
+                            <span class="pricing-price-amount">10,000</span>
+                            <span class="pricing-price-currency">IQD</span>
+                            <span class="pricing-price-period">/month</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pricing-card-body">
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Be in the premium section of the website</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Have user account to the admin dashboard</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Can display 6 projects directly into your card</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>We will provide a developer projects page for you only</span>
+                        </li>
+                    </ul>
+                    <a href="mailto:ht3aa2001@gmail.com?subject=Premium%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Premium%20plan" 
+                       target="_blank" 
+                       class="pricing-button pricing-button-premium">
+                        Contact Us
+                    </a>
+                </div>
+            </div> --}}
+        </div>
+        </div>
+
         <!-- HR Plans Section -->
         <div class="pricing-section">
             <div class="pricing-header">
@@ -210,124 +359,5 @@
                 </div>
             </div>
         </div>
-
-        <!-- Developer Plans Section -->
-        {{-- <div class="pricing-section">
-            <div class="pricing-header">
-                <h1 class="pricing-title">Developer Plans</h1>
-                <p class="pricing-subtitle">Choose Your Plan (You should have good profile in order to get th subscription.)</p>
-            </div>
-
-            <div class="pricing-cards">
-            <!-- Free Plan -->
-            <div class="pricing-card pricing-card-free">
-                <div class="pricing-card-header">
-                    <h3 class="pricing-card-title">Free</h3>
-                    <div class="pricing-card-price">
-                        <span class="pricing-price-amount">0</span>
-                        <span class="pricing-price-currency">IQD</span>
-                    </div>
-                </div>
-                <div class="pricing-card-body">
-                    <ul class="pricing-features">
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Create a developer card to be displayed in the website</span>
-                        </li>
-                    </ul>
-                    <a href="{{ route('register') }}" class="pricing-button pricing-button-free">
-                        Get Started
-                    </a>
-                </div>
-            </div>
-
-            <!-- Pro Plan -->
-            <div class="pricing-card pricing-card-pro">
-                <div class="pricing-card-badge">Popular</div>
-                <div class="pricing-card-header">
-                    <h3 class="pricing-card-title">Pro</h3>
-                    <div class="pricing-card-price-wrapper">
-                        <div class="pricing-price-original-container">
-                            <span class="pricing-price-original">10,000 IQD</span>
-                            <span class="pricing-discount-badge">50% OFF</span>
-                        </div>
-                        <div class="pricing-card-price">
-                            <span class="pricing-price-amount">5,000</span>
-                            <span class="pricing-price-currency">IQD</span>
-                            <span class="pricing-price-period">/month</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-card-body">
-                    <ul class="pricing-features">
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Be in the pro section of the website</span>
-                        </li>
-                    </ul>
-                    <a href="mailto:ht3aa2001@gmail.com?subject=Pro%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Pro%20plan" 
-                       target="_blank" 
-                       class="pricing-button pricing-button-pro">
-                        Contact Us
-                    </a>
-                </div>
-            </div>
-
-            <!-- Premium Plan -->
-            <div class="pricing-card pricing-card-premium">
-                <div class="pricing-card-badge">Best Value</div>
-                <div class="pricing-card-header">
-                    <h3 class="pricing-card-title">Premium</h3>
-                    <div class="pricing-card-price-wrapper">
-                        <div class="pricing-price-original-container">
-                            <span class="pricing-price-original">25,000 IQD</span>
-                            <span class="pricing-discount-badge">60% OFF</span>
-                        </div>
-                        <div class="pricing-card-price">
-                            <span class="pricing-price-amount">10,000</span>
-                            <span class="pricing-price-currency">IQD</span>
-                            <span class="pricing-price-period">/month</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-card-body">
-                    <ul class="pricing-features">
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Be in the premium section of the website</span>
-                        </li>
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Have user account to the admin dashboard</span>
-                        </li>
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Can display 6 projects directly into your card</span>
-                        </li>
-                        <li class="pricing-feature">
-                            <svg class="pricing-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>We will provide a developer projects page for you only</span>
-                        </li>
-                    </ul>
-                    <a href="mailto:ht3aa2001@gmail.com?subject=Premium%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Premium%20plan" 
-                       target="_blank" 
-                       class="pricing-button pricing-button-premium">
-                        Contact Us
-                    </a>
-                </div>
-            </div>
-        </div> --}}
     </div>
 @endsection
