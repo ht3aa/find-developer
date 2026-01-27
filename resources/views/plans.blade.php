@@ -33,7 +33,7 @@
                     <h3 class="pricing-card-title" style="color: var(--color-primary); font-size: 2rem; font-weight: 700;">Hosting</h3>
                     <div class="pricing-card-price-wrapper">
                         <div class="pricing-card-price">
-                            <span class="pricing-price-amount" style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">10,000</span>
+                            <span class="pricing-price-amount" style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">5,000</span>
                             <span class="pricing-price-currency" style="font-size: 1.25rem; font-weight: 600; color: var(--text-tertiary);">IQD</span>
                             <span class="pricing-price-period" style="font-size: 1rem; color: var(--text-muted);">/month</span>
                         </div>

@@ -198,7 +198,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                         </svg>
                         <p class="info-banner-text">
-                            <strong>🚀 Host Your Portfolio!</strong> Get your own subdomain (like <a href="https://hasan-tahseen.find-developer.com/" target="_blank" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">hasan-tahseen.find-developer.com</a>) with full support for just <strong>10,000 IQD/month</strong>. 
+                            <strong>🚀 Host Your Portfolio!</strong> Get your own subdomain (like <a href="https://hasan-tahseen.find-developer.com/" target="_blank" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">hasan-tahseen.find-developer.com</a>) with full support for just <strong>5,000 IQD/month</strong>. 
                             <a href="{{ route('plans') }}" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">View Plans →</a>
                         </p>
                     </div>
