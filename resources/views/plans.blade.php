@@ -67,7 +67,7 @@
                     <h3 class="pricing-card-title" style="color: var(--color-primary); font-size: 2rem; font-weight: 700;">Hosting with .iq Domain</h3>
                     <div class="pricing-card-price-wrapper">
                         <div class="pricing-card-price" style="margin-bottom: 0.25rem;">
-                            <span class="pricing-price-amount" style="font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Free</span>
+                            <span class="pricing-price-amount" style="font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">60,000 IQD / year</span>
                             <span style="font-size: 1rem; color: var(--text-muted); margin-left: 0.25rem;">hosting</span>
                         </div>
                         <div style="font-size: 0.875rem; color: var(--text-muted);">+ domain from <strong style="color: var(--text-secondary);">50,000 IQD / year</strong> (depends on name)</div>
