@@ -328,20 +328,23 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                 $query->where('is_available', $filters['availableOnly']);
             });
 
-        // Get developers by subscription plan
+        // Get developers by subscription plan (secondary orderBy ensures stable pagination)
         $premiumDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::PREMIUM)
             ->orderBy('recommendations_received_count', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
 
         $proDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::PRO)
             ->orderBy('recommendations_received_count', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
 
         $freeDevelopers = (clone $baseQuery)
             ->where('subscription_plan', SubscriptionPlan::FREE)
             ->orderBy('recommendations_received_count', 'desc')
+            ->orderBy('id', 'asc')
             ->paginate(15);
 
 

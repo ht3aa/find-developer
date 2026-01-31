@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             JobTitlesSeeder::class,
             SkillsSeeder::class,
             DevelopersSeeder::class,
+            MoreDevelopersSeeder::class,
             DeveloperProjectsSeeder::class,
             UserServicesSeeder::class,
             UserAppointmentsSeeder::class,
