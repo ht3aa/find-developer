@@ -10,6 +10,7 @@ use App\Enums\AvailabilityType;
 use App\Enums\RecommendationStatus;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
+use App\Models\Badge;
 use App\Models\Developer;
 use App\Models\DeveloperRecommendation;
 use App\Models\JobTitle;
@@ -62,6 +63,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
 
     #[Url]
     public array $has_urls = [];
+
+    #[Url]
+    public array $badges = [];
 
     #[Url]
     public ?int $availableOnly = null;
@@ -169,6 +173,16 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->nullable()
                                     ->live()
                                     ->afterStateUpdated(fn() => $this->resetPage()),
+
+                                Select::make('badges')
+                                    ->label('Badges')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->options(Badge::where('is_active', true)->orderBy('name')->limit(50)->pluck('name', 'id'))
+                                    ->getSearchResultsUsing(fn(string $query) => Badge::where('is_active', true)->where('name', 'like', '%' . $query . '%')->orderBy('name')->limit(50)->pluck('name', 'id'))
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(fn() => $this->resetPage()),
                             ]),
 
                         Select::make('availableOnly')
@@ -212,6 +226,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             $count++;
         }
         if (!empty($this->has_urls)) {
+            $count++;
+        }
+        if (!empty($this->badges)) {
             $count++;
         }
 
@@ -329,6 +346,10 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                         });
                     }
                 });
+            })
+            ->when(!empty($filters['badges']), function ($query) use ($filters) {
+                $badgeIds = is_array($filters['badges']) ? $filters['badges'] : [$filters['badges']];
+                $query->whereHas('badges', fn($q) => $q->whereIn('badges.id', $badgeIds));
             })
             ->when(!is_null($filters['availableOnly']), function ($query) use ($filters) {
                 $query->where('is_available', $filters['availableOnly']);
