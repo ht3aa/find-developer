@@ -262,7 +262,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             }])
             ->withCount([
                 'badges',
-                'badges as has_validated_data_count' => fn($query) => $query->where('slug', 'soft-skills'),
+                'badges as has_validated_data_count' => fn($query) => $query->where('slug', 'data-validated'),
             ])
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
@@ -363,9 +363,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         $currentUserDeveloper = Auth::check() ? Auth::user()->developer : null;
         $recommendedDeveloperIds = $currentUserDeveloper
             ? DeveloperRecommendation::where('recommender_id', $currentUserDeveloper->id)
-                ->whereIn('status', [RecommendationStatus::PENDING, RecommendationStatus::APPROVED])
-                ->pluck('recommended_id')
-                ->all()
+            ->whereIn('status', [RecommendationStatus::PENDING, RecommendationStatus::APPROVED])
+            ->pluck('recommended_id')
+            ->all()
             : [];
 
         return view('livewire.developer-search', [
