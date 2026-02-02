@@ -27,13 +27,7 @@ class DevelopersByAvailabilityTypeChart extends ChartWidget
 
             $labels[] = $type->getLabel();
             $data[] = $count;
-            $colors[] = match ($type) {
-                AvailabilityType::FULL_TIME => '#10b981',
-                AvailabilityType::PART_TIME => '#f59e0b',
-                AvailabilityType::FREELANCE => '#3b82f6',
-                AvailabilityType::HYBRID => '#8b5cf6',
-                AvailabilityType::REMOTE => '#2563eb',
-            };
+            $colors[] = $type->getHexColor();
         }
 
         return [
