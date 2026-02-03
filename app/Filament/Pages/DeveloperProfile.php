@@ -94,13 +94,6 @@ class DeveloperProfile extends Page implements HasSchemas
         $data = $this->data;
 
 
-        // Sync skills
-        if (isset($data['skills'])) {
-            $this->record->skills()->sync($data['skills']);
-        }
-
-        unset($data['skills']);
-
         $data["expected_salary_from"] = Str::of($data["expected_salary_from"])->remove(',')->toInteger();
         $data["expected_salary_to"] = Str::of($data["expected_salary_to"])->remove(',')->toInteger();
 

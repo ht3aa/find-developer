@@ -64,6 +64,7 @@ class DeveloperProfileForm
                             ->default(0)
                             ->minValue(0)
                             ->maxValue(50)
+                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
                             ->suffix('years')
                             ->required(),
 
@@ -112,6 +113,7 @@ class DeveloperProfileForm
                             ->multiple()
                             ->searchable()
                             ->preload()
+                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
