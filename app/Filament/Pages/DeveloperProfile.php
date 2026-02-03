@@ -91,8 +91,9 @@ class DeveloperProfile extends Page implements HasSchemas
 
     public function save(): void
     {
-        $data = $this->data;
+        $this->validate();
 
+        $data = $this->form->getState();
 
         $data["expected_salary_from"] = Str::of($data["expected_salary_from"])->remove(',')->toInteger();
         $data["expected_salary_to"] = Str::of($data["expected_salary_to"])->remove(',')->toInteger();
