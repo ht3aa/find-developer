@@ -6,6 +6,7 @@ use App\Enums\DeveloperStatus;
 use App\Enums\AvailabilityType;
 use App\Enums\UserType;
 use App\Models\User;
+use App\Models\Badge;
 use App\Notifications\MailtrapNotification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -134,6 +135,7 @@ class DevelopersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->filtersFormColumns(2)
             ->filters([
                 SelectFilter::make('status')
                     ->options(DeveloperStatus::class)
@@ -165,6 +167,13 @@ class DevelopersTable
                             $query->whereJsonContains('availability_type', $value);
                         }
                     }),
+
+                SelectFilter::make('badges')
+                    ->label('Badge')
+                    ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
 
                 TernaryFilter::make('recommended_by_us')
                     ->label('Recommended By Us')
@@ -421,11 +430,82 @@ class DevelopersTable
                             }
                         }),
 
+                    Action::make('send_badge_congratulation')
+                        ->label('Send Badge Congratulation')
+                        ->icon('heroicon-o-trophy')
+                        ->color('warning')
+                        ->visible(fn($record) => !empty($record->email))
+                        ->schema([
+                            Select::make('badges')
+                                ->label('Select Badges')
+                                ->options(fn($record) => $record->badges->pluck('name', 'id'))
+                                ->multiple()
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Select one or more badges to send congratulation emails. Each badge will receive a separate email.'),
+                        ])
+                        ->action(function ($record, array $data) {
+                            try {
+                                if (empty($data['badges']) || !is_array($data['badges'])) {
+                                    Notification::make()
+                                        ->title('No Badges Selected')
+                                        ->body('Please select at least one badge.')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $badgeIds = $data['badges'];
+                                $badges = Badge::whereIn('id', $badgeIds)->get();
+
+                                if ($badges->isEmpty()) {
+                                    Notification::make()
+                                        ->title('Badges Not Found')
+                                        ->body('Selected badges could not be found.')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $sentCount = 0;
+                                $failedCount = 0;
+
+                                foreach ($badges as $badge) {
+                                    if (self::sendBadgeCongratulationEmail($record, $badge)) {
+                                        $sentCount++;
+                                    } else {
+                                        $failedCount++;
+                                    }
+                                }
+
+                                if ($sentCount > 0) {
+                                    Notification::make()
+                                        ->title('Badge Congratulation Emails Sent')
+                                        ->body("Successfully sent {$sentCount} congratulation email(s) for badge(s) to {$record->email}." . ($failedCount > 0 ? " {$failedCount} email(s) failed." : ''))
+                                        ->success()
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->title('Email Failed')
+                                        ->body("Failed to send badge congratulation emails.")
+                                        ->danger()
+                                        ->send();
+                                }
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Email Failed')
+                                    ->body("Failed to send badge congratulation emails: {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('copy_emails')
                         ->label('Copy Emails')
@@ -534,6 +614,102 @@ class DevelopersTable
                             }
                         }),
 
+                    BulkAction::make('send_badge_congratulation_bulk')
+                        ->label('Send Badge Congratulation')
+                        ->icon('heroicon-o-trophy')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Send Badge Congratulation Emails')
+                        ->modalDescription(fn(Collection $records) => "Send badge congratulation emails to {$records->filter(fn($record) => !empty($record->email))->count()} developer(s) with email addresses. Each selected badge will receive a separate email for each developer.")
+                        ->schema([
+                            Select::make('badges')
+                                ->label('Select Badges')
+                                ->options(fn() => Badge::where('is_active', true)->pluck('name', 'id'))
+                                ->multiple()
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Select one or more badges to send congratulation emails. Each badge will receive a separate email for each selected developer.'),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            try {
+                                if (empty($data['badges']) || !is_array($data['badges'])) {
+                                    Notification::make()
+                                        ->title('No Badges Selected')
+                                        ->body('Please select at least one badge.')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $developersWithEmail = $records->filter(fn($record) => !empty($record->email));
+
+                                if ($developersWithEmail->isEmpty()) {
+                                    Notification::make()
+                                        ->title('No Emails Found')
+                                        ->body('None of the selected developers have email addresses.')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $badgeIds = $data['badges'];
+                                $badges = Badge::whereIn('id', $badgeIds)->get();
+
+                                if ($badges->isEmpty()) {
+                                    Notification::make()
+                                        ->title('Badges Not Found')
+                                        ->body('Selected badges could not be found.')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $totalSent = 0;
+                                $totalFailed = 0;
+                                $developersProcessed = 0;
+
+                                foreach ($developersWithEmail as $developer) {
+                                    $developerSent = 0;
+                                    $developerFailed = 0;
+
+                                    foreach ($badges as $badge) {
+                                        if (self::sendBadgeCongratulationEmail($developer, $badge)) {
+                                            $developerSent++;
+                                            $totalSent++;
+                                        } else {
+                                            $developerFailed++;
+                                            $totalFailed++;
+                                        }
+                                    }
+
+                                    if ($developerSent > 0) {
+                                        $developersProcessed++;
+                                    }
+                                }
+
+                                if ($totalSent > 0) {
+                                    Notification::make()
+                                        ->title('Badge Congratulation Emails Sent')
+                                        ->body("Successfully sent {$totalSent} congratulation email(s) to {$developersProcessed} developer(s)." . ($totalFailed > 0 ? " {$totalFailed} email(s) failed." : ''))
+                                        ->success()
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->title('Email Failed')
+                                        ->body("Failed to send badge congratulation emails.")
+                                        ->danger()
+                                        ->send();
+                                }
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Bulk Badge Email Failed')
+                                    ->body("Failed to send badge congratulation emails: {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
                     BulkAction::make('approve')
                         ->label('Approve Selected')
                         ->icon('heroicon-o-check-circle')
@@ -577,5 +753,37 @@ class DevelopersTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * Send badge congratulation email to a developer for a specific badge.
+     *
+     * @param \App\Models\Developer $developer
+     * @param \App\Models\Badge $badge
+     * @return bool Returns true if email was sent successfully, false otherwise
+     */
+    private static function sendBadgeCongratulationEmail($developer, $badge): bool
+    {
+        try {
+            $message = "Hello {$developer->name}\n\n";
+            $message .= "Congratulations! You have earned a new badge: {$badge->name}\n\n";
+
+            if (!empty($badge->description)) {
+                $message .= "Badge Description: {$badge->description}\n\n";
+            }
+
+            $message .= "Best Regards\n";
+            $message .= "Hasan Tahseen an Admin in find-developer.com platform";
+
+            $developer->notify(new MailtrapNotification(
+                subject: "Congratulations! You Earned the {$badge->name} Badge",
+                message: $message,
+                category: 'Badge Award'
+            ));
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

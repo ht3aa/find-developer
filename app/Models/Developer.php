@@ -21,6 +21,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use App\Models\Badge;
 
 #[ScopedBy([ApprovedScope::class])]
 #[ObservedBy(DeveloperObserver::class)]
@@ -67,23 +68,6 @@ class Developer extends Model
         'salary_currency' => Currency::class,
         'availability_type' => AvailabilityTypeArray::class,
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($developer) {
-            if (empty($developer->slug)) {
-                $developer->slug = Str::slug($developer->name);
-            }
-        });
-
-        static::updating(function ($developer) {
-            if ($developer->isDirty('name') && empty($developer->slug)) {
-                $developer->slug = Str::slug($developer->name);
-            }
-        });
-    }
 
     public function user(): BelongsTo
     {

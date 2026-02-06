@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Enums\DeveloperStatus;
 use App\Models\Developer;
 use App\Notifications\MailtrapNotification;
+use Illuminate\Support\Str;
 
 class DeveloperObserver
 {
@@ -28,6 +29,19 @@ class DeveloperObserver
                     category: 'Developer Approval'
                 ));
             }
+        }
+    }
+    public function saving(Developer $developer): void
+    {
+        if ($developer->isDirty('name') && empty($developer->slug)) {
+            $developer->slug = Str::slug($developer->name);
+        }
+    }
+
+    public function updating(Developer $developer): void
+    {
+        if ($developer->isDirty('name') && empty($developer->slug)) {
+            $developer->slug = Str::slug($developer->name);
         }
     }
 }
