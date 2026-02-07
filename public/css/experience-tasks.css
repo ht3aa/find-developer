@@ -69,7 +69,7 @@ html.dark .xp-task-badge-open {
 
 .xp-task-badge-in_progress {
     background: rgba(245, 158, 11, 0.15);
-    color: #d97706;
+    color: #7C3AED;
 }
 
 html.dark .xp-task-badge-in_progress {
@@ -119,7 +119,7 @@ html.dark .xp-task-badge-in_progress {
     padding: 0;
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
-    color: var(--color-primary, #6366f1);
+    color: var(--color-primary, #0088D2);
     background: none;
     border: none;
     cursor: pointer;
@@ -128,7 +128,7 @@ html.dark .xp-task-badge-in_progress {
 }
 
 .xp-task-read-more:hover {
-    color: var(--color-primary-dark, #4f46e5);
+    color: var(--color-primary-dark, #006BA6);
     text-decoration: underline;
 }
 
@@ -199,12 +199,12 @@ html.dark .xp-task-badge-in_progress {
 }
 
 .xp-task-requirements-text :deep(a) {
-    color: var(--color-primary, #6366f1);
+    color: var(--color-primary, #0088D2);
     text-decoration: underline;
 }
 
 .xp-task-requirements-text :deep(a:hover) {
-    color: var(--color-primary-dark, #4f46e5);
+    color: var(--color-primary-dark, #006BA6);
 }
 
 .xp-task-rewards {
@@ -245,7 +245,7 @@ html.dark .xp-task-badge-in_progress {
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 600;
     color: #ffffff;
-    background: linear-gradient(135deg, var(--color-primary, #6366f1) 0%, var(--color-secondary, #8b5cf6) 100%);
+    background: linear-gradient(135deg, var(--color-primary, #0088D2) 0%, var(--color-secondary, #7C3AED) 100%);
     border: none;
     border-radius: var(--radius-md, 0.5rem);
     text-decoration: none;
@@ -256,7 +256,7 @@ html.dark .xp-task-badge-in_progress {
 
 .xp-task-email-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px -2px rgba(var(--primary-rgb), 0.4);
 }
 
 .xp-task-email-btn:active {

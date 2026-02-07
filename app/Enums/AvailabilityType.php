@@ -48,7 +48,7 @@ enum AvailabilityType: string implements HasLabel, HasColor, HasIcon
             self::FULL_TIME => '#10b981',
             self::PART_TIME => '#f59e0b',
             self::FREELANCE => '#3b82f6',
-            self::HYBRID => '#8b5cf6',
+            self::HYBRID => '#7C3AED',
             self::REMOTE => '#2563eb',
             self::REMOTE_FULL_TIME => '#10b981',
             self::HYBRID_FULL_TIME => '#f5f30b',
