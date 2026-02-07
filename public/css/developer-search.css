@@ -1659,14 +1659,33 @@ button.pagination-link {
 }
 
 .navbar-brand {
-    font-size: var(--font-size-xl);
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    display: flex;
+    align-items: center;
     text-decoration: none;
     z-index: 10;
+}
+
+.navbar-brand-logo {
+    height: 1.75rem;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.navbar-brand-logo-dark {
+    display: none;
+}
+
+.navbar-brand-logo-light {
+    display: block;
+}
+
+html.dark .navbar-brand-logo-dark {
+    display: block;
+}
+
+html.dark .navbar-brand-logo-light {
+    display: none;
 }
 
 /* Hamburger Toggle Button */

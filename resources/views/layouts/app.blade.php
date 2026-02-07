@@ -101,8 +101,9 @@
         <!-- Navigation -->
         <nav class="navbar" x-data="{ mobileMenuOpen: false }">
             <div class="navbar-container">
-                <a href="{{ url('/') }}" class="navbar-brand">
-                    FindDeveloper
+                <a href="{{ url('/') }}" class="navbar-brand" aria-label="FindDeveloper - Home">
+                    <img src="{{ asset('light-logo.svg') }}" alt="FindDeveloper" class="navbar-brand-logo navbar-brand-logo-light" width="120" height="20">
+                    <img src="{{ asset('dark-logo.svg') }}" alt="FindDeveloper" class="navbar-brand-logo navbar-brand-logo-dark" width="120" height="20">
                 </a>
                 
                 <!-- Hamburger Button -->
