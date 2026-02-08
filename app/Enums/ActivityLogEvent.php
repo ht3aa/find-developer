@@ -8,7 +8,6 @@ use Filament\Support\Contracts\HasLabel;
 
 enum ActivityLogEvent: string implements HasColor, HasIcon, HasLabel
 {
-
     /**
      * created => إنشاء
      */

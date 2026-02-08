@@ -3,10 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\WorldGovernorate;
-use App\Models\Developer;
 use App\Models\JobTitle;
-use Filament\Widgets\ChartWidget;
 use Filament\Support\RawJs;
+use Filament\Widgets\ChartWidget;
 
 class DevelopersByJobTitleChart extends ChartWidget
 {
@@ -47,7 +46,7 @@ class DevelopersByJobTitleChart extends ChartWidget
 
     protected function getOptions(): RawJs
     {
-        return RawJs::make(<<<JS
+        return RawJs::make(<<<'JS'
             {
                onClick: function(e, barElement, instance) {
 

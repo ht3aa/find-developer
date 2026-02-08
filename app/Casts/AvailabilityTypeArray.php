@@ -21,12 +21,12 @@ class AvailabilityTypeArray implements CastsAttributes
 
         $decoded = json_decode($value, true);
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             return null;
         }
 
         return array_map(
-            fn($item) => AvailabilityType::from($item),
+            fn ($item) => AvailabilityType::from($item),
             $decoded
         );
     }
@@ -42,12 +42,12 @@ class AvailabilityTypeArray implements CastsAttributes
             return null;
         }
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return null;
         }
 
         $values = array_map(
-            fn($item) => $item instanceof AvailabilityType ? $item->value : $item,
+            fn ($item) => $item instanceof AvailabilityType ? $item->value : $item,
             array_filter($value) // Remove null/empty values
         );
 

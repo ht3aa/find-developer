@@ -59,14 +59,14 @@ class UsersTable
             ->recordActions([
                 ActionGroup::make([
                     Action::make('toggle_admin_access')
-                        ->label(fn($record) => $record->can_access_admin_panel ? 'Revoke Admin Access' : 'Grant Admin Access')
-                        ->icon(fn($record) => $record->can_access_admin_panel ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
-                        ->color(fn($record) => $record->can_access_admin_panel ? 'danger' : 'success')
+                        ->label(fn ($record) => $record->can_access_admin_panel ? 'Revoke Admin Access' : 'Grant Admin Access')
+                        ->icon(fn ($record) => $record->can_access_admin_panel ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                        ->color(fn ($record) => $record->can_access_admin_panel ? 'danger' : 'success')
                         ->requiresConfirmation()
                         ->action(function ($record) {
                             $wasEnabled = $record->can_access_admin_panel;
                             $record->update([
-                                'can_access_admin_panel' => !$wasEnabled,
+                                'can_access_admin_panel' => ! $wasEnabled,
                             ]);
                         }),
                     EditAction::make(),
@@ -85,7 +85,7 @@ class UsersTable
                                 $record->update(['can_access_admin_panel' => true]);
                             });
                         })
-                        ->successNotificationTitle(fn(Collection $records) => 'Admin access granted to ' . $records->count() . ' user(s)'),
+                        ->successNotificationTitle(fn (Collection $records) => 'Admin access granted to '.$records->count().' user(s)'),
                     BulkAction::make('revoke_admin_access')
                         ->label('Revoke Admin Access')
                         ->icon('heroicon-o-x-circle')
@@ -96,7 +96,7 @@ class UsersTable
                                 $record->update(['can_access_admin_panel' => false]);
                             });
                         })
-                        ->successNotificationTitle(fn(Collection $records) => 'Admin access revoked from ' . $records->count() . ' user(s)'),
+                        ->successNotificationTitle(fn (Collection $records) => 'Admin access revoked from '.$records->count().' user(s)'),
                     DeleteBulkAction::make(),
                 ]),
             ])

@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use App\Enums\UserType;
 use App\Enums\DeveloperStatus;
+use App\Enums\UserType;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -13,9 +13,6 @@ class DeveloperAuthRepository
     /**
      * Attempt to authenticate a developer user.
      *
-     * @param array $credentials
-     * @param bool $remember
-     * @return bool
      * @throws ValidationException
      */
     public function attemptLogin(array $credentials, bool $remember = false): bool
@@ -23,7 +20,7 @@ class DeveloperAuthRepository
         $user = User::where('email', $credentials['email'])->first();
 
         // Check if user exists, has developer type, and has an associated developer record
-        if (!$user || $user->user_type !== UserType::DEVELOPER || !$user->developer) {
+        if (! $user || $user->user_type !== UserType::DEVELOPER || ! $user->developer) {
             throw ValidationException::withMessages([
                 'email' => ['These credentials do not match our records.'],
             ]);
@@ -48,8 +45,6 @@ class DeveloperAuthRepository
 
     /**
      * Logout the authenticated user.
-     *
-     * @return void
      */
     public function logout(): void
     {
@@ -58,9 +53,6 @@ class DeveloperAuthRepository
 
     /**
      * Check if a user is a developer and is approved.
-     *
-     * @param User $user
-     * @return bool
      */
     public function isDeveloperApproved(User $user): bool
     {

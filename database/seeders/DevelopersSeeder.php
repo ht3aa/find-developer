@@ -3,10 +3,9 @@
 namespace Database\Seeders;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\WorldGovernorate;
 use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
-use App\Models\JobTitle;
 use App\Models\Skill;
 use Illuminate\Database\Seeder;
 

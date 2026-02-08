@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use App\Enums\Currency;
+use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use Illuminate\Database\Eloquent\Attributes\Scope;
-use App\Models\Scopes\UserScope;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ScopedBy([UserScope::class])]
 class UserService extends Model
@@ -70,7 +69,6 @@ class UserService extends Model
         return $this->belongsToMany(Badge::class, 'badge_user_service')
             ->withTimestamps();
     }
-
 
     public function getActivitylogOptions(): LogOptions
     {

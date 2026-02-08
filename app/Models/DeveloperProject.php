@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\DeveloperScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Scopes\DeveloperScope;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ScopedBy([DeveloperScope::class])]
 class DeveloperProject extends Model

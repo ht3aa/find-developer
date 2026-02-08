@@ -22,10 +22,10 @@ class UserAppointmentForm
                     ->schema([
                         Select::make('user_id')
                             ->label('HR/Client User')
-                            ->relationship('user', 'name', fn($query) => $query->where('user_type', UserType::HR))
+                            ->relationship('user', 'name', fn ($query) => $query->where('user_type', UserType::HR))
                             ->searchable()
                             ->preload()
-                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->hidden(! auth()->user()->isSuperAdmin())
                             ->required()
                             ->helperText('Select the HR/Client user who created this appointment'),
 
@@ -34,16 +34,16 @@ class UserAppointmentForm
                             ->relationship('developer', 'name')
                             ->searchable()
                             ->preload()
-                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->hidden(! auth()->user()->isSuperAdmin())
                             ->required()
                             ->helperText('Select the developer for this appointment'),
 
                         Select::make('user_service_id')
                             ->label('Service')
-                            ->relationship('service', 'name', fn($query, $get) => $query->where('is_active', true)->where('user_id', $get('user_id')))
+                            ->relationship('service', 'name', fn ($query, $get) => $query->where('is_active', true)->where('user_id', $get('user_id')))
                             ->searchable()
                             ->preload()
-                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->hidden(! auth()->user()->isSuperAdmin())
                             ->nullable()
                             ->helperText('Optional: Link this appointment to a service'),
 

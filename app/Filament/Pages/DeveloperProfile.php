@@ -5,16 +5,14 @@ namespace App\Filament\Pages;
 use App\Enums\SubscriptionPlan;
 use App\Filament\Resources\Developers\Schemas\DeveloperProfileForm;
 use App\Models\Developer;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class DeveloperProfile extends Page implements HasSchemas
@@ -95,8 +93,8 @@ class DeveloperProfile extends Page implements HasSchemas
 
         $data = $this->form->getState();
 
-        $data["expected_salary_from"] = Str::of($data["expected_salary_from"])->remove(',')->toInteger();
-        $data["expected_salary_to"] = Str::of($data["expected_salary_to"])->remove(',')->toInteger();
+        $data['expected_salary_from'] = Str::of($data['expected_salary_from'])->remove(',')->toInteger();
+        $data['expected_salary_to'] = Str::of($data['expected_salary_to'])->remove(',')->toInteger();
 
         $this->record->update($data);
 
@@ -107,12 +105,11 @@ class DeveloperProfile extends Page implements HasSchemas
             ->send();
     }
 
-
     public static function getSaveAction(): Action
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn() => $this->save())
+            ->action(fn () => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',

@@ -21,7 +21,7 @@ class ActivityLogsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn(Builder $query) => $query->with([
+            ->modifyQueryUsing(fn (Builder $query) => $query->with([
                 'subject' => function ($query) {
                     $query->withoutGlobalScopes();
                 },
@@ -86,7 +86,6 @@ class ActivityLogsTable
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
-
                 TextColumn::make('created_at')
                     ->label('تاريخ الإنشاء')
                     ->dateTime('d-m-Y H:i:s')
@@ -106,12 +105,12 @@ class ActivityLogsTable
                 SelectFilter::make('subject_id')
                     ->label('رقم الموضوع')
                     ->preload()
-                    ->options(fn(Builder $query) => Activity::limit(50)->pluck('subject_id', 'subject_id'))
-                    ->getSearchResultsUsing(fn(string $search) => Activity::where('subject_id', 'like', "%{$search}%")->limit(50)->pluck('subject_id', 'subject_id'))
+                    ->options(fn (Builder $query) => Activity::limit(50)->pluck('subject_id', 'subject_id'))
+                    ->getSearchResultsUsing(fn (string $search) => Activity::where('subject_id', 'like', "%{$search}%")->limit(50)->pluck('subject_id', 'subject_id'))
                     ->searchable(),
 
                 SelectFilter::make('subject_type')
-                    ->options(fn() => collect(glob(app_path('Models') . '/*.php'))->map(fn($file) => 'App\Models\\' . basename($file, '.php'))->mapWithKeys(fn($class) => [$class => $class]))
+                    ->options(fn () => collect(glob(app_path('Models').'/*.php'))->map(fn ($file) => 'App\Models\\'.basename($file, '.php'))->mapWithKeys(fn ($class) => [$class => $class]))
                     ->label('نوع الموضوع'),
 
                 SelectFilter::make('causer_id')
@@ -125,7 +124,7 @@ class ActivityLogsTable
                             ->get()
                             ->pluck('name', 'id');
                     })
-                    ->getSearchResultsUsing(fn(string $query) => User::where('name', 'like', "%{$query}%")->limit(50)->pluck('name', 'id'))
+                    ->getSearchResultsUsing(fn (string $query) => User::where('name', 'like', "%{$query}%")->limit(50)->pluck('name', 'id'))
                     ->searchable(),
 
             ])
@@ -138,7 +137,7 @@ class ActivityLogsTable
                     Action::make('reverse-activity')
                         ->label('التراجع عن التغيير')
                         ->icon('heroicon-o-arrow-uturn-left')
-                        ->visible(fn($record) => $record->event === ActivityLogEvent::Updated->value)
+                        ->visible(fn ($record) => $record->event === ActivityLogEvent::Updated->value)
                         ->color('warning')
                         ->requiresConfirmation()
                         ->after(function () {

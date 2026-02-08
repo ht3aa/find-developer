@@ -5,11 +5,10 @@ namespace App\Filament\Resources\UserServices\Schemas;
 use App\Enums\Currency;
 use App\Enums\UserType;
 use App\Filament\Customs\ExpectedPriceField;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -24,10 +23,10 @@ class UserServiceForm
                     ->schema([
                         Select::make('user_id')
                             ->label('User')
-                            ->relationship('user', 'name', fn($query) => $query->where('user_type', UserType::HR))
+                            ->relationship('user', 'name', fn ($query) => $query->where('user_type', UserType::HR))
                             ->searchable()
                             ->preload()
-                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->hidden(! auth()->user()->isSuperAdmin())
                             ->required()
                             ->helperText('Select the HR/Client user who owns this service'),
 
@@ -84,10 +83,10 @@ class UserServiceForm
 
                         Select::make('badges')
                             ->label('Earnable Badges')
-                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                            ->relationship('badges', 'name', fn ($query) => $query->where('is_active', true))
                             ->searchable()
                             ->preload()
-                            ->hidden(!auth()->user()->isSuperAdmin())
+                            ->hidden(! auth()->user()->isSuperAdmin())
                             ->multiple()
                             ->nullable()
                             ->helperText('Select one or more badges that developers can earn by purchasing this service'),

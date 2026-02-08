@@ -19,7 +19,7 @@ class UserAppointmentsTable
                 TextColumn::make('user.name')
                     ->label('HR/Client User')
                     ->searchable()
-                    ->hidden(!auth()->user()->isSuperAdmin())
+                    ->hidden(! auth()->user()->isSuperAdmin())
                     ->sortable(),
 
                 TextColumn::make('developer.name')

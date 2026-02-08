@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Enums\JobStatus;
 use App\Enums\Currency;
+use App\Enums\JobStatus;
 use App\Enums\WorldGovernorate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class CompanyJob extends Model
 {

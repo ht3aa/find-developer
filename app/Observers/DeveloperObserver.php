@@ -17,11 +17,11 @@ class DeveloperObserver
         // Check if status is dirty and is now APPROVED
         if ($developer->isDirty('status') && $developer->status === DeveloperStatus::APPROVED) {
             // Only send email if developer has an email address
-            if (!empty($developer->email)) {
+            if (! empty($developer->email)) {
                 $message = "Hello {$developer->name}\n\n";
                 $message .= "Congratulations! Your developer profile has been approved.\n\n";
                 $message .= "Best Regards\n";
-                $message .= "Hasan Tahseen an Admin in find-developer.com platform";
+                $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
 
                 $developer->notify(new MailtrapNotification(
                     subject: 'Developer Profile Approved',
@@ -31,6 +31,7 @@ class DeveloperObserver
             }
         }
     }
+
     public function saving(Developer $developer): void
     {
         if ($developer->isDirty('name') && empty($developer->slug)) {

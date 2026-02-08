@@ -23,7 +23,7 @@ class RolesRelationManager extends RelationManager
                     ->badge()
                     ->searchable()
                     ->sortable()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'super_admin' => 'danger',
                         'panel_user' => 'info',
                         default => 'gray',

@@ -9,7 +9,6 @@ class CreateDeveloperProject extends CreateRecord
 {
     protected static string $resource = DeveloperProjectResource::class;
 
-
     public function mutateFormDataBeforeCreate(array $data): array
     {
         if (auth()->user()->isDeveloper()) {

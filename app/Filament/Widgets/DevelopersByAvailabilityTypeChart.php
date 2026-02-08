@@ -13,7 +13,7 @@ class DevelopersByAvailabilityTypeChart extends ChartWidget
 
     protected function getData(): array
     {
-        $iraqLocations = array_map(fn($location) => $location->value, WorldGovernorate::getIraqLocations());
+        $iraqLocations = array_map(fn ($location) => $location->value, WorldGovernorate::getIraqLocations());
         $types = AvailabilityType::cases();
         $labels = [];
         $data = [];

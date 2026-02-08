@@ -5,7 +5,6 @@ namespace App\Filament\Resources\UserServices\Tables;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -37,7 +36,7 @@ class UserServicesTable
 
                 TextColumn::make('price')
                     ->sortable()
-                    ->formatStateUsing(fn($state) =>  number_format($state))
+                    ->formatStateUsing(fn ($state) => number_format($state))
                     ->toggleable(),
 
                 ToggleColumn::make('is_active')
@@ -46,7 +45,7 @@ class UserServicesTable
 
                 TextColumn::make('time_minutes')
                     ->label('Duration')
-                    ->formatStateUsing(fn($state) => $state ? "{$state} minutes" : '-')
+                    ->formatStateUsing(fn ($state) => $state ? "{$state} minutes" : '-')
                     ->sortable()
                     ->toggleable(),
 

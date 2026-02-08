@@ -2,28 +2,27 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\AvailabilityType;
+use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
-use App\Enums\AvailabilityType;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Skill;
-use Illuminate\Validation\Rule;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
-use Filament\Actions\Action;
 
 class DeveloperRegistration extends SimplePage implements HasForms
 {
@@ -40,13 +39,12 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $this->form->fill();
     }
 
-
     public function hasTopbar(): bool
     {
         return false;
     }
 
-    public function getMaxWidth(): Width | string | null
+    public function getMaxWidth(): Width|string|null
     {
         return Width::SevenExtraLarge;
     }
@@ -93,7 +91,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->schema([
                         Select::make('job_title_id')
                             ->label('Job Title')
-                            ->options(fn() => JobTitle::active()->pluck('name', 'id'))
+                            ->options(fn () => JobTitle::active()->pluck('name', 'id'))
                             ->required()
                             ->searchable(),
 
@@ -131,9 +129,9 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
                         Select::make('skills')
                             ->multiple()
-                            ->options(fn() => Skill::active()->pluck('name', 'id'))
+                            ->options(fn () => Skill::active()->pluck('name', 'id'))
                             ->preload()
-                            ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                            ->getSearchResultsUsing(fn (string $query) => Skill::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'id'))
                             ->searchable()
                             ->columnSpanFull(),
                     ])
@@ -173,7 +171,6 @@ class DeveloperRegistration extends SimplePage implements HasForms
     {
         $this->validate();
 
-
         $data = $this->form->getState();
 
         // Extract skills before creating developer
@@ -185,7 +182,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $developer = Developer::create($data);
 
         // Attach skills
-        if (!empty($skills)) {
+        if (! empty($skills)) {
             $developer->skills()->attach($skills);
         }
 

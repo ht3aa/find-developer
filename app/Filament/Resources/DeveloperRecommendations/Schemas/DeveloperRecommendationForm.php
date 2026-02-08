@@ -22,8 +22,8 @@ class DeveloperRecommendationForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->disabled(fn($operation) => $operation === 'edit')
-                            ->dehydrated(fn($operation) => $operation !== 'edit'),
+                            ->disabled(fn ($operation) => $operation === 'edit')
+                            ->dehydrated(fn ($operation) => $operation !== 'edit'),
 
                         Select::make('recommended_id')
                             ->label('Recommended Developer')
@@ -31,8 +31,8 @@ class DeveloperRecommendationForm
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->disabled(fn($operation) => $operation === 'edit')
-                            ->dehydrated(fn($operation) => $operation !== 'edit'),
+                            ->disabled(fn ($operation) => $operation === 'edit')
+                            ->dehydrated(fn ($operation) => $operation !== 'edit'),
 
                         Textarea::make('recommendation_note')
                             ->label('Recommendation Note')

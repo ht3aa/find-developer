@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum UserType: string implements HasLabel, HasColor, HasIcon
+enum UserType: string implements HasColor, HasIcon, HasLabel
 {
     case DEVELOPER = 'developer';
     case ADMIN = 'admin';

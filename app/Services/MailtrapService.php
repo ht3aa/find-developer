@@ -2,15 +2,18 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class MailtrapService
 {
     protected string $apiUrl;
+
     protected string $apiToken;
+
     protected ?string $defaultFromEmail;
+
     protected ?string $defaultFromName;
 
     public function __construct()
@@ -24,14 +27,14 @@ class MailtrapService
     /**
      * Send an email via Mailtrap API
      *
-     * @param string|array $to Email address(es) to send to
-     * @param string $subject Email subject
-     * @param string $text Plain text content
-     * @param string|null $html HTML content (optional)
-     * @param array $from ['email' => string, 'name' => string] (optional, uses config defaults)
-     * @param string|null $category Category for tracking (optional)
-     * @param array $attachments Array of attachment paths (optional)
-     * @return array
+     * @param  string|array  $to  Email address(es) to send to
+     * @param  string  $subject  Email subject
+     * @param  string  $text  Plain text content
+     * @param  string|null  $html  HTML content (optional)
+     * @param  array  $from  ['email' => string, 'name' => string] (optional, uses config defaults)
+     * @param  string|null  $category  Category for tracking (optional)
+     * @param  array  $attachments  Array of attachment paths (optional)
+     *
      * @throws Exception
      */
     public function send(
@@ -78,14 +81,14 @@ class MailtrapService
         }
 
         // Add attachments if provided
-        if (!empty($attachments)) {
+        if (! empty($attachments)) {
             $payload['attachments'] = $this->prepareAttachments($attachments);
         }
 
         try {
             /** @var \Illuminate\Http\Client\Response $response */
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
+                'Authorization' => 'Bearer '.$this->apiToken,
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl, $payload);
 
@@ -108,7 +111,7 @@ class MailtrapService
                 'subject' => $subject,
             ]);
 
-            throw new Exception('Failed to send email via Mailtrap: ' . $response->body());
+            throw new Exception('Failed to send email via Mailtrap: '.$response->body());
         } catch (Exception $e) {
             Log::error('Mailtrap service exception', [
                 'message' => $e->getMessage(),
@@ -123,8 +126,7 @@ class MailtrapService
     /**
      * Prepare attachments for Mailtrap API
      *
-     * @param array $attachments Array of file paths
-     * @return array
+     * @param  array  $attachments  Array of file paths
      */
     protected function prepareAttachments(array $attachments): array
     {
@@ -150,13 +152,13 @@ class MailtrapService
     /**
      * Send bulk emails via Mailtrap Bulk API
      *
-     * @param array $to Array of email addresses to send to
-     * @param string $subject Email subject
-     * @param string $text Plain text content
-     * @param string|null $html HTML content (optional)
-     * @param array $from ['email' => string, 'name' => string] (optional, uses config defaults)
-     * @param string|null $category Category for tracking (optional)
-     * @return array
+     * @param  array  $to  Array of email addresses to send to
+     * @param  string  $subject  Email subject
+     * @param  string  $text  Plain text content
+     * @param  string|null  $html  HTML content (optional)
+     * @param  array  $from  ['email' => string, 'name' => string] (optional, uses config defaults)
+     * @param  string|null  $category  Category for tracking (optional)
+     *
      * @throws Exception
      */
     public function sendBulk(
@@ -206,10 +208,10 @@ class MailtrapService
 
         try {
             $bulkApiUrl = 'https://bulk.api.mailtrap.io/api/send';
-            
+
             /** @var \Illuminate\Http\Client\Response $response */
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
+                'Authorization' => 'Bearer '.$this->apiToken,
                 'Content-Type' => 'application/json',
             ])->post($bulkApiUrl, $payload);
 
@@ -233,7 +235,7 @@ class MailtrapService
                 'subject' => $subject,
             ]);
 
-            throw new Exception('Failed to send bulk email via Mailtrap: ' . $response->body());
+            throw new Exception('Failed to send bulk email via Mailtrap: '.$response->body());
         } catch (Exception $e) {
             Log::error('Mailtrap bulk service exception', [
                 'message' => $e->getMessage(),
@@ -248,8 +250,8 @@ class MailtrapService
     /**
      * Send a test email
      *
-     * @param string $to Email address
-     * @return array
+     * @param  string  $to  Email address
+     *
      * @throws Exception
      */
     public function sendTest(string $to): array

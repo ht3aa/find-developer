@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\SubscriptionPlan;
 use App\Models\Developer;
 use App\Models\Scopes\DeveloperScope;
-use Illuminate\Http\Request;
 
 class DeveloperProjectsController extends Controller
 {
@@ -18,8 +17,7 @@ class DeveloperProjectsController extends Controller
                 ->orderBy('created_at', 'desc');
         }])->where('slug', $developerSlug)->firstOrFail();
 
-
-        if ($developer->subscription_plan !== SubscriptionPlan::PREMIUM && !$developer->recommended_by_us) {
+        if ($developer->subscription_plan !== SubscriptionPlan::PREMIUM && ! $developer->recommended_by_us) {
             return redirect()->route('home');
         }
 

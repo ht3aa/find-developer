@@ -49,8 +49,11 @@ class CompanyJobsTable
                 TextColumn::make('salary_from')
                     ->label('Salary From')
                     ->formatStateUsing(function ($state, $record) {
-                        if (!$state) return '-';
-                        return number_format($state) . ' ' . ($record->salary_currency?->value ?? 'IQD');
+                        if (! $state) {
+                            return '-';
+                        }
+
+                        return number_format($state).' '.($record->salary_currency?->value ?? 'IQD');
                     })
                     ->sortable()
                     ->toggleable(),
@@ -58,8 +61,11 @@ class CompanyJobsTable
                 TextColumn::make('salary_to')
                     ->label('Salary To')
                     ->formatStateUsing(function ($state, $record) {
-                        if (!$state) return '-';
-                        return number_format($state) . ' ' . ($record->salary_currency?->value ?? 'IQD');
+                        if (! $state) {
+                            return '-';
+                        }
+
+                        return number_format($state).' '.($record->salary_currency?->value ?? 'IQD');
                     })
                     ->sortable()
                     ->toggleable(),
@@ -91,7 +97,7 @@ class CompanyJobsTable
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== JobStatus::APPROVED)
+                        ->visible(fn ($record) => $record->status !== JobStatus::APPROVED)
                         ->action(function ($record) {
                             $record->update(['status' => JobStatus::APPROVED]);
 
@@ -107,7 +113,7 @@ class CompanyJobsTable
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== JobStatus::REJECTED)
+                        ->visible(fn ($record) => $record->status !== JobStatus::REJECTED)
                         ->action(function ($record) {
                             $record->update(['status' => JobStatus::REJECTED]);
 

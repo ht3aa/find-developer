@@ -2,12 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Enums\DeveloperStatus;
-use App\Enums\Currency;
-use App\Enums\WorldGovernorate;
-use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
+use App\Enums\Currency;
 use App\Enums\RecommendationStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Badge;
@@ -16,10 +15,8 @@ use App\Models\DeveloperRecommendation;
 use App\Models\JobTitle;
 use App\Models\Scopes\DeveloperScope;
 use App\Models\Skill;
-use Illuminate\Support\Facades\Auth;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
@@ -27,34 +24,42 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
-use Livewire\Component;
-use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 
-class DeveloperSearch extends Component implements HasSchemas, HasActions
+class DeveloperSearch extends Component implements HasActions, HasSchemas
 {
-    use WithPagination;
-    use InteractsWithSchemas;
     use InteractsWithActions;
-
+    use InteractsWithSchemas;
+    use WithPagination;
 
     #[Url]
     public string $search = '';
+
     #[Url]
     public array $jobTitles = [];
+
     #[Url]
     public array $skills = [];
+
     #[Url]
     public array $locations = [];
+
     #[Url]
     public int $minExperience = 0;
+
     #[Url]
     public int $maxExperience = 50;
+
     #[Url]
     public string $expected_salary_from = '0';
+
     #[Url]
     public string $expected_salary_to = '0';
+
     #[Url]
     public ?Currency $salary_currency = null;
 
@@ -70,7 +75,6 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
     #[Url]
     public ?int $availableOnly = null;
 
-
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -85,7 +89,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                             ->columnSpanFull()
                             ->live(debounce: 300)
                             ->hidden()
-                            ->afterStateUpdated(fn() => $this->resetPage()),
+                            ->afterStateUpdated(fn () => $this->resetPage()),
 
                         Grid::make(2)
                             ->schema([
@@ -95,9 +99,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->searchable()
                                     ->options(JobTitle::active()->limit(50)->pluck('name', 'name'))
                                     ->preload()
-                                    ->getSearchResultsUsing(fn(string $query) => JobTitle::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'name'))
+                                    ->getSearchResultsUsing(fn (string $query) => JobTitle::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'name'))
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('skills')
                                     ->label('Skills')
@@ -105,9 +109,9 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->searchable()
                                     ->options(Skill::active()->limit(50)->pluck('name', 'name'))
                                     ->preload()
-                                    ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'name'))
+                                    ->getSearchResultsUsing(fn (string $query) => Skill::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'name'))
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('locations')
                                     ->label('Locations')
@@ -115,11 +119,11 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->searchable()
                                     ->options(
                                         collect(WorldGovernorate::cases())->mapWithKeys(
-                                            fn($case) => [$case->value => $case->getLabel()]
+                                            fn ($case) => [$case->value => $case->getLabel()]
                                         )
                                     )
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 TextInput::make('minExperience')
                                     ->label('Min Experience (years)')
@@ -127,7 +131,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->minValue(0)
                                     ->placeholder('0')
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 TextInput::make('maxExperience')
                                     ->label('Max Experience (years)')
@@ -135,22 +139,22 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->minValue(0)
                                     ->placeholder('50')
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 ExpectedSalaryFromField::make()
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 ExpectedSalaryToField::make()
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('salary_currency')
                                     ->label('Salary Currency')
                                     ->options(Currency::class)
                                     ->searchable()
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('availability_type')
                                     ->label('Availability Type')
@@ -159,7 +163,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->searchable()
                                     ->nullable()
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('has_urls')
                                     ->label('Has URLs')
@@ -172,17 +176,17 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                                     ->searchable()
                                     ->nullable()
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('badges')
                                     ->label('Badges')
                                     ->multiple()
                                     ->searchable()
                                     ->options(Badge::where('is_active', true)->orderBy('name')->limit(50)->pluck('name', 'id'))
-                                    ->getSearchResultsUsing(fn(string $query) => Badge::where('is_active', true)->where('name', 'like', '%' . $query . '%')->orderBy('name')->limit(50)->pluck('name', 'id'))
+                                    ->getSearchResultsUsing(fn (string $query) => Badge::where('is_active', true)->where('name', 'like', '%'.$query.'%')->orderBy('name')->limit(50)->pluck('name', 'id'))
                                     ->preload()
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
                             ]),
 
                         Select::make('availableOnly')
@@ -193,8 +197,8 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                             ])
                             ->live()
                             ->placeholder('All')
-                            ->afterStateUpdated(fn() => $this->resetPage()),
-                    ])
+                            ->afterStateUpdated(fn () => $this->resetPage()),
+                    ]),
             ]);
     }
 
@@ -208,27 +212,27 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         $count = 0;
 
         // Count search filter
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $count++;
         }
 
         // Count array filters
-        if (!empty($this->jobTitles)) {
+        if (! empty($this->jobTitles)) {
             $count++;
         }
-        if (!empty($this->skills)) {
+        if (! empty($this->skills)) {
             $count++;
         }
-        if (!empty($this->locations)) {
+        if (! empty($this->locations)) {
             $count++;
         }
-        if (!empty($this->availability_type)) {
+        if (! empty($this->availability_type)) {
             $count++;
         }
-        if (!empty($this->has_urls)) {
+        if (! empty($this->has_urls)) {
             $count++;
         }
-        if (!empty($this->badges)) {
+        if (! empty($this->badges)) {
             $count++;
         }
 
@@ -241,10 +245,10 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
         }
 
         // Count salary filters
-        if (!empty($this->expected_salary_from) && $this->expected_salary_from !== '0') {
+        if (! empty($this->expected_salary_from) && $this->expected_salary_from !== '0') {
             $count++;
         }
-        if (!empty($this->expected_salary_to) && $this->expected_salary_to !== '0') {
+        if (! empty($this->expected_salary_to) && $this->expected_salary_to !== '0') {
             $count++;
         }
         if ($this->salary_currency !== null) {
@@ -279,50 +283,50 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             }])
             ->withCount([
                 'badges',
-                'badges as has_validated_data_count' => fn($query) => $query->where('slug', 'data-validated'),
+                'badges as has_validated_data_count' => fn ($query) => $query->where('slug', 'data-validated'),
             ])
-            ->when(!empty($filters['search']), function ($query) use ($filters) {
+            ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
-                    $q->where('name', 'like', '%' . $filters['search'] . '%')
-                        ->orWhere('email', 'like', '%' . $filters['search'] . '%')
-                        ->orWhere('location', 'like', '%' . $filters['search'] . '%')
+                    $q->where('name', 'like', '%'.$filters['search'].'%')
+                        ->orWhere('email', 'like', '%'.$filters['search'].'%')
+                        ->orWhere('location', 'like', '%'.$filters['search'].'%')
                         ->orWhereHas('skills', function ($skillQuery) use ($filters) {
-                            $skillQuery->where('name', 'like', '%' . $filters['search'] . '%');
+                            $skillQuery->where('name', 'like', '%'.$filters['search'].'%');
                         });
                 });
             })
-            ->when(!empty($filters['jobTitles']), function ($query) use ($filters) {
+            ->when(! empty($filters['jobTitles']), function ($query) use ($filters) {
                 $query->whereHas('jobTitle', function ($jobTitleQuery) use ($filters) {
                     $jobTitleQuery->whereIn('name', $filters['jobTitles']);
                 });
             })
-            ->when(!empty($filters['skills']), function ($query) use ($filters) {
+            ->when(! empty($filters['skills']), function ($query) use ($filters) {
                 $query->whereHas('skills', function ($skillQuery) use ($filters) {
                     $skillQuery->whereIn('name', $filters['skills']);
                 });
             })
-            ->when(!empty($filters['locations']), function ($query) use ($filters) {
+            ->when(! empty($filters['locations']), function ($query) use ($filters) {
                 $query->whereIn('location', $filters['locations']);
             })
-            ->when(!empty($filters['minExperience']), function ($query) use ($filters) {
+            ->when(! empty($filters['minExperience']), function ($query) use ($filters) {
                 $query->where('years_of_experience', '>=', $filters['minExperience']);
             })
-            ->when(!empty($filters['maxExperience']), function ($query) use ($filters) {
+            ->when(! empty($filters['maxExperience']), function ($query) use ($filters) {
                 $query->where('years_of_experience', '<=', $filters['maxExperience']);
             })
-            ->when(!empty($filters['expected_salary_from']) && $filters['expected_salary_to'] === null, function ($query) use ($filters) {
-                $query->where('expected_salary_from', '>=',  Str::of($filters['expected_salary_from'])->replace(',', '')->toInteger());
+            ->when(! empty($filters['expected_salary_from']) && $filters['expected_salary_to'] === null, function ($query) use ($filters) {
+                $query->where('expected_salary_from', '>=', Str::of($filters['expected_salary_from'])->replace(',', '')->toInteger());
             })
-            ->when(!empty($filters['expected_salary_to']) && $filters['expected_salary_from'] === null, function ($query) use ($filters) {
+            ->when(! empty($filters['expected_salary_to']) && $filters['expected_salary_from'] === null, function ($query) use ($filters) {
                 $query->where('expected_salary_to', '<=', Str::of($filters['expected_salary_to'])->replace(',', '')->toInteger());
             })
-            ->when(!empty($filters['expected_salary_from']) && !empty($filters['expected_salary_to']), function ($query) use ($filters) {
+            ->when(! empty($filters['expected_salary_from']) && ! empty($filters['expected_salary_to']), function ($query) use ($filters) {
                 $query->whereBetween('expected_salary_from', [Str::of($filters['expected_salary_from'])->replace(',', '')->toInteger(), Str::of($filters['expected_salary_to'])->replace(',', '')->toInteger()]);
             })
-            ->when(!empty($filters['salary_currency']), function ($query) use ($filters) {
+            ->when(! empty($filters['salary_currency']), function ($query) use ($filters) {
                 $query->where('salary_currency', $filters['salary_currency']);
             })
-            ->when(!empty($filters['availability_type']), function ($query) use ($filters) {
+            ->when(! empty($filters['availability_type']), function ($query) use ($filters) {
                 $types = is_array($filters['availability_type'])
                     ? $filters['availability_type']
                     : [$filters['availability_type']];
@@ -333,7 +337,7 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                     }
                 });
             })
-            ->when(!empty($filters['has_urls']), function ($query) use ($filters) {
+            ->when(! empty($filters['has_urls']), function ($query) use ($filters) {
                 $urls = is_array($filters['has_urls'])
                     ? $filters['has_urls']
                     : [$filters['has_urls']];
@@ -347,16 +351,16 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
                     }
                 });
             })
-            ->when(!empty($filters['badges']), function ($query) use ($filters) {
+            ->when(! empty($filters['badges']), function ($query) use ($filters) {
                 $badgeIds = is_array($filters['badges']) ? $filters['badges'] : [$filters['badges']];
-                $query->whereHas('badges', fn($q) => $q->whereIn('badges.id', $badgeIds));
+                $query->whereHas('badges', fn ($q) => $q->whereIn('badges.id', $badgeIds));
             })
-            ->when(!is_null($filters['availableOnly']), function ($query) use ($filters) {
+            ->when(! is_null($filters['availableOnly']), function ($query) use ($filters) {
                 $query->where('is_available', $filters['availableOnly']);
             });
 
         // Get developers by subscription plan; order by validated-data badge first, then badge count, then recommendations
-        $badgeOrder = fn($query) => $query
+        $badgeOrder = fn ($query) => $query
             ->orderBy('has_validated_data_count', 'desc')
             ->orderBy('badges_count', 'desc')
             ->orderBy('recommendations_received_count', 'desc')
@@ -377,16 +381,15 @@ class DeveloperSearch extends Component implements HasSchemas, HasActions
             ->tap($badgeOrder)
             ->paginate(15);
 
-
         $totalCount = $premiumDevelopers->count() + $proDevelopers->count() + $freeDevelopers->total();
 
         Auth::user()?->loadMissing('developer');
         $currentUserDeveloper = Auth::check() ? Auth::user()->developer : null;
         $recommendedDeveloperIds = $currentUserDeveloper
             ? DeveloperRecommendation::where('recommender_id', $currentUserDeveloper->id)
-            ->whereIn('status', [RecommendationStatus::PENDING, RecommendationStatus::APPROVED])
-            ->pluck('recommended_id')
-            ->all()
+                ->whereIn('status', [RecommendationStatus::PENDING, RecommendationStatus::APPROVED])
+                ->pluck('recommended_id')
+                ->all()
             : [];
 
         return view('livewire.developer-search', [

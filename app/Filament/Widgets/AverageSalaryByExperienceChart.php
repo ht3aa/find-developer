@@ -36,6 +36,7 @@ class AverageSalaryByExperienceChart extends ChartWidget
                 if ($developer->expected_salary_to) {
                     return ($developer->expected_salary_from + $developer->expected_salary_to) / 2;
                 }
+
                 return $developer->expected_salary_from;
             })->filter();
 

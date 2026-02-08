@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Skills\Tables;
 
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,7 +19,7 @@ class SkillsTable
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->slug),
+                    ->description(fn ($record) => $record->slug),
 
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Active')

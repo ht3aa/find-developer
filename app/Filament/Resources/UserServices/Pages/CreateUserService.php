@@ -9,16 +9,14 @@ class CreateUserService extends CreateRecord
 {
     protected static string $resource = UserServiceResource::class;
 
-
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (!auth()->user()->isSuperAdmin()) {
+        if (! auth()->user()->isSuperAdmin()) {
             $data['user_id'] = auth()->id();
         }
 
         return $data;
     }
-
 
     protected function getRedirectUrl(): string
     {

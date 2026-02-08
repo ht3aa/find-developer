@@ -3,8 +3,8 @@
 namespace App\Notifications\Channels;
 
 use App\Services\MailtrapService;
-use Illuminate\Notifications\Notification;
 use Exception;
+use Illuminate\Notifications\Notification;
 
 class MailtrapBulkChannel
 {
@@ -18,14 +18,14 @@ class MailtrapBulkChannel
     /**
      * Send the given notification.
      *
-     * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
+     * @param  mixed  $notifiable
      * @return void
+     *
      * @throws Exception
      */
     public function send($notifiable, Notification $notification)
     {
-        if (!method_exists($notification, 'toMailtrapBulk')) {
+        if (! method_exists($notification, 'toMailtrapBulk')) {
             throw new Exception('Notification must implement toMailtrapBulk method');
         }
 
@@ -37,10 +37,10 @@ class MailtrapBulkChannel
 
         if (empty($emails)) {
             // Fallback: try to get email from notifiable if it's a single model
-            $email = $notifiable->routeNotificationFor('mailtrap', $notification) 
-                ?? $notifiable->email 
+            $email = $notifiable->routeNotificationFor('mailtrap', $notification)
+                ?? $notifiable->email
                 ?? $notifiable->routeNotificationFor('mail', $notification);
-            
+
             if ($email) {
                 $emails = [$email];
             }

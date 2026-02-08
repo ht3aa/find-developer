@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum AvailabilityType: string implements HasLabel, HasColor, HasIcon
+enum AvailabilityType: string implements HasColor, HasIcon, HasLabel
 {
     case FULL_TIME = 'full-time';
     case PART_TIME = 'part-time';

@@ -2,26 +2,23 @@
 
 namespace App\Models;
 
-use App\Enums\DeveloperStatus;
-use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
-use App\Enums\SubscriptionPlan;
-use App\Enums\AvailabilityType;
 use App\Casts\AvailabilityTypeArray;
+use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
+use App\Models\Scopes\ApprovedScope;
+use App\Observers\DeveloperObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Scopes\ApprovedScope;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use App\Observers\DeveloperObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use App\Models\Badge;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ScopedBy([ApprovedScope::class])]
 #[ObservedBy(DeveloperObserver::class)]

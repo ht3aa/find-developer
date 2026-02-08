@@ -3,13 +3,13 @@
 namespace App\Filament\Resources\DeveloperProjects\Tables;
 
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Table;
 
 class DeveloperProjectsTable
 {
@@ -33,7 +33,7 @@ class DeveloperProjectsTable
 
                 Tables\Columns\TextColumn::make('link')
                     ->label('Link')
-                    ->url(fn($record) => $record->link)
+                    ->url(fn ($record) => $record->link)
                     ->openUrlInNewTab()
                     ->limit(30)
                     ->icon('heroicon-o-link')

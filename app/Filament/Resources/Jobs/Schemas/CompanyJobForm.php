@@ -2,17 +2,16 @@
 
 namespace App\Filament\Resources\Jobs\Schemas;
 
-use App\Enums\JobStatus;
 use App\Enums\Currency;
+use App\Enums\JobStatus;
 use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class CompanyJobForm
 {

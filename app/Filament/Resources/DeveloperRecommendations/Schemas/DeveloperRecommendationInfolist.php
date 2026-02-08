@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\DeveloperRecommendations\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class DeveloperRecommendationInfolist
@@ -30,14 +30,14 @@ class DeveloperRecommendationInfolist
                                 TextEntry::make('recommender.email')
                                     ->label('Email')
                                     ->copyable()
-                                    ->url(fn($record) => 'mailto:' . $record->recommender->email)
+                                    ->url(fn ($record) => 'mailto:'.$record->recommender->email)
                                     ->openUrlInNewTab(),
 
                                 TextEntry::make('recommender.phone')
                                     ->label('Phone')
                                     ->copyable()
                                     ->placeholder('Not provided')
-                                    ->visible(fn($record) => !empty($record->recommender->phone)),
+                                    ->visible(fn ($record) => ! empty($record->recommender->phone)),
 
                                 TextEntry::make('recommender.location')
                                     ->label('Location')
@@ -45,30 +45,30 @@ class DeveloperRecommendationInfolist
 
                                 TextEntry::make('recommender.portfolio_url')
                                     ->label('Portfolio')
-                                    ->url(fn($record) => $record->recommender->portfolio_url)
+                                    ->url(fn ($record) => $record->recommender->portfolio_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-globe-alt')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommender->portfolio_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommender->portfolio_url)),
 
                                 TextEntry::make('recommender.linkedin_url')
                                     ->label('LinkedIn')
-                                    ->url(fn($record) => $record->recommender->linkedin_url)
+                                    ->url(fn ($record) => $record->recommender->linkedin_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-link')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommender->linkedin_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommender->linkedin_url)),
 
                                 TextEntry::make('recommender.github_url')
                                     ->label('GitHub')
-                                    ->url(fn($record) => $record->recommender->github_url)
+                                    ->url(fn ($record) => $record->recommender->github_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-code-bracket')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommender->github_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommender->github_url)),
                             ])
                             ->columnSpan(1),
 
@@ -87,14 +87,14 @@ class DeveloperRecommendationInfolist
                                 TextEntry::make('recommended.email')
                                     ->label('Email')
                                     ->copyable()
-                                    ->url(fn($record) => 'mailto:' . $record->recommended->email)
+                                    ->url(fn ($record) => 'mailto:'.$record->recommended->email)
                                     ->openUrlInNewTab(),
 
                                 TextEntry::make('recommended.phone')
                                     ->label('Phone')
                                     ->copyable()
                                     ->placeholder('Not provided')
-                                    ->visible(fn($record) => !empty($record->recommended->phone)),
+                                    ->visible(fn ($record) => ! empty($record->recommended->phone)),
 
                                 TextEntry::make('recommended.location')
                                     ->label('Location')
@@ -102,30 +102,30 @@ class DeveloperRecommendationInfolist
 
                                 TextEntry::make('recommended.portfolio_url')
                                     ->label('Portfolio')
-                                    ->url(fn($record) => $record->recommended->portfolio_url)
+                                    ->url(fn ($record) => $record->recommended->portfolio_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-globe-alt')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommended->portfolio_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommended->portfolio_url)),
 
                                 TextEntry::make('recommended.linkedin_url')
                                     ->label('LinkedIn')
-                                    ->url(fn($record) => $record->recommended->linkedin_url)
+                                    ->url(fn ($record) => $record->recommended->linkedin_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-link')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommended->linkedin_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommended->linkedin_url)),
 
                                 TextEntry::make('recommended.github_url')
                                     ->label('GitHub')
-                                    ->url(fn($record) => $record->recommended->github_url)
+                                    ->url(fn ($record) => $record->recommended->github_url)
                                     ->openUrlInNewTab()
                                     ->placeholder('Not provided')
                                     ->icon('heroicon-o-code-bracket')
                                     ->copyable()
-                                    ->visible(fn($record) => !empty($record->recommended->github_url)),
+                                    ->visible(fn ($record) => ! empty($record->recommended->github_url)),
                             ])
                             ->columnSpan(1),
                     ]),

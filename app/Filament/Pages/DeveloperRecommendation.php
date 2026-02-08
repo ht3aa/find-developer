@@ -5,15 +5,15 @@ namespace App\Filament\Pages;
 use App\Enums\RecommendationStatus;
 use App\Models\Developer;
 use App\Models\DeveloperRecommendation as ModelsDeveloperRecommendation;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
-use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
-use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 
 class DeveloperRecommendation extends SimplePage implements HasForms
@@ -47,8 +47,9 @@ class DeveloperRecommendation extends SimplePage implements HasForms
     public function mount(?int $developer = null): void
     {
         // Ensure user is authenticated and is a developer
-        if (!Auth::check() || !Auth::user()->isDeveloper()) {
+        if (! Auth::check() || ! Auth::user()->isDeveloper()) {
             redirect()->route('developer.login');
+
             return;
         }
 
@@ -65,6 +66,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
                     ->danger()
                     ->send();
                 redirect()->route('home');
+
                 return;
             }
 
@@ -80,10 +82,12 @@ class DeveloperRecommendation extends SimplePage implements HasForms
                     ->warning()
                     ->send();
                 redirect()->route('home');
+
                 return;
             }
         } else {
             redirect()->route('home');
+
             return;
         }
 
@@ -95,7 +99,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
         return false;
     }
 
-    public function getMaxWidth(): Width | string | null
+    public function getMaxWidth(): Width|string|null
     {
         return Width::SevenExtraLarge;
     }
@@ -114,7 +118,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
                             ->helperText('This information will help others understand why this developer is recommended.')
                             ->columnSpanFull(),
                     ])
-                    ->description('Share your thoughts on why this developer is worth recommending.')
+                    ->description('Share your thoughts on why this developer is worth recommending.'),
             ])
             ->statePath('data');
     }
@@ -150,7 +154,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
 
     public function getHeading(): string
     {
-        return 'Recommend ' . ($this->recommendedDeveloper?->name ?? 'Developer');
+        return 'Recommend '.($this->recommendedDeveloper?->name ?? 'Developer');
     }
 
     public function getSubheading(): ?string

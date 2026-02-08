@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum ExperienceTaskStatus: string implements HasLabel, HasColor, HasIcon
+enum ExperienceTaskStatus: string implements HasColor, HasIcon, HasLabel
 {
     case OPEN = 'open';
     case IN_PROGRESS = 'in_progress';

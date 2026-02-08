@@ -94,7 +94,7 @@ class SeoHelper
                 '@type' => 'SearchAction',
                 'target' => [
                     '@type' => 'EntryPoint',
-                    'urlTemplate' => url('/') . '?search={search_term_string}',
+                    'urlTemplate' => url('/').'?search={search_term_string}',
                 ],
                 'query-input' => 'required name=search_term_string',
             ],

@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Enums\JobStatus;
 use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
@@ -17,23 +16,27 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
 
 class CompanyJobSearch extends Component implements HasSchemas
 {
-    use WithPagination;
     use InteractsWithSchemas;
+    use WithPagination;
 
     #[Url]
     public string $search = '';
+
     #[Url]
     public array $jobTitleIds = [];
+
     #[Url]
     public array $locationIds = [];
+
     #[Url]
     public int $salary_from = 0;
+
     #[Url]
     public int $salary_to = 0;
 
@@ -54,7 +57,7 @@ class CompanyJobSearch extends Component implements HasSchemas
                             ->columnSpanFull()
                             ->live(debounce: 300)
                             ->hidden()
-                            ->afterStateUpdated(fn() => $this->resetPage()),
+                            ->afterStateUpdated(fn () => $this->resetPage()),
 
                         Grid::make(2)
                             ->schema([
@@ -64,9 +67,9 @@ class CompanyJobSearch extends Component implements HasSchemas
                                     ->searchable()
                                     ->options(JobTitle::active()->limit(50)->pluck('name', 'id'))
                                     ->preload()
-                                    ->getSearchResultsUsing(fn(string $query) => JobTitle::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                                    ->getSearchResultsUsing(fn (string $query) => JobTitle::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'id'))
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('locationIds')
                                     ->label('Locations')
@@ -74,28 +77,28 @@ class CompanyJobSearch extends Component implements HasSchemas
                                     ->searchable()
                                     ->options(
                                         collect(WorldGovernorate::cases())->mapWithKeys(
-                                            fn($case) => [$case->value => $case->getLabel()]
+                                            fn ($case) => [$case->value => $case->getLabel()]
                                         )
                                     )
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 ExpectedSalaryFromField::make()
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 ExpectedSalaryToField::make()
                                     ->live(debounce: 300)
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
 
                                 Select::make('salary_currency')
                                     ->label('Salary Currency')
                                     ->options(Currency::class)
                                     ->searchable()
                                     ->live()
-                                    ->afterStateUpdated(fn() => $this->resetPage()),
+                                    ->afterStateUpdated(fn () => $this->resetPage()),
                             ]),
-                    ])
+                    ]),
             ]);
     }
 
@@ -110,27 +113,27 @@ class CompanyJobSearch extends Component implements HasSchemas
 
         $query = CompanyJob::with('jobTitle')
             ->approved()
-            ->when(!empty($filters['search']), function ($query) use ($filters) {
+            ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
-                    $q->where('title', 'like', '%' . $filters['search'] . '%')
-                        ->orWhere('company_name', 'like', '%' . $filters['search'] . '%')
-                        ->orWhere('description', 'like', '%' . $filters['search'] . '%')
-                        ->orWhere('requirements', 'like', '%' . $filters['search'] . '%');
+                    $q->where('title', 'like', '%'.$filters['search'].'%')
+                        ->orWhere('company_name', 'like', '%'.$filters['search'].'%')
+                        ->orWhere('description', 'like', '%'.$filters['search'].'%')
+                        ->orWhere('requirements', 'like', '%'.$filters['search'].'%');
                 });
             })
-            ->when(!empty($filters['jobTitleIds']), function ($query) use ($filters) {
+            ->when(! empty($filters['jobTitleIds']), function ($query) use ($filters) {
                 $query->whereIn('job_title_id', $filters['jobTitleIds']);
             })
-            ->when(!empty($filters['locationIds']), function ($query) use ($filters) {
+            ->when(! empty($filters['locationIds']), function ($query) use ($filters) {
                 $query->whereIn('location', $filters['locationIds']);
             })
-            ->when(!empty($filters['salary_from']) && $filters['salary_to'] === null, function ($query) use ($filters) {
+            ->when(! empty($filters['salary_from']) && $filters['salary_to'] === null, function ($query) use ($filters) {
                 $query->where('salary_from', '>=', Str::of($filters['salary_from'])->replace(',', '')->toInteger());
             })
-            ->when(!empty($filters['salary_to']) && $filters['salary_from'] === null, function ($query) use ($filters) {
+            ->when(! empty($filters['salary_to']) && $filters['salary_from'] === null, function ($query) use ($filters) {
                 $query->where('salary_to', '<=', Str::of($filters['salary_to'])->replace(',', '')->toInteger());
             })
-            ->when(!empty($filters['salary_from']) && !empty($filters['salary_to']), function ($query) use ($filters) {
+            ->when(! empty($filters['salary_from']) && ! empty($filters['salary_to']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
                     $from = Str::of($filters['salary_from'])->replace(',', '')->toInteger();
                     $to = Str::of($filters['salary_to'])->replace(',', '')->toInteger();
@@ -142,7 +145,7 @@ class CompanyJobSearch extends Component implements HasSchemas
                         });
                 });
             })
-            ->when(!empty($filters['salary_currency']), function ($query) use ($filters) {
+            ->when(! empty($filters['salary_currency']), function ($query) use ($filters) {
                 $query->where('salary_currency', $filters['salary_currency']);
             })
             ->orderBy('created_at', 'desc');

@@ -2,24 +2,24 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\Currency;
 use App\Enums\JobStatus;
 use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\CompanyJob;
 use App\Models\JobTitle;
-use Filament\Forms\Components\TextInput;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
-use Filament\Actions\Action;
 
 class CompanyJobRegistration extends SimplePage implements HasForms
 {
@@ -41,7 +41,7 @@ class CompanyJobRegistration extends SimplePage implements HasForms
         return false;
     }
 
-    public function getMaxWidth(): Width | string | null
+    public function getMaxWidth(): Width|string|null
     {
         return Width::SevenExtraLarge;
     }

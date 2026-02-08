@@ -3,11 +3,11 @@
 namespace Database\Factories;
 
 use App\Enums\AppointmentStatus;
+use App\Enums\UserType;
 use App\Models\Developer;
 use App\Models\User;
 use App\Models\UserAppointment;
 use App\Models\UserService;
-use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,11 +25,11 @@ class UserAppointmentFactory extends Factory
     public function definition(): array
     {
         $status = fake()->randomElement(AppointmentStatus::cases());
-        
+
         // If status is pending, start_datetime should be null
         // Otherwise, set a future datetime
-        $startDatetime = $status === AppointmentStatus::PENDING 
-            ? null 
+        $startDatetime = $status === AppointmentStatus::PENDING
+            ? null
             : fake()->dateTimeBetween('now', '+3 months');
 
         return [

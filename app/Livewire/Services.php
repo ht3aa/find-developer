@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\UserService;
 use App\Enums\UserType;
-use Livewire\Component;
 use App\Models\Scopes\UserScope;
+use App\Models\UserService;
+use Livewire\Component;
 
 class Services extends Component
 {

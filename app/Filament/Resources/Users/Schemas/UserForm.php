@@ -46,9 +46,9 @@ class UserForm
                         TextInput::make('password')
                             ->password()
                             ->rules([Password::default()])
-                            ->required(fn(string $operation): bool => $operation === 'create')
-                            ->dehydrateStateUsing(fn($state) => bcrypt($state))
-                            ->visible(fn(string $operation): bool => $operation === 'create'),
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                            ->visible(fn (string $operation): bool => $operation === 'create'),
 
                         Toggle::make('can_access_admin_panel')
                             ->label('Can Access Admin Panel')

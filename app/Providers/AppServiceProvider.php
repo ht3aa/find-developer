@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\User;
 use App\Policies\ActivityPolicy;
-use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {

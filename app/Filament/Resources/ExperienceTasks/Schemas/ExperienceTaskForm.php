@@ -6,10 +6,10 @@ use App\Enums\Currency;
 use App\Enums\ExperienceGain;
 use App\Enums\ExperienceTaskStatus;
 use App\Filament\Customs\ExpectedPriceField;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 

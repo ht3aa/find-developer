@@ -5,10 +5,15 @@ namespace App\Notifications\Messages;
 class MailtrapMessage
 {
     public ?string $subject = null;
+
     public ?string $text = null;
+
     public ?string $html = null;
+
     public ?array $from = null;
+
     public ?string $category = null;
+
     public array $attachments = [];
 
     /**
@@ -16,7 +21,7 @@ class MailtrapMessage
      */
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 
     /**
@@ -25,6 +30,7 @@ class MailtrapMessage
     public function subject(string $subject): self
     {
         $this->subject = $subject;
+
         return $this;
     }
 
@@ -34,6 +40,7 @@ class MailtrapMessage
     public function text(string $text): self
     {
         $this->text = $text;
+
         return $this;
     }
 
@@ -43,6 +50,7 @@ class MailtrapMessage
     public function html(string $html): self
     {
         $this->html = $html;
+
         return $this;
     }
 
@@ -55,6 +63,7 @@ class MailtrapMessage
             'email' => $email,
             'name' => $name,
         ];
+
         return $this;
     }
 
@@ -64,6 +73,7 @@ class MailtrapMessage
     public function category(string $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -77,6 +87,7 @@ class MailtrapMessage
         } else {
             $this->attachments[] = $attachment;
         }
+
         return $this;
     }
 
@@ -88,6 +99,7 @@ class MailtrapMessage
         foreach ($attachments as $attachment) {
             $this->attach($attachment);
         }
+
         return $this;
     }
 }

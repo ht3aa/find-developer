@@ -17,6 +17,7 @@ class DeveloperProjectsSeeder extends Seeder
 
         if ($developers->isEmpty()) {
             $this->command->warn('No developers found. Please run DevelopersSeeder first.');
+
             return;
         }
 
@@ -60,7 +61,7 @@ class DeveloperProjectsSeeder extends Seeder
             $selectedProjects = array_rand($projectTemplates, $numberOfProjects);
 
             // Ensure we have an array even if only one project
-            if (!is_array($selectedProjects)) {
+            if (! is_array($selectedProjects)) {
                 $selectedProjects = [$selectedProjects];
             }
 
@@ -74,6 +75,6 @@ class DeveloperProjectsSeeder extends Seeder
             }
         }
 
-        $this->command->info('Created developer projects for ' . $developers->count() . ' developers.');
+        $this->command->info('Created developer projects for '.$developers->count().' developers.');
     }
 }

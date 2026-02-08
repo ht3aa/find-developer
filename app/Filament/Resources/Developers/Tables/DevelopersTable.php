@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Developers\Tables;
 
-use App\Enums\DeveloperStatus;
 use App\Enums\AvailabilityType;
+use App\Enums\DeveloperStatus;
 use App\Enums\UserType;
-use App\Models\User;
 use App\Models\Badge;
+use App\Models\User;
 use App\Notifications\MailtrapNotification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -21,7 +21,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
@@ -29,10 +28,10 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rules\Unique;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Str;
 
 class DevelopersTable
 {
@@ -74,8 +73,11 @@ class DevelopersTable
                 TextColumn::make('expected_salary_from')
                     ->label('Salary From')
                     ->formatStateUsing(function ($state, $record) {
-                        if (!$state) return '-';
-                        return number_format($state) . ' ' . $record->currency;
+                        if (! $state) {
+                            return '-';
+                        }
+
+                        return number_format($state).' '.$record->currency;
                     })
                     ->sortable()
                     ->toggleable(),
@@ -83,8 +85,11 @@ class DevelopersTable
                 TextColumn::make('expected_salary_to')
                     ->label('Salary To')
                     ->formatStateUsing(function ($state, $record) {
-                        if (!$state) return '-';
-                        return number_format($state) . ' ' . $record->currency;
+                        if (! $state) {
+                            return '-';
+                        }
+
+                        return number_format($state).' '.$record->currency;
                     })
                     ->sortable()
                     ->toggleable(),
@@ -109,10 +114,11 @@ class DevelopersTable
                 TextColumn::make('availability_type')
                     ->label('Availability Type')
                     ->formatStateUsing(function ($state) {
-                        if (empty($state) || !is_array($state)) {
+                        if (empty($state) || ! is_array($state)) {
                             return null;
                         }
-                        return collect($state)->map(fn($type) => $type->getLabel())->toArray();
+
+                        return collect($state)->map(fn ($type) => $type->getLabel())->toArray();
                     })
                     ->badge()
                     ->separator(',')
@@ -158,7 +164,7 @@ class DevelopersTable
                     ->label('Availability Type')
                     ->options(AvailabilityType::class)
                     ->query(function ($query, array $data) {
-                        if (!empty($data['value'])) {
+                        if (! empty($data['value'])) {
                             $value = $data['value'];
                             // Convert enum to string value if needed
                             if ($value instanceof AvailabilityType) {
@@ -170,7 +176,7 @@ class DevelopersTable
 
                 SelectFilter::make('badges')
                     ->label('Badge')
-                    ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                    ->relationship('badges', 'name', fn ($query) => $query->where('is_active', true))
                     ->searchable()
                     ->preload()
                     ->multiple(),
@@ -193,8 +199,8 @@ class DevelopersTable
                     ])
                     ->query(function ($query, array $data) {
                         return $query
-                            ->when($data['min_experience'], fn($query, $value) => $query->where('years_of_experience', '>=', $value))
-                            ->when($data['max_experience'], fn($query, $value) => $query->where('years_of_experience', '<=', $value));
+                            ->when($data['min_experience'], fn ($query, $value) => $query->where('years_of_experience', '>=', $value))
+                            ->when($data['max_experience'], fn ($query, $value) => $query->where('years_of_experience', '<=', $value));
                     }),
             ])
             ->recordActions([
@@ -203,22 +209,22 @@ class DevelopersTable
                         ->label('Create User')
                         ->icon('heroicon-o-user-plus')
                         ->color('primary')
-                        ->visible(fn($record) => !$record->user_id)
+                        ->visible(fn ($record) => ! $record->user_id)
                         ->schema([
                             TextInput::make('name')
                                 ->required()
                                 ->maxLength(255)
-                                ->default(fn($record) => $record->name),
+                                ->default(fn ($record) => $record->name),
 
                             TextInput::make('email')
                                 ->email()
                                 ->required()
                                 ->rules([
-                                    new Unique(User::class, 'email')
+                                    new Unique(User::class, 'email'),
                                 ])
                                 ->copyable()
                                 ->maxLength(255)
-                                ->default(fn($record) => $record->email),
+                                ->default(fn ($record) => $record->email),
 
                             TextInput::make('linkedin_url')
                                 ->label('LinkedIn URL')
@@ -227,7 +233,7 @@ class DevelopersTable
                                 ->maxLength(255)
                                 ->prefixIcon('heroicon-o-link')
                                 ->helperText('Enter the full LinkedIn profile URL (e.g., https://linkedin.com/in/username)')
-                                ->default(fn($record) => $record->linkedin_url),
+                                ->default(fn ($record) => $record->linkedin_url),
 
                             Select::make('user_type')
                                 ->label('User Type')
@@ -241,7 +247,7 @@ class DevelopersTable
                                 ->rules([Password::default()])
                                 ->required()
                                 ->copyable()
-                                ->formatStateUsing(fn($state) => Str::uuid()->toString()),
+                                ->formatStateUsing(fn ($state) => Str::uuid()->toString()),
 
                             Toggle::make('can_access_admin_panel')
                                 ->label('Can Access Admin Panel')
@@ -250,7 +256,7 @@ class DevelopersTable
 
                             Select::make('role')
                                 ->label('Role')
-                                ->options(fn() => Role::all()->pluck('name', 'name'))
+                                ->options(fn () => Role::all()->pluck('name', 'name'))
                                 ->searchable()
                                 ->preload()
                                 ->required(),
@@ -258,7 +264,7 @@ class DevelopersTable
                             TextEntry::make('password_and_email')
                                 ->label('Password')
                                 ->copyable()
-                                ->getStateUsing(fn($get) => "Email: {$get('email')}\nPassword: {$get('password')}"),
+                                ->getStateUsing(fn ($get) => "Email: {$get('email')}\nPassword: {$get('password')}"),
                         ])
                         ->action(function ($record, array $data) {
                             $user = User::create([
@@ -271,7 +277,7 @@ class DevelopersTable
                             ]);
 
                             // Assign role
-                            if (!empty($data['role'])) {
+                            if (! empty($data['role'])) {
                                 $user->assignRole($data['role']);
                             }
 
@@ -290,7 +296,7 @@ class DevelopersTable
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== DeveloperStatus::APPROVED)
+                        ->visible(fn ($record) => $record->status !== DeveloperStatus::APPROVED)
                         ->action(function ($record) {
                             $record->update(['status' => DeveloperStatus::APPROVED]);
 
@@ -306,7 +312,7 @@ class DevelopersTable
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== DeveloperStatus::REJECTED)
+                        ->visible(fn ($record) => $record->status !== DeveloperStatus::REJECTED)
                         ->action(function ($record) {
                             $record->update(['status' => DeveloperStatus::REJECTED]);
 
@@ -321,7 +327,7 @@ class DevelopersTable
                         ->label('Send Email')
                         ->icon('heroicon-o-envelope')
                         ->color('info')
-                        ->visible(fn($record) => !empty($record->email))
+                        ->visible(fn ($record) => ! empty($record->email))
                         ->schema([
                             TextInput::make('subject')
                                 ->label('Subject')
@@ -357,7 +363,7 @@ class DevelopersTable
 
                                 // Add header if enabled
                                 if ($data['add_default_header'] ?? true) {
-                                    $message = "Hello {$record->name}\n\n" . $message;
+                                    $message = "Hello {$record->name}\n\n".$message;
                                 }
 
                                 // Add footer if enabled
@@ -389,7 +395,7 @@ class DevelopersTable
                         ->label('Send User Credentials')
                         ->icon('heroicon-o-key')
                         ->color('success')
-                        ->visible(fn($record) => !empty($record->email))
+                        ->visible(fn ($record) => ! empty($record->email))
                         ->schema([
                             TextInput::make('secret_url')
                                 ->label('Secret URL')
@@ -403,12 +409,12 @@ class DevelopersTable
                             try {
                                 $message = "Hello {$record->name}\n\n";
                                 $message .= "Thank you for the information. You have been accepted and this is your user credentials\n";
-                                $message .= $data['secret_url'] . "\n\n";
+                                $message .= $data['secret_url']."\n\n";
                                 $message .= "You can edit your information and do more actions via the admin dashboard\n";
                                 $message .= "www.find-developer.com/admin\n\n";
                                 $message .= "You can now also recommend other developers. Please use the recommendation feature only on the developers you well known\n\n";
                                 $message .= "Best Regards\n";
-                                $message .= "Hasan Tahseen an Admin in find-developer.com platform";
+                                $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
 
                                 $record->notify(new MailtrapNotification(
                                     subject: 'User Credentials Created',
@@ -434,11 +440,11 @@ class DevelopersTable
                         ->label('Send Badge Congratulation')
                         ->icon('heroicon-o-trophy')
                         ->color('warning')
-                        ->visible(fn($record) => !empty($record->email))
+                        ->visible(fn ($record) => ! empty($record->email))
                         ->schema([
                             Select::make('badges')
                                 ->label('Select Badges')
-                                ->options(fn($record) => $record->badges->pluck('name', 'id'))
+                                ->options(fn ($record) => $record->badges->pluck('name', 'id'))
                                 ->multiple()
                                 ->required()
                                 ->searchable()
@@ -447,12 +453,13 @@ class DevelopersTable
                         ])
                         ->action(function ($record, array $data) {
                             try {
-                                if (empty($data['badges']) || !is_array($data['badges'])) {
+                                if (empty($data['badges']) || ! is_array($data['badges'])) {
                                     Notification::make()
                                         ->title('No Badges Selected')
                                         ->body('Please select at least one badge.')
                                         ->warning()
                                         ->send();
+
                                     return;
                                 }
 
@@ -465,6 +472,7 @@ class DevelopersTable
                                         ->body('Selected badges could not be found.')
                                         ->warning()
                                         ->send();
+
                                     return;
                                 }
 
@@ -482,13 +490,13 @@ class DevelopersTable
                                 if ($sentCount > 0) {
                                     Notification::make()
                                         ->title('Badge Congratulation Emails Sent')
-                                        ->body("Successfully sent {$sentCount} congratulation email(s) for badge(s) to {$record->email}." . ($failedCount > 0 ? " {$failedCount} email(s) failed." : ''))
+                                        ->body("Successfully sent {$sentCount} congratulation email(s) for badge(s) to {$record->email}.".($failedCount > 0 ? " {$failedCount} email(s) failed." : ''))
                                         ->success()
                                         ->send();
                                 } else {
                                     Notification::make()
                                         ->title('Email Failed')
-                                        ->body("Failed to send badge congratulation emails.")
+                                        ->body('Failed to send badge congratulation emails.')
                                         ->danger()
                                         ->send();
                                 }
@@ -521,10 +529,10 @@ class DevelopersTable
                                 ->copyable(copyMessage: 'Emails copied to clipboard')
                                 ->columnSpanFull(),
                         ])
-                        ->fillForm(fn(Collection $records): array => [
+                        ->fillForm(fn (Collection $records): array => [
                             'emails' => $records->pluck('email')->filter()->implode(', '),
                         ])
-                        ->action(fn() => null),
+                        ->action(fn () => null),
 
                     BulkAction::make('send_bulk_email')
                         ->label('Send Bulk Email')
@@ -532,7 +540,7 @@ class DevelopersTable
                         ->color('info')
                         ->requiresConfirmation()
                         ->modalHeading('Send Bulk Email')
-                        ->modalDescription(fn(Collection $records) => "Send an email to {$records->filter(fn($record) => !empty($record->email))->count()} developer(s) with email addresses.")
+                        ->modalDescription(fn (Collection $records) => "Send an email to {$records->filter(fn ($record) => ! empty($record->email))->count()} developer(s) with email addresses.")
                         ->schema([
                             TextInput::make('subject')
                                 ->label('Subject')
@@ -563,7 +571,7 @@ class DevelopersTable
                                 ->helperText('Optional: Add a category to track this email type'),
                         ])
                         ->action(function (Collection $records, array $data) {
-                            $developersWithEmail = $records->filter(fn($record) => !empty($record->email));
+                            $developersWithEmail = $records->filter(fn ($record) => ! empty($record->email));
 
                             if ($developersWithEmail->isEmpty()) {
                                 Notification::make()
@@ -571,6 +579,7 @@ class DevelopersTable
                                     ->body('None of the selected developers have email addresses.')
                                     ->warning()
                                     ->send();
+
                                 return;
                             }
 
@@ -585,7 +594,7 @@ class DevelopersTable
 
                                     // Add header if enabled
                                     if ($addHeader) {
-                                        $message = "Hello {$developer->name}\n\n" . $message;
+                                        $message = "Hello {$developer->name}\n\n".$message;
                                     }
 
                                     // Add footer if enabled
@@ -620,11 +629,11 @@ class DevelopersTable
                         ->color('warning')
                         ->requiresConfirmation()
                         ->modalHeading('Send Badge Congratulation Emails')
-                        ->modalDescription(fn(Collection $records) => "Send badge congratulation emails to {$records->filter(fn($record) => !empty($record->email))->count()} developer(s) with email addresses. Each selected badge will receive a separate email for each developer.")
+                        ->modalDescription(fn (Collection $records) => "Send badge congratulation emails to {$records->filter(fn ($record) => ! empty($record->email))->count()} developer(s) with email addresses. Each selected badge will receive a separate email for each developer.")
                         ->schema([
                             Select::make('badges')
                                 ->label('Select Badges')
-                                ->options(fn() => Badge::where('is_active', true)->pluck('name', 'id'))
+                                ->options(fn () => Badge::where('is_active', true)->pluck('name', 'id'))
                                 ->multiple()
                                 ->required()
                                 ->searchable()
@@ -633,16 +642,17 @@ class DevelopersTable
                         ])
                         ->action(function (Collection $records, array $data) {
                             try {
-                                if (empty($data['badges']) || !is_array($data['badges'])) {
+                                if (empty($data['badges']) || ! is_array($data['badges'])) {
                                     Notification::make()
                                         ->title('No Badges Selected')
                                         ->body('Please select at least one badge.')
                                         ->warning()
                                         ->send();
+
                                     return;
                                 }
 
-                                $developersWithEmail = $records->filter(fn($record) => !empty($record->email));
+                                $developersWithEmail = $records->filter(fn ($record) => ! empty($record->email));
 
                                 if ($developersWithEmail->isEmpty()) {
                                     Notification::make()
@@ -650,6 +660,7 @@ class DevelopersTable
                                         ->body('None of the selected developers have email addresses.')
                                         ->warning()
                                         ->send();
+
                                     return;
                                 }
 
@@ -662,6 +673,7 @@ class DevelopersTable
                                         ->body('Selected badges could not be found.')
                                         ->warning()
                                         ->send();
+
                                     return;
                                 }
 
@@ -691,13 +703,13 @@ class DevelopersTable
                                 if ($totalSent > 0) {
                                     Notification::make()
                                         ->title('Badge Congratulation Emails Sent')
-                                        ->body("Successfully sent {$totalSent} congratulation email(s) to {$developersProcessed} developer(s)." . ($totalFailed > 0 ? " {$totalFailed} email(s) failed." : ''))
+                                        ->body("Successfully sent {$totalSent} congratulation email(s) to {$developersProcessed} developer(s).".($totalFailed > 0 ? " {$totalFailed} email(s) failed." : ''))
                                         ->success()
                                         ->send();
                                 } else {
                                     Notification::make()
                                         ->title('Email Failed')
-                                        ->body("Failed to send badge congratulation emails.")
+                                        ->body('Failed to send badge congratulation emails.')
                                         ->danger()
                                         ->send();
                                 }
@@ -758,8 +770,8 @@ class DevelopersTable
     /**
      * Send badge congratulation email to a developer for a specific badge.
      *
-     * @param \App\Models\Developer $developer
-     * @param \App\Models\Badge $badge
+     * @param  \App\Models\Developer  $developer
+     * @param  \App\Models\Badge  $badge
      * @return bool Returns true if email was sent successfully, false otherwise
      */
     private static function sendBadgeCongratulationEmail($developer, $badge): bool
@@ -768,12 +780,12 @@ class DevelopersTable
             $message = "Hello {$developer->name}\n\n";
             $message .= "Congratulations! You have earned a new badge: {$badge->name}\n\n";
 
-            if (!empty($badge->description)) {
+            if (! empty($badge->description)) {
                 $message .= "Badge Description: {$badge->description}\n\n";
             }
 
             $message .= "Best Regards\n";
-            $message .= "Hasan Tahseen an Admin in find-developer.com platform";
+            $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
 
             $developer->notify(new MailtrapNotification(
                 subject: "Congratulations! You Earned the {$badge->name} Badge",

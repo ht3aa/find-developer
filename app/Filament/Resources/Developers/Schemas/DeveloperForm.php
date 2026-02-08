@@ -2,25 +2,19 @@
 
 namespace App\Filament\Resources\Developers\Schemas;
 
-use App\Enums\DeveloperStatus;
-use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
-use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
+use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
-use App\Models\User;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
-
-
 
 class DeveloperForm
 {
@@ -140,7 +134,7 @@ class DeveloperForm
                             ->columnSpanFull(),
 
                         Select::make('badges')
-                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                            ->relationship('badges', 'name', fn ($query) => $query->where('is_active', true))
                             ->multiple()
                             ->searchable()
                             ->preload()

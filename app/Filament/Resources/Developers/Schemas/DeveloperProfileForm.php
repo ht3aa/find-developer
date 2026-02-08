@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\Developers\Schemas;
 
-use App\Enums\DeveloperStatus;
-use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
-use App\Enums\SubscriptionPlan;
 use App\Enums\AvailabilityType;
+use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -31,7 +31,7 @@ class DeveloperProfileForm
                         TextInput::make('email')
                             ->email()
                             ->required()
-                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
+                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->maxLength(255),
 
                         TextInput::make('phone')
@@ -64,7 +64,7 @@ class DeveloperProfileForm
                             ->default(0)
                             ->minValue(0)
                             ->maxValue(50)
-                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
+                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->suffix('years')
                             ->required(),
 
@@ -81,14 +81,14 @@ class DeveloperProfileForm
                         Select::make('status')
                             ->options(DeveloperStatus::class)
                             ->disabled()
-                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
+                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->dehydrated(),
 
                         Select::make('subscription_plan')
                             ->label('Subscription Plan')
                             ->options(SubscriptionPlan::class)
                             ->disabled()
-                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
+                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->dehydrated(),
 
                         Toggle::make('is_available')
@@ -113,7 +113,7 @@ class DeveloperProfileForm
                             ->multiple()
                             ->searchable()
                             ->preload()
-                            ->hidden(fn($livewire) => self::isDeveloperProfilePage($livewire))
+                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -139,9 +139,8 @@ class DeveloperProfileForm
             ]);
     }
 
-
     public static function isDeveloperProfilePage($livewire): bool
     {
-        return $livewire->getName() === "app.filament.pages.developer-profile";
+        return $livewire->getName() === 'app.filament.pages.developer-profile';
     }
 }

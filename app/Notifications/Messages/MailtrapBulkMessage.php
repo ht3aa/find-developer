@@ -5,10 +5,15 @@ namespace App\Notifications\Messages;
 class MailtrapBulkMessage
 {
     public ?string $subject = null;
+
     public ?string $text = null;
+
     public ?string $html = null;
+
     public ?array $from = null;
+
     public ?string $category = null;
+
     public array $emails = [];
 
     /**
@@ -16,7 +21,7 @@ class MailtrapBulkMessage
      */
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 
     /**
@@ -25,6 +30,7 @@ class MailtrapBulkMessage
     public function subject(string $subject): self
     {
         $this->subject = $subject;
+
         return $this;
     }
 
@@ -34,6 +40,7 @@ class MailtrapBulkMessage
     public function text(string $text): self
     {
         $this->text = $text;
+
         return $this;
     }
 
@@ -43,6 +50,7 @@ class MailtrapBulkMessage
     public function html(string $html): self
     {
         $this->html = $html;
+
         return $this;
     }
 
@@ -55,6 +63,7 @@ class MailtrapBulkMessage
             'email' => $email,
             'name' => $name,
         ];
+
         return $this;
     }
 
@@ -64,6 +73,7 @@ class MailtrapBulkMessage
     public function category(string $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -73,6 +83,7 @@ class MailtrapBulkMessage
     public function emails(array $emails): self
     {
         $this->emails = $emails;
+
         return $this;
     }
 
@@ -81,9 +92,10 @@ class MailtrapBulkMessage
      */
     public function addEmail(string $email): self
     {
-        if (!in_array($email, $this->emails)) {
+        if (! in_array($email, $this->emails)) {
             $this->emails[] = $email;
         }
+
         return $this;
     }
 }

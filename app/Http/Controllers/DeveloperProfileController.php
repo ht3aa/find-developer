@@ -23,9 +23,9 @@ class DeveloperProfileController extends Controller
                     ->orderBy('created_at', 'desc');
             },
         ])
-        ->withCount('projects')
-        ->where('slug', $slug)
-        ->firstOrFail();
+            ->withCount('projects')
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return view('developer-profile', compact('developer'));
     }

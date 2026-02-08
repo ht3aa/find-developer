@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ExperienceTasks\Tables;
 
-use App\Enums\ExperienceGain;
 use App\Enums\ExperienceTaskStatus;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -41,7 +40,7 @@ class ExperienceTasksTable
 
                 TextColumn::make('price')
                     ->formatStateUsing(fn ($state, $record) => $state
-                        ? number_format($state) . ' ' . ($record->price_currency?->value ?? 'IQD')
+                        ? number_format($state).' '.($record->price_currency?->value ?? 'IQD')
                         : '-')
                     ->sortable()
                     ->toggleable(),

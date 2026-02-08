@@ -12,8 +12,8 @@ class DevelopersByLocationChart extends ChartWidget
 
     protected function getData(): array
     {
-        $iraqLocations = array_map(fn($location) => $location->value, WorldGovernorate::getIraqLocations());
-        
+        $iraqLocations = array_map(fn ($location) => $location->value, WorldGovernorate::getIraqLocations());
+
         $locations = Developer::withoutGlobalScopes()
             ->selectRaw('location, COUNT(*) as count')
             ->whereNotNull('location')

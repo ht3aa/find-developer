@@ -8,13 +8,11 @@ use App\Filament\Resources\ActivityLog\ActivityLogResource;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Image;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Text;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ViewActivityLog extends ViewRecord
@@ -27,7 +25,7 @@ class ViewActivityLog extends ViewRecord
             Action::make('reverse-activity')
                 ->label('التراجع عن التغيير')
                 ->icon('heroicon-o-arrow-uturn-left')
-                ->visible(fn($record) => $record->event === ActivityLogEvent::Updated->value)
+                ->visible(fn ($record) => $record->event === ActivityLogEvent::Updated->value)
                 ->color('warning')
                 ->requiresConfirmation()
                 ->after(function () {
@@ -162,7 +160,7 @@ class ViewActivityLog extends ViewRecord
                     ])
                     ->collapsible()
                     ->visible(
-                        fn($record) => ! empty($record->properties['old']) || ! empty($record->properties['attributes'])
+                        fn ($record) => ! empty($record->properties['old']) || ! empty($record->properties['attributes'])
                     ),
 
             ]);

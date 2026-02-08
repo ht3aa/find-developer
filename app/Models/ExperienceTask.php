@@ -5,14 +5,13 @@ namespace App\Models;
 use App\Enums\Currency;
 use App\Enums\ExperienceGain;
 use App\Enums\ExperienceTaskStatus;
-use App\Models\Scopes\ApprovedScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class ExperienceTask extends Model
 {

@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Enums\AppointmentStatus;
+use App\Enums\UserType;
 use App\Models\Developer;
 use App\Models\User;
 use App\Models\UserAppointment;
 use App\Models\UserService;
-use App\Enums\UserType;
 use Illuminate\Database\Seeder;
 
 class UserAppointmentsSeeder extends Seeder
@@ -24,6 +24,7 @@ class UserAppointmentsSeeder extends Seeder
 
         if ($clients->isEmpty() || $developers->isEmpty()) {
             $this->command->warn('No clients or developers found. Please seed users and developers first.');
+
             return;
         }
 
@@ -92,8 +93,8 @@ class UserAppointmentsSeeder extends Seeder
         foreach ($appointments as $appointmentData) {
             $client = $clients->random();
             $developer = $developers->random();
-            $service = $services->isNotEmpty() && fake()->boolean(70) 
-                ? $services->random() 
+            $service = $services->isNotEmpty() && fake()->boolean(70)
+                ? $services->random()
                 : null;
 
             UserAppointment::create([

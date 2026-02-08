@@ -7,7 +7,7 @@ use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Icons\Heroicon;
 
-enum SubscriptionPlan: string implements HasLabel, HasColor, HasIcon
+enum SubscriptionPlan: string implements HasColor, HasIcon, HasLabel
 {
     case FREE = 'free';
     case PRO = 'pro';

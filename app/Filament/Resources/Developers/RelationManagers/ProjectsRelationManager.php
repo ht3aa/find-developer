@@ -62,7 +62,7 @@ class ProjectsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('link')
                     ->label('Link')
-                    ->url(fn($record) => $record->link)
+                    ->url(fn ($record) => $record->link)
                     ->openUrlInNewTab()
                     ->limit(30)
                     ->icon('heroicon-o-link')

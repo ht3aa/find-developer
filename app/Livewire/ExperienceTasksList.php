@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\ExperienceTask;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
 
 class ExperienceTasksList extends Component
 {
@@ -31,10 +31,10 @@ class ExperienceTasksList extends Component
             ->withCount('developers')
             ->when($this->search, function ($q) {
                 $q->where(function ($q) {
-                    $q->where('title', 'like', '%' . $this->search . '%')
-                        ->orWhere('description', 'like', '%' . $this->search . '%')
-                        ->orWhere('requirements', 'like', '%' . $this->search . '%')
-                        ->orWhere('rewards', 'like', '%' . $this->search . '%');
+                    $q->where('title', 'like', '%'.$this->search.'%')
+                        ->orWhere('description', 'like', '%'.$this->search.'%')
+                        ->orWhere('requirements', 'like', '%'.$this->search.'%')
+                        ->orWhere('rewards', 'like', '%'.$this->search.'%');
                 });
             })
             ->orderBy('created_at', 'desc');

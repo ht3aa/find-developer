@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\RecommendationStatus;
 use App\Models\Developer;
-use Illuminate\Http\Request;
 
 class DeveloperRecommendationsViewController extends Controller
 {
@@ -14,7 +13,7 @@ class DeveloperRecommendationsViewController extends Controller
             'jobTitle',
             'recommendationsReceived.recommender' => function ($query) {
                 $query->with('jobTitle');
-            }
+            },
         ])->where('slug', $developerSlug)->firstOrFail();
 
         // Get only approved recommendations

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Enums\DeveloperStatus;
-use App\Enums\WorldGovernorate;
 use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\Skill;
 use Illuminate\Database\Seeder;
@@ -48,9 +48,9 @@ class MoreDevelopersSeeder extends Seeder
                 'job_title_id' => $faker->numberBetween(1, 6),
                 'years_of_experience' => $years,
                 'bio' => $faker->paragraphs(2, true),
-                'portfolio_url' => 'https://' . $slug . '.' . $faker->randomElement(['dev', 'com', 'io']),
-                'github_url' => 'https://github.com/' . $slug,
-                'linkedin_url' => 'https://linkedin.com/in/' . $slug,
+                'portfolio_url' => 'https://'.$slug.'.'.$faker->randomElement(['dev', 'com', 'io']),
+                'github_url' => 'https://github.com/'.$slug,
+                'linkedin_url' => 'https://linkedin.com/in/'.$slug,
                 'location' => $faker->randomElement($governorates),
                 'expected_salary_from' => $salaryFrom,
                 'expected_salary_to' => $salaryTo,

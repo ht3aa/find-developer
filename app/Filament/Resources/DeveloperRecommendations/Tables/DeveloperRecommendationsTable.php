@@ -27,18 +27,18 @@ class DeveloperRecommendationsTable
                     ->label('Recommender')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->recommender->jobTitle->name ?? null),
+                    ->description(fn ($record) => $record->recommender->jobTitle->name ?? null),
 
                 TextColumn::make('recommended.name')
                     ->label('Recommended Developer')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->recommended->jobTitle->name ?? null),
+                    ->description(fn ($record) => $record->recommended->jobTitle->name ?? null),
 
                 TextColumn::make('recommendation_note')
                     ->label('Recommendation Note')
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->recommendation_note)
+                    ->tooltip(fn ($record) => $record->recommendation_note)
                     ->wrap()
                     ->toggleable(),
 
@@ -74,7 +74,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== RecommendationStatus::APPROVED)
+                        ->visible(fn ($record) => $record->status !== RecommendationStatus::APPROVED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::APPROVED]);
 
@@ -90,7 +90,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== RecommendationStatus::REJECTED)
+                        ->visible(fn ($record) => $record->status !== RecommendationStatus::REJECTED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::REJECTED]);
 

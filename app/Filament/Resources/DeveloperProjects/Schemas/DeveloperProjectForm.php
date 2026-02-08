@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\DeveloperProjects\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -27,7 +27,6 @@ class DeveloperProjectForm
                                     ->maxLength(255),
 
                                 self::getDeveloperField(),
-
 
                             ]),
                         Textarea::make('description')
@@ -72,6 +71,5 @@ class DeveloperProjectForm
                 ]);
         }
 
-        return;
     }
 }

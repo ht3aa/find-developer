@@ -1,15 +1,15 @@
 <?php
 
-use App\Filament\Pages\DeveloperRegistration;
 use App\Filament\Pages\CompanyJobRegistration;
 use App\Filament\Pages\DeveloperRecommendation;
+use App\Filament\Pages\DeveloperRegistration;
+use App\Http\Controllers\DeveloperAuthController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DeveloperProjectsController;
 use App\Http\Controllers\DeveloperRecommendationsViewController;
 use App\Http\Controllers\JobsController;
 use App\Http\Controllers\RecommendedDevelopersController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\DeveloperAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -51,7 +51,7 @@ Route::get('/charts', function () {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
-    return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
+    return response("User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 
