@@ -3,6 +3,7 @@
 use App\Filament\Pages\DeveloperRegistration;
 use App\Filament\Pages\CompanyJobRegistration;
 use App\Filament\Pages\DeveloperRecommendation;
+use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DeveloperProjectsController;
 use App\Http\Controllers\DeveloperRecommendationsViewController;
 use App\Http\Controllers\JobsController;
@@ -53,6 +54,9 @@ Route::get('/robots.txt', function () {
     return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
+
+Route::get('/developers/{slug}', [DeveloperProfileController::class, 'show'])
+    ->name('developer.profile');
 
 Route::get('/developer/{developerSlug}/projects', [DeveloperProjectsController::class, 'show'])
     ->name('developer.projects');
