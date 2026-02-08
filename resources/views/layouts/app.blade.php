@@ -221,8 +221,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                         </svg>
                         <p class="info-banner-text">
-                            <strong>🚀 Host Your Portfolio!</strong> Get your own subdomain (like <a href="https://hasan-tahseen.find-developer.com/" target="_blank" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">hasan-tahseen.find-developer.com</a>) with full support—<strong>free</strong>. 
-                            <a href="{{ route('plans') }}" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">View Plans →</a>
+                            <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
+                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">Star on GitHub →</a>
                         </p>
                     </div>
                 </div>
