@@ -1690,11 +1690,17 @@ button.pagination-link {
     position: relative;
 }
 
+.navbar-brand-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    z-index: 10;
+}
+
 .navbar-brand {
     display: flex;
     align-items: center;
     text-decoration: none;
-    z-index: 10;
 }
 
 .navbar-brand-logo {
@@ -1718,6 +1724,33 @@ html.dark .navbar-brand-logo-dark {
 
 html.dark .navbar-brand-logo-light {
     display: none;
+}
+
+/* GitHub Repository Link */
+.navbar-github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition-base);
+}
+
+.navbar-github-link:hover {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.navbar-github-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+html.dark .navbar-github-link {
+    color: var(--color-gray-400);
+}
+
+html.dark .navbar-github-link:hover {
+    color: #ffffff;
 }
 
 /* Hamburger Toggle Button */
@@ -1956,6 +1989,7 @@ html.dark .dark-mode-icon.moon-icon {
         justify-content: center;
         width: 100%;
     }
+
 }
 
 /* Info Banner */
