@@ -14,6 +14,6 @@ class ApprovedScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('status', DeveloperStatus::APPROVED);
+        $builder->whereIn('status', [DeveloperStatus::APPROVED, DeveloperStatus::EXPERIENCE_CHANGED]);
     }
 }
