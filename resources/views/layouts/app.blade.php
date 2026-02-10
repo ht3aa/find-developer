@@ -110,7 +110,10 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="navbar" x-data="{ mobileMenuOpen: false }">
+        <nav class="navbar"
+             x-data="{ mobileMenuOpen: false, scrolled: false }"
+             x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
+             :class="{ 'scrolled': scrolled }">
             <div class="navbar-container">
                 <div class="navbar-brand-group">
                     <a href="{{ url('/') }}" class="navbar-brand" aria-label="FindDeveloper - Home">
@@ -196,7 +199,23 @@
                     @endauth
                 </div>
             </div>
+
+            <!-- Info Banner -->
+            <div class="info-banner">
+                <div class="info-banner-container">
+                    <div class="info-banner-content">
+                        <svg class="info-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                        </svg>
+                        <p class="info-banner-text">
+                            <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
+                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">Star on GitHub →</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </nav>
+        <div class="navbar-spacer"></div>
 
         <!-- Floating Dark Mode Toggle (visible on all pages) -->
         <button 
@@ -215,21 +234,6 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
             </svg>
         </button>
-
-            <!-- Hosting Plan Promotional Banner -->
-            <div class="info-banner">
-                <div class="info-banner-container">
-                    <div class="info-banner-content">
-                        <svg class="info-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                        </svg>
-                        <p class="info-banner-text">
-                            <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
-                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">Star on GitHub →</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
 
         <!-- Page Content -->
         <main class="main-content">

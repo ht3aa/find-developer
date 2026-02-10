@@ -1677,10 +1677,36 @@ button.pagination-link {
 
 /* Navigation (from layout) */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
     background-color: var(--bg-primary);
     box-shadow: var(--shadow-sm);
     border-bottom: 1px solid var(--border-primary);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: all 0.3s ease-out;
+}
+
+.navbar.scrolled {
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    padding-top: 0.75rem;
+}
+
+.navbar.scrolled .navbar-container {
+    max-width: 1300px;
+    padding: 0 5rem;
+    background-color: var(--bg-primary);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-primary);
+}
+
+.navbar-spacer {
+    height: 105px;
 }
 
 .navbar-container {
@@ -1692,6 +1718,7 @@ button.pagination-link {
     align-items: center;
     height: 70px;
     position: relative;
+    transition: all 0.3s ease-out;
 }
 
 .navbar-brand-group {
@@ -1999,8 +2026,20 @@ html.dark .dark-mode-icon.moon-icon {
 /* Info Banner */
 .info-banner {
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-secondary-light) 100%);
+    border-top: 1px solid var(--border-primary);
     border-bottom: 1px solid var(--color-gray-200);
     padding: var(--spacing-md) 0;
+    max-height: 50px;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
+    overflow: hidden;
+}
+
+.navbar.scrolled .info-banner {
+    max-height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    opacity: 0;
 }
 
 .info-banner-container {
