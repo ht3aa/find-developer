@@ -9,6 +9,7 @@ use App\Filament\Resources\DeveloperRecommendations\Pages\ViewDeveloperRecommend
 use App\Filament\Resources\DeveloperRecommendations\Schemas\DeveloperRecommendationForm;
 use App\Filament\Resources\DeveloperRecommendations\Schemas\DeveloperRecommendationInfolist;
 use App\Filament\Resources\DeveloperRecommendations\Tables\DeveloperRecommendationsTable;
+use App\Enums\RecommendationStatus;
 use App\Models\DeveloperRecommendation;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -39,6 +40,12 @@ class DeveloperRecommendationResource extends Resource
     public static function table(Table $table): Table
     {
         return DeveloperRecommendationsTable::configure($table);
+    }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getEloquentQuery()->where('status', RecommendationStatus::PENDING)->count();
     }
 
     public static function getRelations(): array
