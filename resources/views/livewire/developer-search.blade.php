@@ -168,7 +168,7 @@
 
     <!-- Free Developers Section -->
     @if($freeDevelopers->count() > 0)
-        <div class="modern-section">
+        <div id="free-developers-section" class="modern-section">
             <div class="section-header-modern">
                 <div class="section-title-wrapper">
                     <div class="section-icon-wrapper">
@@ -190,6 +190,16 @@
 
             <!-- Modern Pagination -->
             <x-pagination-custom :paginator="$freeDevelopers" />
+
+            <!-- Back to Top Button -->
+            <div style="display: flex; justify-content: center; margin-top: var(--spacing-lg, 1.5rem);">
+                <a href="#free-developers-section" class="pagination-link" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                    Back to Top
+                </a>
+            </div>
         </div>
     @endif
 
