@@ -349,7 +349,7 @@ class DevelopersTable
                             Toggle::make('add_default_footer')
                                 ->label('Add default footer')
                                 ->default(true)
-                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in www.find-developer.com" at the end of the message'),
+                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in https://find-developer.com" at the end of the message'),
 
                             TextInput::make('category')
                                 ->label('Category')
@@ -368,7 +368,7 @@ class DevelopersTable
 
                                 // Add footer if enabled
                                 if ($data['add_default_footer'] ?? true) {
-                                    $message .= "\n\nBest Regards\nHasan Tahseen an admin in www.find-developer.com";
+                                    $message .= "\n\nBest Regards\nHasan Tahseen an admin in https://find-developer.com";
                                 }
 
                                 $record->notify(new MailtrapNotification(
@@ -411,10 +411,10 @@ class DevelopersTable
                                 $message .= "Thank you for the information. You have been accepted and this is your user credentials\n";
                                 $message .= $data['secret_url']."\n\n";
                                 $message .= "You can edit your information and do more actions via the admin dashboard\n";
-                                $message .= "www.find-developer.com/admin\n\n";
+                                $message .= "https://find-developer.com/admin\n\n";
                                 $message .= "You can now also recommend other developers. Please use the recommendation feature only on the developers you well known\n\n";
                                 $message .= "Best Regards\n";
-                                $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
+                                $message .= 'Hasan Tahseen an Admin in https://find-developer.com platform';
 
                                 $record->notify(new MailtrapNotification(
                                     subject: 'User Credentials Created',
@@ -562,7 +562,7 @@ class DevelopersTable
                             Toggle::make('add_default_footer')
                                 ->label('Add default footer')
                                 ->default(true)
-                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in www.find-developer.com" at the end of the message'),
+                                ->helperText('Adds "Best Regards\nHasan Tahseen an admin in https://find-developer.com" at the end of the message'),
 
                             TextInput::make('category')
                                 ->label('Category')
@@ -599,7 +599,7 @@ class DevelopersTable
 
                                     // Add footer if enabled
                                     if ($addFooter) {
-                                        $message .= "\n\nBest Regards\nHasan Tahseen an admin in www.find-developer.com";
+                                        $message .= "\n\nBest Regards\nHasan Tahseen an admin in https://find-developer.com";
                                     }
 
                                     $developer->notify(new MailtrapNotification(
@@ -785,7 +785,7 @@ class DevelopersTable
             }
 
             $message .= "Best Regards\n";
-            $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
+            $message .= 'Hasan Tahseen an Admin in https://find-developer.com platform';
 
             $developer->notify(new MailtrapNotification(
                 subject: "Congratulations! You Earned the {$badge->name} Badge",

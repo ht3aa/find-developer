@@ -21,7 +21,7 @@ class DeveloperObserver
                 $message = "Hello {$developer->name}\n\n";
                 $message .= "Congratulations! Your developer profile has been approved.\n\n";
                 $message .= "Best Regards\n";
-                $message .= 'Hasan Tahseen an Admin in find-developer.com platform';
+                $message .= 'Hasan Tahseen an Admin in https://find-developer.com platform';
 
                 $developer->notify(new MailtrapNotification(
                     subject: 'Developer Profile Approved',
