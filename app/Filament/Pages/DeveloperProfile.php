@@ -211,7 +211,7 @@ class DeveloperProfile extends Page implements HasSchemas
 
         if ((int) $data['years_of_experience'] !== $this->record->years_of_experience) {
             $data['status'] = DeveloperStatus::EXPERIENCE_CHANGED;
-            $this->record->badges()->detach(Badge::where('slug', 'work-experience-validated')->first()->id);
+            $this->record->badges()->detach(Badge::where('slug', config('badge.experience-assessment-badge'))->first()->id);
         }
 
         $this->record->update($data);
@@ -227,7 +227,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn () => $this->save())
+            ->action(fn() => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',
