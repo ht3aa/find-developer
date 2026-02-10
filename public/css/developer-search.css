@@ -1445,6 +1445,10 @@ html.dark .developer-badge-item:hover {
     background: var(--color-gray-900);
 }
 
+html.dark .social-link.github:hover {
+    background: var(--color-primary);
+}
+
 .social-link.linkedin:hover {
     background: #0077b5;
 }
