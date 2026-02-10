@@ -227,7 +227,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn() => $this->save())
+            ->action(fn () => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',
