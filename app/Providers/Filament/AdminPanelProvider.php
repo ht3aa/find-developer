@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -51,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearch(false)
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-                fn () => view('filament.admin.back-to-home'),
+                fn() => view('filament.admin.back-to-home'),
             )
             ->middleware([
                 EncryptCookies::class,

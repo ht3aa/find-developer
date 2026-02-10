@@ -48,7 +48,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
     {
         // Ensure user is authenticated and is a developer
         if (! Auth::check() || ! Auth::user()->isDeveloper()) {
-            redirect()->route('developer.login');
+            redirect()->route('filament.admin.auth.login');
 
             return;
         }
