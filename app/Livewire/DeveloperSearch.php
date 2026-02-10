@@ -283,7 +283,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
             }])
             ->withCount([
                 'badges',
-                'badges as has_validated_data_count' => fn ($query) => $query->where('slug', 'data-validated'),
+                'badges as has_work_experience_validated_count' => fn ($query) => $query->where('slug', 'work-experience-validated'),
             ])
             ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
@@ -361,7 +361,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
 
         // Get developers by subscription plan; order by validated-data badge first, then badge count, then recommendations
         $badgeOrder = fn ($query) => $query
-            ->orderBy('has_validated_data_count', 'desc')
+            ->orderBy('has_work_experience_validated_count', 'desc')
             ->orderBy('badges_count', 'desc')
             ->orderBy('recommendations_received_count', 'desc')
             ->orderBy('id', 'asc');

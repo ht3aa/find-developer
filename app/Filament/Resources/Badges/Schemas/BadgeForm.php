@@ -25,17 +25,14 @@ class BadgeForm
                             ->maxLength(255)
                             ->placeholder('e.g., Soft Skills Badge, CV Professional Badge')
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, Set $set) {
-                                if ($operation === 'create') {
-                                    $set('slug', Str::slug($state));
-                                }
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                $set('slug', Str::slug($state));
                             }),
 
                         TextInput::make('slug')
                             ->required()
                             ->maxLength(255)
-                            ->disabled()
-                            ->dehydrated()
+                            ->readonly()
                             ->unique(ignoreRecord: true)
                             ->helperText('Auto-generated from name'),
 

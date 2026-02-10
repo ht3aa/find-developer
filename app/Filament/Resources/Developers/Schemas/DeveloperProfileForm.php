@@ -31,7 +31,6 @@ class DeveloperProfileForm
                         TextInput::make('email')
                             ->email()
                             ->required()
-                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->maxLength(255),
 
                         TextInput::make('phone')
@@ -64,7 +63,6 @@ class DeveloperProfileForm
                             ->default(0)
                             ->minValue(0)
                             ->maxValue(50)
-                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->suffix('years')
                             ->required(),
 
@@ -81,14 +79,12 @@ class DeveloperProfileForm
                         Select::make('status')
                             ->options(DeveloperStatus::class)
                             ->disabled()
-                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->dehydrated(),
 
                         Select::make('subscription_plan')
                             ->label('Subscription Plan')
                             ->options(SubscriptionPlan::class)
                             ->disabled()
-                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->dehydrated(),
 
                         Toggle::make('is_available')
@@ -113,7 +109,6 @@ class DeveloperProfileForm
                             ->multiple()
                             ->searchable()
                             ->preload()
-                            ->hidden(fn ($livewire) => self::isDeveloperProfilePage($livewire))
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -139,7 +134,7 @@ class DeveloperProfileForm
             ]);
     }
 
-    public static function isDeveloperProfilePage($livewire): bool
+    private static function isDeveloperProfilePage($livewire): bool
     {
         return $livewire->getName() === 'app.filament.pages.developer-profile';
     }
