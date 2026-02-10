@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Developers;
 
+use App\Enums\DeveloperStatus;
 use App\Filament\Resources\Developers\Pages\CreateDeveloper;
 use App\Filament\Resources\Developers\Pages\EditDeveloper;
 use App\Filament\Resources\Developers\Pages\ListDevelopers;
@@ -40,6 +41,11 @@ class DeveloperResource extends Resource
         return parent::getEloquentQuery()->withoutGlobalScopes([
             ApprovedScope::class,
         ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getEloquentQuery()->whereIn('status', [DeveloperStatus::PENDING, DeveloperStatus::EXPERIENCE_CHANGED])->count();
     }
 
     public static function getRelations(): array
