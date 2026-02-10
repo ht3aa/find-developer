@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DeveloperRecommendations;
 
+use App\Enums\RecommendationStatus;
 use App\Filament\Resources\DeveloperRecommendations\Pages\CreateDeveloperRecommendation;
 use App\Filament\Resources\DeveloperRecommendations\Pages\EditDeveloperRecommendation;
 use App\Filament\Resources\DeveloperRecommendations\Pages\ListDeveloperRecommendations;
@@ -9,7 +10,6 @@ use App\Filament\Resources\DeveloperRecommendations\Pages\ViewDeveloperRecommend
 use App\Filament\Resources\DeveloperRecommendations\Schemas\DeveloperRecommendationForm;
 use App\Filament\Resources\DeveloperRecommendations\Schemas\DeveloperRecommendationInfolist;
 use App\Filament\Resources\DeveloperRecommendations\Tables\DeveloperRecommendationsTable;
-use App\Enums\RecommendationStatus;
 use App\Models\DeveloperRecommendation;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -41,7 +41,6 @@ class DeveloperRecommendationResource extends Resource
     {
         return DeveloperRecommendationsTable::configure($table);
     }
-
 
     public static function getNavigationBadge(): ?string
     {
