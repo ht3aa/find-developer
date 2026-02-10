@@ -283,7 +283,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
             }])
             ->withCount([
                 'badges',
-                'badges as has_work_experience_validated_count' => fn ($query) => $query->where('slug', 'work-experience-validated'),
+                'badges as has_experience_validated_count' => fn ($query) => $query->where('slug', config('badge.experience-assessment-badge')),
             ])
             ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $query->where(function ($q) use ($filters) {
