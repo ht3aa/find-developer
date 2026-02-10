@@ -9,7 +9,6 @@ use App\Enums\SubscriptionPlan;
 use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
-use App\Models\Skill;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -134,7 +133,6 @@ class DeveloperProfileForm
                     ->columns(3),
             ]);
     }
-
 
     private static function isDeveloperProfilePage($livewire): bool
     {

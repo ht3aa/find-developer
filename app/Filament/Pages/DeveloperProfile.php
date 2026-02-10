@@ -2,30 +2,29 @@
 
 namespace App\Filament\Pages;
 
-use App\Enums\SubscriptionPlan;
-use App\Filament\Resources\Developers\Schemas\DeveloperProfileForm;
-use App\Models\Developer;
+use App\Enums\AvailabilityType;
+use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\WorldGovernorate;
+use App\Filament\Customs\ExpectedSalaryFromField;
+use App\Filament\Customs\ExpectedSalaryToField;
+use App\Models\Badge;
+use App\Models\Developer;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use App\Enums\WorldGovernorate;
-use App\Enums\Currency;
-use App\Enums\AvailabilityType;
-use App\Filament\Customs\ExpectedSalaryFromField;
-use App\Filament\Customs\ExpectedSalaryToField;
-use App\Models\Badge;
 
 class DeveloperProfile extends Page implements HasSchemas
 {
@@ -44,7 +43,6 @@ class DeveloperProfile extends Page implements HasSchemas
     public ?Developer $record = null;
 
     public ?array $data = [];
-
 
     public static function canAccess(): bool
     {
@@ -211,7 +209,7 @@ class DeveloperProfile extends Page implements HasSchemas
         $data['expected_salary_from'] = Str::of($data['expected_salary_from'])->remove(',')->toInteger();
         $data['expected_salary_to'] = Str::of($data['expected_salary_to'])->remove(',')->toInteger();
 
-        if ((int)$data['years_of_experience'] !== $this->record->years_of_experience) {
+        if ((int) $data['years_of_experience'] !== $this->record->years_of_experience) {
             $data['status'] = DeveloperStatus::EXPERIENCE_CHANGED;
             $this->record->badges()->detach(Badge::where('slug', 'work-experience-validated')->first()->id);
         }
@@ -229,7 +227,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn() => $this->save())
+            ->action(fn () => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',

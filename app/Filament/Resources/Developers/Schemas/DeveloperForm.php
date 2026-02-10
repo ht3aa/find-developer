@@ -134,7 +134,7 @@ class DeveloperForm
                             ->columnSpanFull(),
 
                         Select::make('badges')
-                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
+                            ->relationship('badges', 'name', fn ($query) => $query->where('is_active', true))
                             ->multiple()
                             ->searchable()
                             ->preload()
