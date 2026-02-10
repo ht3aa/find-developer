@@ -3,7 +3,6 @@
 use App\Filament\Pages\CompanyJobRegistration;
 use App\Filament\Pages\DeveloperRecommendation;
 use App\Filament\Pages\DeveloperRegistration;
-use App\Http\Controllers\DeveloperAuthController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DeveloperProjectsController;
 use App\Http\Controllers\DeveloperRecommendationsViewController;
@@ -64,12 +63,10 @@ Route::get('/developer/{developerSlug}/projects', [DeveloperProjectsController::
 Route::get('/developer/{developerSlug}/recommendations', [DeveloperRecommendationsViewController::class, 'show'])
     ->name('developer.recommendations');
 
-// Developer Authentication Routes
-Route::get('/developer/login', [DeveloperAuthController::class, 'showLoginForm'])
-    ->name('developer.login');
-Route::post('/developer/login', [DeveloperAuthController::class, 'login']);
-Route::post('/developer/logout', [DeveloperAuthController::class, 'logout'])
-    ->name('developer.logout');
+// Redirect old developer login URL to Filament admin login
+Route::get('/developer/login', function () {
+    return redirect()->route('filament.admin.auth.login');
+})->name('developer.login');
 
 // Developer Recommendation Routes (requires authentication)
 Route::get('/developer/{developer}/recommend', DeveloperRecommendation::class)

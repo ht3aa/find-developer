@@ -167,19 +167,19 @@
                     @endauth
                     @auth
                         @if(auth()->user()->isDeveloper())
-                            <form method="POST" action="{{ route('developer.logout') }}" class="navbar-logout-form">
+                            <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="navbar-logout-form">
                                 @csrf
                                 <button type="submit" class="navbar-link navbar-link-logout" @click="mobileMenuOpen = false">
                                     Logout
                                 </button>
                             </form>
                         @else
-                            <a href="{{ route('developer.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
-                                Login
-                            </a>
+<a href="{{ route('filament.admin.auth.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                                    Login
+                                </a>
                         @endif
                     @else
-                        <a href="{{ route('developer.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                        <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
                              Login
                         </a>
                     @endauth
