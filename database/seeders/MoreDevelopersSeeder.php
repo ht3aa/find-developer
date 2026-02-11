@@ -43,6 +43,7 @@ class MoreDevelopersSeeder extends Seeder
 
             $data = [
                 'name' => $name,
+                'slug' => $slug . '-' . ($i + 1),
                 'email' => $faker->unique()->safeEmail(),
                 'phone' => $faker->phoneNumber(),
                 'job_title_id' => $faker->numberBetween(1, 6),

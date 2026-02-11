@@ -6,5 +6,12 @@
 @section('seo_keywords', 'find developer, developer search, hire developer, developers in iraq, search developers, developer directory, web developer, mobile developer, software developer')
 
 @section('content')
+    <div id="search-hero-app"
+         data-total-count="{{ \App\Models\Developer::count() }}"
+         data-register-url="{{ route('register') }}">
+    </div>
+    @vite('resources/js/search-hero.js')
+    @vite('resources/js/card-effects.js')
+
     @livewire('developer-search')
 @endsection

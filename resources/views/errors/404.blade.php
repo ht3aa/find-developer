@@ -20,7 +20,7 @@
         
         body {
             font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #111111;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -54,7 +54,7 @@
         .error-code {
             font-size: 120px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #111111;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -86,7 +86,7 @@
         .error-icon svg {
             width: 100%;
             height: 100%;
-            fill: #667eea;
+            fill: #ec9f16;
         }
         
         .error-actions {
@@ -111,7 +111,7 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #111111;
             color: white;
         }
         

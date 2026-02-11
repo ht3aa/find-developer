@@ -81,7 +81,7 @@
 
         
         <!-- Scripts -->
-        @vite(['resources/js/app.js', 'resources/css/filament/admin/theme.css'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/filament/admin/theme.css'])
 
         <!-- Custom CSS -->
         <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
@@ -112,22 +112,6 @@
                         </svg>
                     </a>
                 </div>
-
-                <!-- Hamburger Button -->
-                <button 
-                    @click="mobileMenuOpen = !mobileMenuOpen"
-                    class="navbar-toggle"
-                    type="button"
-                    aria-label="Toggle navigation menu"
-                    aria-expanded="false"
-                    x-bind:aria-expanded="mobileMenuOpen"
-                >
-                    <span class="navbar-toggle-icon" x-bind:class="{ 'active': mobileMenuOpen }">
-                        <span class="navbar-toggle-line"></span>
-                        <span class="navbar-toggle-line"></span>
-                        <span class="navbar-toggle-line"></span>
-                    </span>
-                </button>
 
                 <!-- Navigation Menu -->
                 <div 
@@ -187,56 +171,72 @@
                         </a>
                     @endauth
                 </div>
-            </div>
 
-            <!-- Info Banner -->
-            <div class="info-banner">
-                <div class="info-banner-container">
-                    <div class="info-banner-content">
-                        <svg class="info-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                <!-- Theme Toggle + Hamburger -->
+                <div class="navbar-actions">
+                    <button
+                        type="button"
+                        class="navbar-theme-toggle"
+                        onclick="toggleDarkMode()"
+                        aria-label="Toggle dark mode"
+                        title="Toggle dark mode"
+                    >
+                        <svg class="dark-mode-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
-                        <p class="info-banner-text">
-                            <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
-                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">Star on GitHub →</a>
-                        </p>
-                    </div>
+                        <svg class="dark-mode-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                    <button
+                        @click="mobileMenuOpen = !mobileMenuOpen"
+                        class="navbar-toggle"
+                        type="button"
+                        aria-label="Toggle navigation menu"
+                        aria-expanded="false"
+                        x-bind:aria-expanded="mobileMenuOpen"
+                    >
+                        <span class="navbar-toggle-icon" x-bind:class="{ 'active': mobileMenuOpen }">
+                            <span class="navbar-toggle-line"></span>
+                            <span class="navbar-toggle-line"></span>
+                            <span class="navbar-toggle-line"></span>
+                        </span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Email Check Banner -->
-            <div class="email-check-banner">
-                <div class="email-check-banner-container">
-                    <div class="email-check-banner-content">
-                        <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <!-- Navbar Notices -->
+            <div class="navbar-notices">
+                <div class="navbar-notices-inner">
+                    <div class="navbar-notice notice-github">
+                        <svg class="navbar-notice-icon" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                         </svg>
-                        <p class="email-check-banner-text">
-                            <strong>Important:</strong> After registering as a developer, please check the email address you registered with. We will send important updates and login credentials to that email.
-                        </p>
+                        <span class="navbar-notice-text">
+                            <strong>Open Source</strong>
+                            <span class="navbar-notice-sep">·</span>
+                            Give us a star — it helps us grow!
+                        </span>
+                        <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" class="navbar-notice-action">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Star on GitHub
+                        </a>
+                    </div>
+                    <span class="navbar-notice-divider"></span>
+                    <div class="navbar-notice notice-email">
+                        <svg class="navbar-notice-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.5-9.75-6.5"/>
+                        </svg>
+                        <span class="navbar-notice-text">
+                            After registering, check your email for login credentials and updates.
+                        </span>
                     </div>
                 </div>
             </div>
         </nav>
         <div class="navbar-spacer"></div>
 
-        <!-- Floating Dark Mode Toggle (visible on all pages) -->
-        <button 
-            type="button"
-            class="floating-dark-mode-toggle"
-            onclick="toggleDarkMode()"
-            aria-label="Toggle dark mode"
-            title="Toggle dark mode"
-        >
-            <!-- Sun Icon (Light Mode) -->
-            <svg class="dark-mode-icon sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-            <!-- Moon Icon (Dark Mode) -->
-            <svg class="dark-mode-icon moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-            </svg>
-        </button>
+        <!-- Dark mode toggle is now in the navbar -->
 
         <!-- Page Content -->
         <main class="main-content">
@@ -245,21 +245,39 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <!-- Developer Promotion Banner -->
-            <div class="developer-promotion-banner">
-                <div class="developer-promotion-banner-container">
-                    <div class="developer-promotion-banner-content">
-                        <div class="developer-promotion-banner-text-wrapper">
-                            <svg class="developer-promotion-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                            <div class="developer-promotion-banner-text-block">
-                                <p class="developer-promotion-banner-text">
-                                    If You find this platform useful, you can support us by sponsoring us or donating to us. Qi Card Number is <strong>5862997060</strong>
-                                </p>
-                                <p class="developer-promotion-banner-note">
-                                    We will use the money to improve by marketing the platform and add new features.
-                                </p>
+            <!-- Support Us Banner -->
+            <div class="support-banner">
+                <div class="support-banner-container">
+                    <div class="support-banner-content">
+                        <!-- Left: Message -->
+                        <div class="support-banner-info">
+                            <div class="support-banner-heading">
+                                <svg class="support-banner-heart" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                                </svg>
+                                <h3 class="support-banner-title">Support FindDeveloper</h3>
+                            </div>
+                            <p class="support-banner-text">
+                                If you find this platform useful, consider supporting us. Your contribution helps us market the platform and build new features for the Iraqi developer community.
+                            </p>
+                        </div>
+
+                        <!-- Right: Payment Card -->
+                        <div class="support-banner-card">
+                            <div class="support-banner-card-inner">
+                                <div class="support-banner-card-label">
+                                    <svg class="support-banner-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                                    </svg>
+                                    <span>Qi Card</span>
+                                </div>
+                                <div class="support-banner-card-number" onclick="navigator.clipboard.writeText('5862997060')" title="Click to copy">
+                                    <span class="support-banner-digits">5862 9970 60</span>
+                                    <svg class="support-banner-copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                                    </svg>
+                                </div>
+                                <p class="support-banner-card-hint">Iraq's electronic payment card &middot; Click to copy</p>
                             </div>
                         </div>
                     </div>

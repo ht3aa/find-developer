@@ -47,10 +47,10 @@ class UserServiceFactory extends Factory
 
         return [
             'user_id' => User::factory()->state([
-                'user_type' => UserType::CLIENT,
+                'user_type' => UserType::DEVELOPER,
             ]),
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name) . '-' . fake()->unique()->numberBetween(1000, 99999),
             'description' => fake()->boolean(80) ? fake()->paragraph(3) : null,
             'price' => $price,
             'price_currency' => fake()->randomElement(Currency::cases()),

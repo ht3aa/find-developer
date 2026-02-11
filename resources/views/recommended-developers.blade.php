@@ -6,5 +6,6 @@
 @section('seo_keywords', 'recommended developers, top developers, best developers, handpicked developers, premium developers, expert developers')
 
 @section('content')
-    @livewire('recommended-developers')
+    <div id="recommended-app" data-developers="{{ json_encode($developersData) }}" data-is-admin="{{ $isAdmin ? '1' : '0' }}" data-is-logged-in="{{ $isLoggedIn ? '1' : '0' }}"></div>
+    @vite('resources/js/recommended.js')
 @endsection

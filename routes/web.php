@@ -24,7 +24,28 @@ Route::get('/register', DeveloperRegistration::class)->name('register');
 Route::get('/jobs', [JobsController::class, 'index'])->name('jobs');
 
 Route::get('/get-experience', function () {
-    return view('experience-tasks');
+    $tasks = \App\Models\ExperienceTask::query()
+        ->available()
+        ->withCount('developers')
+        ->orderByDesc('created_at')
+        ->get()
+        ->map(fn ($t) => [
+            'id' => $t->id,
+            'title' => $t->title,
+            'description_plain' => strip_tags($t->description),
+            'requirements' => $t->requirements,
+            'rewards' => $t->rewards,
+            'status' => $t->status->value,
+            'price' => $t->price,
+            'price_currency' => $t->price_currency?->value ?? 'IQD',
+            'experience_gain' => $t->experience_gain?->value,
+            'xp_value' => $t->experience_gain?->value ?? 0,
+            'required_developers_count' => $t->required_developers_count,
+            'developers_count' => $t->developers_count,
+            'time_ago' => $t->created_at->diffForHumans(),
+        ]);
+
+    return view('experience-tasks', ['tasks' => $tasks]);
 })->name('experience-tasks');
 
 Route::get('/recommended', [RecommendedDevelopersController::class, 'index'])->name('recommended');
@@ -40,11 +61,49 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/services', function () {
-    return view('services');
+    $services = \App\Models\UserService::with(['user', 'appointments', 'badges'])
+        ->withoutGlobalScopes([\App\Models\Scopes\UserScope::class])
+        ->withCount('appointments')
+        ->whereHas('user', function ($query) {
+            $query->where('user_type', \App\Enums\UserType::HR);
+        })
+        ->where('is_active', true)
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->groupBy('user_id');
+
+    $providers = $services->map(function ($userServices) {
+        $user = $userServices->first()->user;
+        return [
+            'user' => [
+                'name' => $user->name,
+                'linkedin_url' => $user->linkedin_url,
+            ],
+            'services' => $userServices->map(fn ($s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+                'description' => $s->description,
+                'is_active' => $s->is_active,
+                'price' => $s->price,
+                'price_currency' => $s->price_currency?->value,
+                'time_minutes' => $s->time_minutes,
+                'appointments_count' => $s->appointments_count ?? 0,
+                'badges' => $s->badges->map(fn ($b) => [
+                    'id' => $b->id,
+                    'name' => $b->name,
+                    'icon' => $b->icon,
+                    'color' => $b->color,
+                ]),
+            ])->values(),
+        ];
+    })->values();
+
+    return view('services', ['providers' => $providers]);
 })->name('services');
 
 Route::get('/badges', function () {
-    return view('badges');
+    $badges = \App\Models\Badge::where('is_active', true)->orderBy('name')->get();
+    return view('badges', ['badges' => $badges]);
 })->name('badges');
 
 Route::get('/charts', function () {

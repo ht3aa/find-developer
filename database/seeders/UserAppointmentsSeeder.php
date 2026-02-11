@@ -18,7 +18,7 @@ class UserAppointmentsSeeder extends Seeder
     public function run(): void
     {
         // Get existing clients and developers
-        $clients = User::where('user_type', UserType::CLIENT)->get();
+        $clients = User::where('user_type', UserType::DEVELOPER)->get();
         $developers = Developer::all();
         $services = UserService::all();
 
@@ -107,7 +107,23 @@ class UserAppointmentsSeeder extends Seeder
             ]);
         }
 
-        // Create additional random appointments using factory
-        UserAppointment::factory(15)->create();
+        // Create additional random appointments manually
+        if ($clients->isNotEmpty() && $developers->isNotEmpty()) {
+            for ($i = 0; $i < 15; $i++) {
+                $status = fake()->randomElement(AppointmentStatus::cases());
+                $startDatetime = $status === AppointmentStatus::PENDING
+                    ? null
+                    : fake()->dateTimeBetween('now', '+3 months');
+
+                UserAppointment::create([
+                    'user_id' => $clients->random()->id,
+                    'developer_id' => $developers->random()->id,
+                    'user_service_id' => $services->isNotEmpty() && fake()->boolean(60) ? $services->random()->id : null,
+                    'status' => $status,
+                    'start_datetime' => $startDatetime,
+                    'notes' => fake()->boolean(40) ? fake()->paragraph(2) : null,
+                ]);
+            }
+        }
     }
 }

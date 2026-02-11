@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
             MoreDevelopersSeeder::class,
             DeveloperProjectsSeeder::class,
             UserServicesSeeder::class,
+            BadgesSeeder::class,
+            ExperienceTasksSeeder::class,
             UserAppointmentsSeeder::class,
         ]);
     }
