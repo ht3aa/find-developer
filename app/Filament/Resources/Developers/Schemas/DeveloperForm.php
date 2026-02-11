@@ -109,6 +109,10 @@ class DeveloperForm
                             ->default(true)
                             ->required(),
 
+                        Toggle::make('special_needs')
+                            ->label('Special Needs Developer')
+                            ->default(false),
+
                         Select::make('availability_type')
                             ->label('Availability Type')
                             ->options(AvailabilityType::class)

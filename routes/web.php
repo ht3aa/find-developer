@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('search');
 })->name('home');
 
+Route::get('/special-needs-developers', function () {
+    return view('special-needs');
+})->name('special-needs-developers');
+
 Route::get('/register', DeveloperRegistration::class)->name('register');
 
 Route::get('/jobs', [JobsController::class, 'index'])->name('jobs');
