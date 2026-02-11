@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])
@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearch(false)
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-                fn () => view('filament.admin.back-to-home'),
+                fn() => view('filament.admin.back-to-home'),
             )
             ->middleware([
                 EncryptCookies::class,
