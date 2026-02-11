@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearch(false)
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-                fn () => view('filament.admin.back-to-home'),
+                fn() => view('filament.admin.back-to-home'),
             )
             ->middleware([
                 EncryptCookies::class,
@@ -65,6 +65,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->brandLogo(asset('light-logo.svg'))
+            ->darkModeBrandLogo(asset('dark-logo.svg'))
             ->authMiddleware([
                 Authenticate::class,
             ]);
