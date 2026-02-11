@@ -256,6 +256,7 @@ body {
     transition: all var(--transition-base);
     max-width: 900px;
     margin: 0 auto;
+    gap: var(--spacing-xs);
 }
 
 .search-bar-wrapper:focus-within {
@@ -290,16 +291,44 @@ body {
     color: var(--text-muted);
 }
 
-/* Floating Filter Button */
+/* Filter Button Wrapper */
 .filter-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+
+/* Inline Filter Button (next to search) */
+.filter-btn-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
     position: relative;
 }
 
+.filter-btn-inline:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.filter-btn-inline:active {
+    transform: translateY(0);
+}
+
+/* Floating Filter Button (when scrolled) */
 .floating-filter-btn {
-    position: fixed;
-    bottom: var(--spacing-xl);
-    right: var(--spacing-xl);
-    z-index: 999;
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -312,8 +341,14 @@ body {
     cursor: pointer;
     font-size: var(--font-size-base);
     font-weight: 600;
-    transition: all var(--transition-slow);
     white-space: nowrap;
+}
+
+.floating-filter-btn.scrolled {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    z-index: 999;
 }
 
 .floating-filter-btn:hover {
@@ -352,13 +387,22 @@ body {
 }
 
 @media (max-width: 640px) {
-    .floating-filter-btn {
+    .filter-btn-inline {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        margin-left: var(--spacing-xs);
+    }
+    
+    .filter-btn-inline .floating-filter-text {
+        display: none;
+    }
+    
+    .floating-filter-btn.scrolled {
         bottom: var(--spacing-lg);
         right: var(--spacing-lg);
         padding: var(--spacing-sm) var(--spacing-md);
     }
     
-    .floating-filter-text {
+    .floating-filter-btn.scrolled .floating-filter-text {
         display: none;
     }
     

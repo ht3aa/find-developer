@@ -27,43 +27,44 @@
                 placeholder="Search by name, email, location, or skills..."
                 class="search-input"
             />
-        </div>
-    </div>
+            <!-- Filter Button Next to Search -->
+            <div x-data="{ filterPanelOpen: false, scrolled: false }" 
+                 x-init="
+                    window.addEventListener('scroll', () => {
+                        scrolled = window.scrollY > 200;
+                    });
+                 "
+                 class="filter-wrapper">
+                <button 
+                    @click="filterPanelOpen = true"
+                    x-show="!filterPanelOpen"
+                    :class="scrolled ? 'floating-filter-btn scrolled' : 'filter-btn-inline'"
+                    type="button"
+                    aria-label="Open filters"
+                >
+                    <svg class="floating-filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    <span class="floating-filter-text">Filters</span>
+                    @if($activeFiltersCount > 0)
+                        <span class="filter-count-badge">{{ $activeFiltersCount }}</span>
+                    @endif
+                </button>
 
-    <!-- Floating Filter Button & Panel -->
-    <div x-data="{ filterPanelOpen: false }" class="filter-wrapper">
-        <!-- Floating Filter Button -->
-        <button 
-            @click="filterPanelOpen = true"
-            x-show="!filterPanelOpen"
-            x-transition
-            class="floating-filter-btn"
-            type="button"
-            aria-label="Open filters"
-        >
-            <svg class="floating-filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            <span class="floating-filter-text">Filters</span>
-            @if($activeFiltersCount > 0)
-                <span class="filter-count-badge">{{ $activeFiltersCount }}</span>
-            @endif
-        </button>
-
-        <!-- Modern Filter Panel -->
-        <div 
-            x-show="filterPanelOpen"
-            x-cloak
-            @click.away="filterPanelOpen = false"
-            @keydown.escape.window="filterPanelOpen = false"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="translate-x-full opacity-0"
-            x-transition:enter-end="translate-x-0 opacity-100"
-            x-transition:leave="transition ease-in duration-300"
-            x-transition:leave-start="translate-x-0 opacity-100"
-            x-transition:leave-end="translate-x-full opacity-0"
-            class="modern-filter-panel"
-        >
+            <!-- Modern Filter Panel -->
+            <div 
+                x-show="filterPanelOpen"
+                x-cloak
+                @click.away="filterPanelOpen = false"
+                @keydown.escape.window="filterPanelOpen = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="translate-x-full opacity-0"
+                x-transition:enter-end="translate-x-0 opacity-100"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="translate-x-0 opacity-100"
+                x-transition:leave-end="translate-x-full opacity-0"
+                class="modern-filter-panel"
+            >
             <div class="filter-panel-content" @click.stop>
                 <div class="filter-panel-header">
                     <h3 class="filter-panel-title">Advanced Filters</h3>
@@ -93,6 +94,7 @@
                         Clear All Filters
                     </button>
                 </div>
+            </div>
             </div>
         </div>
     </div>
