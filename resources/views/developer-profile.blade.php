@@ -31,18 +31,7 @@
                 </div>
 
                 <!-- Badges -->
-                @if($developer->badges->count() > 0)
-                    <div class="dev-profile-badges">
-                        @foreach($developer->badges as $badge)
-                            <a href="{{ route('badges') }}" class="dev-profile-badge" @if($badge->color) style="background: {{ $badge->color }}15; border-color: {{ $badge->color }}40; color: {{ $badge->color }};" @endif>
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                                {{ $badge->name }}
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
+                <x-developer-badges-icons :developer="$developer" />
 
                 <!-- Subscription badge -->
                 @if($developer->isPremium())

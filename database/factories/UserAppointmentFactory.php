@@ -34,7 +34,7 @@ class UserAppointmentFactory extends Factory
 
         return [
             'user_id' => User::factory()->state([
-                'user_type' => UserType::CLIENT,
+                'user_type' => UserType::DEVELOPER,
             ]),
             'developer_id' => Developer::factory(),
             'user_service_id' => fake()->boolean(60) ? UserService::factory() : null,

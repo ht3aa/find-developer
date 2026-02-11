@@ -13,5 +13,13 @@
         "laravel-vite-plugin": "^2.0.0",
         "tailwindcss": "^4.1.18",
         "vite": "^7.0.7"
+    },
+    "dependencies": {
+        "@vitejs/plugin-vue": "^6.0.4",
+        "lucide": "^0.563.0",
+        "lucide-vue-next": "^0.563.0",
+        "motion-v": "^1.10.3",
+        "vue": "^3.5.28",
+        "vue-bits": "^1.1.1"
     }
 }

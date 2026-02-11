@@ -8,6 +8,7 @@ use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\Skill;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DevelopersSeeder extends Seeder
 {
@@ -73,6 +74,7 @@ class DevelopersSeeder extends Seeder
                     'expected_salary_to' => 260000000,
                     'is_available' => true,
                     'subscription_plan' => SubscriptionPlan::PREMIUM,
+                    'recommended_by_us' => true,
                 ],
                 'skills' => ['PHP', 'Laravel', 'PostgreSQL', 'Redis', 'Docker', 'Kubernetes'],
             ],
@@ -110,6 +112,7 @@ class DevelopersSeeder extends Seeder
                     'expected_salary_from' => 208000000,
                     'expected_salary_to' => 247000000,
                     'is_available' => true,
+                    'status' => DeveloperStatus::APPROVED,
                 ],
                 'skills' => ['AWS', 'Docker', 'Kubernetes', 'Jenkins', 'Terraform', 'Ansible'],
             ],
@@ -128,6 +131,7 @@ class DevelopersSeeder extends Seeder
                     'expected_salary_from' => 156000000,
                     'expected_salary_to' => 195000000,
                     'is_available' => true,
+                    'status' => DeveloperStatus::APPROVED,
                 ],
                 'skills' => ['Figma', 'Adobe XD', 'Sketch'],
             ],
@@ -146,6 +150,7 @@ class DevelopersSeeder extends Seeder
                     'expected_salary_from' => 104000000,
                     'expected_salary_to' => 130000000,
                     'is_available' => true,
+                    'status' => DeveloperStatus::APPROVED,
                 ],
                 'skills' => ['JavaScript', 'Python', 'Django', 'React', 'MongoDB'],
             ],
@@ -164,12 +169,17 @@ class DevelopersSeeder extends Seeder
                     'expected_salary_from' => 260000000,
                     'expected_salary_to' => 325000000,
                     'is_available' => true,
+                    'recommended_by_us' => true,
+                    'status' => DeveloperStatus::APPROVED,
                 ],
                 'skills' => ['Java', 'Spring Boot', 'Microservices', 'PostgreSQL', 'Elasticsearch'],
             ],
         ];
 
         foreach ($developers as $developerInfo) {
+            // Generate slug from name
+            $developerInfo['data']['slug'] = Str::slug($developerInfo['data']['name']);
+
             // Create the developer
             $developer = Developer::create($developerInfo['data']);
 
