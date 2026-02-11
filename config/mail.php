@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -95,11 +95,6 @@ return [
                 'postmark',
             ],
             'retry_after' => 60,
-        ],
-
-        'mailtrap' => [
-            'transport' => 'mailtrap',
-            'secret' => env('MAILTRAP_SECRET'),
         ],
 
     ],
