@@ -26,7 +26,7 @@ class DeveloperRecommendationObserver
             }
             $recommenderMessage .= "Thank you for your contribution to our developer community.\n\n";
             $recommenderMessage .= "Best Regards\n";
-            $recommenderMessage .= "Hasan Tahseen an Admin in " . config('app.url') . " platform";
+            $recommenderMessage .= 'Hasan Tahseen an Admin in '.config('app.url').' platform';
 
             $recommendation->recommender->notify(new MailtrapNotification(
                 subject: 'Recommendation Approved',
@@ -41,9 +41,9 @@ class DeveloperRecommendationObserver
                 $recommendedMessage .= "Recommendation note: {$recommendation->recommendation_note}\n\n";
             }
             $recommendedMessage .= "This recommendation will help enhance your profile visibility.\n\n";
-            $recommendedMessage .= "You can now view your profile on the platform: " . config('app.url') . "/developers/{$recommendation->recommended->slug}\n\n";
+            $recommendedMessage .= 'You can now view your profile on the platform: '.config('app.url')."/developers/{$recommendation->recommended->slug}\n\n";
             $recommendedMessage .= "Best Regards\n";
-            $recommendedMessage .= "Hasan Tahseen an Admin in " . config('app.url') . " platform";
+            $recommendedMessage .= 'Hasan Tahseen an Admin in '.config('app.url').' platform';
 
             $recommendation->recommended->notify(new MailtrapNotification(
                 subject: 'You Received an Approved Recommendation',
