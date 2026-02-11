@@ -45,7 +45,9 @@ class DeveloperResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return parent::getEloquentQuery()->whereIn('status', [DeveloperStatus::PENDING, DeveloperStatus::EXPERIENCE_CHANGED])->count();
+        return parent::getEloquentQuery()->withoutGlobalScopes([
+            ApprovedScope::class,
+        ])->whereIn('status', [DeveloperStatus::PENDING, DeveloperStatus::EXPERIENCE_CHANGED])->count();
     }
 
     public static function getRelations(): array
