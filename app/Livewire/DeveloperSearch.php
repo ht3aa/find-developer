@@ -263,11 +263,9 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
         return $count;
     }
 
-    public function render()
+    protected function buildBaseQuery(array $filters)
     {
-        $filters = $this->all();
-
-        $baseQuery = Developer::with(['jobTitle', 'skills', 'badges'])
+        return Developer::with(['jobTitle', 'skills', 'badges'])
             ->with(['projects' => function ($query) {
                 $query->withoutGlobalScopes([DeveloperScope::class])
                     ->where('show_project', true)
@@ -358,6 +356,11 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
             ->when(! is_null($filters['availableOnly']), function ($query) use ($filters) {
                 $query->where('is_available', $filters['availableOnly']);
             });
+    }
+
+    protected function getViewData(array $filters): array
+    {
+        $baseQuery = $this->buildBaseQuery($filters);
 
         // Get developers by subscription plan; order by validated-data badge first, then badge count, then recommendations
         $badgeOrder = fn ($query) => $query
@@ -392,7 +395,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
                 ->all()
             : [];
 
-        return view('livewire.developer-search', [
+        return [
             'premiumDevelopers' => $premiumDevelopers,
             'proDevelopers' => $proDevelopers,
             'freeDevelopers' => $freeDevelopers,
@@ -400,6 +403,13 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
             'activeFiltersCount' => $this->getActiveFiltersCount(),
             'currentUserDeveloper' => $currentUserDeveloper,
             'recommendedDeveloperIds' => $recommendedDeveloperIds,
-        ]);
+        ];
+    }
+
+    public function render()
+    {
+        $filters = $this->all();
+
+        return view('livewire.developer-search', $this->getViewData($filters));
     }
 }
