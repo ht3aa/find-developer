@@ -35,6 +35,8 @@ jobs:
              git checkout -B release-${{ github.event.release.tag_name }} refs/tags/${{ github.event.release.tag_name }}
             sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
             composer install --no-dev --optimize-autoloader
+            npm install 
+            npm run build
             npm install --omit=dev
             npm update --omit=dev
             php artisan optimize:clear
