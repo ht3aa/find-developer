@@ -22,20 +22,17 @@ class ListDevelopers extends ListRecords
 
     public function getTabs(): array
     {
+        $tabs = collect(DeveloperStatus::cases())
+            ->mapWithKeys(fn (DeveloperStatus $status) => [
+                $status->value => Tab::make($status->getLabel())
+                    ->icon($status->getIcon())
+                    ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status))
+            ])
+            ->toArray();
+
         return [
-            'pending' => Tab::make('Pending')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', DeveloperStatus::PENDING)
-                ),
-
-            'approved' => Tab::make('Approved')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', DeveloperStatus::APPROVED)
-                ),
-
-            'rejected' => Tab::make('Rejected')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', DeveloperStatus::REJECTED)
-                ),
-
-            'all' => Tab::make('all'),
+            ...$tabs,
+            'all' => Tab::make('All'),
         ];
     }
 }
