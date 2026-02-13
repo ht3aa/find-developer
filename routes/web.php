@@ -74,4 +74,5 @@ Route::get('/developer/login', function () {
 
 // Developer Recommendation Routes (requires authentication)
 Route::get('/developer/{developer}/recommend', DeveloperRecommendation::class)
+    ->middleware(['auth'])
     ->name('developer.recommend');
