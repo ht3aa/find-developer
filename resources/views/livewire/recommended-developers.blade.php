@@ -137,7 +137,7 @@
             </div>
             <div class="developers-grid-modern">
                 @foreach($premiumDevelopers as $developer)
-                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" />
+                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="true" />
                 @endforeach
             </div>
         </div>
@@ -161,7 +161,7 @@
             </div>
             <div class="developers-grid-modern">
                 @foreach($proDevelopers as $developer)
-                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" />
+                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="true" />
                 @endforeach
             </div>
         </div>
@@ -185,7 +185,7 @@
             </div>
             <div class="developers-grid-modern">
                 @foreach($freeDevelopers as $developer)
-                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" />
+                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="true" />
                 @endforeach
             </div>
 
