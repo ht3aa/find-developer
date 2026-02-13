@@ -154,7 +154,7 @@ class DeveloperRecommendation extends SimplePage implements HasForms
 
     public function getHeading(): string
     {
-        return 'Recommend '.($this->recommendedDeveloper?->name ?? 'Developer');
+        return 'Recommend ' . ($this->recommendedDeveloper?->name ?? 'Developer');
     }
 
     public function getSubheading(): ?string
