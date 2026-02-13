@@ -112,7 +112,9 @@
                                 >
                                     {!! $reqFull !!}
                                 </div>
-                                <button type="button" @click="expanded = !expanded" class="xp-task-read-more" x-text="expanded ? 'Read less' : 'Read more'"></button>
+                                @if($reqLong)
+                                    <button type="button" @click="expanded = !expanded" class="xp-task-read-more" x-text="expanded ? 'Read less' : 'Read more'"></button>
+                                @endif
                             </div>
                         @endif
 
