@@ -125,4 +125,6 @@ return [
 
     'super_admin_emails' => env('SUPER_ADMIN_EMAILS', 'ht3aa2001@gmail.com'),
 
+    'contact_email' => env('CONTACT_EMAIL', 'ht3aa2001@gmail.com'),
+
 ];

@@ -63,7 +63,7 @@
                     Have questions or need assistance? We're here to help! Reach out to us via email or social media:
                 </p>
                 <div class="contact-methods">
-                    <a href="mailto:ht3aa2001@gmail.com" class="contact-method contact-method-email">
+                    <a href="mailto:{{ config('app.contact_email') }}" class="contact-method contact-method-email">
                         <div class="contact-method-icon">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -71,7 +71,7 @@
                         </div>
                         <div class="contact-method-content">
                             <h3 class="contact-method-title">Email</h3>
-                            <p class="contact-method-value">ht3aa2001@gmail.com</p>
+                            <p class="contact-method-value">{{ config('app.contact_email') }}</p>
                         </div>
                         <svg class="contact-method-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

@@ -126,7 +126,7 @@
 
                     <div class="xp-task-card-footer">
                         <a
-                            href="mailto:ht3aa2001@gmail.com?subject=Get%20Experience%3A%20{{ urlencode($task->title) }}&body=Hello%2C%20I%20would%20like%20to%20express%20interest%20in%20the%20task%3A%20{{ urlencode($task->title) }}"
+                            href="mailto:{{ config('app.contact_email') }}?subject=Get%20Experience%3A%20{{ urlencode($task->title) }}&body=Hello%2C%20I%20would%20like%20to%20express%20interest%20in%20the%20task%3A%20{{ urlencode($task->title) }}"
                             class="xp-task-email-btn"
                         >
                             <svg class="xp-task-email-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
