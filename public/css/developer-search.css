@@ -1777,6 +1777,12 @@ button.pagination-link {
     text-decoration: none;
 }
 
+.navbar-brand-active {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+}
+
 .navbar-brand-logo {
     height: 1.75rem;
     width: auto;
@@ -1915,6 +1921,33 @@ html.dark .navbar-github-link:hover {
 .navbar-link:hover {
     color: var(--color-primary);
     background: var(--bg-secondary);
+}
+
+.navbar-link-active {
+    color: var(--color-primary);
+    background: var(--bg-secondary);
+    font-weight: 600;
+}
+
+.navbar-link-recommended.navbar-link-active {
+    background: rgba(251, 191, 36, 0.2);
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: currentColor;
+    background-clip: unset;
+    color: #b45309;
+}
+
+.navbar-link-recommended.navbar-link-active .navbar-star-icon {
+    color: #b45309;
+}
+
+html.dark .navbar-link-recommended.navbar-link-active {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fcd34d;
+}
+
+html.dark .navbar-link-recommended.navbar-link-active .navbar-star-icon {
+    color: #fcd34d;
 }
 
 .navbar-link.btn-primary {

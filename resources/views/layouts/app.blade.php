@@ -102,7 +102,7 @@
              :class="{ 'scrolled': scrolled }">
             <div class="navbar-container">
                 <div class="navbar-brand-group">
-                    <a href="{{ url('/') }}" class="navbar-brand" aria-label="FindDeveloper - Home">
+                    <a href="{{ url('/') }}" class="navbar-brand {{ request()->routeIs('home') ? 'navbar-brand-active' : '' }}" aria-label="FindDeveloper - Home">
                         <img src="{{ asset('light-logo.svg') }}" alt="FindDeveloper" class="navbar-brand-logo navbar-brand-logo-light" width="120" height="20">
                         <img src="{{ asset('dark-logo.svg') }}" alt="FindDeveloper" class="navbar-brand-logo navbar-brand-logo-dark" width="120" height="20">
                     </a>
@@ -141,30 +141,30 @@
                     x-transition:leave-end="opacity-0 -translate-y-2"
                     @click.away="mobileMenuOpen = false"
                 >
-                    <a href="{{ route('plans') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                    <a href="{{ route('plans') }}" class="navbar-link {{ request()->routeIs('plans') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
                         Plans
                     </a>
-                    <a href="{{ route('services') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                    <a href="{{ route('services') }}" class="navbar-link {{ request()->routeIs('services') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
                         Services
                     </a>
                     {{-- <a href="{{ route('experience-tasks') }}" class="navbar-link" @click="mobileMenuOpen = false">
                         Get Experience
                     </a> --}}
-                    <a href="{{ route('recommended') }}" class="navbar-link navbar-link-recommended" @click="mobileMenuOpen = false">
+                    <a href="{{ route('recommended') }}" class="navbar-link navbar-link-recommended {{ request()->routeIs('recommended') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
                         <svg class="navbar-star-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                         Recommended
                     </a>
-                    <a href="{{ route('special-needs-developers') }}" class="navbar-link" @click="mobileMenuOpen = false">
+                    <a href="{{ route('special-needs-developers') }}" class="navbar-link {{ request()->routeIs('special-needs-developers') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
                         Special Needs
                     </a>
                     @auth
-                        <a href="{{ url('/admin') }}" class="navbar-link" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
+                        <a href="{{ url('/admin') }}" class="navbar-link {{ request()->is('admin*') ? 'navbar-link-active' : '' }}" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('register') }}" class="navbar-link" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
+                        <a href="{{ route('register') }}" class="navbar-link {{ request()->routeIs('register') ? 'navbar-link-active' : '' }}" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
                             Register
                         </a>
                     @endauth
@@ -177,13 +177,13 @@
                                 </button>
                             </form>
                         @else
-<a href="{{ route('filament.admin.auth.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
-                                    Login
-                                </a>
+                            <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link {{ request()->routeIs('filament.admin.auth.login') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
+                                Login
+                            </a>
                         @endif
                     @else
-                        <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link" @click="mobileMenuOpen = false">
-                             Login
+                        <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link {{ request()->routeIs('filament.admin.auth.login') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
+                            Login
                         </a>
                     @endauth
                 </div>
