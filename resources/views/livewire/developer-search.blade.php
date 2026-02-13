@@ -186,7 +186,7 @@
             </div>
             <div class="developers-grid-modern">
                 @foreach($freeDevelopers as $developer)
-                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="$developer->is_recommended_by_us" />
+                    <x-developer-card :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds"  />
                 @endforeach
             </div>
 

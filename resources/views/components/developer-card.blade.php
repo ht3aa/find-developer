@@ -10,5 +10,5 @@
 @elseif($isPro)
     <x-developer-card-pro :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="$showRecommendedBadge" />
 @else
-    <x-developer-card-normal :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" :showRecommendedBadge="$showRecommendedBadge" />
+    <x-developer-card-normal :developer="$developer" :currentUserDeveloper="$currentUserDeveloper" :recommendedDeveloperIds="$recommendedDeveloperIds" />
 @endif
