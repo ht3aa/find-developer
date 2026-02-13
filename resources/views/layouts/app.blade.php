@@ -16,7 +16,7 @@
         @php
             $currentRoute = Route::currentRouteName();
             $customSeo = [];
-            
+
             if (View::hasSection('seo_title')) {
                 $customSeo['title'] = trim(View::yieldContent('seo_title'));
             }
@@ -29,9 +29,9 @@
             if (View::hasSection('seo_image')) {
                 $customSeo['image'] = trim(View::yieldContent('seo_image'));
             }
-            
+
             $customSeo['url'] = url()->current();
-            
+
             $pageSeo = \App\Helpers\SeoHelper::getPageSeo($currentRoute ?? 'home', $customSeo);
         @endphp
 
@@ -79,7 +79,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        
+
         <!-- Scripts -->
         @vite(['resources/js/app.js', 'resources/css/filament/admin/theme.css'])
 
@@ -114,7 +114,7 @@
                 </div>
 
                 <!-- Hamburger Button -->
-                <button 
+                <button
                     @click="mobileMenuOpen = !mobileMenuOpen"
                     class="navbar-toggle"
                     type="button"
@@ -130,7 +130,7 @@
                 </button>
 
                 <!-- Navigation Menu -->
-                <div 
+                <div
                     class="navbar-menu"
                     x-show="mobileMenuOpen"
                     x-transition:enter="transition ease-out duration-200"
@@ -160,29 +160,39 @@
                         Special Needs
                     </a>
                     @auth
-                        <a href="{{ url('/admin') }}" class="navbar-link {{ request()->is('admin*') ? 'navbar-link-active' : '' }}" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
+                        {{-- Dashboard --}}
+                        <a href="{{ url('/admin') }}"
+                           class="navbar-link {{ request()->is('admin*') ? 'navbar-link-active' : '' }}"
+                           style="border: 1px solid var(--color-primary);"
+                           @click="mobileMenuOpen = false">
                             Dashboard
                         </a>
+
+                        {{-- Logout --}}
+                        <form method="POST"
+                              action="{{ route('filament.admin.auth.logout') }}"
+                              class="navbar-logout-form">
+                            @csrf
+                            <button type="submit"
+                                    class="navbar-link navbar-link-logout"
+                                    @click="mobileMenuOpen = false">
+                                Logout
+                            </button>
+                        </form>
+
                     @else
-                        <a href="{{ route('register') }}" class="navbar-link {{ request()->routeIs('register') ? 'navbar-link-active' : '' }}" style="border: 1px solid var(--color-primary);" @click="mobileMenuOpen = false">
+                        {{-- Register --}}
+                        <a href="{{ route('register') }}"
+                           class="navbar-link {{ request()->routeIs('register') ? 'navbar-link-active' : '' }}"
+                           style="border: 1px solid var(--color-primary);"
+                           @click="mobileMenuOpen = false">
                             Register
                         </a>
-                    @endauth
-                    @auth
-                        @if(auth()->user()->isDeveloper())
-                            <form method="POST" action="{{ route('filament.admin.auth.logout') }}" class="navbar-logout-form">
-                                @csrf
-                                <button type="submit" class="navbar-link navbar-link-logout" @click="mobileMenuOpen = false">
-                                    Logout
-                                </button>
-                            </form>
-                        @else
-                            <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link {{ request()->routeIs('filament.admin.auth.login') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
-                                Login
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('filament.admin.auth.login') }}" class="navbar-link {{ request()->routeIs('filament.admin.auth.login') ? 'navbar-link-active' : '' }}" @click="mobileMenuOpen = false">
+
+                        {{-- Login --}}
+                        <a href="{{ route('filament.admin.auth.login') }}"
+                           class="navbar-link {{ request()->routeIs('filament.admin.auth.login') ? 'navbar-link-active' : '' }}"
+                           @click="mobileMenuOpen = false">
                             Login
                         </a>
                     @endauth
@@ -221,7 +231,7 @@
         <div class="navbar-spacer"></div>
 
         <!-- Floating Dark Mode Toggle (visible on all pages) -->
-        <button 
+        <button
             type="button"
             class="floating-dark-mode-toggle"
             onclick="toggleDarkMode()"
