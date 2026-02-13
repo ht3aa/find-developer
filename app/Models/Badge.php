@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+
 use function Filament\Support\generate_icon_html;
 
 class Badge extends Model
@@ -58,7 +59,7 @@ class Badge extends Model
 
     public function getIconHtml()
     {
-        if (!$this->icon) {
+        if (! $this->icon) {
             return '';
         }
 
