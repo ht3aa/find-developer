@@ -3,12 +3,16 @@
 namespace App\Filament\Resources\Badges\Schemas;
 
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Guava\IconPicker\Forms\Components\IconPicker;
 use Illuminate\Support\Str;
 
 class BadgeForm
@@ -41,10 +45,10 @@ class BadgeForm
                             ->columnSpanFull()
                             ->placeholder('Describe what this badge represents'),
 
-                        TextInput::make('icon')
-                            ->maxLength(255)
-                            ->placeholder('e.g., heroicon-o-academic-cap')
-                            ->helperText('Icon name (e.g., heroicon name or custom icon identifier)'),
+                        IconPicker::make('icon')
+                            ->iconsSearchResults()
+                            ->columnSpanFull()
+                            ->iconsSearchResults(false),
 
                         ColorPicker::make('color')
                             ->label('Badge Color')

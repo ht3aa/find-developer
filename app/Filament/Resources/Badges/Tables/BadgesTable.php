@@ -9,6 +9,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Guava\IconPicker\Tables\Columns\IconColumn;
 
 class BadgesTable
 {
@@ -24,9 +25,8 @@ class BadgesTable
                     ->limit(50)
                     ->searchable(),
 
-                TextColumn::make('icon')
-                    ->label('Icon')
-                    ->searchable(),
+                IconColumn::make('icon')
+                    ->label('Icon'),
 
                 TextColumn::make('color')
                     ->badge(),

@@ -13,13 +13,29 @@
     @if($developer->badges->count() > 0)
         <div class="developer-badges-top">
             @foreach($developer->badges as $badge)
-                <a href="{{ route('badges') }}" class="developer-badge-top-item">
+                <a href="{{ route('badges') }}" 
+                   class="developer-badge-top-item" 
+                   x-data="{ showTooltip: false }"
+                   @mouseenter="showTooltip = true"
+                   @mouseleave="showTooltip = false"
+                   style="position: relative;">
                     <div class="badge-icon-wrapper-small" @if($badge->color) style="background: {{ $badge->color }}20; border-color: {{ $badge->color }}40;" @endif>
-                        <svg class="badge-icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" @if($badge->color) style="color: {{ $badge->color }};" @endif>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                        </svg>
+                                <div class="badge-icon-small" @if($badge->color) style="color: {{ $badge->color }};" @endif>
+                                    {!! $badge->getIconHtml() !!}
+                                </div>
                     </div>
-                    <span class="developer-badge-name-small" @if($badge->color) style="color: {{ $badge->color }};" @endif>{{ $badge->name }}</span>
+                    <div x-show="showTooltip" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         x-cloak
+                         style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; background: @if($badge->color){{ $badge->color }}@else rgba(0, 0, 0, 0.9) @endif; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; white-space: nowrap; pointer-events: none; z-index: 1000;">
+                        {{ $badge->name }}
+                        <div style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid @if($badge->color){{ $badge->color }}@else rgba(0, 0, 0, 0.9) @endif;"></div>
+                    </div>
                 </a>
             @endforeach
         </div>
