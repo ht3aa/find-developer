@@ -2,3 +2,4 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../vendor/guava/filament-icon-picker/resources/**/*';

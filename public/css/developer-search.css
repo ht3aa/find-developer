@@ -1139,24 +1139,7 @@ html.dark .availability-type-badge.availability-type-hybrid-full-time {
     border-bottom: 1px solid var(--border-primary);
 }
 
-.developer-badge-top-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-primary);
-    transition: all var(--transition-base);
-    text-decoration: none;
-    color: inherit;
-}
 
-.developer-badge-top-item:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-}
 
 .badge-icon-wrapper-small {
     width: 32px;
@@ -1170,10 +1153,9 @@ html.dark .availability-type-badge.availability-type-hybrid-full-time {
     border: 2px solid rgba(var(--primary-rgb), 0.2);
 }
 
-.badge-icon-small {
+.badge-icon-small svg {
     width: 16px;
     height: 16px;
-    color: var(--color-primary);
 }
 
 .developer-badge-name-small {

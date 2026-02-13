@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use function Filament\Support\generate_icon_html;
 
 class Badge extends Model
 {
@@ -53,6 +54,15 @@ class Badge extends Model
     {
         return $this->belongsToMany(UserService::class, 'badge_user_service')
             ->withTimestamps();
+    }
+
+    public function getIconHtml()
+    {
+        if (!$this->icon) {
+            return '';
+        }
+
+        return generate_icon_html($this->icon)?->toHtml();
     }
 
     public function getActivitylogOptions(): LogOptions
