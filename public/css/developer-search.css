@@ -1140,7 +1140,6 @@ html.dark .availability-type-badge.availability-type-hybrid-full-time {
 }
 
 
-
 .badge-icon-wrapper-small {
     width: 32px;
     height: 32px;
@@ -3092,6 +3091,16 @@ html.dark .dark-mode-icon.moon-icon {
     background: rgba(0, 136, 204, 0.05);
 }
 
+.contact-method-instagram:hover {
+    border-color: #E4405F;
+    background: rgba(228, 64, 95, 0.05);
+}
+
+.contact-method-linkedin:hover {
+    border-color: #0077B5;
+    background: rgba(0, 119, 181, 0.05);
+}
+
 .contact-method-icon {
     width: 3rem;
     height: 3rem;
@@ -3110,6 +3119,14 @@ html.dark .dark-mode-icon.moon-icon {
 
 .contact-method-telegram .contact-method-icon {
     color: #0088cc;
+}
+
+.contact-method-instagram .contact-method-icon {
+    color: #E4405F;
+}
+
+.contact-method-linkedin .contact-method-icon {
+    color: #0077B5;
 }
 
 .contact-method-icon svg {
