@@ -2,154 +2,78 @@
 
 namespace App\Livewire;
 
-use App\Enums\AvailabilityType;
-use App\Enums\Currency;
-use App\Enums\WorldGovernorate;
-use App\Models\Badge;
-use Illuminate\Support\Facades\Request;
+use App\Services\AiPromptBuilder;
 use Livewire\Component;
 
 class AiPrompt extends Component
 {
-    protected const BASE_SEARCH_URL = 'https://www.find-developer.com';
+    /** @var string Filter state passed from parent when used as standalone */
+    public string $search = '';
 
-    protected const HAS_URLS_LABELS = [
-        'linkedin_url' => 'LinkedIn URL',
-        'github_url' => 'GitHub URL',
-        'portfolio_url' => 'Portfolio URL',
-    ];
+    /** @var array<int|string, string> */
+    public array $jobTitles = [];
 
-    public function getSearchUrl(): string
+    /** @var array<int|string, string> */
+    public array $skills = [];
+
+    /** @var array<int|string, string> */
+    public array $locations = [];
+
+    public int $minExperience = 0;
+
+    public int $maxExperience = 50;
+
+    public string $expected_salary_from = '0';
+
+    public string $expected_salary_to = '0';
+
+    /** @var string|null Currency enum value for URL */
+    public ?string $salary_currency = null;
+
+    /** @var array<int|string, string> */
+    public array $availability_type = [];
+
+    /** @var array<int|string, string> */
+    public array $has_urls = [];
+
+    /** @var array<int|string, int|string> */
+    public array $badges = [];
+
+    public ?int $availableOnly = null;
+
+    public function getQueryArray(): array
     {
-        $query = Request::query();
-        if (empty($query)) {
-            return self::BASE_SEARCH_URL;
+        $query = [
+            'search' => $this->search,
+            'jobTitles' => $this->jobTitles,
+            'skills' => $this->skills,
+            'locations' => $this->locations,
+            'minExperience' => $this->minExperience,
+            'maxExperience' => $this->maxExperience,
+            'expected_salary_from' => $this->expected_salary_from,
+            'expected_salary_to' => $this->expected_salary_to,
+            'availability_type' => $this->availability_type,
+            'has_urls' => $this->has_urls,
+            'badges' => $this->badges,
+        ];
+        if ($this->salary_currency !== null && $this->salary_currency !== '') {
+            $query['salary_currency'] = $this->salary_currency;
+        }
+        if ($this->availableOnly !== null) {
+            $query['availableOnly'] = $this->availableOnly;
         }
 
-        return self::BASE_SEARCH_URL . '/?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
-    }
-
-    public function getRequirementsLines(): array
-    {
-        $query = Request::query();
-        $lines = [];
-
-        if (! empty($query['search'])) {
-            $lines[] = 'Keyword(s): ' . $query['search'];
-        }
-
-        $jobTitles = $this->normalizeArray($query['jobTitles'] ?? []);
-        if (! empty($jobTitles)) {
-            $lines[] = 'Job title(s): ' . implode(', ', $jobTitles);
-        }
-
-        $skills = $this->normalizeArray($query['skills'] ?? []);
-        if (! empty($skills)) {
-            $lines[] = 'Skills: ' . implode(', ', $skills);
-        }
-
-        $locations = $this->normalizeArray($query['locations'] ?? []);
-        if (! empty($locations)) {
-            $labels = array_map(function ($value) {
-                try {
-                    return WorldGovernorate::from($value)->getLabel();
-                } catch (\ValueError) {
-                    return $value;
-                }
-            }, $locations);
-            $lines[] = 'Location(s): ' . implode(', ', $labels);
-        }
-
-        $minExp = isset($query['minExperience']) ? (int) $query['minExperience'] : 0;
-        $maxExp = isset($query['maxExperience']) ? (int) $query['maxExperience'] : 50;
-        if ($minExp > 0 || $maxExp < 50) {
-            if ($minExp === $maxExp) {
-                $lines[] = 'Experience: ' . $minExp . ' year(s)';
-            } else {
-                $lines[] = 'Experience: ' . $minExp . ' to ' . $maxExp . ' years';
-            }
-        }
-
-        $from = $query['expected_salary_from'] ?? null;
-        $to = $query['expected_salary_to'] ?? null;
-        $currency = $query['salary_currency'] ?? null;
-        if ((! empty($from) && $from !== '0') || (! empty($to) && $to !== '0')) {
-            $currencyLabel = $currency ? (Currency::tryFrom($currency)?->getLabel() ?? $currency) : '';
-            $parts = [];
-            if (! empty($from) && $from !== '0') {
-                $parts[] = 'from ' . $from;
-            }
-            if (! empty($to) && $to !== '0') {
-                $parts[] = 'up to ' . $to;
-            }
-            $lines[] = 'Expected salary: ' . implode(' ', $parts) . ($currencyLabel ? ' (' . $currencyLabel . ')' : '');
-        }
-
-        $availability = $this->normalizeArray($query['availability_type'] ?? []);
-        if (! empty($availability)) {
-            $labels = array_map(function ($value) {
-                try {
-                    return AvailabilityType::from($value)->getLabel();
-                } catch (\ValueError) {
-                    return $value;
-                }
-            }, $availability);
-            $lines[] = 'Availability: ' . implode(', ', $labels);
-        }
-
-        $hasUrls = $this->normalizeArray($query['has_urls'] ?? []);
-        if (! empty($hasUrls)) {
-            $labels = array_map(fn($key) => self::HAS_URLS_LABELS[$key] ?? $key, $hasUrls);
-            $lines[] = 'Must have: ' . implode(', ', $labels);
-        }
-
-        $badgeIds = $this->normalizeArray($query['badges'] ?? []);
-        if (! empty($badgeIds)) {
-            $names = Badge::whereIn('id', $badgeIds)->pluck('name')->all();
-            $lines[] = 'Badge(s): ' . implode(', ', $names);
-        }
-
-        if (isset($query['availableOnly'])) {
-            $lines[] = $query['availableOnly'] == '1' ? 'Available only' : 'Unavailable only';
-        }
-
-        return $lines;
-    }
-
-    public function getPromptText(): string
-    {
-        $lines = $this->getRequirementsLines();
-        $url = $this->getSearchUrl();
-
-        $intro = 'Search for developers on https://find-developer.com according to the following company requirements:';
-        if (empty($lines)) {
-            return $intro . "\n\n(No filters applied – use the link below to browse all developers.)\n\nUse this URL: " . $url;
-        }
-
-        $requirements = implode("\n", array_map(fn($line) => '• ' . $line, $lines));
-
-        return $intro . "\n\n" . $requirements . "\n\nUse this URL: " . $url;
-    }
-
-    private function normalizeArray(mixed $value): array
-    {
-        if (is_array($value)) {
-            return array_values($value);
-        }
-        if (is_string($value) && $value !== '') {
-            return [$value];
-        }
-
-        return [];
+        return $query;
     }
 
     public function render()
     {
+        $data = AiPromptBuilder::build($this->getQueryArray());
+
         return view('livewire.ai-prompt', [
-            'promptText' => $this->getPromptText(),
-            'searchUrl' => $this->getSearchUrl(),
-            'requirementsLines' => $this->getRequirementsLines(),
-            'hasFilters' => ! empty($this->getRequirementsLines()),
+            'promptText' => $data['promptText'],
+            'searchUrl' => $data['searchUrl'],
+            'hasFilters' => $data['hasFilters'],
         ]);
     }
 }

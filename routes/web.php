@@ -15,10 +15,6 @@ Route::get('/', function () {
     return view('search');
 })->name('home');
 
-Route::get('/ai-prompt', function () {
-    return view('ai-prompt');
-})->name('ai-prompt');
-
 Route::get('/special-needs-developers', function () {
     return view('special-needs');
 })->name('special-needs-developers');
@@ -58,7 +54,7 @@ Route::get('/charts', function () {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
-    return response("User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml'), 200)
+    return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 
