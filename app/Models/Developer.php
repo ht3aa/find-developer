@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[ScopedBy([ApprovedScope::class])]
 #[ObservedBy(DeveloperObserver::class)]
@@ -38,6 +40,7 @@ class Developer extends Model
         'portfolio_url',
         'github_url',
         'linkedin_url',
+        'cv_path',
         'location',
         'expected_salary_from',
         'expected_salary_to',
@@ -112,6 +115,13 @@ class Developer extends Model
             ->withTimestamps();
     }
 
+    public function cvPathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addMinutes(5)) : null,
+        );
+    }
+
     public function recommendedDevelopers(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -176,6 +186,15 @@ class Developer extends Model
     public function getCurrencyAttribute(): string
     {
         return $this->salary_currency?->value ?? Currency::IQD->value;
+    }
+
+    public function getCvUrlAttribute(): ?string
+    {
+        if (! $this->cv_path) {
+            return null;
+        }
+
+        return Storage::disk('s3')->url($this->cv_path);
     }
 
     public function getActivitylogOptions(): LogOptions
