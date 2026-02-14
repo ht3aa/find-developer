@@ -26,7 +26,7 @@ class ListDevelopers extends ListRecords
             ->mapWithKeys(fn (DeveloperStatus $status) => [
                 $status->value => Tab::make($status->getLabel())
                     ->icon($status->getIcon())
-                    ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status))
+                    ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status)),
             ])
             ->toArray();
 

@@ -11,6 +11,7 @@ use App\Models\Scopes\ApprovedScope;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,7 +21,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[ScopedBy([ApprovedScope::class])]
 #[ObservedBy(DeveloperObserver::class)]
@@ -118,7 +118,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addMinutes(5)) : null,
+            get: fn () => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addMinutes(5)) : null,
         );
     }
 
