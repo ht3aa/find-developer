@@ -188,15 +188,6 @@ class Developer extends Model
         return $this->salary_currency?->value ?? Currency::IQD->value;
     }
 
-    public function getCvUrlAttribute(): ?string
-    {
-        if (! $this->cv_path) {
-            return null;
-        }
-
-        return Storage::disk('s3')->url($this->cv_path);
-    }
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
