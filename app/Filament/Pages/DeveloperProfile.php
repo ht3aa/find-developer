@@ -13,6 +13,7 @@ use App\Models\Badge;
 use App\Models\Developer;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -164,6 +165,16 @@ class DeveloperProfile extends Page implements HasSchemas
                             ->prefixIcon('heroicon-o-user-circle'),
                     ])
                     ->columns(3),
+
+                Section::make('CV / Resume')
+                    ->schema([
+                        FileUpload::make('cv_path')
+                            ->label('CV / Resume (PDF only)')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->directory('developer-cvs')
+                            ->maxSize(100)
+                            ->helperText('Upload a PDF version of the developer\'s CV. Max 100KB.'),
+                    ]),
             ]);
     }
 

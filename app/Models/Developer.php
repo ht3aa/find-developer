@@ -11,12 +11,14 @@ use App\Models\Scopes\ApprovedScope;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -38,6 +40,7 @@ class Developer extends Model
         'portfolio_url',
         'github_url',
         'linkedin_url',
+        'cv_path',
         'location',
         'expected_salary_from',
         'expected_salary_to',
@@ -110,6 +113,13 @@ class Developer extends Model
     {
         return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')
             ->withTimestamps();
+    }
+
+    public function cvPathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addMinutes(5)) : null,
+        );
     }
 
     public function recommendedDevelopers(): BelongsToMany

@@ -204,6 +204,45 @@
     white-space: pre-line;
 }
 
+/* CV Section */
+.dev-profile-cv-section .dev-profile-section-title {
+    margin-bottom: var(--spacing-md);
+}
+
+.dev-profile-cv-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.dev-profile-cv-iframe {
+    width: 100%;
+    min-height: 600px;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-tertiary);
+}
+
+.dev-profile-cv-open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    align-self: flex-start;
+}
+
+.dev-profile-cv-open-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
 /* Skills */
 .dev-profile-skills {
     display: flex;
