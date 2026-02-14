@@ -138,11 +138,9 @@ class DeveloperProfileForm
                         FileUpload::make('cv_path')
                             ->label('CV / Resume (PDF only)')
                             ->acceptedFileTypes(['application/pdf'])
-                            ->disk('s3')
                             ->directory('developer-cvs')
-                            ->visibility('public')
-                            ->maxSize(5120)
-                            ->helperText('Upload a PDF version of your CV. Max 5MB.'),
+                            ->maxSize(100)
+                            ->helperText('Upload a PDF version of your CV. Max 100KB.'),
                     ]),
             ]);
     }
