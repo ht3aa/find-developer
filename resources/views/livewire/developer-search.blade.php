@@ -16,19 +16,29 @@
     <!-- Modern Search Bar -->
     <div class="search-bar-container">
         <div class="search-bar-wrapper">
-            <div class="search-icon-wrapper">
-                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <div class="search-bar-row">
+                <div class="search-icon-wrapper">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.300ms="search"
+                    placeholder="Search by name, email, location, or skills..."
+                    class="search-input"
+                />
             </div>
-            <input 
-                type="text" 
-                wire:model.live.debounce.300ms="search"
-                placeholder="Search by name, email, location, or skills..."
-                class="search-input"
-            />
-            <!-- Filter Button Next to Search -->
-            <div x-data="{ filterPanelOpen: false, scrolled: false }" 
+            <div class="search-bar-actions">
+                <!-- AI Prompt Button in Search Bar -->
+                <a href="{{ url('/ai-prompt') }}" class="ai-prompt-btn-inline" onclick="this.href = '{{ url('/ai-prompt') }}' + (window.location.search || '');" title="Copy a prompt for AI to search with these filters">
+                    <svg class="ai-prompt-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="ai-prompt-btn-text">AI Prompt</span>
+                </a>
+                <!-- Filter Button Next to Search -->
+                <div x-data="{ filterPanelOpen: false, scrolled: false }" 
                  x-init="
                     window.addEventListener('scroll', () => {
                         scrolled = window.scrollY > 200;
@@ -83,6 +93,12 @@
                     {{ $this->form }}
                 </form>
                 <div class="filter-panel-footer">
+                    <a href="{{ url('/ai-prompt') }}" class="filter-panel-ai-prompt-btn" onclick="this.href = '{{ url('/ai-prompt') }}' + (window.location.search || '');" title="Copy a prompt for AI to search with current filters">
+                        <svg class="filter-panel-ai-prompt-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        AI Prompt
+                    </a>
                     <button 
                         type="button"
                         wire:click="clearFilters"
@@ -94,6 +110,7 @@
                         Clear All Filters
                     </button>
                 </div>
+            </div>
             </div>
             </div>
         </div>

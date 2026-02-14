@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('search');
 })->name('home');
 
+Route::get('/ai-prompt', function () {
+    return view('ai-prompt');
+})->name('ai-prompt');
+
 Route::get('/special-needs-developers', function () {
     return view('special-needs');
 })->name('special-needs-developers');
