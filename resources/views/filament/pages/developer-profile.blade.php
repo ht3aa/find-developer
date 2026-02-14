@@ -29,7 +29,7 @@
     <div class="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
         <p class="text-sm text-gray-600 dark:text-gray-400">
             If You change the years of experience field you need to re-apply for the work experience validated badge assessment. Please contact us at:
-            <a href="mailto:ht3aa2001@gmail.com" class="font-medium text-primary-600 dark:text-primary-400 hover:underline">ht3aa2001@gmail.com</a>.
+            <a href="mailto:{{ config('app.contact_email') }}" class="font-medium text-primary-600 dark:text-primary-400 hover:underline">{{ config('app.contact_email') }}</a>.
         </p>
     </div>
 

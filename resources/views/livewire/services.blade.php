@@ -125,7 +125,7 @@
                                     </div>
 
                                     <div class="service-card-footer">
-                                        <a href="mailto:ht3aa2001@gmail.com?subject={{ urlencode('Service Inquiry: ' . $service->name) }}&body={{ urlencode('Hello, I would like to inquire about ' . $service->name . ' service. For user: ' . $user->name) }}" target="_blank" rel="noopener noreferrer" class="service-cta-button">
+                                        <a href="mailto:{{ config('app.contact_email') }}?subject={{ urlencode('Service Inquiry: ' . $service->name) }}&body={{ urlencode('Hello, I would like to inquire about ' . $service->name . ' service. For user: ' . $user->name) }}" target="_blank" rel="noopener noreferrer" class="service-cta-button">
                                             <svg class="service-cta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
