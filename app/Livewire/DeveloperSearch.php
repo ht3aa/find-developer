@@ -15,6 +15,7 @@ use App\Models\DeveloperRecommendation;
 use App\Models\JobTitle;
 use App\Models\Scopes\DeveloperScope;
 use App\Models\Skill;
+use App\Services\AiPromptBuilder;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
@@ -263,6 +264,38 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
         return $count;
     }
 
+    /**
+     * Query array in the shape expected by AiPromptBuilder (for live-updating AI prompt in filter panel).
+     *
+     * @return array<string, mixed>
+     */
+    public function getQueryArrayForAiPrompt(): array
+    {
+        return [
+            'search' => $this->search,
+            'jobTitles' => $this->jobTitles,
+            'skills' => $this->skills,
+            'locations' => $this->locations,
+            'minExperience' => $this->minExperience,
+            'maxExperience' => $this->maxExperience,
+            'expected_salary_from' => $this->expected_salary_from,
+            'expected_salary_to' => $this->expected_salary_to,
+            'salary_currency' => $this->salary_currency?->value,
+            'availability_type' => $this->availability_type,
+            'has_urls' => $this->has_urls,
+            'badges' => $this->badges,
+            'availableOnly' => $this->availableOnly,
+        ];
+    }
+
+    /**
+     * @return array{promptText: string, searchUrl: string, hasFilters: bool}
+     */
+    public function getAiPromptData(): array
+    {
+        return AiPromptBuilder::build($this->getQueryArrayForAiPrompt());
+    }
+
     protected function buildBaseQuery(array $filters)
     {
         return Developer::with(['jobTitle', 'skills', 'badges'])
@@ -403,6 +436,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
             'activeFiltersCount' => $this->getActiveFiltersCount(),
             'currentUserDeveloper' => $currentUserDeveloper,
             'recommendedDeveloperIds' => $recommendedDeveloperIds,
+            'aiPromptData' => $this->getAiPromptData(),
         ];
     }
 

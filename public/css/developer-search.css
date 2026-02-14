@@ -547,11 +547,36 @@ body {
     right: 0;
     bottom: 0;
     width: 100%;
-    max-width: 480px;
+    max-width: 640px;
     z-index: 1000;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
     overflow-y: auto;
+    will-change: transform;
+}
+
+/* Smooth slide-in transition for filter panel */
+.modern-filter-panel.filter-panel-transition-enter,
+.modern-filter-panel.filter-panel-transition-leave {
+    transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                backdrop-filter 0.5s ease;
+}
+.modern-filter-panel.filter-panel-enter-start {
+    transform: translateX(100%);
+    opacity: 0;
+}
+.modern-filter-panel.filter-panel-enter-end {
+    transform: translateX(0);
+    opacity: 1;
+}
+.modern-filter-panel.filter-panel-leave-start {
+    transform: translateX(0);
+    opacity: 1;
+}
+.modern-filter-panel.filter-panel-leave-end {
+    transform: translateX(100%);
+    opacity: 0;
 }
 
 .filter-panel-content {
@@ -560,7 +585,7 @@ body {
     display: flex;
     flex-direction: column;
     box-shadow: -4px 0 20px var(--shadow-color);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.4s ease;
 }
 
 .filter-panel-header {
@@ -609,6 +634,196 @@ body {
     overflow-y: auto;
 }
 
+.filter-panel-ai-prompt-wrap {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border-primary);
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, color-mix(in srgb, var(--bg-secondary) 95%, var(--color-primary)) 100%);
+    margin-top: 0;
+}
+
+.filter-panel-ai-prompt-section {
+    margin: 0;
+}
+
+.filter-panel-ai-prompt-heading-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.filter-panel-ai-prompt-heading-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    flex-shrink: 0;
+}
+
+.filter-panel-ai-prompt-heading-icon svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.filter-panel-ai-prompt-heading {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.filter-panel-ai-prompt-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 var(--spacing-md);
+    padding-left: 2.25rem;
+}
+
+.filter-panel-ai-prompt-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+    box-shadow: 0 1px 3px var(--shadow-color);
+    border-left: 3px solid var(--color-primary);
+}
+
+.filter-panel-ai-prompt-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--bg-secondary));
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.filter-panel-ai-prompt-card-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-panel-ai-prompt-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-primary);
+    background: transparent;
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.filter-panel-ai-prompt-copy-btn:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-panel-ai-prompt-copy-btn:active {
+    transform: translateY(0);
+}
+
+.filter-panel-ai-prompt-copy-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.filter-panel-ai-prompt-text {
+    margin: 0;
+    padding: var(--spacing-md);
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    max-height: 10rem;
+    overflow-y: auto;
+    background: color-mix(in srgb, var(--text-primary) 3%, var(--bg-primary));
+    border-top: 1px solid var(--border-primary);
+}
+
+.filter-panel-ai-prompt-url-box {
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+    border-left: 3px solid var(--color-secondary, var(--color-primary));
+    box-shadow: 0 1px 2px var(--shadow-color);
+}
+
+.filter-panel-ai-prompt-url-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.filter-panel-ai-prompt-url-label::before {
+    content: "";
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+}
+
+.filter-panel-ai-prompt-url-link {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+    word-break: break-all;
+    display: block;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.filter-panel-ai-prompt-url-link:hover {
+    color: var(--color-secondary, var(--color-primary));
+    text-decoration: underline;
+}
+
+.filter-panel-ai-prompt-copy-url-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-panel-ai-prompt-copy-url-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--bg-secondary));
+}
+
 .filter-panel-footer {
     display: flex;
     flex-wrap: wrap;
@@ -617,36 +832,6 @@ body {
     border-top: 1px solid var(--border-primary);
     background: var(--bg-secondary);
     transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.filter-panel-ai-prompt-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
-    flex: 1;
-    min-width: 0;
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: var(--bg-primary);
-    border: 2px solid var(--color-primary);
-    border-radius: var(--radius-md);
-    color: var(--color-primary);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all var(--transition-base);
-}
-
-.filter-panel-ai-prompt-btn:hover {
-    background: var(--color-primary);
-    color: white;
-}
-
-.filter-panel-ai-prompt-icon {
-    width: 1rem;
-    height: 1rem;
-    flex-shrink: 0;
 }
 
 .clear-filters-btn {

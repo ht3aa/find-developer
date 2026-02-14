@@ -1,4 +1,8 @@
-{{-- Compact AI prompt block for embedding in filter panel --}}
+@props([
+    'promptText' => '',
+    'searchUrl' => '',
+    'hasFilters' => false,
+])
 <div class="filter-panel-ai-prompt-section">
     <div class="filter-panel-ai-prompt-heading-row">
         <span class="filter-panel-ai-prompt-heading-icon" aria-hidden="true">
@@ -45,8 +49,9 @@
                 type="button"
                 class="filter-panel-ai-prompt-copy-url-btn"
                 x-data="{ copied: false }"
+                data-copy-url="{{ $searchUrl }}"
                 @click="
-                    navigator.clipboard.writeText('{{ $searchUrl }}');
+                    navigator.clipboard.writeText($el.getAttribute('data-copy-url'));
                     copied = true;
                     setTimeout(() => copied = false, 2000);
                 "

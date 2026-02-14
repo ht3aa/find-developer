@@ -30,13 +30,6 @@
                 />
             </div>
             <div class="search-bar-actions">
-                <!-- AI Prompt Button in Search Bar -->
-                <a href="{{ url('/ai-prompt') }}" class="ai-prompt-btn-inline" onclick="this.href = '{{ url('/ai-prompt') }}' + (window.location.search || '');" title="Copy a prompt for AI to search with these filters">
-                    <svg class="ai-prompt-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span class="ai-prompt-btn-text">AI Prompt</span>
-                </a>
                 <!-- Filter Button Next to Search -->
                 <div x-data="{ filterPanelOpen: false, scrolled: false }" 
                  x-init="
@@ -67,12 +60,12 @@
                 x-cloak
                 @click.away="filterPanelOpen = false"
                 @keydown.escape.window="filterPanelOpen = false"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="translate-x-full opacity-0"
-                x-transition:enter-end="translate-x-0 opacity-100"
-                x-transition:leave="transition ease-in duration-300"
-                x-transition:leave-start="translate-x-0 opacity-100"
-                x-transition:leave-end="translate-x-full opacity-0"
+                x-transition:enter="filter-panel-transition-enter"
+                x-transition:enter-start="filter-panel-enter-start"
+                x-transition:enter-end="filter-panel-enter-end"
+                x-transition:leave="filter-panel-transition-leave"
+                x-transition:leave-start="filter-panel-leave-start"
+                x-transition:leave-end="filter-panel-leave-end"
                 class="modern-filter-panel"
             >
             <div class="filter-panel-content" @click.stop>
@@ -92,13 +85,14 @@
                 <form wire:submit.prevent class="filter-form">
                     {{ $this->form }}
                 </form>
+                <div class="filter-panel-ai-prompt-wrap" wire:key="ai-prompt-block">
+                    <x-ai-prompt-block
+                        :promptText="$aiPromptData['promptText']"
+                        :searchUrl="$aiPromptData['searchUrl']"
+                        :hasFilters="$aiPromptData['hasFilters']"
+                    />
+                </div>
                 <div class="filter-panel-footer">
-                    <a href="{{ url('/ai-prompt') }}" class="filter-panel-ai-prompt-btn" onclick="this.href = '{{ url('/ai-prompt') }}' + (window.location.search || '');" title="Copy a prompt for AI to search with current filters">
-                        <svg class="filter-panel-ai-prompt-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        AI Prompt
-                    </a>
                     <button 
                         type="button"
                         wire:click="clearFilters"
