@@ -26,7 +26,7 @@ class AiPrompt extends Component
             return self::BASE_SEARCH_URL;
         }
 
-        return self::BASE_SEARCH_URL . '/?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+        return self::BASE_SEARCH_URL.'/?'.http_build_query($query, '', '&', PHP_QUERY_RFC3986);
     }
 
     public function getRequirementsLines(): array
@@ -35,17 +35,17 @@ class AiPrompt extends Component
         $lines = [];
 
         if (! empty($query['search'])) {
-            $lines[] = 'Keyword(s): ' . $query['search'];
+            $lines[] = 'Keyword(s): '.$query['search'];
         }
 
         $jobTitles = $this->normalizeArray($query['jobTitles'] ?? []);
         if (! empty($jobTitles)) {
-            $lines[] = 'Job title(s): ' . implode(', ', $jobTitles);
+            $lines[] = 'Job title(s): '.implode(', ', $jobTitles);
         }
 
         $skills = $this->normalizeArray($query['skills'] ?? []);
         if (! empty($skills)) {
-            $lines[] = 'Skills: ' . implode(', ', $skills);
+            $lines[] = 'Skills: '.implode(', ', $skills);
         }
 
         $locations = $this->normalizeArray($query['locations'] ?? []);
@@ -57,16 +57,16 @@ class AiPrompt extends Component
                     return $value;
                 }
             }, $locations);
-            $lines[] = 'Location(s): ' . implode(', ', $labels);
+            $lines[] = 'Location(s): '.implode(', ', $labels);
         }
 
         $minExp = isset($query['minExperience']) ? (int) $query['minExperience'] : 0;
         $maxExp = isset($query['maxExperience']) ? (int) $query['maxExperience'] : 50;
         if ($minExp > 0 || $maxExp < 50) {
             if ($minExp === $maxExp) {
-                $lines[] = 'Experience: ' . $minExp . ' year(s)';
+                $lines[] = 'Experience: '.$minExp.' year(s)';
             } else {
-                $lines[] = 'Experience: ' . $minExp . ' to ' . $maxExp . ' years';
+                $lines[] = 'Experience: '.$minExp.' to '.$maxExp.' years';
             }
         }
 
@@ -77,12 +77,12 @@ class AiPrompt extends Component
             $currencyLabel = $currency ? (Currency::tryFrom($currency)?->getLabel() ?? $currency) : '';
             $parts = [];
             if (! empty($from) && $from !== '0') {
-                $parts[] = 'from ' . $from;
+                $parts[] = 'from '.$from;
             }
             if (! empty($to) && $to !== '0') {
-                $parts[] = 'up to ' . $to;
+                $parts[] = 'up to '.$to;
             }
-            $lines[] = 'Expected salary: ' . implode(' ', $parts) . ($currencyLabel ? ' (' . $currencyLabel . ')' : '');
+            $lines[] = 'Expected salary: '.implode(' ', $parts).($currencyLabel ? ' ('.$currencyLabel.')' : '');
         }
 
         $availability = $this->normalizeArray($query['availability_type'] ?? []);
@@ -94,19 +94,19 @@ class AiPrompt extends Component
                     return $value;
                 }
             }, $availability);
-            $lines[] = 'Availability: ' . implode(', ', $labels);
+            $lines[] = 'Availability: '.implode(', ', $labels);
         }
 
         $hasUrls = $this->normalizeArray($query['has_urls'] ?? []);
         if (! empty($hasUrls)) {
-            $labels = array_map(fn($key) => self::HAS_URLS_LABELS[$key] ?? $key, $hasUrls);
-            $lines[] = 'Must have: ' . implode(', ', $labels);
+            $labels = array_map(fn ($key) => self::HAS_URLS_LABELS[$key] ?? $key, $hasUrls);
+            $lines[] = 'Must have: '.implode(', ', $labels);
         }
 
         $badgeIds = $this->normalizeArray($query['badges'] ?? []);
         if (! empty($badgeIds)) {
             $names = Badge::whereIn('id', $badgeIds)->pluck('name')->all();
-            $lines[] = 'Badge(s): ' . implode(', ', $names);
+            $lines[] = 'Badge(s): '.implode(', ', $names);
         }
 
         if (isset($query['availableOnly'])) {
@@ -123,12 +123,12 @@ class AiPrompt extends Component
 
         $intro = 'Search for developers on https://find-developer.com according to the following company requirements:';
         if (empty($lines)) {
-            return $intro . "\n\n(No filters applied – use the link below to browse all developers.)\n\nUse this URL: " . $url;
+            return $intro."\n\n(No filters applied – use the link below to browse all developers.)\n\nUse this URL: ".$url;
         }
 
-        $requirements = implode("\n", array_map(fn($line) => '• ' . $line, $lines));
+        $requirements = implode("\n", array_map(fn ($line) => '• '.$line, $lines));
 
-        return $intro . "\n\n" . $requirements . "\n\nUse this URL: " . $url;
+        return $intro."\n\n".$requirements."\n\nUse this URL: ".$url;
     }
 
     private function normalizeArray(mixed $value): array

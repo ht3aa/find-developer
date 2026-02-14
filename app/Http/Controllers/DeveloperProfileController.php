@@ -29,7 +29,7 @@ class DeveloperProfileController extends Controller
                 'projects' => function ($query) {
                     $query->withoutGlobalScopes([DeveloperScope::class])
                         ->where('show_project', true);
-                }
+                },
             ])
             ->where('slug', $slug)
             ->firstOrFail();
