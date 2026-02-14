@@ -215,7 +215,8 @@
             </div>
 
             <!-- Email Check Banner -->
-            <div class="email-check-banner">
+            @guest
+                <div class="email-check-banner">
                 <div class="email-check-banner-container">
                     <div class="email-check-banner-content">
                         <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,6 +228,7 @@
                     </div>
                 </div>
             </div>
+            @endguest
         </nav>
         <div class="navbar-spacer"></div>
 
