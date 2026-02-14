@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RecommendationStatus;
 use App\Models\Developer;
+use App\Models\Scopes\DeveloperScope;
 
 class DeveloperProfileController extends Controller
 {
@@ -14,7 +15,8 @@ class DeveloperProfileController extends Controller
             'skills',
             'badges',
             'projects' => function ($query) {
-                $query->where('show_project', true)
+                $query->withoutGlobalScopes([DeveloperScope::class])
+                    ->where('show_project', true)
                     ->orderBy('created_at', 'desc');
             },
             'recommendationsReceived' => function ($query) {
@@ -23,7 +25,12 @@ class DeveloperProfileController extends Controller
                     ->orderBy('created_at', 'desc');
             },
         ])
-            ->withCount('projects')
+            ->withCount([
+                'projects' => function ($query) {
+                    $query->withoutGlobalScopes([DeveloperScope::class])
+                        ->where('show_project', true);
+                }
+            ])
             ->where('slug', $slug)
             ->firstOrFail();
 
