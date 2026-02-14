@@ -27,6 +27,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -180,6 +181,21 @@ class DevelopersTable
                     ->searchable()
                     ->preload()
                     ->multiple(),
+
+                SelectFilter::make('without_badges')
+                    ->label('Without Badges')
+                    ->options(fn () => Badge::where('is_active', true)->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (empty($data['value'])) {
+                            return $query;
+                        }
+                        $badgeIds = is_array($data['value']) ? $data['value'] : [$data['value']];
+
+                        return $query->whereDoesntHave('badges', fn ($q) => $q->whereIn('badges.id', $badgeIds));
+                    }),
 
                 TernaryFilter::make('recommended_by_us')
                     ->label('Recommended By Us')
