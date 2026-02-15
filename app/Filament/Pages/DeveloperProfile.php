@@ -11,6 +11,7 @@ use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Badge;
 use App\Models\Developer;
+use App\Models\Scopes\DeveloperScope;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -26,6 +27,8 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DeveloperProfile extends Page implements HasSchemas
 {
@@ -234,11 +237,45 @@ class DeveloperProfile extends Page implements HasSchemas
             ->send();
     }
 
+    public function downloadCv(): StreamedResponse
+    {
+        $developer = $this->record->load([
+            'jobTitle',
+            'skills',
+            'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
+        ]);
+        $html = view('developer-cv', ['developer' => $developer])->render();
+        $filename = Str::slug($developer->name) . '-cv.pdf';
+
+        $pdf = Browsershot::html($html)
+            ->format('A4')
+            ->margins(10, 10, 10, 10)
+            ->pdf();
+
+        return response()->streamDownload(
+            fn() => print($pdf),
+            $filename,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]
+        );
+    }
+
+    public function getDownloadCvAction(): Action
+    {
+        return Action::make('downloadCv')
+            ->label('Create CV')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->color('gray')
+            ->action('downloadCv');
+    }
+
     public static function getSaveAction(): Action
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn () => $this->save())
+            ->action(fn() => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',
