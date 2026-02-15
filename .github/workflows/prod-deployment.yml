@@ -32,11 +32,22 @@ jobs:
             cd /var/www/html/find-developer
             git fetch --tags
             echo "tag_name: ${{ github.event.release.tag_name }}"
-             git checkout -B release-${{ github.event.release.tag_name }} refs/tags/${{ github.event.release.tag_name }}
-            sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
+            git checkout -B release-${{ github.event.release.tag_name }} refs/tags/${{ github.event.release.tag_name }}
+
+            # Clean logs to prevent disk from filling up
+            sudo rm -f /var/www/html/find-developer/storage/logs/*.log
+
+            # Delete all cached files to prevent corrupted cache issues
+            rm -f bootstrap/cache/*.php
+            rm -rf storage/framework/cache/data/*
+            rm -rf storage/framework/views/*
+            rm -rf storage/framework/sessions/*
+
+            # Clean package manager caches to free disk space
+            composer clear-cache --no-interaction
+            npm cache clean --force
+
             composer install --no-dev --optimize-autoloader
-            npm install 
-            npm run build
             npm install --omit=dev
             npm update --omit=dev
             php artisan optimize:clear
