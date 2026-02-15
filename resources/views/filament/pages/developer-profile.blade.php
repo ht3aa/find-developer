@@ -4,6 +4,9 @@
         $config = $this->getSubscriptionPlanConfig();
     @endphp
 
+    <div class="flex justify-end mb-4">
+        {{ $this->getDownloadCvAction() }}
+    </div>
     <div class="p-4 rounded-xl border {{ $config['border'] }} {{ $config['bg'] }}">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -36,6 +39,8 @@
     <form wire:submit="save">
         {{ $this->form }}
 
-        {{ $this->getSaveAction() }}
+        <div class="flex flex-wrap gap-3 mt-4">
+            {{ $this->getSaveAction() }}
+        </div>
     </form>
 </x-filament-panels::page>
