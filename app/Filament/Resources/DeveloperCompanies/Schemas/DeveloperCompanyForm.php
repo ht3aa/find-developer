@@ -93,7 +93,16 @@ class DeveloperCompanyForm
                             })
                             ->searchable()
                             ->nullable()
-                            ->helperText('Link this role to a previous position at the same company (e.g. promotion)')
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $parent = DeveloperCompany::withoutGlobalScopes()->find($state);
+                                    if ($parent) {
+                                        $set('company_name', $parent->company_name);
+                                    }
+                                }
+                            })
+                            ->helperText('Link this role to a previous position at the same company (e.g. promotion). Company name will be auto-filled.')
                             ->columnSpanFull(),
 
                         Toggle::make('show_company')
