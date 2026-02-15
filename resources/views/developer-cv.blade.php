@@ -106,6 +106,49 @@
             line-height: 1.7;
         }
 
+        /* ── Companies / Work Experience ── */
+        .cv-company {
+            margin-bottom: 10pt;
+        }
+
+        .cv-company:last-child {
+            margin-bottom: 0;
+        }
+
+        .cv-company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .cv-company-role {
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .cv-company-dates {
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 9.5pt;
+            color: #444;
+            font-style: italic;
+        }
+
+        .cv-company-name {
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            color: #333;
+            margin-bottom: 2pt;
+        }
+
+        .cv-company-desc {
+            font-size: 10.5pt;
+            color: #2a2a2a;
+            margin: 2pt 0 0 0;
+            padding-left: 12pt;
+        }
+
         /* ── Projects ── */
         .cv-project {
             margin-bottom: 10pt;
@@ -237,6 +280,27 @@
             <div class="cv-section-content">
                 <p>{{ $developer->bio }}</p>
             </div>
+        </section>
+    @endif
+
+    {{-- ── Work Experience ── --}}
+    @if($developer->companies->isNotEmpty())
+        <section class="cv-section">
+            <h2 class="cv-section-title">Work Experience</h2>
+            @foreach($developer->companies->sortByDesc('start_date') as $company)
+                <div class="cv-company">
+                    <div class="cv-company-header">
+                        <span class="cv-company-role">{{ $company->company_name }} / {{ $company->jobTitle?->name }}</span>
+                        <span class="cv-company-dates">
+                            {{ $company->start_date->format('M Y') }} —
+                            {{ $company->is_current ? 'Present' : ($company->end_date ? $company->end_date->format('M Y') : '') }}
+                        </span>
+                    </div>
+                    @if($company->description)
+                        <p class="cv-company-desc">{{ $company->description }}</p>
+                    @endif
+                </div>
+            @endforeach
         </section>
     @endif
 

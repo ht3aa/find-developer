@@ -88,6 +88,11 @@ class Developer extends Model
         return $this->hasMany(DeveloperProject::class);
     }
 
+    public function companies(): HasMany
+    {
+        return $this->hasMany(DeveloperCompany::class);
+    }
+
     public function appointments(): HasMany
     {
         return $this->hasMany(UserAppointment::class);

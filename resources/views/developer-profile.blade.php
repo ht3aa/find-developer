@@ -197,6 +197,43 @@
                     @endif
                 @endauth
 
+                <!-- Work Experience / Companies Section -->
+                @if($developer->companies->count() > 0)
+                <div class="dev-profile-section">
+                    <h2 class="dev-profile-section-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Work Experience
+                    </h2>
+                    <div class="dev-profile-companies">
+                        @foreach($developer->companies->sortByDesc('start_date') as $company)
+                            <div class="dev-profile-company-card">
+                                <div class="dev-profile-company-header">
+                                    <div class="dev-profile-company-info">
+                                        <h3 class="dev-profile-company-name">{{ $company->company_name }}</h3>
+                                        <span class="dev-profile-company-role">{{ $company->jobTitle?->name }}</span>
+                                    </div>
+                                    <div class="dev-profile-company-dates">
+                                        <span class="dev-profile-company-date">
+                                            {{ $company->start_date->format('M Y') }} —
+                                            @if($company->is_current)
+                                                <span class="dev-profile-company-current">Present</span>
+                                            @elseif($company->end_date)
+                                                {{ $company->end_date->format('M Y') }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                                @if($company->description)
+                                    <p class="dev-profile-company-desc">{{ $company->description }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <!-- Portfolio Projects Section -->
                 @if($developer->projects->count() > 0)
                 <div class="dev-profile-section">

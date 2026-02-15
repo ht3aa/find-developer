@@ -14,6 +14,12 @@ class DeveloperProfileController extends Controller
             'jobTitle',
             'skills',
             'badges',
+            'companies' => function ($query) {
+                $query->withoutGlobalScopes([DeveloperScope::class])
+                    ->with('jobTitle')
+                    ->where('show_company', true)
+                    ->orderBy('start_date', 'desc');
+            },
             'projects' => function ($query) {
                 $query->withoutGlobalScopes([DeveloperScope::class])
                     ->where('show_project', true)

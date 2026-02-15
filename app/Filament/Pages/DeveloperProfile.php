@@ -242,6 +242,10 @@ class DeveloperProfile extends Page implements HasSchemas
         $developer = $this->record->load([
             'jobTitle',
             'skills',
+            'companies' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])
+                ->with('jobTitle')
+                ->where('show_company', true)
+                ->orderBy('start_date', 'desc'),
             'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
         ]);
         $filename = Str::slug($developer->name) . '-cv.pdf';
