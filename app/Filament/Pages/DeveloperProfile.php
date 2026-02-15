@@ -27,7 +27,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
-use Spatie\Browsershot\Browsershot;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DeveloperProfile extends Page implements HasSchemas
@@ -244,16 +244,17 @@ class DeveloperProfile extends Page implements HasSchemas
             'skills',
             'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
         ]);
-        $html = view('developer-cv', ['developer' => $developer])->render();
         $filename = Str::slug($developer->name) . '-cv.pdf';
 
-        $pdf = Browsershot::html($html)
-            ->format('A4')
-            ->margins(10, 10, 10, 10)
-            ->pdf();
+        $pdf = Pdf::loadView('developer-cv', ['developer' => $developer])
+            ->setPaper('a4')
+            ->setOption('margin-top', 0)
+            ->setOption('margin-bottom', 0)
+            ->setOption('margin-left', 0)
+            ->setOption('margin-right', 0);
 
         return response()->streamDownload(
-            fn() => print($pdf),
+            fn() => print($pdf->output()),
             $filename,
             [
                 'Content-Type' => 'application/pdf',
