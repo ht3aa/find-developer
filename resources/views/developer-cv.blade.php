@@ -209,7 +209,7 @@
                 <span class="cv-separator">|</span>{{ $developer->phone }}
             @endif
             @if($developer->location)
-                <span class="cv-separator">|</span>{{ $developer->location->getLabel() }}
+                <span class="cv-separator">|</span>{{ $developer->location->getEnglishLabel() }}
             @endif
         </div>
 

@@ -26,7 +26,7 @@ enum WorldGovernorate: string implements HasLabel
     case SULAYMANIYAH = 'sulaymaniyah';
     case DUHOK = 'duhok';
 
-    // Yemen Governorates
+        // Yemen Governorates
     case YEMEN_ABYAN = 'yemen-abyan';
     case YEMEN_AD_DALI = 'yemen-ad_dali';
     case YEMEN_ADEN = 'yemen-aden';
@@ -96,6 +96,54 @@ enum WorldGovernorate: string implements HasLabel
             self::YEMEN_SANAA => 'Sana\'a (صنعاء)',
             self::YEMEN_SOCOTRA => 'Socotra (سقطرى)',
             self::YEMEN_TAIZ => 'Taiz (تعز)',
+        };
+    }
+
+    public function getEnglishLabel(): string
+    {
+        return match ($this) {
+            self::BAGHDAD => 'Baghdad',
+            self::BASRA => 'Basra',
+            self::NINEVEH => 'Nineveh',
+            self::ERBIL => 'Erbil',
+            self::NAJAF => 'Najaf',
+            self::KARBALA => 'Karbala',
+            self::BABYLON => 'Babylon',
+            self::WASIT => 'Wasit',
+            self::QADISIYYA => 'Qadisiyya',
+            self::MUTHANNA => 'Muthanna',
+            self::MESAN => 'Mesan',
+            self::DHI_QAR => 'Dhi Qar',
+            self::SALAH_AL_DIN => 'Salah al-Din',
+            self::KIRKUK => 'Kirkuk',
+            self::DIYALA => 'Diyala',
+            self::ANBAR => 'Anbar',
+            self::SULAYMANIYAH => 'Sulaymaniyah',
+            self::DUHOK => 'Duhok',
+
+            // Yemen Governorates
+            self::YEMEN_ABYAN => 'Abyan',
+            self::YEMEN_AD_DALI => 'Ad Dali',
+            self::YEMEN_ADEN => 'Aden',
+            self::YEMEN_AL_BAYDA => 'Al Bayda',
+            self::YEMEN_AL_HUDAYDAH => 'Al Hudaydah',
+            self::YEMEN_AL_JAWF => 'Al Jawf',
+            self::YEMEN_AL_MAHRAH => 'Al Mahrah',
+            self::YEMEN_AL_MAHWIT => 'Al Mahwit',
+            self::YEMEN_AMANAT_AL_ASIMAH => 'Amanat Al Asimah',
+            self::YEMEN_AMRAN => 'Amran',
+            self::YEMEN_DHALE => 'Dhale',
+            self::YEMEN_DHAMAR => 'Dhamar',
+            self::YEMEN_HADRAMAUT => 'Hadramaut',
+            self::YEMEN_HAJJAH => 'Hajjah',
+            self::YEMEN_IBB => 'Ibb',
+            self::YEMEN_LAHIJ => 'Lahij',
+            self::YEMEN_MARIB => 'Marib',
+            self::YEMEN_RAYMAH => 'Raymah',
+            self::YEMEN_SAADA => 'Sa\'dah',
+            self::YEMEN_SANAA => 'Sana\'a',
+            self::YEMEN_SOCOTRA => 'Socotra',
+            self::YEMEN_TAIZ => 'Taiz',
         };
     }
 
