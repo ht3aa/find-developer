@@ -26,7 +26,7 @@ enum WorldGovernorate: string implements HasLabel
     case SULAYMANIYAH = 'sulaymaniyah';
     case DUHOK = 'duhok';
 
-        // Yemen Governorates
+    // Yemen Governorates
     case YEMEN_ABYAN = 'yemen-abyan';
     case YEMEN_AD_DALI = 'yemen-ad_dali';
     case YEMEN_ADEN = 'yemen-aden';
