@@ -242,10 +242,10 @@ class DeveloperProfile extends Page implements HasSchemas
         $developer = $this->record->load([
             'jobTitle',
             'skills',
-            'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
+            'projects' => fn ($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
         ]);
         $html = view('developer-cv', ['developer' => $developer])->render();
-        $filename = Str::slug($developer->name) . '-cv.pdf';
+        $filename = Str::slug($developer->name).'-cv.pdf';
 
         $pdf = Browsershot::html($html)
             ->format('A4')
@@ -253,11 +253,11 @@ class DeveloperProfile extends Page implements HasSchemas
             ->pdf();
 
         return response()->streamDownload(
-            fn() => print($pdf),
+            fn () => print ($pdf),
             $filename,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
             ]
         );
     }
@@ -275,7 +275,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn() => $this->save())
+            ->action(fn () => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',
