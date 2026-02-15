@@ -497,6 +497,74 @@
     text-align: right;
 }
 
+/* Work Experience / Companies */
+.dev-profile-companies {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.dev-profile-company-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-base);
+}
+
+.dev-profile-company-card:hover {
+    border-color: var(--border-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+.dev-profile-company-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+}
+
+.dev-profile-company-info {
+    flex: 1;
+}
+
+.dev-profile-company-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.125rem 0;
+}
+
+.dev-profile-company-role {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.dev-profile-company-dates {
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.dev-profile-company-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.dev-profile-company-current {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.dev-profile-company-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    line-height: 1.6;
+    margin: var(--spacing-xs) 0 0 0;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 1024px) {
