@@ -207,26 +207,89 @@
                         Work Experience
                     </h2>
                     <div class="dev-profile-companies">
-                        @foreach($developer->companies->sortByDesc('start_date') as $company)
+                        @php
+                            $topLevelCompanies = $developer->companies->whereNull('parent_id')->sortByDesc('start_date');
+                        @endphp
+                        @foreach($topLevelCompanies as $company)
+                            @php
+                                $childRoles = $developer->companies->where('parent_id', $company->id)->sortByDesc('start_date');
+                                $hasMultipleRoles = $childRoles->count() > 0;
+                                $allRoles = collect([$company])->merge($childRoles)->sortByDesc('start_date');
+                                $earliest = $allRoles->min('start_date');
+                                $latest = $company->is_current ? now() : $allRoles->max(fn($r) => $r->end_date ?? $r->start_date);
+                                $totalMonths = $earliest->diffInMonths($latest);
+                                $totalYears = intdiv($totalMonths, 12);
+                                $totalRemMonths = $totalMonths % 12;
+                                $totalDuration = ($totalYears ? $totalYears . ' yr' . ($totalYears > 1 ? 's' : '') : '') . ($totalRemMonths ? ' ' . $totalRemMonths . ' mo' . ($totalRemMonths > 1 ? 's' : '') : '');
+                            @endphp
                             <div class="dev-profile-company-card">
-                                <div class="dev-profile-company-header">
-                                    <div class="dev-profile-company-info">
-                                        <h3 class="dev-profile-company-name">{{ $company->company_name }}</h3>
-                                        <span class="dev-profile-company-role">{{ $company->jobTitle?->name }}</span>
+                                {{-- Company header with logo --}}
+                                <div class="dev-profile-company-top">
+                                    <div class="dev-profile-company-logo">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                        </svg>
                                     </div>
-                                    <div class="dev-profile-company-dates">
-                                        <span class="dev-profile-company-date">
-                                            {{ $company->start_date->format('M Y') }} —
-                                            @if($company->is_current)
-                                                <span class="dev-profile-company-current">Present</span>
-                                            @elseif($company->end_date)
-                                                {{ $company->end_date->format('M Y') }}
-                                            @endif
-                                        </span>
+                                    <div class="dev-profile-company-top-info">
+                                        <h3 class="dev-profile-company-name">{{ $company->company_name }}</h3>
+                                        @if($hasMultipleRoles)
+                                            <span class="dev-profile-company-duration">{{ $totalDuration }}</span>
+                                        @endif
                                     </div>
                                 </div>
-                                @if($company->description)
-                                    <p class="dev-profile-company-desc">{{ $company->description }}</p>
+
+                                @if($hasMultipleRoles)
+                                    {{-- Multiple roles timeline --}}
+                                    <div class="dev-profile-company-roles">
+                                        @foreach($allRoles as $role)
+                                            @php
+                                                $roleEnd = $role->is_current ? now() : ($role->end_date ?? $role->start_date);
+                                                $roleMonths = $role->start_date->diffInMonths($roleEnd);
+                                                $roleYears = intdiv($roleMonths, 12);
+                                                $roleRemMonths = $roleMonths % 12;
+                                                $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                                            @endphp
+                                            <div class="dev-profile-role-item">
+                                                <div class="dev-profile-role-dot-col">
+                                                    <span class="dev-profile-role-dot"></span>
+                                                    @if(!$loop->last)
+                                                        <span class="dev-profile-role-line"></span>
+                                                    @endif
+                                                </div>
+                                                <div class="dev-profile-role-content">
+                                                    <div class="dev-profile-role-title">{{ $role->jobTitle?->name }}</div>
+                                                    <div class="dev-profile-role-meta">
+                                                        <span>{{ $role->start_date->format('M Y') }} — @if($role->is_current)<span class="dev-profile-company-current">Present</span>@elseif($role->end_date){{ $role->end_date->format('M Y') }}@endif</span>
+                                                        <span class="dev-profile-role-sep">&middot;</span>
+                                                        <span>{{ $roleDuration ?: '< 1 mo' }}</span>
+                                                    </div>
+                                                    @if($role->description)
+                                                        <p class="dev-profile-company-desc">{{ $role->description }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    {{-- Single role --}}
+                                    @php
+                                        $roleEnd = $company->is_current ? now() : ($company->end_date ?? $company->start_date);
+                                        $roleMonths = $company->start_date->diffInMonths($roleEnd);
+                                        $roleYears = intdiv($roleMonths, 12);
+                                        $roleRemMonths = $roleMonths % 12;
+                                        $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                                    @endphp
+                                    <div class="dev-profile-single-role">
+                                        <div class="dev-profile-role-title">{{ $company->jobTitle?->name }}</div>
+                                        <div class="dev-profile-role-meta">
+                                            <span>{{ $company->start_date->format('M Y') }} — @if($company->is_current)<span class="dev-profile-company-current">Present</span>@elseif($company->end_date){{ $company->end_date->format('M Y') }}@endif</span>
+                                            <span class="dev-profile-role-sep">&middot;</span>
+                                            <span>{{ $roleDuration ?: '< 1 mo' }}</span>
+                                        </div>
+                                        @if($company->description)
+                                            <p class="dev-profile-company-desc">{{ $company->description }}</p>
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         @endforeach
