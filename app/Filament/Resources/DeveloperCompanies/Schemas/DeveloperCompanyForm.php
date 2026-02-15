@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DeveloperCompanies\Schemas;
 
+use App\Models\DeveloperCompany;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -71,6 +72,38 @@ class DeveloperCompanyForm
                                         }
                                     }),
                             ]),
+
+                        Select::make('parent_id')
+                            ->label('Promoted From (Previous Role)')
+                            ->options(function (callable $get, $record) {
+                                $developerId = $get('developer_id') ?? auth()->user()->developer?->id;
+                                if (! $developerId) {
+                                    return [];
+                                }
+
+                                return DeveloperCompany::withoutGlobalScopes()
+                                    ->where('developer_id', $developerId)
+                                    ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
+                                    ->whereNull('parent_id')
+                                    ->with('jobTitle')
+                                    ->orderByDesc('start_date')
+                                    ->get()
+                                    ->mapWithKeys(fn ($c) => [$c->id => $c->company_name . ' — ' . ($c->jobTitle?->name ?? 'N/A')])
+                                    ->toArray();
+                            })
+                            ->searchable()
+                            ->nullable()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $parent = DeveloperCompany::withoutGlobalScopes()->find($state);
+                                    if ($parent) {
+                                        $set('company_name', $parent->company_name);
+                                    }
+                                }
+                            })
+                            ->helperText('Link this role to a previous position at the same company (e.g. promotion). Company name will be auto-filled.')
+                            ->columnSpanFull(),
 
                         Toggle::make('show_company')
                             ->label('Show Company in Frontend')

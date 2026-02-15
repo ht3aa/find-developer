@@ -108,45 +108,80 @@
 
         /* ── Companies / Work Experience ── */
         .cv-company {
-            margin-bottom: 10pt;
+            margin-bottom: 12pt;
         }
 
         .cv-company:last-child {
             margin-bottom: 0;
         }
 
-        .cv-company-header {
+        .cv-company-name {
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1pt;
+        }
+
+        .cv-company-total-duration {
+            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 9pt;
+            color: #666;
+            margin-bottom: 4pt;
+        }
+
+        .cv-role {
+            margin-bottom: 6pt;
+            padding-left: 10pt;
+            border-left: 2pt solid #ccc;
+        }
+
+        .cv-role:last-child {
+            margin-bottom: 0;
+        }
+
+        .cv-role-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
         }
 
-        .cv-company-role {
+        .cv-role-title {
             font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
             font-size: 10.5pt;
-            font-weight: 700;
+            font-weight: 600;
             color: #1a1a1a;
         }
 
-        .cv-company-dates {
+        .cv-role-dates {
             font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
-            font-size: 9.5pt;
-            color: #444;
-            font-style: italic;
+            font-size: 9pt;
+            color: #555;
         }
 
-        .cv-company-name {
+        .cv-role-duration {
             font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .cv-role-desc {
             font-size: 10pt;
-            color: #333;
-            margin-bottom: 2pt;
-        }
-
-        .cv-company-desc {
-            font-size: 10.5pt;
             color: #2a2a2a;
             margin: 2pt 0 0 0;
-            padding-left: 12pt;
+            line-height: 1.5;
+        }
+
+        /* Single role (no timeline line needed) */
+        .cv-role-single .cv-role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .cv-role-single {
+            padding-left: 0;
+            border-left: none;
         }
 
         /* ── Projects ── */
@@ -285,19 +320,68 @@
 
     {{-- ── Work Experience ── --}}
     @if($developer->companies->isNotEmpty())
+        @php
+            $topLevelCompanies = $developer->companies->whereNull('parent_id')->sortByDesc('start_date');
+        @endphp
         <section class="cv-section">
             <h2 class="cv-section-title">Work Experience</h2>
-            @foreach($developer->companies->sortByDesc('start_date') as $company)
+            @foreach($topLevelCompanies as $company)
+                @php
+                    $childRoles = $developer->companies->where('parent_id', $company->id)->sortByDesc('start_date');
+                    $hasMultipleRoles = $childRoles->count() > 0;
+                    $allRoles = collect([$company])->merge($childRoles)->sortByDesc('start_date');
+                    $earliest = $allRoles->min('start_date');
+                    $latest = $company->is_current ? now() : $allRoles->max(fn($r) => $r->end_date ?? $r->start_date);
+                    $totalMonths = $earliest->diffInMonths($latest);
+                    $totalYears = intdiv($totalMonths, 12);
+                    $totalRemMonths = $totalMonths % 12;
+                    $totalDuration = ($totalYears ? $totalYears . ' yr' . ($totalYears > 1 ? 's' : '') : '') . ($totalRemMonths ? ' ' . $totalRemMonths . ' mo' . ($totalRemMonths > 1 ? 's' : '') : '');
+                @endphp
                 <div class="cv-company">
-                    <div class="cv-company-header">
-                        <span class="cv-company-role">{{ $company->company_name }} / {{ $company->jobTitle?->name }}</span>
-                        <span class="cv-company-dates">
-                            {{ $company->start_date->format('M Y') }} —
-                            {{ $company->is_current ? 'Present' : ($company->end_date ? $company->end_date->format('M Y') : '') }}
-                        </span>
-                    </div>
-                    @if($company->description)
-                        <p class="cv-company-desc">{{ $company->description }}</p>
+                    <div class="cv-company-name">{{ $company->company_name }}</div>
+                    @if($hasMultipleRoles)
+                        <div class="cv-company-total-duration">{{ $totalDuration }}</div>
+                        @foreach($allRoles as $role)
+                            @php
+                                $roleEnd = $role->is_current ? now() : ($role->end_date ?? $role->start_date);
+                                $roleMonths = $role->start_date->diffInMonths($roleEnd);
+                                $roleYears = intdiv($roleMonths, 12);
+                                $roleRemMonths = $roleMonths % 12;
+                                $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                            @endphp
+                            <div class="cv-role">
+                                <div class="cv-role-header">
+                                    <span class="cv-role-title">{{ $role->jobTitle?->name }}</span>
+                                    <span class="cv-role-dates">
+                                        {{ $role->start_date->format('M Y') }} — {{ $role->is_current ? 'Present' : ($role->end_date ? $role->end_date->format('M Y') : '') }}
+                                        &middot; {{ $roleDuration ?: '< 1 mo' }}
+                                    </span>
+                                </div>
+                                @if($role->description)
+                                    <p class="cv-role-desc">{{ $role->description }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        @php
+                            $roleEnd = $company->is_current ? now() : ($company->end_date ?? $company->start_date);
+                            $roleMonths = $company->start_date->diffInMonths($roleEnd);
+                            $roleYears = intdiv($roleMonths, 12);
+                            $roleRemMonths = $roleMonths % 12;
+                            $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                        @endphp
+                        <div class="cv-role cv-role-single">
+                            <div class="cv-role-header">
+                                <span class="cv-role-title">{{ $company->jobTitle?->name }}</span>
+                                <span class="cv-role-dates">
+                                    {{ $company->start_date->format('M Y') }} — {{ $company->is_current ? 'Present' : ($company->end_date ? $company->end_date->format('M Y') : '') }}
+                                    &middot; {{ $roleDuration ?: '< 1 mo' }}
+                                </span>
+                            </div>
+                            @if($company->description)
+                                <p class="cv-role-desc">{{ $company->description }}</p>
+                            @endif
+                        </div>
                     @endif
                 </div>
             @endforeach

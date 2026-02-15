@@ -43,6 +43,11 @@ class DeveloperCompaniesTable
                     ->sortable()
                     ->placeholder('Present'),
 
+                Tables\Columns\TextColumn::make('parent.jobTitle.name')
+                    ->label('Promoted From')
+                    ->placeholder('—')
+                    ->toggleable(),
+
                 Tables\Columns\IconColumn::make('is_current')
                     ->label('Current')
                     ->boolean()

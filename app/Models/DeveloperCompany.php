@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\JobTitle;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -25,6 +26,7 @@ class DeveloperCompany extends Model
         'start_date',
         'end_date',
         'is_current',
+        'parent_id',
         'show_company',
     ];
 
@@ -43,6 +45,21 @@ class DeveloperCompany extends Model
     public function jobTitle(): BelongsTo
     {
         return $this->belongsTo(JobTitle::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(DeveloperCompany::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(DeveloperCompany::class, 'parent_id')->orderByDesc('start_date');
+    }
+
+    public function scopeTopLevel($query)
+    {
+        return $query->whereNull('parent_id');
     }
 
     public function scopeVisible($query)
