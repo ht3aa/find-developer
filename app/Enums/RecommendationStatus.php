@@ -10,6 +10,8 @@ enum RecommendationStatus: string implements HasColor, HasIcon, HasLabel
 {
     case PENDING = 'pending';
     case APPROVED = 'approved';
+
+    case PROCESSING = 'processing';
     case REJECTED = 'rejected';
 
     public function getLabel(): string
@@ -17,6 +19,7 @@ enum RecommendationStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::PENDING => 'Pending',
             self::APPROVED => 'Approved',
+            self::PROCESSING => 'Processing',
             self::REJECTED => 'Rejected',
         };
     }
@@ -26,6 +29,7 @@ enum RecommendationStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::PENDING => 'warning',
             self::APPROVED => 'success',
+            self::PROCESSING => 'warning',
             self::REJECTED => 'danger',
         };
     }
@@ -35,6 +39,7 @@ enum RecommendationStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::PENDING => 'heroicon-o-clock',
             self::APPROVED => 'heroicon-o-check-circle',
+            self::PROCESSING => 'heroicon-o-clock',
             self::REJECTED => 'heroicon-o-x-circle',
         };
     }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DeveloperRecommendations\Tables;
 
 use App\Enums\RecommendationStatus;
+use App\Notifications\MailtrapNotification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -27,18 +28,18 @@ class DeveloperRecommendationsTable
                     ->label('Recommender')
                     ->searchable()
                     ->sortable()
-                    ->description(fn ($record) => $record->recommender->jobTitle->name ?? null),
+                    ->description(fn($record) => $record->recommender->jobTitle->name ?? null),
 
                 TextColumn::make('recommended.name')
                     ->label('Recommended Developer')
                     ->searchable()
                     ->sortable()
-                    ->description(fn ($record) => $record->recommended->jobTitle->name ?? null),
+                    ->description(fn($record) => $record->recommended->jobTitle->name ?? null),
 
                 TextColumn::make('recommendation_note')
                     ->label('Recommendation Note')
                     ->limit(50)
-                    ->tooltip(fn ($record) => $record->recommendation_note)
+                    ->tooltip(fn($record) => $record->recommendation_note)
                     ->wrap()
                     ->toggleable(),
 
@@ -69,12 +70,54 @@ class DeveloperRecommendationsTable
                 ActionGroup::make([
                     ViewAction::make(),
 
+                    Action::make('processing')
+                        ->label('Processing')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->visible(fn($record) => $record->status !== RecommendationStatus::PROCESSING)
+                        ->action(function ($record) {
+                            $record->update(['status' => RecommendationStatus::PROCESSING]);
+
+                            $record->load(['recommender', 'recommended']);
+
+                            $replyInstruction = "\n\nPlease send your answer to ht3aa2001@gmail.com";
+
+                            $recommenderMessage = "Hello {$record->recommender->name},\n\n";
+                            $recommenderMessage .= "We are reviewing your recommendation for {$record->recommended->name} ({$record->recommended->email})\n\n";
+                            $recommenderMessage .= "Could you please tell us: How did you get to know this developer?";
+                            $recommenderMessage .= $replyInstruction;
+
+                            $record->recommender->notify(new MailtrapNotification(
+                                subject: 'How did you know this developer?',
+                                message: $recommenderMessage,
+                                category: 'Recommendation Processing'
+                            ));
+
+                            $recommendedMessage = "Hello {$record->recommended->name},\n\n";
+                            $recommendedMessage .= "You have been recommended by {$record->recommender->name} ({$record->recommender->email}).\n\n";
+                            $recommendedMessage .= "Could you please tell us: How did you get to know the person who recommended you?";
+                            $recommendedMessage .= $replyInstruction;
+
+                            $record->recommended->notify(new MailtrapNotification(
+                                subject: 'How did you know the person who recommended you?',
+                                message: $recommendedMessage,
+                                category: 'Recommendation Processing'
+                            ));
+
+                            Notification::make()
+                                ->title('Recommendation Processing')
+                                ->body("Status updated and inquiry emails sent to recommender and recommended developer.")
+                                ->success()
+                                ->send();
+                        }),
+
                     Action::make('approve')
                         ->label('Approve')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->visible(fn ($record) => $record->status !== RecommendationStatus::APPROVED)
+                        ->visible(fn($record) => $record->status !== RecommendationStatus::APPROVED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::APPROVED]);
 
@@ -90,7 +133,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->visible(fn ($record) => $record->status !== RecommendationStatus::REJECTED)
+                        ->visible(fn($record) => $record->status !== RecommendationStatus::REJECTED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::REJECTED]);
 
@@ -105,7 +148,7 @@ class DeveloperRecommendationsTable
                     DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('approve')
                         ->label('Approve Selected')
