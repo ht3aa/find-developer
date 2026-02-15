@@ -53,14 +53,12 @@ class DeveloperCompanyForm
                                     ->label('Start Date')
                                     ->required()
                                     ->native(false)
-                                    ->displayFormat('M Y')
-                                    ->beforeOrEqual('end_date'),
+                                    ->displayFormat('M Y'),
 
                                 DatePicker::make('end_date')
                                     ->label('End Date')
                                     ->native(false)
                                     ->displayFormat('M Y')
-                                    ->afterOrEqual('start_date')
                                     ->helperText('Leave empty if currently working here'),
 
                                 Toggle::make('is_current')
