@@ -28,18 +28,18 @@ class DeveloperRecommendationsTable
                     ->label('Recommender')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->recommender->jobTitle->name ?? null),
+                    ->description(fn ($record) => $record->recommender->jobTitle->name ?? null),
 
                 TextColumn::make('recommended.name')
                     ->label('Recommended Developer')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->recommended->jobTitle->name ?? null),
+                    ->description(fn ($record) => $record->recommended->jobTitle->name ?? null),
 
                 TextColumn::make('recommendation_note')
                     ->label('Recommendation Note')
                     ->limit(50)
-                    ->tooltip(fn($record) => $record->recommendation_note)
+                    ->tooltip(fn ($record) => $record->recommendation_note)
                     ->wrap()
                     ->toggleable(),
 
@@ -75,7 +75,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-arrow-path')
                         ->color('warning')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== RecommendationStatus::PROCESSING)
+                        ->visible(fn ($record) => $record->status !== RecommendationStatus::PROCESSING)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::PROCESSING]);
 
@@ -85,7 +85,7 @@ class DeveloperRecommendationsTable
 
                             $recommenderMessage = "Hello {$record->recommender->name},\n\n";
                             $recommenderMessage .= "We are reviewing your recommendation for {$record->recommended->name} ({$record->recommended->email})\n\n";
-                            $recommenderMessage .= "Could you please tell us: How did you get to know this developer?";
+                            $recommenderMessage .= 'Could you please tell us: How did you get to know this developer?';
                             $recommenderMessage .= $replyInstruction;
 
                             $record->recommender->notify(new MailtrapNotification(
@@ -96,7 +96,7 @@ class DeveloperRecommendationsTable
 
                             $recommendedMessage = "Hello {$record->recommended->name},\n\n";
                             $recommendedMessage .= "You have been recommended by {$record->recommender->name} ({$record->recommender->email}).\n\n";
-                            $recommendedMessage .= "Could you please tell us: How did you get to know the person who recommended you?";
+                            $recommendedMessage .= 'Could you please tell us: How did you get to know the person who recommended you?';
                             $recommendedMessage .= $replyInstruction;
 
                             $record->recommended->notify(new MailtrapNotification(
@@ -107,7 +107,7 @@ class DeveloperRecommendationsTable
 
                             Notification::make()
                                 ->title('Recommendation Processing')
-                                ->body("Status updated and inquiry emails sent to recommender and recommended developer.")
+                                ->body('Status updated and inquiry emails sent to recommender and recommended developer.')
                                 ->success()
                                 ->send();
                         }),
@@ -117,7 +117,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== RecommendationStatus::APPROVED)
+                        ->visible(fn ($record) => $record->status !== RecommendationStatus::APPROVED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::APPROVED]);
 
@@ -133,7 +133,7 @@ class DeveloperRecommendationsTable
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->visible(fn($record) => $record->status !== RecommendationStatus::REJECTED)
+                        ->visible(fn ($record) => $record->status !== RecommendationStatus::REJECTED)
                         ->action(function ($record) {
                             $record->update(['status' => RecommendationStatus::REJECTED]);
 

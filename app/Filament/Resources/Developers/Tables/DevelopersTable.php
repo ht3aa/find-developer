@@ -194,9 +194,15 @@ class DevelopersTable
                         }
                         $badgeIds = is_array($data['values']) ? $data['values'] : [$data['values']];
 
-                        return $query->whereHas('badges', function ($query) use ($badgeIds) {
-                            $query->whereNotIn('badge_id', $badgeIds);
-                        })->orWhereDoesntHave('badges');
+                        return $query->where(function ($query) use ($badgeIds) {
+                            if ($query->doesntHave('badges')) {
+                                return $query;
+                            }
+
+                            return $query->whereHas('badges', function ($query) use ($badgeIds) {
+                                $query->whereNotIn('badge_id', $badgeIds);
+                            });
+                        });
                     }),
 
                 TernaryFilter::make('recommended_by_us')
