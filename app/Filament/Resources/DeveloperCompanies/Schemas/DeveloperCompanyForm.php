@@ -88,7 +88,7 @@ class DeveloperCompanyForm
                                     ->with('jobTitle')
                                     ->orderByDesc('start_date')
                                     ->get()
-                                    ->mapWithKeys(fn ($c) => [$c->id => $c->company_name . ' — ' . ($c->jobTitle?->name ?? 'N/A')])
+                                    ->mapWithKeys(fn ($c) => [$c->id => $c->company_name.' — '.($c->jobTitle?->name ?? 'N/A')])
                                     ->toArray();
                             })
                             ->searchable()
