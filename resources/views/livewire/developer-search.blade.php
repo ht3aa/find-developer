@@ -4,12 +4,19 @@
         <div class="header-content">
             <h1 class="modern-title">Find Your Perfect Developer</h1>
             <p class="modern-subtitle">Discover talented developers ready to bring your projects to life</p>
+            @guest
             <a href="{{ route('register') }}" class="hero-register-btn">
                 <span>Register as Developer</span>
                 <svg class="hero-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
             </a>
+            @endguest
+            @auth
+            <a href="{{ route('filament.admin.pages.dashboard') }}" class="hero-register-btn">
+                <span>Go To Dashboard</span>
+            </a>
+            @endauth
         </div>
     </div>
 
