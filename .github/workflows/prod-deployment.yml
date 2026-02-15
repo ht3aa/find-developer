@@ -43,10 +43,6 @@ jobs:
             rm -rf storage/framework/views/*
             rm -rf storage/framework/sessions/*
 
-            # Clean package manager caches to free disk space
-            composer clear-cache --no-interaction
-            npm cache clean --force
-
             composer install --no-dev --optimize-autoloader
             npm install --omit=dev
             npm update --omit=dev
