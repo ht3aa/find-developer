@@ -317,12 +317,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </a>
-        @else
+        @endif
+        @endauth
+        @guest
         <a class="dev-card-offer-link dev-card-offer-link-disabled" style="flex: 0.5;" title="Login as HR to send an offer">
             Offer by HR only
         </a>
-        @endif
-        @endauth
+        @endguest
     </div>
     @endif
 </div>
