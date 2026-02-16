@@ -330,7 +330,7 @@
                     $childRoles = $developer->companies->where('parent_id', $company->id)->sortByDesc('start_date');
                     $hasMultipleRoles = $childRoles->count() > 0;
                     $allRoles = collect([$company])->merge($childRoles)->sortByDesc('start_date');
-                    $totalDurationInMonths = round($allRoles->sum(fn($role) => $role->start_date->diffInMonths($role->end_date ?? now())));
+                    $totalDurationInMonths = floor($allRoles->sum(fn($role) => $role->start_date->diffInMonths($role->end_date ?? now())));
                     $totalDuration = \Carbon\CarbonInterval::months($totalDurationInMonths)->cascade()->forHumans();
                 @endphp
                 <div class="cv-company">
