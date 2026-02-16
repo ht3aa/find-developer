@@ -13,7 +13,7 @@ class SeoHelper
             'title' => 'FindDeveloper - Find Your Perfect Developer | Developer Search Platform',
             'description' => 'Find and connect with skilled developers in Iraq. Search by skills, experience, location, and job title. Browse developer portfolios, projects, and contact information.',
             'keywords' => 'find developer, developer search, hire developer, developers in iraq, web developer, mobile developer, software developer, developer portfolio, freelance developer',
-            'image' => asset('images/og-image.jpg'),
+            'image' => asset('light-logo.svg'),
             'url' => url('/'),
             'type' => 'website',
             'site_name' => 'FindDeveloper',
