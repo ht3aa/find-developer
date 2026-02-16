@@ -1835,6 +1835,10 @@ html.dark .social-link.github:hover {
     margin-left: auto;
 }
 
+.social-link.cv:hover {
+    background: #2563eb;
+}
+
 .social-link.projects {
     width: auto;
     height: auto;
