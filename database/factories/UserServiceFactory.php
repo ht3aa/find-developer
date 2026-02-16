@@ -47,10 +47,10 @@ class UserServiceFactory extends Factory
 
         return [
             'user_id' => User::factory()->state([
-                'user_type' => UserType::CLIENT,
+                'user_type' => UserType::DEVELOPER,
             ]),
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name) . '-' . Str::random(8),
             'description' => fake()->boolean(80) ? fake()->paragraph(3) : null,
             'price' => $price,
             'price_currency' => fake()->randomElement(Currency::cases()),
@@ -64,7 +64,7 @@ class UserServiceFactory extends Factory
      */
     public function active(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'is_active' => true,
         ]);
     }
@@ -74,7 +74,7 @@ class UserServiceFactory extends Factory
      */
     public function inactive(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'is_active' => false,
         ]);
     }
@@ -84,7 +84,7 @@ class UserServiceFactory extends Factory
      */
     public function free(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'price' => null,
         ]);
     }
@@ -94,7 +94,7 @@ class UserServiceFactory extends Factory
      */
     public function withPrice(int $price, Currency $currency = Currency::IQD): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'price' => $price,
             'price_currency' => $currency,
         ]);

@@ -252,6 +252,36 @@
 
         <!-- Page Content -->
         <main class="main-content">
+            @if(session('home_notification'))
+                <div
+                    class="flash-notification flash-notification-success"
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    style="margin: 1rem auto; max-width: 42rem; padding: 1rem 1.25rem; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 0.5rem; color: var(--gray-900, #111827);"
+                >
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                        <svg style="flex-shrink: 0; width: 1.25rem; height: 1.25rem; color: rgb(34, 197, 94);" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div style="flex: 1;">
+                            <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">{{ session('home_notification')['title'] }}</p>
+                            <p style="margin: 0.25rem 0 0; font-size: 0.875rem; opacity: 0.9;">{{ session('home_notification')['body'] }}</p>
+                        </div>
+                        <button type="button" @click="show = false" aria-label="Dismiss" style="flex-shrink: 0; padding: 0.25rem; background: none; border: none; cursor: pointer; opacity: 0.6;">
+                            <svg style="width: 1rem; height: 1rem;" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            @endif
+
             @yield('content')
         </main>
 

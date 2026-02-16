@@ -122,6 +122,29 @@
     100% { background-position: 0% 50%; }
 }
 
+/* Send Offer Button (header) */
+.dev-profile-offer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    margin-top: var(--spacing-md);
+}
+
+.dev-profile-offer-link:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: #ffffff;
+}
+
 /* Stats Grid */
 .dev-profile-stats {
     display: flex;

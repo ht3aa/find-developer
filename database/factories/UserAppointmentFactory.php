@@ -34,7 +34,7 @@ class UserAppointmentFactory extends Factory
 
         return [
             'user_id' => User::factory()->state([
-                'user_type' => UserType::CLIENT,
+                'user_type' => UserType::DEVELOPER,
             ]),
             'developer_id' => Developer::factory(),
             'user_service_id' => fake()->boolean(60) ? UserService::factory() : null,
@@ -49,7 +49,7 @@ class UserAppointmentFactory extends Factory
      */
     public function pending(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => AppointmentStatus::PENDING,
             'start_datetime' => null,
         ]);
@@ -60,7 +60,7 @@ class UserAppointmentFactory extends Factory
      */
     public function confirmed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => AppointmentStatus::CONFIRMED,
             'start_datetime' => fake()->dateTimeBetween('now', '+2 months'),
         ]);
@@ -71,7 +71,7 @@ class UserAppointmentFactory extends Factory
      */
     public function completed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => AppointmentStatus::COMPLETED,
             'start_datetime' => fake()->dateTimeBetween('-1 month', 'now'),
         ]);
@@ -82,7 +82,7 @@ class UserAppointmentFactory extends Factory
      */
     public function cancelled(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => AppointmentStatus::CANCELLED,
             'start_datetime' => fake()->boolean(50) ? fake()->dateTimeBetween('-1 month', 'now') : null,
         ]);
@@ -93,7 +93,7 @@ class UserAppointmentFactory extends Factory
      */
     public function withStartDatetime(\DateTime $datetime): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'start_datetime' => $datetime,
             'status' => AppointmentStatus::CONFIRMED,
         ]);

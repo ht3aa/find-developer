@@ -114,6 +114,11 @@ class Developer extends Model
         return $this->hasMany(DeveloperRecommendation::class, 'recommended_id');
     }
 
+    public function offers(): HasMany
+    {
+        return $this->hasMany(DeveloperOffer::class);
+    }
+
     public function experienceTasks(): BelongsToMany
     {
         return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')

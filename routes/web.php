@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Pages\CompanyJobRegistration;
+use App\Filament\Pages\DeveloperOffer;
 use App\Filament\Pages\DeveloperRecommendation;
 use App\Filament\Pages\DeveloperRegistration;
 use App\Http\Controllers\DeveloperProfileController;
@@ -54,7 +55,7 @@ Route::get('/charts', function () {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
-    return response("User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml'), 200)
+    return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 
@@ -76,3 +77,8 @@ Route::get('/developer/login', function () {
 Route::get('/developer/{developer}/recommend', DeveloperRecommendation::class)
     ->middleware(['auth'])
     ->name('developer.recommend');
+
+// Developer Offer Routes (requires authentication)
+Route::get('/developer/{developerSlug}/offer', DeveloperOffer::class)
+    ->middleware(['auth'])
+    ->name('developer.offer');

@@ -187,15 +187,10 @@ class DeveloperRegistration extends SimplePage implements HasForms
             $developer->skills()->attach($skills);
         }
 
-        // Show success notification
-        Notification::make()
-            ->title('Registration Submitted Successfully!')
-            ->body('Your registration has been submitted and is pending approval. We\'ll review your profile soon!')
-            ->success()
-            ->send();
-
-        // Reset form
-        $this->form->fill();
+        session()->flash('home_notification', [
+            'title' => 'Registration Submitted Successfully!',
+            'body' => 'Your registration has been submitted and is pending approval. We\'ll review your profile soon!',
+        ]);
 
         $this->redirect(route('home'));
     }

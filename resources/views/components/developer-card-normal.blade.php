@@ -294,10 +294,10 @@
 
     </div>
 
-    <!-- View Profile Button -->
+    <!-- View Profile & Send Offer Buttons -->
     @if($developer->slug)
-    <div class="view-profile-section" style="margin-top: 0.5rem;">
-        <a href="{{ route('developer.profile', $developer->slug) }}" class="dev-card-profile-link">
+    <div class="view-profile-section" style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+        <a href="{{ route('developer.profile', $developer->slug) }}" class="dev-card-profile-link" style="flex: 1;">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -306,6 +306,23 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </a>
+        @auth
+        @if(auth()->user()->isHR() || auth()->user()->isSuperAdmin())
+        <a href="{{ route('developer.offer', $developer->slug) }}" class="dev-card-offer-link" style="flex: 1;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Send Offer
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+        @else
+        <a class="dev-card-offer-link" style="flex: 0.5;" title="Login as HR to send an offer">
+            Offer by HR only
+        </a>
+        @endif
+        @endauth
     </div>
     @endif
 </div>
