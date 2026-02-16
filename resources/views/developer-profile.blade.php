@@ -215,12 +215,8 @@
                                 $childRoles = $developer->companies->where('parent_id', $company->id)->sortByDesc('start_date');
                                 $hasMultipleRoles = $childRoles->count() > 0;
                                 $allRoles = collect([$company])->merge($childRoles)->sortByDesc('start_date');
-                                $earliest = $allRoles->min('start_date');
-                                $latest = $company->is_current ? now() : $allRoles->max(fn($r) => $r->end_date ?? $r->start_date);
-                                $totalMonths = $earliest->diffInMonths($latest);
-                                $totalYears = intdiv($totalMonths, 12);
-                                $totalRemMonths = $totalMonths % 12;
-                                $totalDuration = ($totalYears ? $totalYears . ' yr' . ($totalYears > 1 ? 's' : '') : '') . ($totalRemMonths ? ' ' . $totalRemMonths . ' mo' . ($totalRemMonths > 1 ? 's' : '') : '');
+                                $totalDurationInMonths = round($allRoles->sum(fn($role) => $role->start_date->diffInMonths($role->end_date ?? now())));
+                                $totalDuration = \Carbon\CarbonInterval::months($totalDurationInMonths)->cascade()->forHumans();
                             @endphp
                             <div class="dev-profile-company-card">
                                 {{-- Company header with logo --}}
@@ -247,7 +243,7 @@
                                                 $roleMonths = $role->start_date->diffInMonths($roleEnd);
                                                 $roleYears = intdiv($roleMonths, 12);
                                                 $roleRemMonths = $roleMonths % 12;
-                                                $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                                                $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleYears && $roleRemMonths ? ' and ' : '') . ($roleRemMonths ? $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
                                             @endphp
                                             <div class="dev-profile-role-item">
                                                 <div class="dev-profile-role-dot-col">
@@ -277,7 +273,7 @@
                                         $roleMonths = $company->start_date->diffInMonths($roleEnd);
                                         $roleYears = intdiv($roleMonths, 12);
                                         $roleRemMonths = $roleMonths % 12;
-                                        $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleRemMonths ? ' ' . $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
+                                        $roleDuration = ($roleYears ? $roleYears . ' yr' . ($roleYears > 1 ? 's' : '') : '') . ($roleYears && $roleRemMonths ? ' and ' : '') . ($roleRemMonths ? $roleRemMonths . ' mo' . ($roleRemMonths > 1 ? 's' : '') : '');
                                     @endphp
                                     <div class="dev-profile-single-role">
                                         <div class="dev-profile-role-title">{{ $company->jobTitle?->name }}</div>
