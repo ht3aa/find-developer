@@ -131,12 +131,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
-                @else
+                @endif
+                @endauth
+                @guest
                 <a class="dev-profile-offer-link dev-profile-offer-link-disabled" title="Login as HR to send an offer">
                     Only HR user can send an offer
                 </a>
-                @endif
-                @endauth
+                @endguest
         </div>
 
         <!-- Main Content Grid -->
