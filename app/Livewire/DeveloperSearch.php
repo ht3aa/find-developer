@@ -172,6 +172,7 @@ class DeveloperSearch extends Component implements HasActions, HasSchemas
                                         'linkedin_url' => 'Has LinkedIn URL',
                                         'github_url' => 'Has GitHub URL',
                                         'portfolio_url' => 'Has Portfolio URL',
+                                        'cv_path' => 'Has CV',
                                     ])
                                     ->multiple()
                                     ->searchable()
