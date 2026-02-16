@@ -145,6 +145,18 @@
     color: #ffffff;
 }
 
+.dev-profile-offer-link-disabled {
+    color: var(--color-primary);
+    background: transparent;
+    border-color: var(--color-primary);
+}
+
+.dev-profile-offer-link-disabled:hover {
+    background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
 /* Stats Grid */
 .dev-profile-stats {
     display: flex;

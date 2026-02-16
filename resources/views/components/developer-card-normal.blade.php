@@ -318,7 +318,7 @@
             </svg>
         </a>
         @else
-        <a class="dev-card-offer-link" style="flex: 0.5;" title="Login as HR to send an offer">
+        <a class="dev-card-offer-link dev-card-offer-link-disabled" style="flex: 0.5;" title="Login as HR to send an offer">
             Offer by HR only
         </a>
         @endif

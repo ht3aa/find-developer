@@ -132,7 +132,7 @@
                     </svg>
                 </a>
                 @else
-                <a class="dev-profile-offer-link" title="Login as HR to send an offer">
+                <a class="dev-profile-offer-link dev-profile-offer-link-disabled" title="Login as HR to send an offer">
                     Only HR user can send an offer
                 </a>
                 @endif
