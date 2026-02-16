@@ -3987,6 +3987,43 @@ html.dark .dark-mode-icon.moon-icon {
     gap: 0.6rem;
 }
 
+.dev-card-offer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    margin-top: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    width: 100%;
+    justify-content: center;
+}
+
+.dev-card-offer-link:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: #ffffff;
+    gap: 0.6rem;
+}
+
+.dev-card-offer-link-disabled {
+    color: var(--color-primary);
+    background: transparent;
+    border-color: var(--color-primary);
+}
+
+.dev-card-offer-link-disabled:hover {
+    background: rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
 /* Developer card clickable name */
 .developer-name-link {
     color: inherit;

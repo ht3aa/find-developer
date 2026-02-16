@@ -12,6 +12,6 @@ class Login extends FilamentLogin
     {
         $email = config('app.contact_email');
 
-        return new HtmlString('<p class="text-sm text-center text-gray-500">Contact the admin to get access to the admin panel, email: <a class="text-blue-500 hover:text-blue-700" href="mailto:'.$email.'">'.$email.'</a></p>');
+        return new HtmlString('<p class="text-sm text-center text-gray-500">If you are a developer or a HR manager, contact the admin in order to create the user for you and get access to the admin panel, email: <a class="text-blue-500 hover:text-blue-700" href="mailto:' . $email . '">' . $email . '</a></p>');
     }
 }

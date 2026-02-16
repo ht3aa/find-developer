@@ -137,12 +137,10 @@ class DeveloperRecommendation extends SimplePage implements HasForms
             'status' => RecommendationStatus::PENDING,
         ]);
 
-        // Show success notification
-        Notification::make()
-            ->title('Recommendation Submitted!')
-            ->body('Your recommendation has been submitted and is pending approval. Thank you for helping the community!')
-            ->success()
-            ->send();
+        session()->flash('home_notification', [
+            'title' => 'Recommendation Submitted!',
+            'body' => 'Your recommendation has been submitted and is pending approval. Thank you for helping the community!',
+        ]);
 
         $this->redirect(route('home'));
     }

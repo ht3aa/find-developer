@@ -15,13 +15,13 @@ class UserServicesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create some CLIENT users first if they don't exist
-        $clients = User::where('user_type', UserType::CLIENT)->get();
+        // Create some DEVELOPER users first if they don't exist (developers offer services)
+        $clients = User::where('user_type', UserType::DEVELOPER)->limit(5)->get();
 
         if ($clients->isEmpty()) {
-            // Create 5 client users
+            // Create 5 developer users
             $clients = User::factory(5)->create([
-                'user_type' => UserType::CLIENT,
+                'user_type' => UserType::DEVELOPER,
             ]);
         }
 
@@ -119,7 +119,7 @@ class UserServicesSeeder extends Seeder
                 UserService::create([
                     'user_id' => $client->id,
                     'name' => $serviceData['name'],
-                    'slug' => \Illuminate\Support\Str::slug($serviceData['name']),
+                    'slug' => \Illuminate\Support\Str::slug($serviceData['name']) . '-' . $client->id . '-' . uniqid(),
                     'description' => $serviceData['description'],
                     'price' => $serviceData['price'],
                     'price_currency' => $serviceData['price_currency'],

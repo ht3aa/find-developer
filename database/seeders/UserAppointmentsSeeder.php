@@ -18,7 +18,7 @@ class UserAppointmentsSeeder extends Seeder
     public function run(): void
     {
         // Get existing clients and developers
-        $clients = User::where('user_type', UserType::CLIENT)->get();
+        $clients = User::where('user_type', UserType::DEVELOPER)->get();
         $developers = Developer::all();
         $services = UserService::all();
 
