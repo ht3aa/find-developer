@@ -119,6 +119,11 @@ class Developer extends Model
         return $this->hasMany(DeveloperOffer::class);
     }
 
+    public function blogs(): HasMany
+    {
+        return $this->hasMany(DeveloperBlog::class);
+    }
+
     public function experienceTasks(): BelongsToMany
     {
         return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')
