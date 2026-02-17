@@ -49,7 +49,7 @@
                     <article class="blog-card">
                         @if($blog->featured_image)
                             <div class="blog-image-wrapper">
-                                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}" class="blog-image">
+                                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}" class="blog-image" loading="lazy">
                             </div>
                         @endif
                         

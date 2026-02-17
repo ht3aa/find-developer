@@ -29,7 +29,7 @@ class DeveloperBlogForm
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->required()
@@ -45,6 +45,7 @@ class DeveloperBlogForm
                             ->label('Featured Image')
                             ->image()
                             ->imageEditor()
+                            ->maxSize(1024)
                             ->directory('blog-images')
                             ->columnSpanFull(),
 
@@ -68,7 +69,7 @@ class DeveloperBlogForm
                                     ->options(BlogStatus::class)
                                     ->default(BlogStatus::DRAFT)
                                     ->required()
-                                    ->hidden(fn () => ! auth()->user()->isSuperAdmin()),
+                                    ->hidden(fn() => ! auth()->user()->isSuperAdmin()),
 
                             ]),
                     ]),
