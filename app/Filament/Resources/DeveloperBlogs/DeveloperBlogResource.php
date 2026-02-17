@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DeveloperBlogs;
 
+use App\Enums\BlogStatus;
 use App\Filament\Resources\DeveloperBlogs\Pages\CreateDeveloperBlog;
 use App\Filament\Resources\DeveloperBlogs\Pages\EditDeveloperBlog;
 use App\Filament\Resources\DeveloperBlogs\Pages\ListDeveloperBlogs;
@@ -37,6 +38,15 @@ class DeveloperBlogResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return parent::getEloquentQuery()->where('status', BlogStatus::DRAFT)->count();
+        }
+
+        return null;
     }
 
     public static function getPages(): array
