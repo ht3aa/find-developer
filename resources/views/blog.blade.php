@@ -52,7 +52,7 @@
         <!-- Featured Image -->
         @if($blog->featured_image)
             <div class="blog-featured-image">
-                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}">
+                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}" loading="lazy">
             </div>
         @endif
 
@@ -104,7 +104,7 @@
                         @if($relatedBlog->featured_image)
                             <div class="blog-related-image">
                                 <a href="{{ route('blog.show', $relatedBlog->slug) }}">
-                                    <img src="{{ $relatedBlog->feature_image_url }}" alt="{{ $relatedBlog->title }}">
+                                    <img src="{{ $relatedBlog->feature_image_url }}" alt="{{ $relatedBlog->title }}" loading="lazy">
                                 </a>
                             </div>
                         @endif
