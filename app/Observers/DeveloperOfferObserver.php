@@ -20,7 +20,7 @@ class DeveloperOfferObserver
             $developerMessage = "Hello {$offer->developer->name},\n\n";
             $developerMessage .= "Great news! You have received an approved offer.\n\n";
             $developerMessage .= "Company: {$offer->company_name}\n";
-            $developerMessage .= "Position: ".$offer->jobTitle->name."\n";
+            $developerMessage .= 'Position: '.$offer->jobTitle->name."\n";
             if ($offer->salary_range) {
                 $developerMessage .= "Salary Range: {$offer->salary_range}\n";
             }

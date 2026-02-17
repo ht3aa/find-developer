@@ -4,6 +4,7 @@ use App\Filament\Pages\CompanyJobRegistration;
 use App\Filament\Pages\DeveloperOffer;
 use App\Filament\Pages\DeveloperRecommendation;
 use App\Filament\Pages\DeveloperRegistration;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DeveloperProjectsController;
 use App\Http\Controllers\DeveloperRecommendationsViewController;
@@ -52,10 +53,17 @@ Route::get('/charts', function () {
     return view('charts');
 })->name('charts');
 
+Route::get('/blogs', function () {
+    return view('blogs');
+})->name('blogs');
+
+Route::get('/blogs/{slug}', [BlogController::class, 'show'])
+    ->name('blog.show');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
-    return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
+    return response("User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 

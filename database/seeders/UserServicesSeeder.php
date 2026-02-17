@@ -119,7 +119,7 @@ class UserServicesSeeder extends Seeder
                 UserService::create([
                     'user_id' => $client->id,
                     'name' => $serviceData['name'],
-                    'slug' => \Illuminate\Support\Str::slug($serviceData['name']) . '-' . $client->id . '-' . uniqid(),
+                    'slug' => \Illuminate\Support\Str::slug($serviceData['name']).'-'.$client->id.'-'.uniqid(),
                     'description' => $serviceData['description'],
                     'price' => $serviceData['price'],
                     'price_currency' => $serviceData['price_currency'],

@@ -119,6 +119,11 @@ class Developer extends Model
         return $this->hasMany(DeveloperOffer::class);
     }
 
+    public function blogs(): HasMany
+    {
+        return $this->hasMany(DeveloperBlog::class);
+    }
+
     public function experienceTasks(): BelongsToMany
     {
         return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')
@@ -128,7 +133,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addHours(5)) : null,
+            get: fn () => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addHours(5)) : null,
         );
     }
 
