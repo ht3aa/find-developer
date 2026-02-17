@@ -79,9 +79,9 @@
                         </h2>
 
                             @if($blog->excerpt)
-                                <p class="blog-excerpt">{{ $blog->excerpt }}</p>
+                                <p class="blog-excerpt">{{ Str::limit($blog->excerpt, 150)  }}...</p>
                             @else
-                                <p class="blog-excerpt">{{ Str::limit(strip_tags($blog->content), 150) }}</p>
+                                <p class="blog-excerpt">{{ Str::limit(strip_tags($blog->content), 150) }}...</p>
                             @endif
 
                         <div class="blog-footer">

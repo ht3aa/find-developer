@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\BlogStatus;
 use App\Models\Scopes\DeveloperScope;
+use App\Observers\DeveloperBlogObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 
 #[ScopedBy([DeveloperScope::class])]
+#[ObservedBy(DeveloperBlogObserver::class)]
 class DeveloperBlog extends Model
 {
     use HasFactory, LogsActivity;
