@@ -5,15 +5,14 @@ namespace App\Filament\Pages;
 use App\Enums\AvailabilityType;
 use App\Enums\OfferStatus;
 use App\Models\Developer;
-use App\Models\JobTitle;
 use App\Models\DeveloperOffer as ModelsDeveloperOffer;
+use App\Models\JobTitle;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -173,7 +172,7 @@ class DeveloperOffer extends SimplePage implements HasForms
 
     public function getHeading(): string
     {
-        return 'Send Offer to ' . ($this->targetDeveloper?->name ?? 'Developer');
+        return 'Send Offer to '.($this->targetDeveloper?->name ?? 'Developer');
     }
 
     public function getSubheading(): ?string

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\DeveloperBlogs\Schemas;
 
 use App\Enums\BlogStatus;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -30,7 +29,7 @@ class DeveloperBlogForm
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->required()
@@ -63,7 +62,6 @@ class DeveloperBlogForm
                             ->disableToolbarButtons(['attachFiles'])
                             ->columnSpanFull(),
 
-
                         Grid::make(2)
                             ->schema([
                                 Select::make('status')
@@ -71,7 +69,7 @@ class DeveloperBlogForm
                                     ->options(BlogStatus::class)
                                     ->default(BlogStatus::DRAFT)
                                     ->required()
-                                    ->hidden(fn() => !auth()->user()->isSuperAdmin()),
+                                    ->hidden(fn () => ! auth()->user()->isSuperAdmin()),
 
                             ]),
                     ]),
