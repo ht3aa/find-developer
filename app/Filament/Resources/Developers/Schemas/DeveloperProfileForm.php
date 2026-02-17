@@ -139,8 +139,8 @@ class DeveloperProfileForm
                             ->label('CV / Resume (PDF only)')
                             ->acceptedFileTypes(['application/pdf'])
                             ->directory('developer-cvs')
-                            ->maxSize(1024)
-                            ->helperText('Upload a PDF version of your CV. Max 1MP.'),
+                            ->maxSize(5120)
+                            ->helperText('Upload a PDF version of your CV. Max 5MB.'),
                     ]),
             ]);
     }
