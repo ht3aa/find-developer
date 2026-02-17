@@ -139,7 +139,7 @@ class DeveloperForm
                             ->columnSpanFull(),
 
                         Select::make('badges')
-                            ->relationship('badges', 'name', fn ($query) => $query->where('is_active', true))
+                            ->relationship('badges', 'name', fn($query) => $query->where('is_active', true))
                             ->multiple()
                             ->searchable()
                             ->preload()
@@ -173,8 +173,8 @@ class DeveloperForm
                             ->label('CV / Resume (PDF only)')
                             ->acceptedFileTypes(['application/pdf'])
                             ->directory('developer-cvs')
-                            ->maxSize(1024)
-                            ->helperText('Upload a PDF version of the developer\'s CV. Max 1MP.'),
+                            ->maxSize(1024 * 5)
+                            ->helperText('Upload a PDF version of the developer\'s CV. Max 5MB.'),
                     ]),
             ]);
     }
