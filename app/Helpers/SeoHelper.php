@@ -70,6 +70,8 @@ class SeoHelper
             '@type' => 'Organization',
             'name' => 'FindDeveloper',
             'url' => url('/'),
+            'logo' => asset('web-app-manifest-192x192.png'),
+            'image' => asset('web-app-manifest-512x512.png'),
             'description' => 'A platform connecting skilled developers with clients and opportunities in Iraq',
             'contactPoint' => [
                 '@type' => 'ContactPoint',

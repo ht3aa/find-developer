@@ -67,11 +67,12 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <!-- Favicon - PNG/ICO first for Google Search (they prefer 48x48+ PNG/ICO over SVG) -->
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('web-app-manifest-192x192.png') }}">
         <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
