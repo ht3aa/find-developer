@@ -5,7 +5,7 @@
 @section('seo_description', $blog->excerpt ?: Str::limit(strip_tags($blog->content), 160))
 @section('seo_keywords', 'developer blog, ' . $blog->developer->name . ', ' . ($blog->developer->jobTitle ? $blog->developer->jobTitle->name : ''))
 @if($blog->featured_image)
-    @section('seo_image', \Illuminate\Support\Facades\Storage::url($blog->featured_image))
+    @section('seo_image', $blog->feature_image_url)
 @endif
 
 @section('content')
@@ -52,7 +52,7 @@
         <!-- Featured Image -->
         @if($blog->featured_image)
             <div class="blog-featured-image">
-                <img src="{{ \Illuminate\Support\Facades\Storage::url($blog->featured_image) }}" alt="{{ $blog->title }}">
+                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}">
             </div>
         @endif
 
@@ -104,7 +104,7 @@
                         @if($relatedBlog->featured_image)
                             <div class="blog-related-image">
                                 <a href="{{ route('blog.show', $relatedBlog->slug) }}">
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($relatedBlog->featured_image) }}" alt="{{ $relatedBlog->title }}">
+                                    <img src="{{ $relatedBlog->feature_image_url }}" alt="{{ $relatedBlog->title }}">
                                 </a>
                             </div>
                         @endif

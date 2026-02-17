@@ -47,7 +47,6 @@ class DeveloperBlogForm
                             ->image()
                             ->imageEditor()
                             ->directory('blog-images')
-                            ->visibility('public')
                             ->columnSpanFull(),
 
                         Textarea::make('excerpt')
