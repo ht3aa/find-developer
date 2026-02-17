@@ -141,7 +141,6 @@
                                         @if($recommendation->recommender->portfolio_url)
                                             <a href="{{ $recommendation->recommender->portfolio_url }}" 
                                                target="_blank" 
-                                           rel="noopener noreferrer"
                                                rel="noopener noreferrer"
                                                class="recommender-contact-link"
                                                title="Portfolio">
@@ -154,7 +153,6 @@
                                         @if($recommendation->recommender->linkedin_url)
                                             <a href="{{ $recommendation->recommender->linkedin_url }}" 
                                                target="_blank" 
-                                           rel="noopener noreferrer"
                                                rel="noopener noreferrer"
                                                class="recommender-contact-link"
                                                title="LinkedIn">
@@ -167,7 +165,6 @@
                                         @if($recommendation->recommender->github_url)
                                             <a href="{{ $recommendation->recommender->github_url }}" 
                                                target="_blank" 
-                                           rel="noopener noreferrer"
                                                rel="noopener noreferrer"
                                                class="recommender-contact-link"
                                                title="GitHub">
