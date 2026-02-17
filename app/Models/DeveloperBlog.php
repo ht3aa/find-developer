@@ -7,14 +7,14 @@ use App\Models\Scopes\DeveloperScope;
 use App\Observers\DeveloperBlogObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Storage;
 
 #[ScopedBy([DeveloperScope::class])]
 #[ObservedBy(DeveloperBlogObserver::class)]
@@ -58,7 +58,7 @@ class DeveloperBlog extends Model
     public function featureImageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->featured_image ? Storage::disk('s3')->temporaryUrl($this->featured_image, now()->addHours(5)) : null,
+            get: fn () => $this->featured_image ? Storage::disk('s3')->temporaryUrl($this->featured_image, now()->addHours(5)) : null,
         );
     }
 
