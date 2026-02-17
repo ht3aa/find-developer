@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 #[ScopedBy([DeveloperScope::class])]
 class DeveloperBlog extends Model
@@ -48,6 +50,13 @@ class DeveloperBlog extends Model
                 $blog->slug = Str::slug($blog->title);
             }
         });
+    }
+
+    public function featureImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->featured_image ? Storage::disk('s3')->temporaryUrl($this->featured_image, now()->addHours(5)) : null,
+        );
     }
 
     public function developer(): BelongsTo
