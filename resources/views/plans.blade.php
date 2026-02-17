@@ -259,6 +259,7 @@
                         </ul>
                         <a href="mailto:{{ config('app.contact_email') }}?subject=HR%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20HR%20plan" 
                            target="_blank" 
+                           rel="noopener noreferrer"
                            class="pricing-button pricing-button-hr" 
                            style="display: block; width: 100%; text-align: center; padding: 1rem 2rem; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); color: white; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; text-decoration: none; margin-top: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
                             Contact Us
@@ -308,6 +309,7 @@
                         </ul>
                         <a href="mailto:{{ config('app.contact_email') }}?subject=Basic%20Portfolio%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Basic%20Portfolio%20plan" 
                            target="_blank" 
+                           rel="noopener noreferrer"
                            class="pricing-button pricing-button-student-basic">
                             Contact Us
                         </a>
@@ -353,6 +355,7 @@
                         </ul>
                         <a href="mailto:{{ config('app.contact_email') }}?subject=Standard%20Portfolio%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Standard%20Portfolio%20plan" 
                            target="_blank" 
+                           rel="noopener noreferrer"
                            class="pricing-button pricing-button-student-standard">
                             Contact Us
                         </a>
@@ -398,6 +401,7 @@
                         </ul>
                         <a href="mailto:{{ config('app.contact_email') }}?subject=Premium%20Portfolio%20Plan%20Subscription&body=Hello,%20I%20would%20like%20to%20subscribe%20to%20the%20Premium%20Portfolio%20plan" 
                            target="_blank" 
+                           rel="noopener noreferrer"
                            class="pricing-button pricing-button-student-premium">
                             Contact Us
                         </a>
