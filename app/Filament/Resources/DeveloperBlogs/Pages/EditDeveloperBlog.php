@@ -6,7 +6,6 @@ use App\Enums\BlogStatus;
 use App\Filament\Resources\DeveloperBlogs\DeveloperBlogResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Contracts\Auth\Access\Authorizable;
 
 class EditDeveloperBlog extends EditRecord
 {

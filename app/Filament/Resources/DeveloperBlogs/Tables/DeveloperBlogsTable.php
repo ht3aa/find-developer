@@ -39,13 +39,13 @@ class DeveloperBlogsTable
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->hidden(fn() => !auth()->user()->isSuperAdmin())
+                    ->hidden(fn () => ! auth()->user()->isSuperAdmin())
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
                     ->sortable()
-                    ->hidden(fn() => !auth()->user()->isSuperAdmin())
+                    ->hidden(fn () => ! auth()->user()->isSuperAdmin())
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('created_at')

@@ -33,7 +33,7 @@ class DeveloperFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name) . '-' . Str::random(6),
+            'slug' => Str::slug($name).'-'.Str::random(6),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->boolean(70) ? fake()->phoneNumber() : null,
             'user_id' => User::factory()->state(['user_type' => UserType::DEVELOPER]),
@@ -41,8 +41,8 @@ class DeveloperFactory extends Factory
             'years_of_experience' => fake()->numberBetween(0, 20),
             'bio' => fake()->boolean(80) ? fake()->paragraph(3) : null,
             'portfolio_url' => fake()->boolean(40) ? fake()->url() : null,
-            'github_url' => fake()->boolean(50) ? 'https://github.com/' . fake()->userName() : null,
-            'linkedin_url' => fake()->boolean(40) ? 'https://linkedin.com/in/' . fake()->userName() : null,
+            'github_url' => fake()->boolean(50) ? 'https://github.com/'.fake()->userName() : null,
+            'linkedin_url' => fake()->boolean(40) ? 'https://linkedin.com/in/'.fake()->userName() : null,
             'cv_path' => null,
             'location' => fake()->randomElement(WorldGovernorate::cases()),
             'expected_salary_from' => fake()->boolean(60) ? fake()->numberBetween(500000, 2000000) : null,

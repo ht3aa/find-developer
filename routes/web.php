@@ -63,7 +63,7 @@ Route::get('/blogs/{slug}', [BlogController::class, 'show'])
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/robots.txt', function () {
-    return response("User-agent: *\nAllow: /\n\nSitemap: " . url('/sitemap.xml'), 200)
+    return response("User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml'), 200)
         ->header('Content-Type', 'text/plain');
 })->name('robots');
 

@@ -133,7 +133,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addHours(5)) : null,
+            get: fn () => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addHours(5)) : null,
         );
     }
 
