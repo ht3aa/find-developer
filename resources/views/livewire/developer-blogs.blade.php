@@ -49,7 +49,17 @@
                     <article class="blog-card">
                         @if($blog->featured_image)
                             <div class="blog-image-wrapper">
-                                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}" class="blog-image" loading="lazy">
+                                <img 
+                                    src="{{ $blog->feature_image_url }}" 
+                                    alt="{{ $blog->title }}" 
+                                    class="blog-image" 
+                                    loading="lazy"
+                                    decoding="async"
+                                    fetchpriority="low"
+                                    width="400"
+                                    height="200"
+                                    style="aspect-ratio: 2 / 1;"
+                                >
                             </div>
                         @endif
                         

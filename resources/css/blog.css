@@ -186,12 +186,20 @@
     margin-bottom: var(--spacing-xl);
     border-radius: var(--radius-xl);
     overflow: hidden;
+    position: relative;
+    contain: layout;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-tertiary);
 }
 
 .blog-featured-image img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     display: block;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .blog-detail-content {
@@ -390,12 +398,19 @@
     height: 180px;
     overflow: hidden;
     background: var(--bg-tertiary);
+    position: relative;
+    contain: layout;
+    aspect-ratio: 20 / 9;
 }
 
 .blog-related-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .blog-related-content {

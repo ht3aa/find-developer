@@ -53,7 +53,16 @@
         <!-- Featured Image -->
         @if($blog->featured_image)
             <div class="blog-featured-image">
-                <img src="{{ $blog->feature_image_url }}" alt="{{ $blog->title }}" loading="lazy">
+                <img 
+                    src="{{ $blog->feature_image_url }}" 
+                    alt="{{ $blog->title }}" 
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
+                    width="900"
+                    height="506"
+                    style="aspect-ratio: 16 / 9;"
+                >
             </div>
         @endif
 
@@ -108,7 +117,16 @@
                         @if($relatedBlog->featured_image)
                             <div class="blog-related-image">
                                 <a href="{{ route('blog.show', $relatedBlog->slug) }}">
-                                    <img src="{{ $relatedBlog->feature_image_url }}" alt="{{ $relatedBlog->title }}" loading="lazy">
+                                    <img 
+                                        src="{{ $relatedBlog->feature_image_url }}" 
+                                        alt="{{ $relatedBlog->title }}" 
+                                        loading="lazy"
+                                        decoding="async"
+                                        fetchpriority="low"
+                                        width="400"
+                                        height="180"
+                                        style="aspect-ratio: 20 / 9;"
+                                    >
                                 </a>
                             </div>
                         @endif
