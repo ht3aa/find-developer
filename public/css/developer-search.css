@@ -2059,35 +2059,17 @@ button.pagination-link {
 
 /* Navigation (from layout) */
 .navbar {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
     z-index: 50;
     background-color: var(--bg-primary);
     border-bottom: 1px solid var(--border-primary);
-    transition: all 0.3s ease-out;
-}
-
-.navbar.scrolled {
-    background: transparent;
-    border-bottom: none;
-    box-shadow: none;
-    padding-top: 0.75rem;
-}
-
-.navbar.scrolled .navbar-container {
-    max-width: 1300px;
-    padding: 0 5rem;
-    background-color: var(--bg-primary);
-    backdrop-filter: blur(12px);
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-    border: 1px solid var(--border-primary);
 }
 
 .navbar-spacer {
-    height: 160px;
+    height: 0;
 }
 
 .navbar-container {
@@ -2099,7 +2081,6 @@ button.pagination-link {
     align-items: center;
     height: 70px;
     position: relative;
-    transition: all 0.3s ease-out;
 }
 
 .navbar-brand-group {
@@ -2150,7 +2131,6 @@ html.dark .navbar-brand-logo-light {
     align-items: center;
     justify-content: center;
     color: var(--text-secondary);
-    transition: all var(--transition-base);
 }
 
 .navbar-github-link:hover {
@@ -2183,7 +2163,6 @@ html.dark .navbar-github-link:hover {
     border: 2px solid var(--color-gray-300);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all var(--transition-base);
     z-index: 1000;
     padding: 0;
 }
@@ -2208,7 +2187,6 @@ html.dark .navbar-github-link:hover {
     height: 2px;
     background: var(--color-gray-700);
     border-radius: 2px;
-    transition: all var(--transition-base);
     transform-origin: center;
 }
 
@@ -2253,7 +2231,6 @@ html.dark .navbar-github-link:hover {
     border-radius: var(--radius-md);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    transition: all var(--transition-base);
 }
 
 .navbar-link:hover {
@@ -2299,18 +2276,16 @@ html.dark .navbar-link-recommended.navbar-link-active .navbar-star-icon {
     color: white;
 }
 
-/* Recommended Link Shine Effect */
+/* Recommended Link */
 .navbar-link-recommended {
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradientShift 3s ease infinite;
     font-weight: 600;
     overflow: visible;
 }
@@ -2319,7 +2294,6 @@ html.dark .navbar-link-recommended.navbar-link-active .navbar-star-icon {
     width: 1rem;
     height: 1rem;
     color: #fbbf24;
-    animation: rotate 3s linear infinite;
     filter: drop-shadow(0 0 3px rgba(var(--premium-rgb), 0.8));
     flex-shrink: 0;
 }
@@ -2444,15 +2418,6 @@ html.dark .dark-mode-icon.moon-icon {
     border-bottom: 1px solid rgba(0, 136, 210, 0.2);
     padding: var(--spacing-md) 0;
     max-height: 100px;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
-}
-
-.navbar.scrolled .info-banner {
-    max-height: 0;
-    padding: 0;
-    overflow: hidden;
-    border: none;
-    opacity: 0;
 }
 
 .info-banner-container {
@@ -2484,34 +2449,22 @@ html.dark .dark-mode-icon.moon-icon {
     line-height: 1.5;
 }
 
-@keyframes marquee {
-    0%, 5% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-}
-
 @media (max-width: 768px) {
     .navbar-spacer {
-        height: 120px;
+        height: 0;
     }
 
     .info-banner {
         padding: var(--spacing-xs) 0;
-        max-height: 32px;
-        overflow: hidden;
     }
 
     .info-banner-container {
-        padding: 0 0 0 var(--spacing-lg);
-        overflow: hidden;
+        padding: 0 var(--spacing-lg);
     }
 
     .info-banner-content {
         flex-direction: row;
-        justify-content: flex-start;
         gap: var(--spacing-sm);
-        white-space: nowrap;
-        display: inline-flex;
-        animation: marquee 30s linear infinite;
     }
 
     .info-banner-text {
@@ -2531,15 +2484,6 @@ html.dark .dark-mode-icon.moon-icon {
     padding: var(--spacing-md) 0;
     position: relative;
     max-height: 100px;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
-}
-
-.navbar.scrolled .email-check-banner {
-    max-height: 0;
-    padding: 0;
-    overflow: hidden;
-    border: none;
-    opacity: 0;
 }
 
 .email-check-banner-container {
@@ -2579,22 +2523,15 @@ html.dark .dark-mode-icon.moon-icon {
 @media (max-width: 768px) {
     .email-check-banner {
         padding: var(--spacing-xs) 0;
-        max-height: 32px;
-        overflow: hidden;
     }
 
     .email-check-banner-container {
-        padding: 0 0 0 var(--spacing-lg);
-        overflow: hidden;
+        padding: 0 var(--spacing-lg);
     }
 
     .email-check-banner-content {
         flex-direction: row;
-        justify-content: flex-start;
         gap: var(--spacing-sm);
-        white-space: nowrap;
-        display: inline-flex;
-        animation: marquee 32s linear infinite;
     }
 
     .email-check-banner-text {
