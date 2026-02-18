@@ -7,6 +7,7 @@ use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
 use App\Enums\SubscriptionPlan;
 use App\Enums\WorldGovernorate;
+use App\Helpers\StorageHelper;
 use App\Models\Scopes\ApprovedScope;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -133,7 +133,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->cv_path ? Storage::disk('s3')->temporaryUrl($this->cv_path, now()->addHours(5)) : null,
+            get: fn () => StorageHelper::url($this->cv_path),
         );
     }
 
