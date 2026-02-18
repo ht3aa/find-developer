@@ -45,6 +45,7 @@
                         </svg>
                         {{ $blog->published_at->format('F d, Y') }}
                     </span>
+                    @livewire('blog-like-button', ['slug' => $blog->slug])
                 </div>
             </div>
         </header>
@@ -230,6 +231,82 @@
 .blog-meta-icon {
     width: 16px;
     height: 16px;
+}
+
+.blog-like-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.blog-like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: none;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--transition-base), border-color var(--transition-base), background var(--transition-base);
+}
+
+.blog-like-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.blog-like-btn--liked {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.blog-like-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.blog-like-count {
+    font-weight: 500;
+}
+
+.blog-like-wrapper--guest {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+}
+
+.blog-like-login-link {
+    margin-left: var(--spacing-xs);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+}
+
+.blog-like-login-link:hover {
+    text-decoration: underline;
+}
+
+.blog-like-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.blog-like-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-primary);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: blog-like-spin 0.6s linear infinite;
+}
+
+@keyframes blog-like-spin {
+    to { transform: rotate(360deg); }
 }
 
 .blog-featured-image {
