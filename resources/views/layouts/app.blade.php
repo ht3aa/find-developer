@@ -80,8 +80,6 @@
             @vite(['resources/css/blog.css'])
         @elseif(request()->routeIs('blogs'))
             @vite(['resources/css/blogs.css'])
-        @else
-            @vite(['resources/css/developer-search.css'])
         @endif
         @stack('styles')
 
