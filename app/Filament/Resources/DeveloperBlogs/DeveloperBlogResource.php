@@ -6,6 +6,7 @@ use App\Enums\BlogStatus;
 use App\Filament\Resources\DeveloperBlogs\Pages\CreateDeveloperBlog;
 use App\Filament\Resources\DeveloperBlogs\Pages\EditDeveloperBlog;
 use App\Filament\Resources\DeveloperBlogs\Pages\ListDeveloperBlogs;
+use App\Filament\Resources\DeveloperBlogs\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\DeveloperBlogs\Schemas\DeveloperBlogForm;
 use App\Filament\Resources\DeveloperBlogs\Tables\DeveloperBlogsTable;
 use App\Models\DeveloperBlog;
@@ -36,7 +37,7 @@ class DeveloperBlogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CommentsRelationManager::class,
         ];
     }
 
