@@ -37,11 +37,11 @@ class CommentsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('body')
                     ->limit(60)
                     ->wrap()
-                    ->tooltip(fn($record) => $record->body),
+                    ->tooltip(fn ($record) => $record->body),
 
                 Tables\Columns\TextColumn::make('parent_id')
                     ->label('Reply to')
-                    ->formatStateUsing(fn($state, $record) => $record->parent_id ? '#' . $record->parent_id : '—')
+                    ->formatStateUsing(fn ($state, $record) => $record->parent_id ? '#'.$record->parent_id : '—')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('status')
@@ -59,7 +59,7 @@ class CommentsRelationManager extends RelationManager
                         ->label('Approve')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->visible(fn($record) => $record->status !== BlogCommentStatus::APPROVED)
+                        ->visible(fn ($record) => $record->status !== BlogCommentStatus::APPROVED)
                         ->action(function ($record, Action $action) {
                             $record->update(['status' => BlogCommentStatus::APPROVED]);
                             $descendantIds = $record->getAllDescendantIds();
@@ -77,7 +77,7 @@ class CommentsRelationManager extends RelationManager
                         ->label('Reject')
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
-                        ->visible(fn($record) => $record->status !== BlogCommentStatus::REJECTED)
+                        ->visible(fn ($record) => $record->status !== BlogCommentStatus::REJECTED)
                         ->action(function ($record, Action $action) {
                             $record->update(['status' => BlogCommentStatus::REJECTED]);
                             $descendantIds = $record->getAllDescendantIds();
