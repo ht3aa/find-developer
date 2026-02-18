@@ -28,11 +28,11 @@ class DeveloperBlogs extends Component
             ->published()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('title', 'like', '%' . $this->search . '%')
-                        ->orWhere('excerpt', 'like', '%' . $this->search . '%')
+                    $q->where('title', 'like', '%'.$this->search.'%')
+                        ->orWhere('excerpt', 'like', '%'.$this->search.'%')
                         ->orWhereHas('developer', function ($developerQuery) {
-                            $developerQuery->where('name', 'like', '%' . $this->search . '%')
-                                ->orWhere('email', 'like', '%' . $this->search . '%');
+                            $developerQuery->where('name', 'like', '%'.$this->search.'%')
+                                ->orWhere('email', 'like', '%'.$this->search.'%');
                         });
                 });
             })
