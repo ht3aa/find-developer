@@ -1,14 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <script>
-            (function() {
-                var theme = localStorage.getItem('theme');
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                }
-            })();
-        </script>
+        <script>document.documentElement.classList.toggle('dark', localStorage.getItem('theme')==='dark');</script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -92,8 +85,6 @@
         @filamentStyles
 
         @livewireStyles
-
-        @stack('styles')
     </head>
     <body>
         <!-- Navigation -->
@@ -144,8 +135,7 @@
                     @auth
                         {{-- Dashboard --}}
                         <a href="{{ url('/admin') }}"
-                           class="navbar-link {{ request()->is('admin*') ? 'navbar-link-active' : '' }}"
-                           style="border: 1px solid var(--color-primary);"
+                           class="navbar-link navbar-link-outline {{ request()->is('admin*') ? 'navbar-link-active' : '' }}"
                            @click="mobileMenuOpen = false">
                             Dashboard
                         </a>
@@ -165,8 +155,7 @@
                     @else
                         {{-- Register --}}
                         <a href="{{ route('register') }}"
-                           class="navbar-link {{ request()->routeIs('register') ? 'navbar-link-active' : '' }}"
-                           style="border: 1px solid var(--color-primary);"
+                           class="navbar-link navbar-link-outline {{ request()->routeIs('register') ? 'navbar-link-active' : '' }}"
                            @click="mobileMenuOpen = false">
                             Register
                         </a>
@@ -190,7 +179,7 @@
                         </svg>
                         <p class="info-banner-text">
                             <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
-                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: underline; font-weight: 600; margin-left: 0.5rem;">Star on GitHub →</a>
+                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" class="info-banner-link">Star on GitHub →</a>
                         </p>
                     </div>
                 </div>
@@ -199,17 +188,17 @@
             <!-- Email Check Banner -->
             @guest
                 <div class="email-check-banner">
-                <div class="email-check-banner-container">
-                    <div class="email-check-banner-content">
-                        <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <p class="email-check-banner-text">
-                            <strong>Important:</strong> After registering as a developer, please check the email address you registered with. We will send important updates and login credentials to that email.
-                        </p>
+                    <div class="email-check-banner-container">
+                        <div class="email-check-banner-content">
+                            <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <p class="email-check-banner-text">
+                                <strong>Important:</strong> After registering as a developer, please check the email address you registered with. We will send important updates and login credentials to that email.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endguest
         </nav>
         <div class="navbar-spacer"></div>
@@ -245,18 +234,17 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    style="margin: 1rem auto; max-width: 42rem; padding: 1rem 1.25rem; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 0.5rem; color: var(--gray-900, #111827);"
                 >
-                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                        <svg style="flex-shrink: 0; width: 1.25rem; height: 1.25rem; color: rgb(34, 197, 94);" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="flash-notification-inner">
+                        <svg class="flash-notification-icon" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
-                        <div style="flex: 1;">
-                            <p style="margin: 0; font-weight: 600; font-size: 0.9375rem;">{{ session('home_notification')['title'] }}</p>
-                            <p style="margin: 0.25rem 0 0; font-size: 0.875rem; opacity: 0.9;">{{ session('home_notification')['body'] }}</p>
+                        <div class="flash-notification-body">
+                            <p class="flash-notification-title">{{ session('home_notification')['title'] }}</p>
+                            <p class="flash-notification-message">{{ session('home_notification')['body'] }}</p>
                         </div>
-                        <button type="button" @click="show = false" aria-label="Dismiss" style="flex-shrink: 0; padding: 0.25rem; background: none; border: none; cursor: pointer; opacity: 0.6;">
-                            <svg style="width: 1rem; height: 1rem;" fill="currentColor" viewBox="0 0 20 20">
+                        <button type="button" class="flash-notification-dismiss" @click="show = false" aria-label="Dismiss">
+                            <svg class="flash-notification-dismiss-icon" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>
