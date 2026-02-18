@@ -15,7 +15,7 @@ class StorageHelper
      * @param  \DateTimeInterface|\DateInterval|int|null  $expiration  Expiration time for temporary URL (default: 5 hours)
      * @return string|null
      */
-    public static function url(string $path, string $disk = 's3', $expiration = null): ?string
+    public static function url(?string $path, string $disk = 's3', $expiration = null): ?string
     {
         if (empty($path)) {
             return null;
