@@ -59,9 +59,6 @@
                     loading="eager"
                     decoding="async"
                     fetchpriority="high"
-                    width="900"
-                    height="506"
-                    style="aspect-ratio: 16 / 9;"
                 >
             </div>
         @endif

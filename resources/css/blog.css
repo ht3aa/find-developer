@@ -188,7 +188,6 @@
     overflow: hidden;
     position: relative;
     contain: layout;
-    aspect-ratio: 16 / 9;
     background: var(--bg-tertiary);
 }
 
