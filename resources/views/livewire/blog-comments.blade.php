@@ -38,7 +38,7 @@
                     <label for="comment-body">Comment <span class="required">*</span></label>
                     <textarea
                         id="comment-body"
-                        wire:model.blur="body"
+                        wire:model.defer="body"
                         rows="4"
                         maxlength="5000"
                         placeholder="Share your thoughts..."

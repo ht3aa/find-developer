@@ -77,8 +77,16 @@
         <!-- Scripts -->
         @vite(['resources/js/app.js', 'resources/css/filament/admin/theme.css'])
 
-        <!-- Custom CSS -->
-        <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
+        <!-- Base + Layout + page-specific CSS (from resources/css, copied to public in build) -->
+        <link href="{{ asset('css/base.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/layout.css') }}" rel="stylesheet">
+        @if(request()->routeIs('blog.show'))
+            <link href="{{ asset('css/blog.css') }}" rel="stylesheet">
+        @elseif(request()->routeIs('blogs'))
+            <link href="{{ asset('css/blogs.css') }}" rel="stylesheet">
+        @else
+            <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
+        @endif
         @stack('styles')
 
         <!-- Filament Styles -->

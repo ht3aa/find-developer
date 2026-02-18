@@ -44,7 +44,7 @@
                     <form wire:submit.prevent="storeReply({{ $comment->id }})" class="blog-comment-form blog-comment-reply-form">
                         <div class="blog-comment-form-group">
                             <textarea
-                                wire:model.blur="replyBody"
+                                wire:model.defer="replyBody"
                                 rows="3"
                                 maxlength="5000"
                                 placeholder="Write a reply..."
