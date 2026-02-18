@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BlogStatus;
+use App\Helpers\StorageHelper;
 use App\Models\Scopes\DeveloperScope;
 use App\Observers\DeveloperBlogObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -13,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Helpers\StorageHelper;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
