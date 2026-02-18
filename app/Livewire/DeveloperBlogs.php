@@ -23,6 +23,7 @@ class DeveloperBlogs extends Component
     public function render()
     {
         $blogs = DeveloperBlog::with(['developer', 'developer.jobTitle'])
+            ->withCount(['comments' => fn ($q) => $q->approved()])
             ->withoutGlobalScopes([DeveloperScope::class])
             ->published()
             ->when($this->search, function ($query) {

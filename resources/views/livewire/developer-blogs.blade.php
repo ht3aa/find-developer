@@ -85,6 +85,12 @@
                             @endif
 
                         <div class="blog-footer">
+                            <span class="blog-comments-count">
+                                <svg class="blog-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                {{ $blog->comments_count }} {{ Str::plural('comment', $blog->comments_count) }}
+                            </span>
                             <a href="{{ route('blog.show', $blog->slug) }}" class="blog-read-more">
                                 Read More
                                 <svg class="blog-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +228,8 @@
 }
 
 .blog-author,
-.blog-date {
+.blog-date,
+.blog-comments-count {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
@@ -265,9 +272,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-md);
     margin-top: auto;
     padding-top: var(--spacing-md);
     border-top: 1px solid var(--border-primary);
+}
+
+.blog-footer .blog-comments-count {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
 }
 
 .blog-read-more {

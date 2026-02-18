@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -65,6 +66,16 @@ class DeveloperBlog extends Model
     public function developer(): BelongsTo
     {
         return $this->belongsTo(Developer::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'developer_blog_id');
+    }
+
+    public function rootComments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'developer_blog_id')->whereNull('parent_id');
     }
 
     public function scopePublished($query)

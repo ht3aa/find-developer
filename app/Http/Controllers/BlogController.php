@@ -15,7 +15,6 @@ class BlogController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Get related blogs (same developer, excluding current blog)
         $relatedBlogs = DeveloperBlog::with(['developer', 'developer.jobTitle'])
             ->withoutGlobalScopes([DeveloperScope::class])
             ->published()
