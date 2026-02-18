@@ -6,7 +6,7 @@
 @section('seo_keywords', 'services, development services, HR services, professional services, consulting')
 
 @push('styles')
-<link href="{{ asset('css/services.css') }}" rel="stylesheet">
+@vite(['resources/css/services.css'])
 @endpush
 
 @section('content')

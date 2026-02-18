@@ -488,6 +488,6 @@
 </div>
 
 @push('styles')
-    <link href="{{ asset('css/developer-profile.css') }}" rel="stylesheet">
+    @vite(['resources/css/developer-profile.css'])
 @endpush
 @endsection

@@ -136,6 +136,6 @@
 </div>
 
 @push('styles')
-    <link href="{{ asset('css/developer-projects.css') }}" rel="stylesheet">
+    @vite(['resources/css/developer-projects.css'])
 @endpush
 @endsection

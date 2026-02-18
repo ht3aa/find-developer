@@ -75,17 +75,13 @@
 
 
         <!-- Scripts -->
-        @vite(['resources/js/app.js', 'resources/css/filament/admin/theme.css'])
-
-        <!-- Base + Layout + page-specific CSS (from resources/css, copied to public in build) -->
-        <link href="{{ asset('css/base.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/layout.css') }}" rel="stylesheet">
+        @vite(['resources/js/app.js', 'resources/css/app.css', 'resources/css/filament/admin/theme.css', 'resources/css/base.css', 'resources/css/layout.css'])
         @if(request()->routeIs('blog.show'))
-            <link href="{{ asset('css/blog.css') }}" rel="stylesheet">
+            @vite(['resources/css/blog.css'])
         @elseif(request()->routeIs('blogs'))
-            <link href="{{ asset('css/blogs.css') }}" rel="stylesheet">
+            @vite(['resources/css/blogs.css'])
         @else
-            <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
+            @vite(['resources/css/developer-search.css'])
         @endif
         @stack('styles')
 

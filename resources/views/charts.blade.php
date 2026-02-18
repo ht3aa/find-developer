@@ -6,7 +6,7 @@
 @section('seo_keywords', 'developer analytics, developer statistics, developer insights, job statistics, developer charts')
 
 @push('styles')
-<link href="{{ asset('css/charts.css') }}" rel="stylesheet">
+@vite(['resources/css/charts.css'])
 @endpush
 
 @section('content')

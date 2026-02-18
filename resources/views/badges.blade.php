@@ -6,7 +6,7 @@
 @section('seo_keywords', 'badges, developer badges, achievements, developer recognition, skill badges')
 
 @push('styles')
-<link href="{{ asset('css/badges.css') }}" rel="stylesheet">
+@vite(['resources/css/badges.css'])
 @endpush
 
 @section('content')
