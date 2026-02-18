@@ -53,6 +53,7 @@
                                     src="{{ $blog->feature_image_url }}" 
                                     alt="{{ $blog->title }}" 
                                     class="blog-image" 
+                                    wire:key="blog-{{ $blog->id }}"
                                     loading="lazy"
                                     decoding="async"
                                     fetchpriority="low"
