@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class BlogComment extends Model
 {
@@ -57,5 +58,22 @@ class BlogComment extends Model
     public function scopeRoot($query)
     {
         return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Get IDs of all descendant comments (replies at every level).
+     */
+    public function getAllDescendantIds(): Collection
+    {
+        $ids = collect();
+        $currentLevel = collect([$this->id]);
+
+        while ($currentLevel->isNotEmpty()) {
+            $children = static::whereIn('parent_id', $currentLevel)->pluck('id');
+            $ids = $ids->merge($children);
+            $currentLevel = $children;
+        }
+
+        return $ids;
     }
 }

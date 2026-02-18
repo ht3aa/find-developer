@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DeveloperBlogs\RelationManagers;
 
 use App\Enums\BlogCommentStatus;
+use App\Models\BlogComment;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -61,9 +62,13 @@ class CommentsRelationManager extends RelationManager
                         ->visible(fn($record) => $record->status !== BlogCommentStatus::APPROVED)
                         ->action(function ($record, Action $action) {
                             $record->update(['status' => BlogCommentStatus::APPROVED]);
+                            $descendantIds = $record->getAllDescendantIds();
+                            if ($descendantIds->isNotEmpty()) {
+                                BlogComment::whereIn('id', $descendantIds)->update(['status' => BlogCommentStatus::APPROVED]);
+                            }
 
                             Notification::make()
-                                ->title('Comment approved')
+                                ->title('Comment and replies approved')
                                 ->success()
                                 ->send();
                         }),
@@ -75,9 +80,13 @@ class CommentsRelationManager extends RelationManager
                         ->visible(fn($record) => $record->status !== BlogCommentStatus::REJECTED)
                         ->action(function ($record, Action $action) {
                             $record->update(['status' => BlogCommentStatus::REJECTED]);
+                            $descendantIds = $record->getAllDescendantIds();
+                            if ($descendantIds->isNotEmpty()) {
+                                BlogComment::whereIn('id', $descendantIds)->update(['status' => BlogCommentStatus::REJECTED]);
+                            }
 
                             Notification::make()
-                                ->title('Comment rejected')
+                                ->title('Comment and replies rejected')
                                 ->success()
                                 ->send();
                         }),
@@ -90,12 +99,28 @@ class CommentsRelationManager extends RelationManager
                     BulkAction::make('approve')
                         ->label('Approve selected')
                         ->icon('heroicon-o-check-circle')
-                        ->action(fn(Collection $records) => $records->each->update(['status' => BlogCommentStatus::APPROVED])),
+                        ->action(function (Collection $records) {
+                            $records->each(function ($record) {
+                                $record->update(['status' => BlogCommentStatus::APPROVED]);
+                                $descendantIds = $record->getAllDescendantIds();
+                                if ($descendantIds->isNotEmpty()) {
+                                    BlogComment::whereIn('id', $descendantIds)->update(['status' => BlogCommentStatus::APPROVED]);
+                                }
+                            });
+                        }),
 
                     BulkAction::make('reject')
                         ->label('Reject selected')
                         ->icon('heroicon-o-x-circle')
-                        ->action(fn(Collection $records) => $records->each->update(['status' => BlogCommentStatus::REJECTED])),
+                        ->action(function (Collection $records) {
+                            $records->each(function ($record) {
+                                $record->update(['status' => BlogCommentStatus::REJECTED]);
+                                $descendantIds = $record->getAllDescendantIds();
+                                if ($descendantIds->isNotEmpty()) {
+                                    BlogComment::whereIn('id', $descendantIds)->update(['status' => BlogCommentStatus::REJECTED]);
+                                }
+                            });
+                        }),
 
                     DeleteBulkAction::make(),
                 ]),
