@@ -75,10 +75,14 @@
 
 
         <!-- Scripts -->
-        @vite(['resources/js/app.js', 'resources/css/filament/admin/theme.css'])
-
-        <!-- Custom CSS -->
-        <link href="{{ asset('css/developer-search.css') }}" rel="stylesheet">
+        @vite(['resources/js/app.js', 'resources/css/app.css', 'resources/css/filament/admin/theme.css', 'resources/css/base.css', 'resources/css/layout.css'])
+        @if(request()->routeIs('blog.show'))
+            @vite(['resources/css/blog.css'])
+        @elseif(request()->routeIs('blogs'))
+            @vite(['resources/css/blogs.css'])
+        @else
+            @vite(['resources/css/developer-search.css'])
+        @endif
         @stack('styles')
 
         <!-- Filament Styles -->

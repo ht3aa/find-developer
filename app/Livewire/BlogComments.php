@@ -26,6 +26,11 @@ class BlogComments extends Component
         $this->slug = $slug;
     }
 
+    /** Limit root comments and replies per root to avoid lag with many comments. */
+    protected const ROOT_COMMENTS_LIMIT = 20;
+
+    protected const REPLIES_PER_ROOT_LIMIT = 15;
+
     public function getBlogProperty(): ?DeveloperBlog
     {
         return DeveloperBlog::with(['developer', 'developer.jobTitle'])
@@ -33,9 +38,10 @@ class BlogComments extends Component
             ->with([
                 'rootComments' => fn ($q) => $q->approved()
                     ->orderBy('created_at')
+                    ->limit(self::ROOT_COMMENTS_LIMIT)
                     ->withCount('likers')
                     ->with([
-                        'replies' => fn ($q) => $q->approved()->orderBy('created_at')->withCount('likers'),
+                        'replies' => fn ($q) => $q->approved()->orderBy('created_at')->limit(self::REPLIES_PER_ROOT_LIMIT)->withCount('likers'),
                     ]),
             ])
             ->withoutGlobalScopes([DeveloperScope::class])

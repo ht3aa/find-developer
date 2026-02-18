@@ -5,7 +5,7 @@
 @section('seo_keywords', 'get experience, developer tasks, build experience, earn XP, practice projects, developer experience')
 
 @push('styles')
-<link href="{{ asset('css/experience-tasks.css') }}" rel="stylesheet">
+@vite(['resources/css/experience-tasks.css'])
 @endpush
 
 @section('content')

@@ -6,7 +6,7 @@
 @section('seo_keywords', 'jobs, developer jobs, programming jobs, software jobs, career opportunities, job listings')
 
 @push('styles')
-<link href="{{ asset('css/company-job-search.css') }}" rel="stylesheet">
+@vite(['resources/css/company-job-search.css'])
 @endpush
 
 @section('content')
