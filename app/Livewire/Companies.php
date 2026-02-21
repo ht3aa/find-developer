@@ -36,7 +36,7 @@ class Companies extends Component implements HasSchemas
                             ->searchable()
                             ->options(Skill::active()->limit(50)->pluck('name', 'name'))
                             ->preload()
-                            ->getSearchResultsUsing(fn (string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'name'))
+                            ->getSearchResultsUsing(fn (string $query) => Skill::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'name'))
                             ->live(),
                     ]),
             ]);
@@ -77,10 +77,10 @@ class Companies extends Component implements HasSchemas
         return Company::with('skills')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('slug', 'like', '%' . $search . '%')
+                    $q->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('slug', 'like', '%'.$search.'%')
                         ->orWhereHas('skills', function ($skillQuery) use ($search) {
-                            $skillQuery->where('name', 'like', '%' . $search . '%');
+                            $skillQuery->where('name', 'like', '%'.$search.'%');
                         });
                 });
             })
