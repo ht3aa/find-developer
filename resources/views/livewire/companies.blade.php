@@ -1,7 +1,7 @@
 <div class="companies-container">
     <div class="companies-header">
         <h1 class="companies-title">Companies</h1>
-        <p class="companies-subtitle">Explore companies and the skills they are currently working on</p>
+        <p class="companies-subtitle">Explore companies and the skills they are currently working on. These skills are provided by the job offers that the companies have posted.</p>
     </div>
 
     <!-- Search Bar + Filters (same style as developer search) -->
