@@ -75,6 +75,7 @@ class Companies extends Component implements HasSchemas
         $search = trim($this->search);
 
         return Company::with('skills')
+            ->active()
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', '%'.$search.'%')

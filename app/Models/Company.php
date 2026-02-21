@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\CompanyStatus;
 use App\Helpers\StorageHelper;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +20,18 @@ class Company extends Model
         'name',
         'slug',
         'logo_path',
+        'status',
     ];
+
+    protected $casts = [
+        'status' => CompanyStatus::class,
+    ];
+
+    #[Scope]
+    public function active(Builder $query): Builder
+    {
+        return $query->where('status', CompanyStatus::ACTIVE);
+    }
 
     protected static function boot(): void
     {

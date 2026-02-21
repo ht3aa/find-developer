@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Companies\Schemas;
 
+use App\Enums\CompanyStatus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -44,6 +45,11 @@ class CompanyForm
                             ->maxSize(1024)
                             ->directory('company-logos')
                             ->nullable(),
+
+                        Select::make('status')
+                            ->options(CompanyStatus::class)
+                            ->default(CompanyStatus::ACTIVE)
+                            ->required(),
 
                         Select::make('skills')
                             ->relationship('skills', 'name', fn ($query) => $query->where('is_active', true))
