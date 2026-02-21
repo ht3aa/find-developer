@@ -322,6 +322,7 @@
             </script>
         @endif
 
+        @stack('scripts')
         @livewireScripts
         @filamentScripts
     </body>
