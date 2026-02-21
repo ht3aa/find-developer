@@ -49,6 +49,10 @@ Route::get('/badges', function () {
     return view('badges');
 })->name('badges');
 
+Route::get('/companies', function () {
+    return view('companies');
+})->name('companies');
+
 Route::get('/charts', function () {
     return view('charts');
 })->name('charts');

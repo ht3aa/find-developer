@@ -53,6 +53,11 @@ class SeoHelper
                 'description' => 'Register as a developer on FindDeveloper. Create your profile, showcase your skills, projects, and connect with clients. Free registration available.',
                 'keywords' => 'register developer, developer registration, create developer profile, join developers, developer signup',
             ],
+            'companies' => [
+                'title' => 'Companies - FindDeveloper | Companies & Skills',
+                'description' => 'Browse companies and the skills they are currently working on. Discover tech stacks and hiring focus areas.',
+                'keywords' => 'companies, tech companies, developer skills, hiring, companies hiring developers',
+            ],
         ];
 
         $pageData = $pages[$page] ?? $default;

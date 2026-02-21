@@ -47,6 +47,12 @@ class Skill extends Model
             ->withTimestamps();
     }
 
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_skill')
+            ->withTimestamps();
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
