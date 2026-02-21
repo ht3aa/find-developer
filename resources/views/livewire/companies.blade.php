@@ -1,7 +1,7 @@
 <div class="companies-container">
     <div class="companies-header">
         <h1 class="companies-title">Companies</h1>
-        <p class="companies-subtitle">Explore companies and the skills they are currently working on. These skills are provided by the job offers that the companies have posted.</p>
+        <p class="companies-subtitle">Explore companies and the skills they are currently working on. These skills are provided by the job offers that the companies have posted. So its not accurate. if the data is accurate by the company itself it will have a badge called "Company Verified"</p>
     </div>
 
     <!-- Search Bar + Filters (same style as developer search) -->
