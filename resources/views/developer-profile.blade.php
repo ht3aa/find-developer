@@ -281,7 +281,10 @@
                                                         <span>{{ $roleDuration ?: '< 1 mo' }}</span>
                                                     </div>
                                                     @if($role->description)
-                                                        <p class="dev-profile-company-desc">{{ $role->description }}</p>
+                                                        <div class="dev-profile-company-desc-wrap" data-read-more>
+                                                            <p class="dev-profile-company-desc">{{ $role->description }}</p>
+                                                            <button type="button" class="dev-profile-company-desc-more" aria-expanded="false">Read more</button>
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -304,7 +307,10 @@
                                             <span>{{ $roleDuration ?: '< 1 mo' }}</span>
                                         </div>
                                         @if($company->description)
-                                            <p class="dev-profile-company-desc">{{ $company->description }}</p>
+                                            <div class="dev-profile-company-desc-wrap" data-read-more>
+                                                <p class="dev-profile-company-desc">{{ $company->description }}</p>
+                                                <button type="button" class="dev-profile-company-desc-more" aria-expanded="false">Read more</button>
+                                            </div>
                                         @endif
                                     </div>
                                 @endif
@@ -489,5 +495,34 @@
 
 @push('styles')
     @vite(['resources/css/developer-profile.css'])
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var wraps = document.querySelectorAll('.dev-profile-company-desc-wrap[data-read-more]');
+    var lineClamp = 3;
+    wraps.forEach(function(wrap) {
+        var desc = wrap.querySelector('.dev-profile-company-desc');
+        var btn = wrap.querySelector('.dev-profile-company-desc-more');
+        if (!desc || !btn) return;
+        wrap.classList.add('dev-profile-company-desc-truncated');
+        function checkOverflow() {
+            return desc.scrollHeight > desc.clientHeight;
+        }
+        if (!checkOverflow()) {
+            wrap.classList.remove('dev-profile-company-desc-truncated');
+            btn.style.display = 'none';
+            return;
+        }
+        btn.style.display = 'inline';
+        btn.addEventListener('click', function() {
+            var isTruncated = wrap.classList.toggle('dev-profile-company-desc-truncated');
+            btn.textContent = isTruncated ? 'Read more' : 'Read less';
+            btn.setAttribute('aria-expanded', !isTruncated);
+        });
+    });
+});
+</script>
 @endpush
 @endsection
