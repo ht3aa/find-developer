@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Companies\Tables;
 
+use App\Enums\CompanyStatus;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -26,6 +27,10 @@ class CompaniesTable
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->sortable()
@@ -46,6 +51,10 @@ class CompaniesTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(CompanyStatus::class),
             ])
             ->recordActions([
                 ActionGroup::make([
