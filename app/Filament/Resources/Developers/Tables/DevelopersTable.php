@@ -213,7 +213,7 @@ class DevelopersTable
                     ->native(false),
 
                 Filter::make('years_of_experience')
-                    ->form([
+                    ->schema([
                         TextInput::make('min_experience')
                             ->numeric()
                             ->label('Minimum Years'),

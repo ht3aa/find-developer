@@ -128,7 +128,7 @@ class CompanyJobsTable
                     DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('approve')
                         ->label('Approve Selected')

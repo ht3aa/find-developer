@@ -65,7 +65,7 @@ class DeveloperCompanyForm
                                 Toggle::make('is_current')
                                     ->label('Currently Working Here')
                                     ->default(false)
-                                    ->reactive()
+                                    ->live()
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         if ($state) {
                                             $set('end_date', null);
@@ -93,7 +93,7 @@ class DeveloperCompanyForm
                             })
                             ->searchable()
                             ->nullable()
-                            ->reactive()
+                            ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
                                 if ($state) {
                                     $parent = DeveloperCompany::withoutGlobalScopes()->find($state);
