@@ -44,6 +44,9 @@ jobs:
             rm -rf storage/framework/sessions/*
 
             composer install --no-dev --optimize-autoloader
+            npm install
+            npm run build
+
             npm install --omit=dev
             npm update --omit=dev
             composer dump-autoload
