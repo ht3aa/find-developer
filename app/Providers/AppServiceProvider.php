@@ -7,6 +7,7 @@ use App\Policies\ActivityPolicy;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 
@@ -32,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
                 ->visibility('private')
                 ->disk('s3');
         });
+
+        if (app()->isProduction()) {
+            URL::forceScheme('https');
+        }
     }
 }
