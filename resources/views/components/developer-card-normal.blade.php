@@ -45,7 +45,7 @@
     <div class="developer-card-youtube">
         <div class="developer-card-youtube-embed">
             <iframe
-                src="https://www.youtube.com/embed/{{ $developer->getYoutubeVideoId() }}?autoplay=1&mute=1"
+                src="https://www.youtube.com/embed/{{ $developer->getYoutubeVideoId() }}?autoplay=1&mute=1&loop=1&playlist={{ $developer->getYoutubeVideoId() }}"
                 title="YouTube video player"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

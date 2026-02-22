@@ -158,7 +158,7 @@
                     </h2>
                     <div class="dev-profile-youtube-wrap">
                         <div class="dev-profile-youtube-embed">
-                            <iframe src="https://www.youtube.com/embed/{{ $developer->getYoutubeVideoId() }}?autoplay=1&mute=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe src="https://www.youtube.com/embed/{{ $developer->getYoutubeVideoId() }}?autoplay=1&mute=1&loop=1&playlist={{ $developer->getYoutubeVideoId() }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
