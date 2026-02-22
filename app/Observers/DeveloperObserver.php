@@ -30,6 +30,11 @@ class DeveloperObserver
                 ));
             }
         }
+
+        // When youtube_url is updated, set status to PENDING for re-review
+        if ($developer->wasChanged('youtube_url') && $developer->status !== DeveloperStatus::PENDING) {
+            Developer::withoutEvents(fn () => $developer->update(['status' => DeveloperStatus::PENDING]));
+        }
     }
 
     public function saving(Developer $developer): void

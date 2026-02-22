@@ -20,6 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\View;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -166,8 +167,20 @@ class DeveloperProfile extends Page implements HasSchemas
                             ->url()
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-user-circle'),
+
+                        TextInput::make('youtube_url')
+                            ->label('YouTube URL')
+                            ->url()
+                            ->maxLength(255)
+                            ->live()
+                            ->prefixIcon('heroicon-o-play-circle')
+                            ->helperText('A YouTube URL that explains yourself in a creative way'),
+
+                        View::make('filament.schemas.components.youtube-preview')
+                            ->columnSpanFull()
+                            ->hidden(fn ($get) => ! $get('youtube_url')),
                     ])
-                    ->columns(3),
+                    ->columns(2),
 
                 Section::make('CV / Resume')
                     ->schema([
