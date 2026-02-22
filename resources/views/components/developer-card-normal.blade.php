@@ -41,6 +41,19 @@
         </div>
     @endif
 
+    @if($developer->getYoutubeVideoId())
+    <div class="developer-card-youtube">
+        <div class="developer-card-youtube-embed">
+            <iframe
+                src="https://www.youtube.com/embed/{{ $developer->getYoutubeVideoId() }}?autoplay=1&mute=1"
+                title="Experience overview"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
+    </div>
+    @endif
+
     <!-- Header -->
     <div class="developer-header">
         <h3 class="developer-name">
@@ -166,7 +179,7 @@
     @endif
 
     <!-- Bio for normal -->
-    @if($developer->bio)
+    {{-- @if($developer->bio)
         <div x-data="{ expanded: false }" class="bio-container">
             @php
                 $bioLength = strlen($developer->bio);
@@ -187,7 +200,7 @@
                 </button>
             @endif
         </div>
-    @endif
+    @endif --}}
 
     <!-- Skills for normal -->
     @if($developer->skills->count() > 0)

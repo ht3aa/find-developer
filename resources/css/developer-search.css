@@ -1336,6 +1336,30 @@ html.dark .availability-type-badge.availability-type-hybrid-full-time {
     border-bottom: 1px solid var(--border-primary);
 }
 
+/* Developer Card YouTube Embed (under badges) */
+.developer-card-youtube {
+    margin-bottom: var(--spacing-md);
+}
+
+.developer-card-youtube-embed {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+}
+
+.developer-card-youtube-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
 
 .badge-icon-wrapper-small {
     width: 32px;

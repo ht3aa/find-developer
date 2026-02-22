@@ -40,6 +40,7 @@ class Developer extends Model
         'portfolio_url',
         'github_url',
         'linkedin_url',
+        'youtube_url',
         'cv_path',
         'location',
         'expected_salary_from',
@@ -135,6 +136,19 @@ class Developer extends Model
         return Attribute::make(
             get: fn () => StorageHelper::url($this->cv_path),
         );
+    }
+
+    public function getYoutubeVideoId(): ?string
+    {
+        if (! $this->youtube_url) {
+            return null;
+        }
+
+        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 
     public function recommendedDevelopers(): BelongsToMany
