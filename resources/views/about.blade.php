@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite(['resources/css/developer-search.css'])
+@endpush
+
 @section('title', 'About Us')
 @section('seo_title', 'About Us - FindDeveloper | Connecting Developers with Opportunities')
 @section('seo_description', 'Learn about FindDeveloper - a platform connecting skilled developers with clients and opportunities. Discover our mission and services.')
