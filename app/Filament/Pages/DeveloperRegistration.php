@@ -22,6 +22,7 @@ use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\Str;
 
 class DeveloperRegistration extends SimplePage implements HasForms
 {
@@ -63,12 +64,9 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
                         TextInput::make('slug')
                             ->label('URL Slug')
-                            ->maxLength(255)
-                            ->required()
-                            ->unique('developers', 'slug')
-                            ->readonly()
-                            ->helperText('Leave empty to auto-generate from name')
-                            ->alphaDash(),
+                            ->disabled()
+                            ->dehydrated(false) // Exclude this from getState()
+                            ->helperText('Automatically generated from your name'),
 
                         TextInput::make('email')
                             ->email()
@@ -180,6 +178,20 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $this->validate();
 
         $data = $this->form->getState();
+        // Generate slug from the validated name
+        $slug = Str::slug($data['name']);
+
+        // Ensure uniqueness
+        $baseSlug = $slug;
+        $counter = 1;
+        while (Developer::withoutGlobalScopes()
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = $baseSlug . '-' . ++$counter;
+        }
+
+        $data['slug'] = $slug;
 
         // Extract skills before creating developer
         $skills = $data['skills'] ?? [];
