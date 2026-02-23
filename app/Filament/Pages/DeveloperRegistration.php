@@ -179,16 +179,21 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
         $data = $this->form->getState();
         // Generate slug from the validated name
-        $slug = Str::slug($data['name']);
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug;
 
         // Ensure uniqueness
-        $baseSlug = $slug;
+        $conflictingSlugs = Developer::withoutGlobalScopes()
+            ->where(function ($query) use ($baseSlug) {
+                $query->where('slug', $baseSlug)
+                    ->orWhere('slug', 'like', $baseSlug . '-%');
+            })
+            ->pluck('slug');
+
         $counter = 1;
-        while (Developer::withoutGlobalScopes()
-                ->where('slug', $slug)
-                ->exists()
-        ) {
-            $slug = $baseSlug . '-' . ++$counter;
+        while ($conflictingSlugs->contains($slug)) {
+            $counter++;
+            $slug = $baseSlug . '-' . $counter;
         }
 
         $data['slug'] = $slug;
