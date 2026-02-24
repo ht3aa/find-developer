@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="about-section">
+            <div id="contact-us" class="about-section">
                 <h2 class="about-section-title">Contact Us</h2>
                 <p class="about-section-text">
                     Have questions or need assistance? We're here to help! Reach out to us via email or social media:

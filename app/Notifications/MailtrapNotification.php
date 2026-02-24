@@ -54,6 +54,7 @@ class MailtrapNotification extends Notification implements ShouldQueue
 <html>
 <head>
     <meta charset='utf-8'>
+    <link rel='icon' href='" . e(asset('logo.svg')) . "' type='image/svg+xml'>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -65,10 +66,10 @@ class MailtrapNotification extends Notification implements ShouldQueue
 <body>
     <div class='container'>
         <div class='header'>
-            <h1>".htmlspecialchars($this->subject)."</h1>
+            <h1>" . htmlspecialchars($this->subject) . "</h1>
         </div>
         <div class='content'>
-            <p>".nl2br(htmlspecialchars($this->message))."</p>
+            <p>" . nl2br(htmlspecialchars($this->message)) . "</p>
         </div>
         <div class='footer'>
             <p>This email was sent via Mailtrap</p>
