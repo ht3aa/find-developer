@@ -253,6 +253,9 @@ class DeveloperProfile extends Page implements HasSchemas
             $this->record->badges()->detach(Badge::where('slug', config('badge.experience-assessment-badge'))->first()->id);
         }
 
+        if ($data['name'] !== $this->record->name) {
+            $data['slug'] = Str::slug($data['name']);
+        }
 
         $this->record->update($data);
 
