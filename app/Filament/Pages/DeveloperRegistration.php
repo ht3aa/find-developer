@@ -18,10 +18,12 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\Str;
 
 class DeveloperRegistration extends SimplePage implements HasForms
 {
@@ -60,15 +62,6 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             $set('slug', ($state).replaceAll(' ', '-').toLowerCase());
                             JS)
                             ->maxLength(255),
-
-                        TextInput::make('slug')
-                            ->label('URL Slug')
-                            ->maxLength(255)
-                            ->required()
-                            ->unique('developers', 'slug')
-                            ->readonly()
-                            ->helperText('Leave empty to auto-generate from name')
-                            ->alphaDash(),
 
                         TextInput::make('email')
                             ->email()
@@ -180,6 +173,18 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $this->validate();
 
         $data = $this->form->getState();
+
+        $data['slug'] = Str::slug($data['name']);
+
+        if (Developer::withoutGlobalScopes()->where('slug', $data['slug'])->exists()) {
+            Notification::make()
+                ->title('The name you provided is already taken')
+                ->body('Please add extra information to your name to make it unique.')
+                ->danger()
+                ->send();
+
+            return;
+        }
 
         // Extract skills before creating developer
         $skills = $data['skills'] ?? [];
