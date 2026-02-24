@@ -178,7 +178,7 @@ class DeveloperProfile extends Page implements HasSchemas
 
                         View::make('filament.schemas.components.youtube-preview')
                             ->columnSpanFull()
-                            ->hidden(fn ($get) => ! $get('youtube_url')),
+                            ->hidden(fn($get) => ! $get('youtube_url')),
                     ])
                     ->columns(2),
 
@@ -233,6 +233,20 @@ class DeveloperProfile extends Page implements HasSchemas
 
         $data = $this->form->getState();
 
+        if ($data['name'] !== $this->record->name) {
+            $data['slug'] = Str::slug($data['name']);
+
+            if (Developer::withoutGlobalScopes()->where('slug', $data['slug'])->exists()) {
+                Notification::make()
+                    ->title('The name you provided is already taken')
+                    ->body('Please add extra information to your name to make it unique.')
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+        }
+
         $data['expected_salary_from'] = Str::of($data['expected_salary_from'])->remove(',')->toInteger();
         $data['expected_salary_to'] = Str::of($data['expected_salary_to'])->remove(',')->toInteger();
 
@@ -240,6 +254,7 @@ class DeveloperProfile extends Page implements HasSchemas
             $data['status'] = DeveloperStatus::EXPERIENCE_CHANGED;
             $this->record->badges()->detach(Badge::where('slug', config('badge.experience-assessment-badge'))->first()->id);
         }
+
 
         $this->record->update($data);
 
@@ -255,13 +270,13 @@ class DeveloperProfile extends Page implements HasSchemas
         $developer = $this->record->load([
             'jobTitle',
             'skills',
-            'companies' => fn ($q) => $q->withoutGlobalScopes([DeveloperScope::class])
+            'companies' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])
                 ->with('jobTitle')
                 ->where('show_company', true)
                 ->orderBy('start_date', 'desc'),
-            'projects' => fn ($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
+            'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
         ]);
-        $filename = Str::slug($developer->name).'-cv.pdf';
+        $filename = Str::slug($developer->name) . '-cv.pdf';
 
         $pdf = Pdf::loadView('developer-cv', ['developer' => $developer])
             ->setPaper('a4')
@@ -271,11 +286,11 @@ class DeveloperProfile extends Page implements HasSchemas
             ->setOption('margin-right', 0);
 
         return response()->streamDownload(
-            fn () => print ($pdf->output()),
+            fn() => print($pdf->output()),
             $filename,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]
         );
     }
@@ -293,7 +308,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn () => $this->save())
+            ->action(fn() => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',

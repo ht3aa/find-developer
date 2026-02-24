@@ -18,6 +18,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -61,12 +62,6 @@ class DeveloperRegistration extends SimplePage implements HasForms
                             $set('slug', ($state).replaceAll(' ', '-').toLowerCase());
                             JS)
                             ->maxLength(255),
-
-                        TextInput::make('slug')
-                            ->label('URL Slug')
-                            ->disabled()
-                            ->dehydrated(false) // Exclude this from getState()
-                            ->helperText('Automatically generated from your name'),
 
                         TextInput::make('email')
                             ->email()
@@ -178,25 +173,18 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $this->validate();
 
         $data = $this->form->getState();
-        // Generate slug from the validated name
-        $baseSlug = Str::slug($data['name']);
-        $slug = $baseSlug;
 
-        // Ensure uniqueness
-        $conflictingSlugs = Developer::withoutGlobalScopes()
-            ->where(function ($query) use ($baseSlug) {
-                $query->where('slug', $baseSlug)
-                    ->orWhere('slug', 'like', $baseSlug . '-%');
-            })
-            ->pluck('slug');
+        $data['slug'] = Str::slug($data['name']);
 
-        $counter = 1;
-        while ($conflictingSlugs->contains($slug)) {
-            $counter++;
-            $slug = $baseSlug . '-' . $counter;
+        if (Developer::withoutGlobalScopes()->where('slug', $data['slug'])->exists()) {
+            Notification::make()
+                ->title('The name you provided is already taken')
+                ->body('Please add extra information to your name to make it unique.')
+                ->danger()
+                ->send();
+
+            return;
         }
-
-        $data['slug'] = $slug;
 
         // Extract skills before creating developer
         $skills = $data['skills'] ?? [];
