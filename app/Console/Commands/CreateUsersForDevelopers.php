@@ -72,18 +72,21 @@ class CreateUsersForDevelopers extends Command
             if (empty($developer->email)) {
                 $this->warn("  Skipped: Developer #{$developer->id} ({$developer->name}) has no email.");
                 $skipped++;
+
                 continue;
             }
 
             if (User::where('email', $developer->email)->exists()) {
                 $this->warn("  Skipped: Developer #{$developer->id} ({$developer->name}) — email already in use: {$developer->email}");
                 $skipped++;
+
                 continue;
             }
 
             if ($dryRun) {
                 $this->line("  Would create user for: #{$developer->id} {$developer->name} ({$developer->email})");
                 $created++;
+
                 continue;
             }
 

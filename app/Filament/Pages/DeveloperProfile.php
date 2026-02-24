@@ -14,24 +14,23 @@ use App\Models\Developer;
 use App\Models\Scopes\DeveloperScope;
 use BackedEnum;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\View;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Closure;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
 
 class DeveloperProfile extends Page implements HasSchemas
 {
@@ -78,7 +77,7 @@ class DeveloperProfile extends Page implements HasSchemas
                         TextInput::make('name')
                             ->required()
                             ->rules([
-                                fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                fn (): Closure => function (string $attribute, $value, Closure $fail) {
                                     if (
                                         $value !== $this->record->name &&
                                         Developer::withoutGlobalScopes()->where('slug', Str::slug($value))->exists()
@@ -190,7 +189,7 @@ class DeveloperProfile extends Page implements HasSchemas
 
                         View::make('filament.schemas.components.youtube-preview')
                             ->columnSpanFull()
-                            ->hidden(fn($get) => ! $get('youtube_url')),
+                            ->hidden(fn ($get) => ! $get('youtube_url')),
                     ])
                     ->columns(2),
 
@@ -271,13 +270,13 @@ class DeveloperProfile extends Page implements HasSchemas
         $developer = $this->record->load([
             'jobTitle',
             'skills',
-            'companies' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])
+            'companies' => fn ($q) => $q->withoutGlobalScopes([DeveloperScope::class])
                 ->with('jobTitle')
                 ->where('show_company', true)
                 ->orderBy('start_date', 'desc'),
-            'projects' => fn($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
+            'projects' => fn ($q) => $q->withoutGlobalScopes([DeveloperScope::class])->orderBy('created_at', 'desc'),
         ]);
-        $filename = Str::slug($developer->name) . '-cv.pdf';
+        $filename = Str::slug($developer->name).'-cv.pdf';
 
         $pdf = Pdf::loadView('developer-cv', ['developer' => $developer])
             ->setPaper('a4')
@@ -287,11 +286,11 @@ class DeveloperProfile extends Page implements HasSchemas
             ->setOption('margin-right', 0);
 
         return response()->streamDownload(
-            fn() => print($pdf->output()),
+            fn () => print ($pdf->output()),
             $filename,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
             ]
         );
     }
@@ -309,7 +308,7 @@ class DeveloperProfile extends Page implements HasSchemas
     {
         return Action::make('save')
             ->label('Save Changes')
-            ->action(fn() => $this->save())
+            ->action(fn () => $this->save())
             ->submit('save')
             ->extraAttributes([
                 'style' => 'width: 100%; margin-top: 1rem;',
