@@ -11,6 +11,7 @@ use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Skill;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
@@ -24,6 +25,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
+
 
 class DeveloperRegistration extends SimplePage implements HasForms
 {
@@ -58,9 +60,13 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->schema([
                         TextInput::make('name')
                             ->required()
-                            ->afterStateUpdatedJs(<<<'JS'
-                            $set('slug', ($state).replaceAll(' ', '-').toLowerCase());
-                            JS)
+                            ->rules([
+                                fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                    if (Developer::withoutGlobalScopes()->where('slug', Str::slug($value))->exists()) {
+                                        $fail('The name you provided is already taken, please add extra information to your name to make it unique.');
+                                    }
+                                },
+                            ])
                             ->maxLength(255),
 
                         TextInput::make('email')
@@ -175,16 +181,6 @@ class DeveloperRegistration extends SimplePage implements HasForms
         $data = $this->form->getState();
 
         $data['slug'] = Str::slug($data['name']);
-
-        if (Developer::withoutGlobalScopes()->where('slug', $data['slug'])->exists()) {
-            Notification::make()
-                ->title('The name you provided is already taken')
-                ->body('Please add extra information to your name to make it unique.')
-                ->danger()
-                ->send();
-
-            return;
-        }
 
         // Extract skills before creating developer
         $skills = $data['skills'] ?? [];

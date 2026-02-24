@@ -28,8 +28,10 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Closure;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+
 
 class DeveloperProfile extends Page implements HasSchemas
 {
@@ -75,6 +77,16 @@ class DeveloperProfile extends Page implements HasSchemas
                     ->schema([
                         TextInput::make('name')
                             ->required()
+                            ->rules([
+                                fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                    if (
+                                        $value !== $this->record->name &&
+                                        Developer::withoutGlobalScopes()->where('slug', Str::slug($value))->exists()
+                                    ) {
+                                        $fail('The name you provided is already taken, please add extra information to your name to make it unique.');
+                                    }
+                                },
+                            ])
                             ->maxLength(255),
 
                         TextInput::make('email')
@@ -232,20 +244,6 @@ class DeveloperProfile extends Page implements HasSchemas
         $this->validate();
 
         $data = $this->form->getState();
-
-        if ($data['name'] !== $this->record->name) {
-            $data['slug'] = Str::slug($data['name']);
-
-            if (Developer::withoutGlobalScopes()->where('slug', $data['slug'])->exists()) {
-                Notification::make()
-                    ->title('The name you provided is already taken')
-                    ->body('Please add extra information to your name to make it unique.')
-                    ->danger()
-                    ->send();
-
-                return;
-            }
-        }
 
         $data['expected_salary_from'] = Str::of($data['expected_salary_from'])->remove(',')->toInteger();
         $data['expected_salary_to'] = Str::of($data['expected_salary_to'])->remove(',')->toInteger();
