@@ -10,6 +10,7 @@ use App\Enums\WorldGovernorate;
 use App\Filament\Customs\ExpectedSalaryFromField;
 use App\Filament\Customs\ExpectedSalaryToField;
 use App\Models\Developer;
+use Closure;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -18,7 +19,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
-use Closure;
 use Illuminate\Support\Str;
 
 class DeveloperProfileForm
@@ -32,7 +32,7 @@ class DeveloperProfileForm
                         TextInput::make('name')
                             ->required()
                             ->rules([
-                                fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                fn (): Closure => function (string $attribute, $value, Closure $fail) {
                                     if (Developer::withoutGlobalScopes()->where('slug', Str::slug($value))->exists()) {
                                         $fail('The name you provided is already taken, please add extra information to your name to make it unique.');
                                     }
@@ -152,7 +152,7 @@ class DeveloperProfileForm
 
                         View::make('filament.schemas.components.youtube-preview')
                             ->columnSpanFull()
-                            ->hidden(fn($get) => ! $get('youtube_url')),
+                            ->hidden(fn ($get) => ! $get('youtube_url')),
                     ])
                     ->columns(2),
 
