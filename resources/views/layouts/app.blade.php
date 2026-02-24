@@ -91,7 +91,38 @@
         @livewireStyles
     </head>
     <body>
-        <!-- Navigation -->
+        <!-- Info Banner (above nav, not sticky) -->
+        <div class="info-banner">
+            <div class="info-banner-container">
+                <div class="info-banner-content">
+                    <svg class="info-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                    </svg>
+                    <p class="info-banner-text">
+                        <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
+                        <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" class="info-banner-link">Star on GitHub →</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Check Banner (above nav, guests only, not sticky) -->
+        @guest
+            <div class="email-check-banner">
+                <div class="email-check-banner-container">
+                    <div class="email-check-banner-content">
+                        <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <p class="email-check-banner-text">
+                            <strong>Important:</strong> After registering as a developer, please check the email address you registered with. We will send important updates and login credentials to that email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endguest
+
+        <!-- Navigation (sticky) -->
         <nav class="navbar" x-data="{ mobileMenuOpen: false }">
             <div class="navbar-container">
                 <div class="navbar-brand-group">
@@ -176,37 +207,6 @@
                     @endauth
                 </div>
             </div>
-
-            <!-- Info Banner -->
-            <div class="info-banner">
-                <div class="info-banner-container">
-                    <div class="info-banner-content">
-                        <svg class="info-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                        </svg>
-                        <p class="info-banner-text">
-                            <strong>Open Source!</strong> FindDeveloper is open source. If you find it useful, give us a star on GitHub — it helps us grow and improve!
-                            <a href="https://github.com/ht3aa/find-developer" target="_blank" rel="noopener noreferrer" class="info-banner-link">Star on GitHub →</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Email Check Banner -->
-            @guest
-                <div class="email-check-banner">
-                    <div class="email-check-banner-container">
-                        <div class="email-check-banner-content">
-                            <svg class="email-check-banner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                            <p class="email-check-banner-text">
-                                <strong>Important:</strong> After registering as a developer, please check the email address you registered with. We will send important updates and login credentials to that email.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @endguest
         </nav>
         <div class="navbar-spacer"></div>
 

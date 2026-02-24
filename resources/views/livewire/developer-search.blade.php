@@ -3,7 +3,7 @@
     <div class="modern-header">
         <div class="header-content">
             <h1 class="modern-title">Find Your Perfect Developer</h1>
-            <p class="modern-subtitle">Discover talented developers ready to bring your projects to life</p>
+            <p class="modern-subtitle">Discover talented developers ready to bring your projects to life. If You need any help, feel free to <a href="{{ route('about') }}#contact-us" class="text-blue-500">contact us</a>.</p>
             @guest
             <a href="{{ route('register') }}" class="hero-register-btn">
                 <span>Register as Developer</span>
