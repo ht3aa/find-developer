@@ -22,6 +22,7 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
+import { availabilityTypeOptions, hasUrlsOptions } from '@/utils/developerEnums';
 
 const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
@@ -47,23 +48,6 @@ const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const hasUrlsSelectOpen = ref(false);
-
-const availabilityTypeOptions = [
-    { value: 'full-time', label: 'Full-time' },
-    { value: 'part-time', label: 'Part-time' },
-    { value: 'freelance', label: 'Freelance' },
-    { value: 'hybrid', label: 'Hybrid' },
-    { value: 'remote', label: 'Remote' },
-    { value: 'remote-full-time', label: 'Remote Full-time' },
-    { value: 'hybrid-full-time', label: 'Hybrid Full-time' },
-] as const;
-
-const hasUrlsOptions = [
-    { value: 'github', label: 'GitHub' },
-    { value: 'linkedin', label: 'LinkedIn' },
-    { value: 'portfolio', label: 'Portfolio' },
-    { value: 'youtube', label: 'YouTube' },
-] as const;
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
@@ -215,8 +199,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div class="sticky border-primary w-1/2 mx-auto top-16 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
+    <section id="developers" class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="sticky w-1/2 mx-auto top-16 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
             <div class="relative flex min-w-0 flex-1">
                 <Search
                     class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"

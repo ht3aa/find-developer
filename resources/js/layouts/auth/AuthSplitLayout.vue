@@ -14,7 +14,7 @@ defineProps<{
     >
         <!-- Left: logo / branding (Login 04 style) -->
         <div
-            class="relative hidden h-dvh flex-col bg-muted p-10 text-white lg:flex dark:border-r dark:bg-zinc-900/95"
+            class="relative hidden flex-col bg-muted p-10 text-white lg:sticky lg:top-0 lg:flex lg:h-dvh lg:self-start dark:border-r dark:bg-zinc-900/95"
         >
             <Link
                 :href="home()"

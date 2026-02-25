@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import { computed, onMounted } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
+
+const page = usePage();
+const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+
+onMounted(() => {
+    window.scrollTo(0, 0);
+});
 </script>
 
 <template>
@@ -19,7 +27,8 @@ import Navbar from '@/components/Navbar.vue';
             title="Find the right developer for your project"
             description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
             primary-action-label="Browse developers"
-            secondary-action-label="Sign up"
+            primary-action-href="#developers"
+            :success-message="flashSuccess ?? undefined"
         />
 
         <DeveloperCardSection />

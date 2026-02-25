@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { ArrowUpRight, CirclePlay } from 'lucide-vue-next';
+import { ArrowDown } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { login } from '@/routes';
-import { register } from '@/routes';
 
 const props = withDefaults(
     defineProps<{
@@ -13,8 +10,7 @@ const props = withDefaults(
         description?: string;
         primaryActionLabel?: string;
         primaryActionHref?: string;
-        secondaryActionLabel?: string;
-        canRegister?: boolean;
+        successMessage?: string;
     }>(),
     {
         badge: 'Find developers',
@@ -26,7 +22,7 @@ const props = withDefaults(
 
 function scrollToSearch(): void {
     document
-        .querySelector('[data-hero-search]')
+        .querySelector(props.primaryActionHref ?? '')
         ?.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
@@ -53,6 +49,13 @@ function scrollToSearch(): void {
 
         <div class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
             <div class="flex flex-col items-center text-center">
+                <!-- Success message -->
+                <div
+                    v-if="props.successMessage"
+                    class="mb-6 w-full max-w-2xl rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+                >
+                    {{ props.successMessage }}
+                </div>
                 <!-- Badge -->
                 <Badge
                     v-if="props.badge != null"
@@ -76,59 +79,16 @@ function scrollToSearch(): void {
                     {{ props.description }}
                 </p>
 
-                <!-- CTA buttons -->
-                <div
-                    v-if="props.primaryActionLabel != null || props.secondaryActionLabel != null"
-                    class="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+                <!-- CTA button -->
+                <Button
+                    v-if="props.primaryActionLabel != null"
+                    size="lg"
+                    class="mt-10 gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
+                    @click="scrollToSearch"
                 >
-                    <Button
-                        v-if="props.primaryActionLabel != null && props.primaryActionHref"
-                        as-child
-                        size="lg"
-                        class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
-                    >
-                        <Link
-                            :href="props.primaryActionHref"
-                            class="inline-flex items-center gap-2"
-                        >
-                            {{ props.primaryActionLabel }}
-                            <ArrowUpRight class="size-4" aria-hidden="true" />
-                        </Link>
-                    </Button>
-                    <Button
-                        v-else-if="props.primaryActionLabel != null"
-                        size="lg"
-                        class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
-                        @click="scrollToSearch"
-                    >
-                        {{ props.primaryActionLabel }}
-                        <ArrowUpRight class="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                        v-if="props.secondaryActionLabel != null"
-                        as-child
-                        variant="outline"
-                        size="lg"
-                        class="gap-2 rounded-xl border-2 text-base transition-all duration-200 hover:border-primary/50 hover:bg-primary/5"
-                    >
-                        <Link
-                            v-if="canRegister"
-                            :href="register()"
-                            class="inline-flex items-center gap-2"
-                        >
-                            {{ props.secondaryActionLabel }}
-                            <CirclePlay class="size-4" aria-hidden="true" />
-                        </Link>
-                        <Link
-                            v-else
-                            :href="login()"
-                            class="inline-flex items-center gap-2"
-                        >
-                            Log in
-                            <ArrowUpRight class="size-4" aria-hidden="true" />
-                        </Link>
-                    </Button>
-                </div>
+                    {{ props.primaryActionLabel }}
+                    <ArrowDown class="size-4" aria-hidden="true" />
+                </Button>
             </div>
         </div>
 

@@ -199,6 +199,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
                     placeholder="e.g. Backend Developer"
                     @update:open="onJobTitleOpenChange"
                 />
+                <InputError :message="errors?.job_title_id" />
             </div>
 
             <div class="grid gap-2">
