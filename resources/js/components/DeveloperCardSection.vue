@@ -33,6 +33,7 @@ const filterBadge = ref<string[]>(initialFilters.badge ?? []);
 const filterAvailabilityType = ref<string[]>(initialFilters.availabilityType ?? []);
 const filterHasUrls = ref<string[]>(initialFilters.hasUrls ?? []);
 const isAvailable = ref(initialFilters.isAvailable ?? 'all');
+const isRecommended = ref(initialFilters.isRecommended ?? 'all');
 const yearsMin = ref(initialFilters.yearsMin ?? '');
 const yearsMax = ref(initialFilters.yearsMax ?? '');
 const advancedOpen = ref(false);
@@ -123,6 +124,7 @@ function getFilters(): DeveloperFilters {
         availabilityType: filterAvailabilityType.value,
         hasUrls: filterHasUrls.value,
         isAvailable: isAvailable.value,
+        isRecommended: isRecommended.value,
         yearsMin: yearsMin.value,
         yearsMax: yearsMax.value,
     };
@@ -173,6 +175,7 @@ function clearFilters(): void {
     filterAvailabilityType.value = [];
     filterHasUrls.value = [];
     isAvailable.value = 'all';
+    isRecommended.value = 'all';
     yearsMin.value = '';
     yearsMax.value = '';
     fetchDevelopers(API_BASE);
@@ -186,6 +189,7 @@ const activeFilterCount = computed(() => {
     if (filterAvailabilityType.value.length > 0) count += filterAvailabilityType.value.length;
     if (filterHasUrls.value.length > 0) count += filterHasUrls.value.length;
     if (isAvailable.value && isAvailable.value !== 'all') count++;
+    if (isRecommended.value && isRecommended.value !== 'all') count++;
     if (yearsMin.value) count++;
     if (yearsMax.value) count++;
     return count;
@@ -253,7 +257,7 @@ onMounted(() => {
                             Advanced filters
                         </SheetTitle>
                         <SheetDescription class="sr-only">
-                            Filter developers by job title, skills, badges, availability type, has URLs, availability status, and years of experience.
+                            Filter developers by job title, skills, badges, availability type, has URLs, availability status, recommended status, and years of experience.
                         </SheetDescription>
                         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             <div class="space-y-2">
@@ -334,6 +338,18 @@ onMounted(() => {
                                     <option value="all">All</option>
                                     <option value="1">Available</option>
                                     <option value="0">Not available</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <Label for="filter-is-recommended">Recommended</Label>
+                                <select
+                                    id="filter-is-recommended"
+                                    v-model="isRecommended"
+                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="all">All</option>
+                                    <option value="1">Recommended</option>
+                                    <option value="0">Not recommended</option>
                                 </select>
                             </div>
                             <div class="space-y-2">

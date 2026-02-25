@@ -6,6 +6,7 @@ export type DeveloperFilters = {
     availabilityType?: string[];
     hasUrls?: string[];
     isAvailable?: string;
+    isRecommended?: string;
     yearsMin?: string;
     yearsMax?: string;
 };
@@ -34,6 +35,7 @@ export function buildDevelopersApiUrl(base: string, filters: DeveloperFilters): 
     const hasUrlsVal = toFilterValue(filters.hasUrls);
     if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
     if (filters.isAvailable && filters.isAvailable !== 'all') params.set('filter[is_available]', filters.isAvailable);
+    if (filters.isRecommended && filters.isRecommended !== 'all') params.set('filter[is_recommended]', filters.isRecommended);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
     const q = params.toString();
@@ -55,6 +57,7 @@ export function parseFiltersFromUrl(): DeveloperFilters {
         availabilityType: parseFilterArray(filter.availability_type),
         hasUrls: parseFilterArray(filter.has_urls),
         isAvailable: filter.is_available ?? 'all',
+        isRecommended: filter.is_recommended ?? 'all',
         yearsMin: filter.years_min ?? '',
         yearsMax: filter.years_max ?? '',
     };
@@ -74,6 +77,7 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     const hasUrlsVal = toFilterValue(filters.hasUrls);
     if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
     if (filters.isAvailable && filters.isAvailable !== 'all') params.set('filter[is_available]', filters.isAvailable);
+    if (filters.isRecommended && filters.isRecommended !== 'all') params.set('filter[is_recommended]', filters.isRecommended);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
     const q = params.toString();

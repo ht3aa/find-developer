@@ -127,6 +127,13 @@ class DeveloperRepository
                     $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     $query->where('developers.is_available', $bool);
                 }),
+                AllowedFilter::callback('is_recommended', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    $query->where('developers.recommended_by_us', $bool);
+                }),
             ])
             ->allowedSorts(['name', 'years_of_experience', 'created_at'])
             ->orderBy('badges_count', 'desc')
@@ -246,6 +253,13 @@ class DeveloperRepository
                     }
                     $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     $query->where('developers.is_available', $bool);
+                }),
+                AllowedFilter::callback('is_recommended', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    $query->where('developers.recommended_by_us', $bool);
                 }),
             ]);
 
