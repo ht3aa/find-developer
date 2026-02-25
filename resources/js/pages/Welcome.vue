@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { Search, SlidersHorizontal } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
+import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import { Button } from '@/components/ui/button';
@@ -276,5 +277,7 @@ const sortOptions = [
             :meta="meta"
             :links="links"
         />
+
+        <Footer />
     </div>
 </template>
