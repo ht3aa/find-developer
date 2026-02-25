@@ -2,12 +2,13 @@
 import { refDebounced, watchDebounced } from '@vueuse/core';
 import { Head, router } from '@inertiajs/vue3';
 import { Search, SlidersHorizontal } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,8 +64,14 @@ const props = withDefaults(
 );
 
 const searchQuery = ref(props.filterSearch ?? props.filters?.search ?? '');
-const filterJobTitle = ref(props.filters?.['job_title.name'] ?? '');
-const filterSkill = ref(props.filters?.skill ?? '');
+function parseFilterArray(val: string | string[] | null | undefined): string[] {
+    if (val == null || val === '') return [];
+    if (Array.isArray(val)) return val.filter(Boolean);
+    return val.includes(',') ? val.split(',').map((s) => s.trim()).filter(Boolean) : [val];
+}
+
+const filterJobTitle = ref<string | string[]>(parseFilterArray(props.filters?.['job_title.name']));
+const filterSkill = ref<string | string[]>(parseFilterArray(props.filters?.skill));
 const yearsMin = ref(props.filters?.years_min ?? '');
 const yearsMax = ref(props.filters?.years_max ?? '');
 const sortBy = ref(props.sort);
@@ -85,12 +92,19 @@ function onSkillOpenChange(open: boolean): void {
     if (open) jobTitleSelectOpen.value = false;
 }
 
+function toFilterValue(val: string | string[] | null | undefined): string {
+    if (val == null) return '';
+    return Array.isArray(val) ? val.filter(Boolean).join(',') : String(val);
+}
+
 function buildFilterUrl(overrides?: { search?: string }): string {
     const params = new URLSearchParams();
     const search = overrides?.search !== undefined ? overrides.search : searchQuery.value;
     if (search) params.set('filter[search]', search);
-    if (filterJobTitle.value) params.set('filter[job_title.name]', filterJobTitle.value);
-    if (filterSkill.value) params.set('filter[skill]', filterSkill.value);
+    const jobTitleVal = toFilterValue(filterJobTitle.value);
+    if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
+    const skillVal = toFilterValue(filterSkill.value);
+    if (skillVal) params.set('filter[skill]', skillVal);
     if (yearsMin.value) params.set('filter[years_min]', yearsMin.value);
     if (yearsMax.value) params.set('filter[years_max]', yearsMax.value);
     if (sortBy.value && sortBy.value !== 'name') params.set('sort', sortBy.value);
@@ -101,32 +115,40 @@ function buildFilterUrl(overrides?: { search?: string }): string {
 function clearFilters(): void {
     advancedOpen.value = false;
     searchQuery.value = '';
-    filterJobTitle.value = '';
-    filterSkill.value = '';
+    filterJobTitle.value = [];
+    filterSkill.value = [];
     yearsMin.value = '';
     yearsMax.value = '';
     sortBy.value = 'name';
-    router.get('/', {}, { preserveState: true, replace: true });
+    router.get('/', {}, { preserveState: true, preserveScroll: true, replace: true });
 }
 
 watch(debouncedQuery, () => {
-    router.get(buildFilterUrl({ search: debouncedQuery.value }), {}, { preserveState: true, replace: true });
+    router.get(buildFilterUrl({ search: debouncedQuery.value }), {}, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
 }, { immediate: false });
 
 watchDebounced(
     () => [filterJobTitle.value, filterSkill.value, yearsMin.value, yearsMax.value, sortBy.value],
     () => {
-        router.get(buildFilterUrl(), {}, { preserveState: true, replace: true });
+        router.get(buildFilterUrl(), {}, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
     },
-    { debounce: 300, deep: true },
+    { debounce: 150, deep: true },
 );
 
 watch(
     () => [props.filters, props.sort],
     () => {
         searchQuery.value = props.filterSearch ?? props.filters?.search ?? '';
-        filterJobTitle.value = props.filters?.['job_title.name'] ?? '';
-        filterSkill.value = props.filters?.skill ?? '';
+        filterJobTitle.value = parseFilterArray(props.filters?.['job_title.name']);
+        filterSkill.value = parseFilterArray(props.filters?.skill);
         yearsMin.value = props.filters?.years_min ?? '';
         yearsMax.value = props.filters?.years_max ?? '';
         sortBy.value = props.sort ?? 'name';
@@ -146,6 +168,20 @@ const sortOptions = [
     { value: 'years_of_experience', label: 'Years of experience' },
     { value: '-created_at', label: 'Newest first' },
 ] as const;
+
+const activeFilterCount = computed(() => {
+    let count = 0;
+    const jt = filterJobTitle.value;
+    const sk = filterSkill.value;
+    if (Array.isArray(jt) ? jt.length > 0 : jt) count += Array.isArray(jt) ? jt.length : 1;
+    if (Array.isArray(sk) ? sk.length > 0 : sk) count += Array.isArray(sk) ? sk.length : 1;
+    if (yearsMin.value) count++;
+    if (yearsMax.value) count++;
+    if (sortBy.value && sortBy.value !== 'name') count++;
+    return count;
+});
+
+const hasActiveFilters = computed(() => activeFilterCount.value > 0);
 </script>
 
 <template>
@@ -191,10 +227,17 @@ const sortOptions = [
                         <Button
                             variant="outline"
                             size="default"
-                            class="h-11 shrink-0 gap-2 sm:h-12"
+                            class="relative h-11 shrink-0 gap-2 sm:h-12"
                         >
                             <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
                             <span class="hidden sm:inline">Advanced filters</span>
+                            <Badge
+                                v-if="hasActiveFilters"
+                                variant="secondary"
+                                class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full p-0 text-xs"
+                            >
+                                {{ activeFilterCount }}
+                            </Badge>
                         </Button>
                     </SheetTrigger>
                     <SheetContent
@@ -213,12 +256,13 @@ const sortOptions = [
                                     <Label for="filter-job-title">Job title</Label>
                                     <SearchableSelect
                                         id="filter-job-title"
-                                        :model-value="filterJobTitle || null"
+                                        :model-value="filterJobTitle"
                                         :open="jobTitleSelectOpen"
                                         :options="jobTitles"
                                         placeholder="e.g. Backend Developer"
+                                        multiple
                                         :max-options="50"
-                                        @update:model-value="filterJobTitle = $event ?? ''"
+                                        @update:model-value="filterJobTitle = $event ?? []"
                                         @update:open="onJobTitleOpenChange"
                                     />
                                 </div>
@@ -226,12 +270,13 @@ const sortOptions = [
                                     <Label for="filter-skill">Skill</Label>
                                     <SearchableSelect
                                         id="filter-skill"
-                                        :model-value="filterSkill || null"
+                                        :model-value="filterSkill"
                                         :open="skillSelectOpen"
                                         :options="skills"
                                         placeholder="e.g. Laravel, Vue"
+                                        multiple
                                         :max-options="50"
-                                        @update:model-value="filterSkill = $event ?? ''"
+                                        @update:model-value="filterSkill = $event ?? []"
                                         @update:open="onSkillOpenChange"
                                     />
                                 </div>

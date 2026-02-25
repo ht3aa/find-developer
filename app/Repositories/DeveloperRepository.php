@@ -26,12 +26,17 @@ class DeveloperRepository
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::callback('job_title.name', function ($query, $value) {
-                    if (blank($value)) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
                         return;
                     }
-                    $term = '%'.addcslashes($value, '%_').'%';
-                    $query->whereHas('jobTitle', function ($q) use ($term) {
-                        $q->where('name', 'like', $term);
+                    $query->whereHas('jobTitle', function ($q) use ($values) {
+                        $q->where(function ($q) use ($values) {
+                            foreach ($values as $val) {
+                                $term = '%'.addcslashes($val, '%_').'%';
+                                $q->orWhere('name', 'like', $term);
+                            }
+                        });
                     });
                 }),
                 AllowedFilter::callback('search', function ($query, $value) {
@@ -48,12 +53,17 @@ class DeveloperRepository
                     });
                 }),
                 AllowedFilter::callback('skill', function ($query, $value) {
-                    if (blank($value)) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
                         return;
                     }
-                    $term = '%'.addcslashes($value, '%_').'%';
-                    $query->whereHas('skills', function ($q) use ($term) {
-                        $q->where('skills.name', 'like', $term);
+                    $query->whereHas('skills', function ($q) use ($values) {
+                        $q->where(function ($q) use ($values) {
+                            foreach ($values as $val) {
+                                $term = '%'.addcslashes($val, '%_').'%';
+                                $q->orWhere('skills.name', 'like', $term);
+                            }
+                        });
                     });
                 }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
@@ -87,12 +97,17 @@ class DeveloperRepository
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::callback('job_title.name', function ($query, $value) {
-                    if (blank($value)) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
                         return;
                     }
-                    $term = '%'.addcslashes($value, '%_').'%';
-                    $query->whereHas('jobTitle', function ($q) use ($term) {
-                        $q->where('name', 'like', $term);
+                    $query->whereHas('jobTitle', function ($q) use ($values) {
+                        $q->where(function ($q) use ($values) {
+                            foreach ($values as $val) {
+                                $term = '%'.addcslashes($val, '%_').'%';
+                                $q->orWhere('name', 'like', $term);
+                            }
+                        });
                     });
                 }),
                 AllowedFilter::callback('search', function ($query, $value) {
@@ -109,12 +124,17 @@ class DeveloperRepository
                     });
                 }),
                 AllowedFilter::callback('skill', function ($query, $value) {
-                    if (blank($value)) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
                         return;
                     }
-                    $term = '%'.addcslashes($value, '%_').'%';
-                    $query->whereHas('skills', function ($q) use ($term) {
-                        $q->where('skills.name', 'like', $term);
+                    $query->whereHas('skills', function ($q) use ($values) {
+                        $q->where(function ($q) use ($values) {
+                            foreach ($values as $val) {
+                                $term = '%'.addcslashes($val, '%_').'%';
+                                $q->orWhere('skills.name', 'like', $term);
+                            }
+                        });
                     });
                 }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
@@ -132,5 +152,20 @@ class DeveloperRepository
             ]);
 
         return $query->count();
+    }
+
+    /**
+     * Parse filter value (handles comma-separated for multi-select).
+     *
+     * @return array<string>
+     */
+    private function parseFilterValues(mixed $value): array
+    {
+        if (blank($value)) {
+            return [];
+        }
+        $values = is_array($value) ? $value : explode(',', (string) $value);
+
+        return array_values(array_filter(array_map('trim', $values)));
     }
 }
