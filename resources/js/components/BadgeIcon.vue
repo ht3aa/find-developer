@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { resolveBadgeIcon } from '@/composables/useBadgeIcon';
 
-const props = defineProps<{
-    icon: string | null | undefined;
-}>();
+const props = withDefaults(
+    defineProps<{
+        icon: string | null | undefined;
+        iconClass?: string;
+    }>(),
+    { iconClass: 'size-4.5 shrink-0' },
+);
 
 const IconComponent = resolveBadgeIcon(props.icon);
 </script>
@@ -12,6 +16,6 @@ const IconComponent = resolveBadgeIcon(props.icon);
     <component
         v-if="IconComponent"
         :is="IconComponent"
-        class="size-4.5 shrink-0"
+        :class="props.iconClass"
     />
 </template>

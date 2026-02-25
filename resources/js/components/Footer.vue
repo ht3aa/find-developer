@@ -2,10 +2,12 @@
 import { Link } from '@inertiajs/vue3';
 import { Github, Twitter } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
+import { publicMethod as badgesPublic } from '@/routes/badges';
 import { home, login, register } from '@/routes';
 
 const footerLinks = [
     { title: 'Home', href: home() },
+    { title: 'Badges', href: badgesPublic() },
     { title: 'Sign In', href: login() },
     { title: 'Sign Up', href: register() },
 ];

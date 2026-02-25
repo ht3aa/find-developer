@@ -21,9 +21,6 @@ const props = withDefaults(
         title: 'Find the right developer for your project',
         description:
             'Browse vetted developers, filter by skills and experience, and connect with the best match for your team.',
-        primaryActionLabel: 'Browse developers',
-        secondaryActionLabel: 'Sign up',
-        canRegister: true,
     },
 );
 
@@ -58,6 +55,7 @@ function scrollToSearch(): void {
             <div class="flex flex-col items-center text-center">
                 <!-- Badge -->
                 <Badge
+                    v-if="props.badge != null"
                     variant="secondary"
                     class="mb-6 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm"
                 >
@@ -66,11 +64,13 @@ function scrollToSearch(): void {
 
                 <!-- Title -->
                 <h1
+                    v-if="props.title != null"
                     class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
                 >
                     {{ props.title }}
                 </h1>
                 <p
+                    v-if="props.description != null"
                     class="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl"
                 >
                     {{ props.description }}
@@ -78,10 +78,11 @@ function scrollToSearch(): void {
 
                 <!-- CTA buttons -->
                 <div
+                    v-if="props.primaryActionLabel != null || props.secondaryActionLabel != null"
                     class="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
                 >
                     <Button
-                        v-if="props.primaryActionHref"
+                        v-if="props.primaryActionLabel != null && props.primaryActionHref"
                         as-child
                         size="lg"
                         class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
@@ -95,7 +96,7 @@ function scrollToSearch(): void {
                         </Link>
                     </Button>
                     <Button
-                        v-else
+                        v-else-if="props.primaryActionLabel != null"
                         size="lg"
                         class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
                         @click="scrollToSearch"
@@ -104,6 +105,7 @@ function scrollToSearch(): void {
                         <ArrowUpRight class="size-4" aria-hidden="true" />
                     </Button>
                     <Button
+                        v-if="props.secondaryActionLabel != null"
                         as-child
                         variant="outline"
                         size="lg"

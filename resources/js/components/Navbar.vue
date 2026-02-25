@@ -16,6 +16,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { publicMethod as badgesPublic } from '@/routes/badges';
 import { dashboard, home, login, register } from '@/routes';
 
 const page = usePage();
@@ -24,6 +25,7 @@ const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
 
 const navItems = [
     { label: 'Home', href: home() },
+    { label: 'Badges', href: badgesPublic() },
 ];
 </script>
 

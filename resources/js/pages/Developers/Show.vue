@@ -158,7 +158,7 @@ function formatNum(n: number): string {
                     </span>
                     <span
                         v-if="developer.recommendations_received_count > 0"
-                        class="flex items-center gap-2 text-muted-foreground"
+                        class="flex items-center gap-2 text-blue-600 dark:text-blue-400"
                     >
                         <ThumbsUp class="size-4" />
                         {{ developer.recommendations_received_count }}

@@ -155,7 +155,6 @@ function formatNum(n: number): string {
                             "
                         >
                             <BadgeIcon v-if="badge.icon" :icon="badge.icon" />
-
                         </Link>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -285,12 +284,12 @@ function formatNum(n: number): string {
 
                 <li
                     v-if="developer.recommendations_received_count > 0"
-                    class="flex items-center gap-3 text-muted-foreground"
+                    class="flex items-center gap-3 text-blue-600 dark:text-blue-400"
                 >
-                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/15">
                         <ThumbsUp class="size-4" />
                     </span>
-                    <span class="font-medium text-foreground">
+                    <span class="font-medium">
                         {{ developer.recommendations_received_count }}
                         {{ developer.recommendations_received_count === 1 ? 'Recommendation' : 'Recommendations' }}
                     </span>
