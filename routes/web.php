@@ -35,6 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('dashboard.developer-profile.index');
         Route::put('developer-profile', [DeveloperProfileController::class, 'update'])
             ->name('dashboard.developer-profile.update');
+        Route::get('developer-profile/cv', [DeveloperProfileController::class, 'downloadCv'])
+            ->name('dashboard.developer-profile.download-cv');
 
         Route::resource('work-experience', WorkExperienceController::class)->except(['show']);
     });

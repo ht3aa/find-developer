@@ -11,6 +11,8 @@ export type User = {
 
 export type Auth = {
     user: User;
+    /** Permission names the user has (from Spatie, via roles/direct). */
+    permissions?: string[];
 };
 
 export type TwoFactorConfigContent = {

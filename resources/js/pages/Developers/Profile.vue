@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { User } from 'lucide-vue-next';
+import { Download, User } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
 import DeveloperProfileController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProfileController';
 import DeveloperCard from '@/components/DeveloperCard.vue';
@@ -212,18 +212,31 @@ function submitForm(): void {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex items-center gap-3">
-                <div
-                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                    >
+                        <User class="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                        <Heading
+                            title="Developer Profile"
+                            description="Edit developer information and preview the card"
+                        />
+                    </div>
+                </div>
+                <Button
+                    v-if="developer"
+                    variant="outline"
+                    size="sm"
+                    as-child
                 >
-                    <User class="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                    <Heading
-                        title="Developer Profile"
-                        description="Edit developer information and preview the card"
-                    />
-                </div>
+                    <a :href="DeveloperProfileController.downloadCv.url()" download>
+                        <Download class="mr-2 h-4 w-4" />
+                        Download CV
+                    </a>
+                </Button>
             </div>
 
             <template v-if="developer && formData">

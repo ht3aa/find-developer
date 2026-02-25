@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { Award, BookOpen, Briefcase, Folder, Home, LayoutGrid, Shield, User, UserCog, Users } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -23,7 +24,15 @@ import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
+const page = usePage();
+const userPermissions = computed(() => (page.props.auth as { permissions?: string[] })?.permissions ?? []);
+
+function canSeeNavItem(item: NavItem): boolean {
+    if (!item.permission) return true;
+    return userPermissions.value.includes(item.permission);
+}
+
+const allMainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
@@ -53,13 +62,17 @@ const mainNavItems: NavItem[] = [
         title: 'Users',
         href: usersIndex(),
         icon: UserCog,
+        permission: 'View:Users',
     },
     {
         title: 'Roles',
         href: rolesIndex(),
         icon: Shield,
+        permission: 'View:Roles',
     },
 ];
+
+const mainNavItems = computed(() => allMainNavItems.filter(canSeeNavItem));
 
 const footerNavItems: NavItem[] = [
     {

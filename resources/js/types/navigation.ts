@@ -13,4 +13,6 @@ export type NavItem = {
     isActive?: boolean;
     /** When false, uses Inertia Link for internal navigation. Default true for external links. */
     external?: boolean;
+    /** Spatie permission name (e.g. "View:Users"). Item is hidden if user doesn't have it. */
+    permission?: string;
 };
