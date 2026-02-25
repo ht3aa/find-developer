@@ -13,8 +13,9 @@ import {
     ComboboxViewport,
 } from '@/components/ui/combobox';
 import { Badge } from '@/components/ui/badge';
+import { useDebounceFn } from '@vueuse/core';
 import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useId } from 'vue';
 import { cn } from '@/lib/utils';
 
@@ -104,6 +105,17 @@ async function fetchOptions(): Promise<void> {
         optionsLoading.value = false;
     }
 }
+
+const debouncedFetch = useDebounceFn(() => {
+    if (props.optionsUrl) fetchOptions();
+}, 300);
+
+watch(
+    () => searchTerm.value,
+    () => {
+        if (props.optionsUrl) debouncedFetch();
+    },
+);
 
 onMounted(() => {
     if (props.optionsUrl) fetchOptions();

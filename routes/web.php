@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
 use App\Http\Controllers\PublicBadgeController;
@@ -22,6 +23,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
+
+        Route::get('developer-profile', [DeveloperProfileController::class, 'index'])
+            ->name('dashboard.developer-profile.index');
+        Route::put('developer-profile', [DeveloperProfileController::class, 'update'])
+            ->name('dashboard.developer-profile.update');
     });
 });
 
