@@ -103,7 +103,7 @@ function formatNum(n: number): string {
         <!-- Recommended pill -->
         <div
             v-if="developer.recommended_by_us"
-            class="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800 dark:border-amber-800 dark:bg-amber-950/80 dark:text-amber-200"
+            class="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
         >
             <Star class="size-3.5 shrink-0" />
             Recommended
@@ -226,7 +226,7 @@ function formatNum(n: number): string {
                     <span
                         :class="
                             developer.is_available
-                                ? 'text-green-600 dark:text-green-400'
+                                ? 'text-primary'
                                 : 'text-muted-foreground'
                         "
                     >

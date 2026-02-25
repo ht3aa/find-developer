@@ -45,7 +45,7 @@ watch(debouncedQuery, (query: string) => {
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
-    <div class="flex min-h-screen flex-col bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a]">
+    <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 
         <!-- Hero section -->
@@ -54,17 +54,17 @@ watch(debouncedQuery, (query: string) => {
         >
             <div class="w-full max-w-3xl text-center">
                 <div
-                    class="relative flex w-full items-center rounded-lg border border-[#e3e3e0] bg-white shadow-sm transition-colors focus-within:border-[#1b1b18] focus-within:ring-2 focus-within:ring-[#1b1b18]/20 dark:border-[#3E3E3A] dark:bg-[#161615] dark:focus-within:border-[#EDEDEC] dark:focus-within:ring-[#EDEDEC]/20"
+                    class="relative flex w-full items-center rounded-lg border border-border bg-card shadow-sm transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20"
                 >
                     <Search
-                        class="pointer-events-none absolute left-4 h-5 w-5 shrink-0 text-[#706f6c] dark:text-[#A1A09A]"
+                        class="pointer-events-none absolute left-4 h-5 w-5 shrink-0 text-muted-foreground"
                         aria-hidden="true"
                     />
                     <Input
                         v-model="searchQuery"
                         type="search"
                         placeholder="Search developers by skill, e.g. Laravel, Vue, React..."
-                        class="h-12 w-full border-0 bg-transparent pl-12 pr-4 text-base shadow-none placeholder:text-[#706f6c] focus-visible:ring-0 dark:placeholder:text-[#A1A09A] sm:h-14 sm:pl-14 sm:text-lg"
+                        class="h-12 w-full border-0 bg-transparent pl-12 pr-4 text-base shadow-none placeholder:text-muted-foreground focus-visible:ring-0 sm:h-14 sm:pl-14 sm:text-lg"
                         autocomplete="off"
                     />
                 </div>
@@ -75,7 +75,7 @@ watch(debouncedQuery, (query: string) => {
         <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <div
                 v-if="developers.length === 0"
-                class="rounded-lg border border-dashed py-12 text-center text-[#706f6c] dark:text-[#A1A09A]"
+                class="rounded-lg border border-dashed border-border py-12 text-center text-muted-foreground"
             >
                 No developers found.
             </div>
@@ -97,17 +97,17 @@ watch(debouncedQuery, (query: string) => {
                 <Link
                     v-if="links.prev"
                     :href="links.prev"
-                    class="text-sm font-medium text-[#1b1b18] hover:underline dark:text-[#EDEDEC]"
+                    class="text-sm font-medium text-primary hover:underline"
                 >
                     Previous
                 </Link>
-                <span class="text-sm text-[#706f6c] dark:text-[#A1A09A]">
+                <span class="text-sm text-muted-foreground">
                     Page {{ meta.current_page }} of {{ meta.last_page }}
                 </span>
                 <Link
                     v-if="links.next"
                     :href="links.next"
-                    class="text-sm font-medium text-[#1b1b18] hover:underline dark:text-[#EDEDEC]"
+                    class="text-sm font-medium text-primary hover:underline"
                 >
                     Next
                 </Link>
