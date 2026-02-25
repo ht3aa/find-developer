@@ -1,30 +1,32 @@
 <script setup lang="ts">
 import {
-    Command,
-    CommandContent,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+    Combobox,
+    ComboboxAnchor,
+    ComboboxCancel,
+    ComboboxEmpty,
+    ComboboxGroup,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxItemIndicator,
+    ComboboxList,
+    ComboboxTrigger,
+    ComboboxViewport,
+} from '@/components/ui/combobox';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Check, ChevronsUpDown, X } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
+import { useId } from 'vue';
 import { cn } from '@/lib/utils';
+
+const instanceId = useId();
 
 const props = withDefaults(
     defineProps<{
         modelValue?: string | string[] | null;
         multiple?: boolean;
         open?: boolean;
-        options: { value: string; label: string }[];
+        options?: { value: string; label: string }[];
+        optionsUrl?: string;
         placeholder?: string;
         id?: string;
         class?: string;
@@ -34,6 +36,7 @@ const props = withDefaults(
     {
         modelValue: null,
         multiple: false,
+        options: () => [],
         placeholder: 'Search...',
         maxOptions: 50,
         allowClear: true,
@@ -45,15 +48,9 @@ const emit = defineEmits<{
     (e: 'update:open', value: boolean): void;
 }>();
 
-const isControlled = computed(() => props.open !== undefined);
-const internalOpen = ref(false);
-const open = computed({
-    get: () => (isControlled.value ? props.open! : internalOpen.value),
-    set: (v) => {
-        if (!isControlled.value) internalOpen.value = v;
-        emit('update:open', v);
-    },
-});
+const searchTerm = ref('');
+const fetchedOptions = ref<{ value: string; label: string }[]>([]);
+const optionsLoading = ref(false);
 
 const selectedValues = computed(() => {
     const val = props.modelValue;
@@ -63,173 +60,176 @@ const selectedValues = computed(() => {
 
 const selectedOptions = computed(() =>
     selectedValues.value.map((v) => {
-        const opt = props.options.find((o) => o.value === v || o.label === v);
+        const opt = displayOptions.value.find((o) => o.value === v || o.label === v);
         return opt ?? { value: v, label: v };
     }),
 );
-
-const selectedOption = computed(() => selectedOptions.value[0]);
 
 const displayValue = computed(() => {
     if (props.multiple && selectedOptions.value.length > 0) {
         return selectedOptions.value.map((o) => o.label).join(', ');
     }
-    return selectedOption.value?.label ?? '';
+    return selectedOptions.value[0]?.label ?? '';
 });
 
-const commandModelValue = computed(() => {
-    if (props.multiple) {
-        return selectedValues.value;
-    }
-    return selectedOption.value?.label ?? props.modelValue ?? '';
-});
-
-const filteredOptions = computed(() =>
-    props.options.slice(0, props.maxOptions),
-);
-
-const CLEAR_VALUE = '__CLEAR__';
-
-function handleSelect(value: string | string[] | null): void {
-    if (value === CLEAR_VALUE || value === null) {
-        emit('update:modelValue', props.multiple ? [] : null);
-    } else if (props.multiple && Array.isArray(value)) {
-        emit('update:modelValue', value.filter(Boolean));
-    } else if (props.multiple) {
-        const val = value as string;
-        const current = selectedValues.value;
-        const exists = current.includes(val);
-        const next = exists
-            ? current.filter((v) => v !== val)
-            : [...current, val];
-        emit('update:modelValue', next.length > 0 ? next : []);
-    } else {
-        const option = props.options.find(
-            (o) => o.value === value || o.label === value,
+const displayOptions = computed(() => {
+    if (props.optionsUrl) {
+        const selected = selectedValues.value
+            .map((v) => {
+                const opt = fetchedOptions.value.find((o) => o.value === v || o.label === v);
+                return opt ?? { value: v, label: v };
+            })
+            .filter((o) => o.value);
+        const fromFetched = fetchedOptions.value.filter(
+            (o) => !selected.some((s) => s.value === o.value),
         );
-        emit('update:modelValue', option?.value ?? (value as string));
-        open.value = false;
+        return [...selected, ...fromFetched].slice(0, props.maxOptions);
+    }
+    return (props.options ?? []).slice(0, props.maxOptions);
+});
+
+async function fetchOptions(): Promise<void> {
+    if (!props.optionsUrl) return;
+    optionsLoading.value = true;
+    try {
+        const url = new URL(props.optionsUrl, window.location.origin);
+        if (searchTerm.value) url.searchParams.set('search', searchTerm.value);
+        const res = await fetch(url.toString());
+        if (!res.ok) throw new Error('Failed to fetch options');
+        const json = await res.json();
+        fetchedOptions.value = Array.isArray(json.data) ? json.data : [];
+    } catch {
+        fetchedOptions.value = [];
+    } finally {
+        optionsLoading.value = false;
     }
 }
+
+onMounted(() => {
+    if (props.optionsUrl) fetchOptions();
+});
 
 function removeValue(value: string, event: Event): void {
     event.stopPropagation();
     const next = selectedValues.value.filter((v) => v !== value);
     emit('update:modelValue', next.length > 0 ? next : []);
 }
-
-function toggleOption(value: string, event: { preventDefault?: () => void }): void {
-    if (!props.multiple) return;
-    event?.preventDefault?.();
-    const current = selectedValues.value;
-    const exists = current.includes(value);
-    const next = exists
-        ? current.filter((v) => v !== value)
-        : [...current, value];
-    emit('update:modelValue', next.length > 0 ? next : []);
-}
-
-function onOpenChange(value: boolean): void {
-    if (!isControlled.value) internalOpen.value = value;
-    emit('update:open', value);
-}
 </script>
 
 <template>
-    <Popover
+    <Combobox
+        :name="id ?? instanceId"
+        :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
+        :multiple="multiple"
         :open="open"
-        @update:open="onOpenChange"
+        :open-on-click="true"
+        :ignore-filter="!!optionsUrl"
+        :reset-search-term-on-select="false"
+        @update:model-value="emit('update:modelValue', multiple ? (Array.isArray($event) ? $event : []) : (Array.isArray($event) ? $event[0] ?? null : $event ?? null))"
+        @update:open="emit('update:open', $event)"
     >
-        <PopoverTrigger as-child>
-            <Button
+        <ComboboxAnchor
+            :class="cn(
+                'flex h-auto min-h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
+                'focus-within:outline-none focus-within:ring-1 focus-within:ring-ring',
+                props.class,
+            )"
+        >
+            <ComboboxTrigger
                 :id="id"
-                variant="outline"
-                role="combobox"
-                :aria-expanded="open"
-                :aria-label="placeholder"
-                :aria-multiselectable="multiple"
-                :class="cn(
-                    'flex h-auto min-h-9 w-full items-center justify-between gap-2 font-normal',
-                    multiple && selectedOptions.length > 0 && 'py-1.5',
-                    props.class,
-                )"
+                as-child
+                class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 outline-none"
             >
-                <span
-                    v-if="multiple && selectedOptions.length > 0"
-                    class="flex flex-1 flex-wrap items-center gap-1 overflow-hidden"
+                <button
+                    type="button"
+                    class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 bg-transparent text-left outline-none"
                 >
-                    <Badge
-                        v-for="opt in selectedOptions"
-                        :key="opt.value"
-                        variant="secondary"
-                        class="gap-1 pr-1 font-normal"
+                    <span
+                        v-if="multiple && selectedOptions.length > 0"
+                        class="flex flex-1 flex-wrap items-center gap-1"
                     >
-                        {{ opt.label }}
-                        <button
-                            type="button"
-                            class="rounded-full outline-none ring-offset-background hover:bg-secondary focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                            aria-label="Remove"
-                            @click="removeValue(opt.value, $event)"
+                        <Badge
+                            v-for="(opt, i) in selectedOptions"
+                            :key="`${instanceId}-badge-${opt.value}-${i}`"
+                            variant="secondary"
+                            class="gap-1 pr-1 font-normal"
                         >
-                            <X class="size-3.5" />
-                        </button>
-                    </Badge>
-                </span>
-                <span
-                    v-else
-                    class="flex-1 truncate text-left"
-                >
-                    {{ displayValue || placeholder }}
-                </span>
-                <ChevronsUpDown class="ml-2 size-4 shrink-0 opacity-50" />
-            </Button>
-        </PopoverTrigger>
-        <PopoverContent
-            class="w-[var(--reka-popover-trigger-width)] p-0"
+                            {{ opt.label }}
+                            <button
+                                v-if="allowClear"
+                                type="button"
+                                class="rounded-full outline-none ring-offset-background hover:bg-secondary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                aria-label="Remove"
+                                @click.stop="removeValue(opt.value, $event)"
+                            >
+                                <X class="size-3.5" />
+                            </button>
+                        </Badge>
+                    </span>
+                    <span
+                        v-else
+                        :class="cn(
+                            'flex-1 truncate text-left',
+                            !displayValue && 'text-muted-foreground',
+                        )"
+                    >
+                        {{ displayValue || placeholder }}
+                    </span>
+                    <ChevronsUpDown class="size-4 shrink-0 opacity-50" />
+                </button>
+            </ComboboxTrigger>
+            <ComboboxCancel class="sr-only" />
+        </ComboboxAnchor>
+
+        <ComboboxList
+            class="w-[var(--reka-combobox-trigger-width)] max-h-[300px] p-0"
             align="start"
         >
-            <Command
-                :model-value="commandModelValue"
-                :multiple="multiple"
-                :ignore-filter="false"
-                :open-on-focus="true"
-                :reset-search-term-on-select="false"
-                @update:model-value="handleSelect"
-            >
-                <CommandInput :placeholder="placeholder" />
-                <CommandContent>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandList>
-                        <CommandGroup>
-                            <CommandItem
-                                v-if="allowClear && (modelValue != null && (Array.isArray(modelValue) ? modelValue.length > 0 : true))"
-                                :value="CLEAR_VALUE"
-                                class="text-muted-foreground"
-                            >
-                                Clear selection
-                            </CommandItem>
-                            <CommandItem
-                                v-for="opt in filteredOptions"
-                                :key="opt.value"
-                                :value="opt.value"
-                                :text-value="opt.label"
-                                @select="multiple ? toggleOption(opt.value, $event) : undefined"
-                            >
-                                <Check
-                                    v-if="multiple"
-                                    :class="cn(
-                                        'mr-2 size-4 shrink-0',
-                                        selectedValues.includes(opt.value)
-                                            ? 'opacity-100'
-                                            : 'opacity-0',
-                                    )"
-                                />
-                                {{ opt.label }}
-                            </CommandItem>
-                        </CommandGroup>
-                    </CommandList>
-                </CommandContent>
-            </Command>
-        </PopoverContent>
-    </Popover>
+            <div class="relative">
+                <ComboboxInput
+                    v-model="searchTerm"
+                    :placeholder="placeholder"
+                    class="flex-1 border-0 rounded-none pr-10"
+                />
+                <button
+                    v-if="optionsUrl"
+                    type="button"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label="Search"
+                    :disabled="optionsLoading"
+                    @click="fetchOptions"
+                >
+                    <Search class="size-4" />
+                </button>
+            </div>
+            <ComboboxViewport>
+                <ComboboxEmpty>
+                    {{ optionsLoading ? 'Searching...' : 'No results found.' }}
+                </ComboboxEmpty>
+                <ComboboxGroup>
+                    <ComboboxItem
+                        v-for="(opt, i) in displayOptions"
+                        :key="`${instanceId}-item-${opt.value}-${i}`"
+                        :value="opt.value"
+                        :text-value="opt.label"
+                    >
+                        <Check
+                            v-if="multiple"
+                            :class="cn(
+                                'mr-2 size-4 shrink-0',
+                                selectedValues.includes(opt.value) ? 'opacity-100' : 'opacity-0',
+                            )"
+                        />
+                        <ComboboxItemIndicator
+                            v-else
+                            class="mr-2"
+                        >
+                            <Check class="size-4" />
+                        </ComboboxItemIndicator>
+                        {{ opt.label }}
+                    </ComboboxItem>
+                </ComboboxGroup>
+            </ComboboxViewport>
+        </ComboboxList>
+    </Combobox>
 </template>
