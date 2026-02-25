@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import AuthLayout from '@/layouts/AuthLayout.vue';
+import AuthBase from '@/layouts/AuthLayout.vue';
 import { update } from '@/routes/password';
 
 const props = defineProps<{
@@ -18,7 +18,7 @@ const inputEmail = ref(props.email);
 </script>
 
 <template>
-    <AuthLayout
+    <AuthBase
         title="Reset password"
         description="Please enter your new password below"
     >
@@ -29,6 +29,7 @@ const inputEmail = ref(props.email);
             :transform="(data) => ({ ...data, token, email })"
             :reset-on-success="['password', 'password_confirmation']"
             v-slot="{ errors, processing }"
+            class="flex flex-col gap-6"
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
@@ -39,10 +40,10 @@ const inputEmail = ref(props.email);
                         name="email"
                         autocomplete="email"
                         v-model="inputEmail"
-                        class="mt-1 block w-full"
+                        class="block w-full"
                         readonly
                     />
-                    <InputError :message="errors.email" class="mt-2" />
+                    <InputError :message="errors.email" />
                 </div>
 
                 <div class="grid gap-2">
@@ -52,7 +53,6 @@ const inputEmail = ref(props.email);
                         type="password"
                         name="password"
                         autocomplete="new-password"
-                        class="mt-1 block w-full"
                         autofocus
                         placeholder="Password"
                     />
@@ -60,15 +60,12 @@ const inputEmail = ref(props.email);
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation">
-                        Confirm Password
-                    </Label>
+                    <Label for="password_confirmation">Confirm password</Label>
                     <Input
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         autocomplete="new-password"
-                        class="mt-1 block w-full"
                         placeholder="Confirm password"
                     />
                     <InputError :message="errors.password_confirmation" />
@@ -76,7 +73,7 @@ const inputEmail = ref(props.email);
 
                 <Button
                     type="submit"
-                    class="mt-4 w-full"
+                    class="w-full"
                     :disabled="processing"
                     data-test="reset-password-button"
                 >
@@ -85,5 +82,5 @@ const inputEmail = ref(props.email);
                 </Button>
             </div>
         </Form>
-    </AuthLayout>
+    </AuthBase>
 </template>

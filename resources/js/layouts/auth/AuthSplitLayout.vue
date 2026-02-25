@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { Link } from '@inertiajs/vue3';
 import { home } from '@/routes';
-
-const page = usePage();
-const name = page.props.name;
 
 defineProps<{
     title?: string;
@@ -14,29 +10,48 @@ defineProps<{
 
 <template>
     <div
-        class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0"
+        class="relative grid min-h-svh flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0"
     >
+        <!-- Left: logo / branding (Login 04 style) -->
         <div
-            class="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r"
+            class="relative hidden h-dvh flex-col bg-muted p-10 text-white lg:flex dark:border-r dark:bg-zinc-900/95"
         >
-            <div class="absolute inset-0 bg-zinc-900" />
             <Link
                 :href="home()"
-                class="relative z-20 flex items-center text-lg font-medium"
+                class="absolute left-10 top-10 z-10 font-medium text-foreground/80 transition hover:text-foreground"
             >
-                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
-                {{ name }}
+                Back to home
             </Link>
-        </div>
-        <div class="lg:p-8">
             <div
-                class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]"
+                class="flex flex-1 flex-col items-center justify-center gap-6 p-8"
             >
-                <div class="flex flex-col space-y-2 text-center">
-                    <h1 class="text-xl font-medium tracking-tight" v-if="title">
+                <img
+                    src="/logo.svg"
+                    alt="Logo"
+                    class="h-auto w-full max-w-[280px] object-contain dark:invert"
+                />
+            </div>
+        </div>
+
+        <!-- Right: content -->
+        <div class="flex flex-col p-6 sm:p-10 lg:p-8">
+            <div
+                class="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[380px]"
+            >
+                <div
+                    v-if="title || description"
+                    class="flex flex-col gap-2 text-center lg:text-left"
+                >
+                    <h1
+                        v-if="title"
+                        class="text-2xl font-semibold tracking-tight"
+                    >
                         {{ title }}
                     </h1>
-                    <p class="text-sm text-muted-foreground" v-if="description">
+                    <p
+                        v-if="description"
+                        class="text-sm text-muted-foreground"
+                    >
                         {{ description }}
                     </p>
                 </div>
