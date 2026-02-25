@@ -62,9 +62,10 @@ function formatDate(iso: string | null): string {
                 {{ blog.excerpt }}
             </div>
 
-            <div class="prose prose-neutral dark:prose-invert max-w-none whitespace-pre-wrap">
-                {{ blog.content }}
-            </div>
+            <div
+                class="prose prose-neutral dark:prose-invert max-w-none"
+                v-html="blog.content"
+            />
 
             <footer class="mt-12 border-t pt-8">
                 <Link

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import RichTextEditor from '@/components/RichTextEditor.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import {
     index as developerBlogsIndex,
@@ -110,13 +111,9 @@ function submit(): void {
                         </div>
                         <div class="grid gap-2">
                             <Label for="content">Content <span class="text-destructive">*</span></Label>
-                            <textarea
-                                id="content"
+                            <RichTextEditor
                                 v-model="formData.content"
-                                required
-                                rows="12"
-                                placeholder="Write your post..."
-                                class="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                placeholder="Write your post…"
                             />
                             <InputError :message="formErrors.content" />
                         </div>
