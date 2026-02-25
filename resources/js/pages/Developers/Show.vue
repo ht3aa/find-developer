@@ -168,14 +168,14 @@ function formatNum(n: number): string {
                             <Briefcase
                                 class="size-4 text-muted-foreground"
                             />
-                            {{ experienceLabel }} Exp
+                            {{ experienceLabel }} Experience
                         </span>
                         <span
                             v-if="developer.location"
                             class="flex items-center gap-2 text-muted-foreground"
                         >
                             <MapPin class="size-4 shrink-0" />
-                            {{ developer.location.label }}
+                            {{ developer.location.label }} Location
                         </span>
                         <span
                             class="inline-flex items-center gap-1.5 font-medium"
@@ -193,7 +193,7 @@ function formatNum(n: number): string {
                                         : 'bg-availability-unavailable'
                                 "
                             />
-                            {{ developer.is_available ? 'Available' : 'Not Available' }}
+                            {{ developer.is_available ? 'Available' : 'Not Available' }} Status
                         </span>
                         <span
                             v-if="developer.recommendations_received_count > 0"
@@ -297,7 +297,7 @@ function formatNum(n: number): string {
                                                 clip-rule="evenodd"
                                             />
                                         </svg>
-                                        GitHub
+                                        GitHub Profile
                                     </a>
                                 </Button>
                                 <Button
@@ -356,26 +356,6 @@ function formatNum(n: number): string {
                             </div>
                         </section>
 
-                        <!-- CV / Resume -->
-                        <section v-if="developer.cv_path_url">
-                            <h2 class="mb-3 text-lg font-semibold">
-                                CV / Resume
-                            </h2>
-                            <Button
-                                variant="outline"
-                                as-child
-                                class="gap-2 rounded-xl"
-                            >
-                                <a
-                                    :href="developer.cv_path_url"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <FileText class="size-4" />
-                                    View CV / Resume
-                                </a>
-                            </Button>
-                        </section>
 
                         <!-- Recommendations -->
                         <section>
@@ -384,7 +364,7 @@ function formatNum(n: number): string {
                             </h2>
                             <p
                                 v-if="isGuest"
-                                class="text-sm text-muted-foreground"
+                                class="mb-4 text-sm text-muted-foreground"
                             >
                                 <Link
                                     :href="login()"
@@ -399,14 +379,55 @@ function formatNum(n: number): string {
                             >
                                 No recommendations yet.
                             </p>
-                            <p
-                                v-else
-                                class="text-sm text-muted-foreground"
-                            >
-                                {{ developer.recommendations_received_count }}
-                                {{ developer.recommendations_received_count === 1 ? 'recommendation' : 'recommendations' }}
-                                received.
-                            </p>
+                            <template v-else>
+                                <div
+                                    v-if="developer.recommendations && developer.recommendations.length > 0"
+                                    class="space-y-6"
+                                >
+                                    <div
+                                        v-for="(rec, index) in developer.recommendations"
+                                        :key="index"
+                                        class="flex gap-4 rounded-xl border border-border bg-card p-5 shadow-sm"
+                                    >
+                                        <div
+                                            class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary"
+                                        >
+                                            {{ rec.recommender_name.split(' ').map(n => n[0]).join('').slice(0, 2) }}
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="font-semibold text-foreground">
+                                                {{ rec.recommender_name }}
+                                            </p>
+                                            <p
+                                                v-if="rec.recommender_job_title"
+                                                class="text-sm text-muted-foreground"
+                                            >
+                                                {{ rec.recommender_job_title }}
+                                            </p>
+                                            <blockquote
+                                                v-if="rec.note"
+                                                class="mt-3 text-sm leading-relaxed text-muted-foreground"
+                                            >
+                                                "{{ rec.note }}"
+                                            </blockquote>
+                                            <p
+                                                v-else
+                                                class="mt-3 text-sm italic text-muted-foreground"
+                                            >
+                                                No note provided.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p
+                                    v-else
+                                    class="text-sm text-muted-foreground"
+                                >
+                                    {{ developer.recommendations_received_count }}
+                                    {{ developer.recommendations_received_count === 1 ? 'recommendation' : 'recommendations' }}
+                                    received.
+                                </p>
+                            </template>
                         </section>
                     </div>
 
@@ -497,7 +518,7 @@ function formatNum(n: number): string {
                             </dl>
 
                             <div
-                                class="mt-6 border-t border-border pt-4"
+                                class="mt-6 flex flex-col gap-3 border-t border-border pt-4"
                             >
                                 <Button
                                     class="w-full gap-2 rounded-xl"
@@ -506,6 +527,21 @@ function formatNum(n: number): string {
                                     <a :href="`mailto:${developer.email}`">
                                         <Mail class="size-4" />
                                         Contact Now
+                                    </a>
+                                </Button>
+                                <Button
+                                    v-if="developer.cv_path_url"
+                                    variant="outline"
+                                    class="w-full gap-2 rounded-xl"
+                                    as-child
+                                >
+                                    <a
+                                        :href="developer.cv_path_url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <FileText class="size-4" />
+                                        View CV / Resume
                                     </a>
                                 </Button>
                             </div>

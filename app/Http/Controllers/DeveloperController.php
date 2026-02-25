@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RecommendationStatus;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
 use App\Repositories\DeveloperRepository;
@@ -73,7 +74,14 @@ class DeveloperController extends Controller
      */
     public function show(Developer $developer): Response
     {
-        $developer->load(['jobTitle', 'skills', 'badges']);
+        $developer->load([
+            'jobTitle',
+            'skills',
+            'badges',
+            'recommendationsReceived' => fn ($q) => $q
+                ->where('status', RecommendationStatus::APPROVED)
+                ->with('recommender:id,name,job_title_id', 'recommender.jobTitle:id,name'),
+        ]);
         $developer->loadCount('recommendationsReceived');
 
         return Inertia::render('Developers/Show', [

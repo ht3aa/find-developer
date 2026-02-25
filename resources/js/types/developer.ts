@@ -22,6 +22,12 @@ export type DeveloperAvailabilityType = {
     label: string;
 };
 
+export type DeveloperRecommendation = {
+    note: string | null;
+    recommender_name: string;
+    recommender_job_title?: string | null;
+};
+
 export type Developer = {
     id: number;
     name: string;
@@ -48,4 +54,5 @@ export type Developer = {
     availability_type: DeveloperAvailabilityType[];
     profile_url?: string;
     badges_page_url?: string;
+    recommendations?: DeveloperRecommendation[];
 };

@@ -118,18 +118,7 @@ function formatNum(n: number): string {
         </div>
 
         <!-- YouTube embed -->
-        <div
-            v-if="developer.youtube_video_id"
-            class="relative aspect-video w-full overflow-hidden bg-muted"
-        >
-            <iframe
-                :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
-                title="YouTube video"
-                class="size-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-            />
-        </div>
+
 
         <CardHeader class="space-y-3 px-6 pb-3 pt-6">
             <!-- Badges row -->
@@ -163,7 +152,18 @@ function formatNum(n: number): string {
                 </Tooltip>
             </TooltipProvider>
             </div>
-
+        <div
+            v-if="developer.youtube_video_id"
+            class="relative aspect-video w-full overflow-hidden bg-muted"
+        >
+            <iframe
+                :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
+                title="YouTube video"
+                class="size-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+            />
+        </div>
             <div class="space-y-2">
                 <CardTitle class="text-xl font-bold leading-tight tracking-tight">
                     <Link
@@ -298,7 +298,8 @@ function formatNum(n: number): string {
 
             <!-- Social links + View profile (grouped at bottom) -->
             <div class="mt-auto flex flex-col gap-3">
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap gap-2">
                 <TooltipProvider v-if="developer.portfolio_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
@@ -369,6 +370,8 @@ function formatNum(n: number): string {
                         <TooltipContent>LinkedIn</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
+                </div>
+                <div class="flex flex-wrap gap-2">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger as-child>
@@ -411,6 +414,7 @@ function formatNum(n: number): string {
                         <TooltipContent>CV / Resume</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
+                </div>
             </div>
 
             <!-- View profile CTA -->

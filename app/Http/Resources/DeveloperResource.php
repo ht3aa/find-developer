@@ -39,6 +39,17 @@ class DeveloperResource extends JsonResource
             ];
         })->values()->all();
 
+        $recommendations = $developer->relationLoaded('recommendationsReceived')
+            ? $developer->recommendationsReceived
+                ->map(fn ($r) => [
+                    'note' => $r->recommendation_note,
+                    'recommender_name' => $r->recommender?->name ?? 'Anonymous',
+                    'recommender_job_title' => $r->recommender?->jobTitle?->name ?? null,
+                ])
+                ->values()
+                ->all()
+            : [];
+
         return [
             'id' => $developer->id,
             'name' => $developer->name,
@@ -67,6 +78,7 @@ class DeveloperResource extends JsonResource
             'availability_type' => $availabilityTypeArray,
             'profile_url' => $developer->slug ? url("/developers/{$developer->slug}") : null,
             'badges_page_url' => null,
+            'recommendations' => $recommendations,
         ];
     }
 }
