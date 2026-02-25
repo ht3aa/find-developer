@@ -9,6 +9,7 @@ use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -55,9 +56,19 @@ class DeveloperProfileController extends Controller
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
-        unset($data['skill_ids'], $data['skill_names']);
+        $cvFile = $data['cv'] ?? null;
+        unset($data['skill_ids'], $data['skill_names'], $data['cv']);
 
         $developer->update($data);
+
+        if ($cvFile) {
+            $disk = 's3';
+            if ($developer->cv_path) {
+                Storage::disk($disk)->delete($developer->cv_path);
+            }
+            $path = $cvFile->store("cvs/developer-{$developer->id}", ['disk' => $disk]);
+            $developer->update(['cv_path' => $path]);
+        }
 
         if ($skillIds !== null) {
             $developer->skills()->sync($skillIds);

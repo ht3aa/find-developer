@@ -55,6 +55,7 @@ class UpdateDeveloperRequest extends FormRequest
             'skill_ids.*' => ['integer', 'exists:skills,id'],
             'skill_names' => ['nullable', 'array'],
             'skill_names.*' => ['string', 'max:255'],
+            'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ];
     }
 }

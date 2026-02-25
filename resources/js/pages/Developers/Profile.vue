@@ -4,8 +4,8 @@ import { User } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
 import DeveloperProfileController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProfileController';
 import DeveloperCard from '@/components/DeveloperCard.vue';
+import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -141,6 +141,8 @@ watch(
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
+const cvFile = ref<File | null>(null);
+const cvUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
@@ -173,30 +175,35 @@ function submitForm(): void {
     const d = formData.value;
     const jobTitle = props.jobTitles.find((j) => j.name === d.job_title?.name);
     submitting.value = true;
-    router.put(
-        DeveloperProfileController.update.url(),
-        {
-            name: d.name ?? '',
-            email: d.email ?? '',
-            phone: d.phone ?? '',
-            job_title_id: jobTitle?.id ?? null,
-            years_of_experience: Number(d.years_of_experience) || 0,
-            bio: d.bio ?? null,
-            portfolio_url: d.portfolio_url ?? null,
-            github_url: d.github_url ?? null,
-            linkedin_url: d.linkedin_url ?? null,
-            youtube_url: (d as Record<string, unknown>).youtube_url as string | null ?? null,
-            is_available: d.is_available ?? false,
-            availability_type: (d.availability_type ?? []).map((a) => a.value),
-            skill_names: (d.skills ?? []).map((s) => s.name),
+    const payload: Record<string, unknown> = {
+        name: d.name ?? '',
+        email: d.email ?? '',
+        phone: d.phone ?? '',
+        job_title_id: jobTitle?.id ?? null,
+        years_of_experience: Number(d.years_of_experience) || 0,
+        bio: d.bio ?? null,
+        portfolio_url: d.portfolio_url ?? null,
+        github_url: d.github_url ?? null,
+        linkedin_url: d.linkedin_url ?? null,
+        youtube_url: (d as Record<string, unknown>).youtube_url as string | null ?? null,
+        is_available: d.is_available ?? false,
+        availability_type: (d.availability_type ?? []).map((a) => a.value),
+        skill_names: (d.skills ?? []).map((s) => s.name),
+    };
+    if (cvFile.value) {
+        payload.cv = cvFile.value;
+    }
+    router.put(DeveloperProfileController.update.url(), payload, {
+        preserveScroll: true,
+        forceFormData: !!cvFile.value,
+        onSuccess: () => {
+            cvFile.value = null;
+            cvUploadRef.value?.clear();
         },
-        {
-            preserveScroll: true,
-            onFinish: () => {
-                submitting.value = false;
-            },
+        onFinish: () => {
+            submitting.value = false;
         },
-    );
+    });
 }
 </script>
 
@@ -359,6 +366,17 @@ function submitForm(): void {
                                             />
                                         </div>
                                     </div>
+
+                                    <FileUpload
+                                        id="cv"
+                                        ref="cvUploadRef"
+                                        v-model="cvFile"
+                                        label="CV (PDF, max 10MB)"
+                                        accept=".pdf,application/pdf"
+                                        :existing-url="formData?.cv_path_url ?? null"
+                                        existing-label="View current CV"
+                                        :error="formErrors.cv"
+                                    />
 
                                     <Separator />
 
