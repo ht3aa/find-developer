@@ -50,7 +50,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <Card>
                 <Form
-                    v-bind="BadgeController.update.form(badge.id)"
+                    :action="BadgeController.update(badge.id)"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <input type="hidden" name="_method" value="PUT" />

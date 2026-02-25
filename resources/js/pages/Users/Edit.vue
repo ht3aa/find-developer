@@ -71,7 +71,7 @@ function hasRole(user: UserFormData, roleId: number): boolean {
 
             <Card>
                 <Form
-                    v-bind="UserController.update.form(user.id)"
+                    :action="UserController.update(user.id)"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <input type="hidden" name="_method" value="PUT" />

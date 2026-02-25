@@ -20,6 +20,8 @@ class RoleController extends Controller
 
     public function index(): Response
     {
+        $this->authorize('viewAny', Role::class);
+
         $roles = Role::withCount('users')->orderBy('name')->get();
 
         return Inertia::render('Roles/Index', [
@@ -34,6 +36,8 @@ class RoleController extends Controller
 
     public function create(): Response
     {
+        $this->authorize('create', Role::class);
+
         $permissionsByResource = $this->policyPermissionService->getPermissionsGroupedByResource();
 
         return Inertia::render('Roles/Create', [
@@ -43,6 +47,8 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request): RedirectResponse
     {
+        $this->authorize('create', Role::class);
+
         $data = $request->validated();
         $permissionIds = $data['permission_ids'] ?? [];
         unset($data['permission_ids']);
@@ -58,6 +64,8 @@ class RoleController extends Controller
 
     public function edit(Role $role): Response
     {
+        $this->authorize('update', $role);
+
         $role->load('permissions');
         $permissionsByResource = $this->policyPermissionService->getPermissionsGroupedByResource();
 
@@ -74,6 +82,8 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
+        $this->authorize('update', $role);
+
         $data = $request->validated();
         $permissionIds = $data['permission_ids'] ?? [];
         unset($data['permission_ids']);
@@ -89,6 +99,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role): RedirectResponse
     {
+        $this->authorize('delete', $role);
+
         $role->delete();
 
         return redirect()

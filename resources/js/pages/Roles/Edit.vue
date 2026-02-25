@@ -104,7 +104,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <Card>
                 <Form
-                    v-bind="RoleController.update.form(role.id)"
+                    :action="RoleController.update(role.id)"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <input type="hidden" name="_method" value="PUT" />

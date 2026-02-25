@@ -18,6 +18,8 @@ class WorkExperienceController extends Controller
      */
     public function index(Request $request): Response|RedirectResponse
     {
+        $this->authorize('viewAny', DeveloperCompany::class);
+
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -28,7 +30,7 @@ class WorkExperienceController extends Controller
         $experiences = DeveloperCompany::with(['jobTitle', 'parent'])
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
                 'company_name' => $e->company_name,
                 'job_title' => $e->jobTitle?->name ?? null,
@@ -56,6 +58,8 @@ class WorkExperienceController extends Controller
      */
     public function create(Request $request): Response|RedirectResponse
     {
+        $this->authorize('create', DeveloperCompany::class);
+
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -67,9 +71,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
+                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
             ]);
 
         return Inertia::render('WorkExperience/Create', [
@@ -83,6 +87,8 @@ class WorkExperienceController extends Controller
      */
     public function store(StoreWorkExperienceRequest $request): RedirectResponse
     {
+        $this->authorize('create', DeveloperCompany::class);
+
         $developer = $request->user()->developer;
 
         $data = $request->validated();
@@ -107,6 +113,8 @@ class WorkExperienceController extends Controller
      */
     public function edit(Request $request, DeveloperCompany $workExperience): Response|RedirectResponse
     {
+        $this->authorize('update', $workExperience);
+
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -122,9 +130,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
+                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
             ]);
 
         return Inertia::render('WorkExperience/Edit', [
@@ -155,6 +163,8 @@ class WorkExperienceController extends Controller
      */
     public function update(UpdateWorkExperienceRequest $request, DeveloperCompany $workExperience): RedirectResponse
     {
+        $this->authorize('update', $workExperience);
+
         $data = $request->validated();
         $data['is_current'] = $data['is_current'] ?? false;
         $data['show_company'] = $data['show_company'] ?? true;
@@ -176,6 +186,8 @@ class WorkExperienceController extends Controller
      */
     public function destroy(Request $request, DeveloperCompany $workExperience): RedirectResponse
     {
+        $this->authorize('delete', $workExperience);
+
         $workExperience->delete();
 
         return redirect()

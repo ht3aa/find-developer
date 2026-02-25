@@ -55,6 +55,8 @@ class DeveloperProfileController extends Controller
                 ->withErrors(['developer' => 'You do not have a developer profile.']);
         }
 
+        $this->authorize('update', $developer);
+
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
@@ -87,7 +89,7 @@ class DeveloperProfileController extends Controller
     /**
      * Download the authenticated user's developer profile as a PDF CV.
      */
-    public function downloadCv(Request $request)
+    public function downloadCv(Request $request): StreamedResponse
     {
         $developer = $request->user()->developer;
 
@@ -103,6 +105,8 @@ class DeveloperProfileController extends Controller
                 'projects',
             ])
             ->findOrFail($developer->id);
+
+        $this->authorize('update', $developer);
 
         $filename = str($developer->name)->slug()->append('-cv.pdf')->toString();
 

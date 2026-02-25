@@ -18,8 +18,8 @@ import { dashboard, home } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { index as developersIndex } from '@/routes/developers';
-import { index as rolesIndex } from '@/routes/roles';
-import { index as usersIndex } from '@/routes/users';
+import rolesRoutes from '@/routes/roles';
+import usersRoutes from '@/routes/users';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -60,13 +60,13 @@ const allMainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        href: usersIndex(),
+        href: usersRoutes.index.url(),
         icon: UserCog,
         permission: 'View:Users',
     },
     {
         title: 'Roles',
-        href: rolesIndex(),
+        href: rolesRoutes.index.url(),
         icon: Shield,
         permission: 'View:Roles',
     },

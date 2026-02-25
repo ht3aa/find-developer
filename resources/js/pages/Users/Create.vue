@@ -56,7 +56,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <Card>
                 <Form
-                    v-bind="UserController.store.form()"
+                    :action="UserController.store()"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <CardHeader class="pb-4">

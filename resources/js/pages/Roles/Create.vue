@@ -96,7 +96,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <Card>
                 <Form
-                    v-bind="RoleController.store.form()"
+                    :action="RoleController.store()"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <CardHeader class="pb-4">

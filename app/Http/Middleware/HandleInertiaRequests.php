@@ -36,7 +36,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        if ($request->user()->isSuperAdmin()) {
+        if ($request->user()?->isSuperAdmin()) {
             $permissions = Permission::all()->pluck('name')->toArray();
         } else {
             $permissions = $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [];

@@ -43,7 +43,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <Card>
                 <Form
-                    v-bind="BadgeController.store.form()"
+                    :action="BadgeController.store()"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <CardHeader class="pb-4">

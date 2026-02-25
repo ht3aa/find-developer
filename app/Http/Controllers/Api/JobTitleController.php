@@ -14,6 +14,7 @@ class JobTitleController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+
         $query = JobTitle::query()
             ->where('is_active', true)
             ->orderBy('name')
@@ -21,12 +22,12 @@ class JobTitleController extends Controller
 
         $search = $request->input('search');
         if ($search && is_string($search)) {
-            $term = '%'.addcslashes(trim($search), '%_').'%';
+            $term = '%' . addcslashes(trim($search), '%_') . '%';
             $query->where('name', 'like', $term);
         }
 
         $items = $query->get(['id', 'name'])
-            ->map(fn ($j) => ['value' => $j->name, 'label' => $j->name])
+            ->map(fn($j) => ['value' => $j->name, 'label' => $j->name])
             ->values()
             ->all();
 
