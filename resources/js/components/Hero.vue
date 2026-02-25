@@ -41,9 +41,6 @@ function scrollToSearch(): void {
         <div
             class="mx-auto flex max-w-3xl flex-col items-center gap-8 sm:gap-10"
         >
-            <Badge variant="secondary" class="text-xs sm:text-sm">
-                {{ props.badge }}
-            </Badge>
             <div class="flex flex-col gap-4 sm:gap-6">
                 <h1
                     class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
