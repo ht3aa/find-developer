@@ -79,7 +79,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Create Role" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -94,8 +94,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <Card>
-                <Form
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <Form
                     :action="RoleController.store()"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
@@ -251,7 +252,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
                     </CardContent>
                 </Form>
-            </Card>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

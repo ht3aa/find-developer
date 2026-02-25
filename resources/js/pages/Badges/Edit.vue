@@ -33,7 +33,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="`Edit ${badge.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -48,9 +48,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <Card>
-                <Form
-                    :action="BadgeController.update(badge.id)"
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <Form
+                        :action="BadgeController.update(badge.id)"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <input type="hidden" name="_method" value="PUT" />
@@ -59,7 +60,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             Badge details
                         </h3>
                     </CardHeader>
-                    <CardContent class="space-y-6">
+                    <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="space-y-4">
                             <div class="grid gap-2">
                                 <Label for="name">Name <span class="text-destructive">*</span></Label>
@@ -87,7 +88,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
                         </div>
 
-                        <Separator />
+                        <Separator class="lg:col-span-2" />
 
                         <div class="space-y-4">
                             <h3 class="text-sm font-medium text-muted-foreground">
@@ -125,9 +126,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
                         </div>
 
-                        <Separator />
+                        <Separator class="lg:col-span-2" />
 
-                        <div class="space-y-2">
+                        <div class="space-y-2 lg:col-span-2">
                             <div class="flex items-center justify-between rounded-lg border p-4">
                                 <div class="space-y-0.5">
                                     <Label for="is_active" class="text-base">
@@ -150,7 +151,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <InputError :message="errors.is_active" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
                             <Button :disabled="processing" type="submit">
                                 Update Badge
                             </Button>
@@ -175,8 +176,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </Transition>
                         </div>
                     </CardContent>
-                </Form>
-            </Card>
+                    </Form>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

@@ -90,7 +90,7 @@ function submit(): void {
     <Head title="Add Work Experience" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -105,14 +105,15 @@ function submit(): void {
                 </div>
             </div>
 
-            <Card>
-                <CardHeader class="pb-4">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <CardHeader class="pb-4">
                     <h3 class="text-sm font-medium text-muted-foreground">
                         Experience details
                     </h3>
                 </CardHeader>
-                <CardContent class="space-y-6">
-                    <form class="space-y-6" @submit.prevent="submit">
+                <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <form class="contents" @submit.prevent="submit">
                         <div class="space-y-4">
                             <div class="grid gap-2">
                                 <Label for="company_name">Company Name <span class="text-destructive">*</span></Label>
@@ -161,7 +162,9 @@ function submit(): void {
                                 </p>
                                 <InputError :message="formErrors.parent_id" />
                             </div>
+                        </div>
 
+                        <div class="space-y-4">
                             <div class="grid gap-2">
                                 <Label for="description">Description</Label>
                                 <textarea
@@ -197,48 +200,48 @@ function submit(): void {
                                     <InputError :message="formErrors.end_date" />
                                 </div>
                             </div>
-
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between rounded-lg border p-4">
-                                    <div class="space-y-0.5">
-                                        <Label for="is_current" class="text-base">
-                                            I currently work here
-                                        </Label>
-                                        <p class="text-sm text-muted-foreground">
-                                            Leave end date empty when checked
-                                        </p>
-                                    </div>
-                                    <Checkbox
-                                        id="is_current"
-                                        v-model:checked="formData.is_current"
-                                        class="h-5 w-5"
-                                    />
-                                </div>
-                                <InputError :message="formErrors.is_current" />
-                            </div>
-
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between rounded-lg border p-4">
-                                    <div class="space-y-0.5">
-                                        <Label for="show_company" class="text-base">
-                                            Show on profile
-                                        </Label>
-                                        <p class="text-sm text-muted-foreground">
-                                            Display this experience on your
-                                            public profile
-                                        </p>
-                                    </div>
-                                    <Checkbox
-                                        id="show_company"
-                                        v-model:checked="formData.show_company"
-                                        class="h-5 w-5"
-                                    />
-                                </div>
-                                <InputError :message="formErrors.show_company" />
-                            </div>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <div class="space-y-2 lg:col-span-2">
+                            <div class="flex items-center justify-between rounded-lg border p-4">
+                                <div class="space-y-0.5">
+                                    <Label for="is_current" class="text-base">
+                                        I currently work here
+                                    </Label>
+                                    <p class="text-sm text-muted-foreground">
+                                        Leave end date empty when checked
+                                    </p>
+                                </div>
+                                <Checkbox
+                                    id="is_current"
+                                    v-model:checked="formData.is_current"
+                                    class="h-5 w-5"
+                                />
+                            </div>
+                            <InputError :message="formErrors.is_current" />
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <div class="flex items-center justify-between rounded-lg border p-4">
+                                <div class="space-y-0.5">
+                                    <Label for="show_company" class="text-base">
+                                        Show on profile
+                                    </Label>
+                                    <p class="text-sm text-muted-foreground">
+                                        Display this experience on your
+                                        public profile
+                                    </p>
+                                </div>
+                                <Checkbox
+                                    id="show_company"
+                                    v-model:checked="formData.show_company"
+                                    class="h-5 w-5"
+                                />
+                            </div>
+                            <InputError :message="formErrors.show_company" />
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
                             <Button type="submit" :disabled="submitting">
                                 {{ submitting ? 'Adding...' : 'Add Experience' }}
                             </Button>
@@ -266,7 +269,8 @@ function submit(): void {
                         </div>
                     </form>
                 </CardContent>
-            </Card>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

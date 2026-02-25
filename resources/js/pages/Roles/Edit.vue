@@ -87,7 +87,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head :title="`Edit Role ${role.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-4xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -102,9 +102,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <Card>
-                <Form
-                    :action="RoleController.update(role.id)"
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <Form
+                        :action="RoleController.update(role.id)"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <input type="hidden" name="_method" value="PUT" />
@@ -254,8 +255,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </Transition>
                         </div>
                     </CardContent>
-                </Form>
-            </Card>
+                    </Form>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

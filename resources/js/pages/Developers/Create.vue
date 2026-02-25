@@ -92,7 +92,7 @@ function submit(): void {
     <Head title="Create Developer" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -107,14 +107,15 @@ function submit(): void {
                 </div>
             </div>
 
-            <Card v-if="users.length > 0">
-                <CardHeader class="pb-4">
-                    <h3 class="text-sm font-medium text-muted-foreground">
-                        Developer details
-                    </h3>
-                </CardHeader>
-                <CardContent>
-                    <form class="space-y-6" @submit.prevent="submit">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card v-if="users.length > 0" class="lg:col-span-2">
+                    <CardHeader class="pb-4">
+                        <h3 class="text-sm font-medium text-muted-foreground">
+                            Developer details
+                        </h3>
+                    </CardHeader>
+                    <CardContent>
+                        <form class="space-y-6" @submit.prevent="submit">
                         <DeveloperFormFields
                             ref="formRef"
                             v-model="formData"
@@ -134,19 +135,20 @@ function submit(): void {
                             </Button>
                         </div>
                     </form>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
 
-            <Card v-else>
-                <CardContent class="py-12 text-center">
-                    <p class="text-muted-foreground">
-                        No users available. All registered users already have developer profiles.
-                    </p>
-                    <Button variant="outline" class="mt-4" as-child>
-                        <a :href="developersIndex().url">Back to Developers</a>
-                    </Button>
-                </CardContent>
-            </Card>
+                <Card v-else class="lg:col-span-2">
+                    <CardContent class="py-12 text-center">
+                        <p class="text-muted-foreground">
+                            No users available. All registered users already have developer profiles.
+                        </p>
+                        <Button variant="outline" class="mt-4" as-child>
+                            <a :href="developersIndex().url">Back to Developers</a>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

@@ -5,8 +5,11 @@ namespace App\Http\Requests;
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
+use App\Models\Developer;
+use App\Models\Scopes\ApprovedScope;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class UpdateDeveloperRequest extends FormRequest
 {
@@ -30,14 +33,28 @@ class UpdateDeveloperRequest extends FormRequest
         $developer = $this->user()->developer;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail) use ($developer): void {
+                    $slug = Str::slug($value);
+                    if (Developer::withoutGlobalScope(ApprovedScope::class)
+                        ->where('slug', $slug)
+                        ->where('id', '!=', $developer->id)
+                        ->exists()
+                    ) {
+                        $fail('A developer with this name already exists. Please Add more details to your name to make it unique.');
+                    }
+                },
+            ],
             'email' => [
                 'required',
                 'email',
                 Rule::unique('developers', 'email')->ignore($developer),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
-            'job_title_id' => ['nullable', 'integer', 'exists:job_titles,id'],
+            'job_title_id' => ['required', 'integer', 'exists:job_titles,id'],
             'years_of_experience' => ['required', 'integer', 'min:0', 'max:100'],
             'bio' => ['nullable', 'string', 'max:5000'],
             'portfolio_url' => ['nullable', 'url', 'max:500'],

@@ -39,7 +39,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Create User" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -54,8 +54,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <Card>
-                <Form
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <Form
                     :action="UserController.store()"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
@@ -64,7 +65,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             User details
                         </h3>
                     </CardHeader>
-                    <CardContent class="space-y-6">
+                    <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="grid gap-2">
                                 <Label for="name">Name <span class="text-destructive">*</span></Label>
@@ -169,9 +170,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
                         <InputError :message="errors.can_access_admin_panel" />
 
-                        <Separator />
+                        <Separator class="lg:col-span-2" />
 
-                        <div class="space-y-3">
+                        <div class="space-y-3 lg:col-span-2">
                             <h3 class="text-sm font-medium text-muted-foreground">
                                 Roles
                             </h3>
@@ -205,7 +206,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <InputError :message="errors.role_ids" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
                             <Button :disabled="processing" type="submit">
                                 Create User
                             </Button>
@@ -231,7 +232,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
                     </CardContent>
                 </Form>
-            </Card>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

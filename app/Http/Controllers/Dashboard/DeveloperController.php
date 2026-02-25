@@ -30,7 +30,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
+            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -38,7 +38,7 @@ class DeveloperController extends Controller
             });
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -93,7 +93,7 @@ class DeveloperController extends Controller
         $cvFile = $data['cv'] ?? null;
         unset($data['skill_ids'], $data['skill_names'], $data['cv']);
 
-        $data['slug'] = Str::slug($data['name']).'-'.Str::random(6);
+        $data['slug'] = Str::slug($data['name']);
         $data['status'] = $data['status'] ?? \App\Enums\DeveloperStatus::PENDING;
         $data['is_available'] = $data['is_available'] ?? false;
         $data['recommended_by_us'] = $data['recommended_by_us'] ?? false;
@@ -162,6 +162,7 @@ class DeveloperController extends Controller
         $skillNames = $data['skill_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
         unset($data['skill_ids'], $data['skill_names'], $data['cv']);
+        $data['slug'] = Str::slug($data['name']);
 
         $developer->update($data);
 

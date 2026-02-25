@@ -122,7 +122,7 @@ function submit(): void {
     <Head :title="`Edit ${developer.name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-2xl space-y-6 rounded-xl p-4">
+        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -137,8 +137,9 @@ function submit(): void {
                 </div>
             </div>
 
-            <Card>
-                <CardHeader class="pb-4">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card class="lg:col-span-2">
+                    <CardHeader class="pb-4">
                     <h3 class="text-sm font-medium text-muted-foreground">
                         Developer details
                     </h3>
@@ -179,7 +180,8 @@ function submit(): void {
                         </div>
                     </form>
                 </CardContent>
-            </Card>
+                </Card>
+            </div>
         </div>
     </AppLayout>
 </template>

@@ -293,7 +293,7 @@ function submitForm(): void {
                                     </div>
 
                                     <div class="grid gap-2">
-                                        <Label for="job_title">Job title</Label>
+                                        <Label for="job_title">Job title <span class="text-destructive">*</span></Label>
                                         <SearchableSelect
                                             id="job_title"
                                             v-model="jobTitleModel"
@@ -302,6 +302,7 @@ function submitForm(): void {
                                             placeholder="e.g. Backend Developer"
                                             @update:open="onJobTitleOpenChange"
                                         />
+                                        <InputError :message="formErrors.job_title_id" />
                                     </div>
 
                                     <div class="grid gap-2">

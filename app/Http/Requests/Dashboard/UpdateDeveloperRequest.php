@@ -5,8 +5,11 @@ namespace App\Http\Requests\Dashboard;
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
+use App\Models\Developer;
+use App\Models\Scopes\ApprovedScope;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class UpdateDeveloperRequest extends FormRequest
 {
@@ -29,7 +32,22 @@ class UpdateDeveloperRequest extends FormRequest
 
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($this->route('developer'));
+                    $slug = Str::slug($value);
+                    if (Developer::withoutGlobalScope(ApprovedScope::class)
+                        ->where('slug', $slug)
+                        ->where('id', '!=', $developer->id)
+                        ->exists()
+                    ) {
+                        $fail('A developer with this name already exists. Please Add more details to your name to make it unique.');
+                    }
+                },
+            ],
             'email' => [
                 'required',
                 'email',

@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -65,6 +66,8 @@ class DeveloperProfileController extends Controller
         $skillNames = $data['skill_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
         unset($data['skill_ids'], $data['skill_names'], $data['cv']);
+
+        $data['slug'] = Str::slug($data['name']);
 
         $developer->update($data);
 

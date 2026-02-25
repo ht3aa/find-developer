@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -19,7 +20,6 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        $this->authorize('viewDeveloperProfile', auth()->user()?->developer);
 
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -32,9 +32,10 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $this->authorize('updateDeveloperProfile', auth()->user()?->developer);
 
-        $request->user()->fill($request->validated());
+        $data = $request->validated();
+
+        $request->user()->fill($data);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -50,8 +51,6 @@ class ProfileController extends Controller
      */
     public function destroy(ProfileDeleteRequest $request): RedirectResponse
     {
-        $this->authorize('deleteDeveloperProfile', auth()->user());
-
         $user = $request->user();
 
         Auth::logout();
