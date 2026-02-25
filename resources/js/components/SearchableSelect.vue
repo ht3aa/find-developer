@@ -62,9 +62,10 @@ const selectedValues = computed(() => {
 });
 
 const selectedOptions = computed(() =>
-    selectedValues.value
-        .map((v) => props.options.find((o) => o.value === v))
-        .filter(Boolean) as { value: string; label: string }[],
+    selectedValues.value.map((v) => {
+        const opt = props.options.find((o) => o.value === v || o.label === v);
+        return opt ?? { value: v, label: v };
+    }),
 );
 
 const selectedOption = computed(() => selectedOptions.value[0]);
@@ -78,7 +79,7 @@ const displayValue = computed(() => {
 
 const commandModelValue = computed(() => {
     if (props.multiple) {
-        return selectedOptions.value.map((o) => o.label);
+        return selectedValues.value;
     }
     return selectedOption.value?.label ?? props.modelValue ?? '';
 });
@@ -93,26 +94,14 @@ function handleSelect(value: string | string[] | null): void {
     if (value === CLEAR_VALUE || value === null) {
         emit('update:modelValue', props.multiple ? [] : null);
     } else if (props.multiple && Array.isArray(value)) {
-        const values = value
-            .map((labelOrValue) => {
-                const opt = props.options.find(
-                    (o) => o.value === labelOrValue || o.label === labelOrValue,
-                );
-                return opt?.value ?? labelOrValue;
-            })
-            .filter(Boolean);
-        emit('update:modelValue', values);
+        emit('update:modelValue', value.filter(Boolean));
     } else if (props.multiple) {
-        const labelOrValue = value as string;
-        const opt = props.options.find(
-            (o) => o.value === labelOrValue || o.label === labelOrValue,
-        );
-        const newValue = opt?.value ?? labelOrValue;
+        const val = value as string;
         const current = selectedValues.value;
-        const exists = current.includes(newValue);
+        const exists = current.includes(val);
         const next = exists
-            ? current.filter((v) => v !== newValue)
-            : [...current, newValue];
+            ? current.filter((v) => v !== val)
+            : [...current, val];
         emit('update:modelValue', next.length > 0 ? next : []);
     } else {
         const option = props.options.find(
@@ -126,6 +115,17 @@ function handleSelect(value: string | string[] | null): void {
 function removeValue(value: string, event: Event): void {
     event.stopPropagation();
     const next = selectedValues.value.filter((v) => v !== value);
+    emit('update:modelValue', next.length > 0 ? next : []);
+}
+
+function toggleOption(value: string, event: { preventDefault?: () => void }): void {
+    if (!props.multiple) return;
+    event?.preventDefault?.();
+    const current = selectedValues.value;
+    const exists = current.includes(value);
+    const next = exists
+        ? current.filter((v) => v !== value)
+        : [...current, value];
     emit('update:modelValue', next.length > 0 ? next : []);
 }
 
@@ -193,6 +193,7 @@ function onOpenChange(value: boolean): void {
                 :multiple="multiple"
                 :ignore-filter="false"
                 :open-on-focus="true"
+                :reset-search-term-on-select="false"
                 @update:model-value="handleSelect"
             >
                 <CommandInput :placeholder="placeholder" />
@@ -210,7 +211,9 @@ function onOpenChange(value: boolean): void {
                             <CommandItem
                                 v-for="opt in filteredOptions"
                                 :key="opt.value"
-                                :value="opt.label"
+                                :value="opt.value"
+                                :text-value="opt.label"
+                                @select="multiple ? toggleOption(opt.value, $event) : undefined"
                             >
                                 <Check
                                     v-if="multiple"

@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RecommendationStatus;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
-use App\Models\JobTitle;
 use App\Models\Scopes\DeveloperScope;
-use App\Models\Skill;
-use App\Repositories\DeveloperRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,61 +14,13 @@ use Laravel\Fortify\Features;
 
 class DeveloperController extends Controller
 {
-    public function __construct(
-        private DeveloperRepository $developerRepository
-    ) {}
-
     /**
-     * Display a listing of the resource.
+     * Display the welcome page (shell). Developer data is loaded via API.
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $paginator = $this->developerRepository->getPaginated($request, 12);
-
-        $jobTitles = JobTitle::query()
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->limit(50)
-            ->get(['id', 'name'])
-            ->map(fn ($j) => ['value' => $j->name, 'label' => $j->name])
-            ->values()
-            ->all();
-
-        $skills = Skill::query()
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->limit(50)
-            ->get(['id', 'name'])
-            ->map(fn ($s) => ['value' => $s->name, 'label' => $s->name])
-            ->values()
-            ->all();
-
         return Inertia::render('Welcome', [
             'canRegister' => Features::enabled(Features::registration()),
-            'developers' => DeveloperResource::collection($paginator->items())->resolve(),
-            'filterSearch' => $request->input('filter.search'),
-            'jobTitles' => $jobTitles,
-            'skills' => $skills,
-            'filters' => [
-                'search' => ($request->query('filter') ?? [])['search'] ?? null,
-                'job_title.name' => ($request->query('filter') ?? [])['job_title.name'] ?? null,
-                'skill' => ($request->query('filter') ?? [])['skill'] ?? null,
-                'years_min' => ($request->query('filter') ?? [])['years_min'] ?? null,
-                'years_max' => ($request->query('filter') ?? [])['years_max'] ?? null,
-            ],
-            'sort' => $request->input('sort', 'name'),
-            'meta' => [
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'from' => $paginator->firstItem(),
-                'to' => $paginator->lastItem(),
-            ],
-            'links' => [
-                'prev' => $paginator->previousPageUrl(),
-                'next' => $paginator->nextPageUrl(),
-            ],
         ]);
     }
 

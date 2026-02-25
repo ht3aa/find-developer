@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { refDebounced, watchDebounced } from '@vueuse/core';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { Search, SlidersHorizontal } from 'lucide-vue-next';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
@@ -21,64 +21,89 @@ import {
 } from '@/components/ui/sheet';
 import type { Developer } from '@/types/developer';
 
-type Filters = {
-    search?: string | null;
-    'job_title.name'?: string | null;
-    skill?: string | null;
-    years_min?: string | null;
-    years_max?: string | null;
+const props = defineProps<{
+    canRegister?: boolean;
+}>();
+
+const API_BASE = '/api/developers';
+
+type ApiResponse = {
+    developers: Developer[];
+    job_titles: { value: string; label: string }[];
+    skills: { value: string; label: string }[];
+    meta: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        from: number | null;
+        to: number | null;
+    };
+    links: { prev: string | null; next: string | null };
 };
 
-const props = withDefaults(
-    defineProps<{
-        canRegister?: boolean;
-        developerCount?: number;
-        developers: Developer[];
-        filterSearch?: string | null;
-        filters?: Filters;
-        jobTitles?: { value: string; label: string }[];
-        recommendedDeveloperCount?: number;
-        skills?: { value: string; label: string }[];
-        sort?: string;
-        meta: {
-            current_page: number;
-            last_page: number;
-            per_page: number;
-            total: number;
-            from: number | null;
-            to: number | null;
-        };
-        links: {
-            prev: string | null;
-            next: string | null;
-        };
-    }>(),
-    {
-        developerCount: 0,
-        filters: () => ({}),
-        jobTitles: () => [],
-        recommendedDeveloperCount: 0,
-        skills: () => [],
-        sort: 'name',
-    },
-);
-
-const searchQuery = ref(props.filterSearch ?? props.filters?.search ?? '');
 function parseFilterArray(val: string | string[] | null | undefined): string[] {
     if (val == null || val === '') return [];
     if (Array.isArray(val)) return val.filter(Boolean);
     return val.includes(',') ? val.split(',').map((s) => s.trim()).filter(Boolean) : [val];
 }
 
-const filterJobTitle = ref<string | string[]>(parseFilterArray(props.filters?.['job_title.name']));
-const filterSkill = ref<string | string[]>(parseFilterArray(props.filters?.skill));
-const yearsMin = ref(props.filters?.years_min ?? '');
-const yearsMax = ref(props.filters?.years_max ?? '');
-const sortBy = ref(props.sort);
-const advancedOpen = ref(false);
-const debouncedQuery = refDebounced(searchQuery, 300);
+function parseUrlParams(): {
+    search: string;
+    jobTitle: string[];
+    skill: string[];
+    yearsMin: string;
+    yearsMax: string;
+    sort: string;
+    page: number;
+} {
+    const params = new URLSearchParams(window.location.search);
+    const filter = Object.fromEntries(
+        [...params.entries()].filter(([k]) => k.startsWith('filter[')).map(([k, v]) => {
+            const match = k.match(/^filter\[(.+)\]$/);
+            return match ? [match[1], v] : [k, v];
+        }),
+    ) as Record<string, string>;
+    return {
+        search: filter.search ?? '',
+        jobTitle: parseFilterArray(filter['job_title.name']),
+        skill: parseFilterArray(filter.skill),
+        yearsMin: filter.years_min ?? '',
+        yearsMax: filter.years_max ?? '',
+        sort: params.get('sort') ?? 'name',
+        page: Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1),
+    };
+}
 
-// Ensure only one SearchableSelect is open at a time to prevent interaction conflicts
+function toFilterValue(val: string | string[] | null | undefined): string {
+    if (val == null) return '';
+    return Array.isArray(val) ? val.filter(Boolean).join(',') : String(val);
+}
+
+const searchQuery = ref('');
+const filterJobTitle = ref<string[]>([]);
+const filterSkill = ref<string[]>([]);
+const yearsMin = ref('');
+const yearsMax = ref('');
+const sortBy = ref('name');
+const currentPage = ref(1);
+const advancedOpen = ref(false);
+const debouncedQuery = refDebounced(searchQuery, 150);
+
+const developers = ref<Developer[]>([]);
+const jobTitles = ref<{ value: string; label: string }[]>([]);
+const skills = ref<{ value: string; label: string }[]>([]);
+const meta = ref<ApiResponse['meta']>({
+    current_page: 1,
+    last_page: 1,
+    per_page: 12,
+    total: 0,
+    from: null,
+    to: null,
+});
+const links = ref<ApiResponse['links']>({ prev: null, next: null });
+const loading = ref(false);
+
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 
@@ -92,12 +117,7 @@ function onSkillOpenChange(open: boolean): void {
     if (open) jobTitleSelectOpen.value = false;
 }
 
-function toFilterValue(val: string | string[] | null | undefined): string {
-    if (val == null) return '';
-    return Array.isArray(val) ? val.filter(Boolean).join(',') : String(val);
-}
-
-function buildFilterUrl(overrides?: { search?: string }): string {
+function buildApiUrl(overrides?: { search?: string; page?: number }): string {
     const params = new URLSearchParams();
     const search = overrides?.search !== undefined ? overrides.search : searchQuery.value;
     if (search) params.set('filter[search]', search);
@@ -108,52 +128,66 @@ function buildFilterUrl(overrides?: { search?: string }): string {
     if (yearsMin.value) params.set('filter[years_min]', yearsMin.value);
     if (yearsMax.value) params.set('filter[years_max]', yearsMax.value);
     if (sortBy.value && sortBy.value !== 'name') params.set('sort', sortBy.value);
+    const page = overrides?.page ?? currentPage.value;
+    if (page > 1) params.set('page', String(page));
     const q = params.toString();
-    return q ? `/?${q}` : '/';
+    return q ? `${API_BASE}?${q}` : API_BASE;
+}
+
+function updateUrl(): void {
+    const apiUrl = buildApiUrl();
+    const queryStart = apiUrl.indexOf('?');
+    const query = queryStart >= 0 ? apiUrl.slice(queryStart) : '';
+    const newUrl = query ? `${window.location.pathname}${query}` : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+}
+
+async function fetchDevelopers(url?: string): Promise<void> {
+    loading.value = true;
+    try {
+        const target = url ?? buildApiUrl();
+        const res = await fetch(target);
+        if (!res.ok) throw new Error('Failed to fetch developers');
+        const data: ApiResponse = await res.json();
+        developers.value = data.developers;
+        if (data.job_titles?.length) jobTitles.value = data.job_titles;
+        if (data.skills?.length) skills.value = data.skills;
+        meta.value = data.meta;
+        links.value = data.links;
+        currentPage.value = data.meta.current_page;
+        updateUrl();
+    } finally {
+        loading.value = false;
+    }
 }
 
 function clearFilters(): void {
-    advancedOpen.value = false;
     searchQuery.value = '';
     filterJobTitle.value = [];
     filterSkill.value = [];
     yearsMin.value = '';
     yearsMax.value = '';
     sortBy.value = 'name';
-    router.get('/', {}, { preserveState: true, preserveScroll: true, replace: true });
+    currentPage.value = 1;
+    fetchDevelopers();
+}
+
+function loadPage(url: string | null): void {
+    if (url) fetchDevelopers(url);
 }
 
 watch(debouncedQuery, () => {
-    router.get(buildFilterUrl({ search: debouncedQuery.value }), {}, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    currentPage.value = 1;
+    fetchDevelopers(buildApiUrl({ search: debouncedQuery.value, page: 1 }));
 }, { immediate: false });
 
 watchDebounced(
     () => [filterJobTitle.value, filterSkill.value, yearsMin.value, yearsMax.value, sortBy.value],
     () => {
-        router.get(buildFilterUrl(), {}, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
+        currentPage.value = 1;
+        fetchDevelopers();
     },
     { debounce: 150, deep: true },
-);
-
-watch(
-    () => [props.filters, props.sort],
-    () => {
-        searchQuery.value = props.filterSearch ?? props.filters?.search ?? '';
-        filterJobTitle.value = parseFilterArray(props.filters?.['job_title.name']);
-        filterSkill.value = parseFilterArray(props.filters?.skill);
-        yearsMin.value = props.filters?.years_min ?? '';
-        yearsMax.value = props.filters?.years_max ?? '';
-        sortBy.value = props.sort ?? 'name';
-    },
-    { deep: true },
 );
 
 watch(advancedOpen, (isOpen: boolean) => {
@@ -161,6 +195,18 @@ watch(advancedOpen, (isOpen: boolean) => {
         jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
     }
+});
+
+onMounted(() => {
+    const urlParams = parseUrlParams();
+    searchQuery.value = urlParams.search;
+    filterJobTitle.value = urlParams.jobTitle;
+    filterSkill.value = urlParams.skill;
+    yearsMin.value = urlParams.yearsMin;
+    yearsMax.value = urlParams.yearsMax;
+    sortBy.value = urlParams.sort;
+    currentPage.value = urlParams.page;
+    fetchDevelopers();
 });
 
 const sortOptions = [
@@ -171,10 +217,8 @@ const sortOptions = [
 
 const activeFilterCount = computed(() => {
     let count = 0;
-    const jt = filterJobTitle.value;
-    const sk = filterSkill.value;
-    if (Array.isArray(jt) ? jt.length > 0 : jt) count += Array.isArray(jt) ? jt.length : 1;
-    if (Array.isArray(sk) ? sk.length > 0 : sk) count += Array.isArray(sk) ? sk.length : 1;
+    if (filterJobTitle.value.length > 0) count += filterJobTitle.value.length;
+    if (filterSkill.value.length > 0) count += filterSkill.value.length;
     if (yearsMin.value) count++;
     if (yearsMax.value) count++;
     if (sortBy.value && sortBy.value !== 'name') count++;
@@ -262,7 +306,7 @@ const hasActiveFilters = computed(() => activeFilterCount.value > 0);
                                         placeholder="e.g. Backend Developer"
                                         multiple
                                         :max-options="50"
-                                        @update:model-value="filterJobTitle = $event ?? []"
+                                        @update:model-value="filterJobTitle = Array.isArray($event) ? $event : ($event ? [$event] : [])"
                                         @update:open="onJobTitleOpenChange"
                                     />
                                 </div>
@@ -276,7 +320,7 @@ const hasActiveFilters = computed(() => activeFilterCount.value > 0);
                                         placeholder="e.g. Laravel, Vue"
                                         multiple
                                         :max-options="50"
-                                        @update:model-value="filterSkill = $event ?? []"
+                                        @update:model-value="filterSkill = Array.isArray($event) ? $event : ($event ? [$event] : [])"
                                         @update:open="onSkillOpenChange"
                                     />
                                 </div>
@@ -334,12 +378,13 @@ const hasActiveFilters = computed(() => activeFilterCount.value > 0);
             </div>
         </section>
 
-         <!-- Developers section -->
+        <!-- Developers section -->
         <DeveloperCardSection
-            :key="`${filterSearch ?? ''}-${sortBy}-${filterJobTitle}-${filterSkill}-${yearsMin}-${yearsMax}`"
             :developers="developers"
             :meta="meta"
             :links="links"
+            :loading="loading"
+            @load-page="loadPage"
         />
 
         <Footer />
