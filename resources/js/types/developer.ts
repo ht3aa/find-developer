@@ -43,6 +43,12 @@ export type WorkExperienceEntry = {
     total_duration?: string | null;
 };
 
+export type DeveloperProject = {
+    title: string;
+    description?: string | null;
+    link?: string | null;
+};
+
 export type Developer = {
     id: number;
     name: string;
@@ -71,4 +77,5 @@ export type Developer = {
     badges_page_url?: string;
     recommendations?: DeveloperRecommendation[];
     work_experience?: WorkExperienceEntry[];
+    projects?: DeveloperProject[];
 };

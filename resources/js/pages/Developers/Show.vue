@@ -4,7 +4,9 @@ import {
     ArrowLeft,
     Briefcase,
     Building2,
+    ExternalLink,
     FileText,
+    FolderOpen,
     Globe,
     Mail,
     MapPin,
@@ -233,10 +235,32 @@ function formatNum(n: number): string {
                     </div>
                 </header>
 
+
                 <!-- Content grid -->
                 <div class="grid gap-8 lg:grid-cols-[1fr_300px]">
                     <!-- Main -->
                     <div class="min-w-0 space-y-8">
+                        <!-- Experience video -->
+                        <section v-if="developer.youtube_video_id">
+                            <h2 class="mb-3 text-lg font-semibold">
+                                Experience Video
+                            </h2>
+                            <div
+                                class="overflow-hidden rounded-xl border border-border shadow-sm"
+                            >
+                                <div class="aspect-video w-full">
+                                    <iframe
+                                        :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1`"
+                                        title="Experience video"
+                                        class="size-full"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen
+                                    />
+                                </div>
+                            </div>
+                        </section>
+
+
                         <!-- About -->
                         <section v-if="developer.bio">
                             <h2 class="mb-3 text-lg font-semibold">
@@ -248,7 +272,102 @@ function formatNum(n: number): string {
                                 {{ developer.bio }}
                             </p>
                         </section>
-
+                        <!-- Get In Touch -->
+                        <section>
+                            <h2 class="mb-4 text-lg font-semibold">
+                                Get In Touch
+                            </h2>
+                            <div class="flex flex-wrap gap-3">
+                                <Button
+                                    variant="outline"
+                                    as-child
+                                    class="gap-2 rounded-xl"
+                                >
+                                    <a :href="`mailto:${developer.email}`">
+                                        <Mail class="size-4" />
+                                        Send Email
+                                    </a>
+                                </Button>
+                                <Button
+                                    v-if="developer.github_url"
+                                    variant="outline"
+                                    as-child
+                                    class="gap-2 rounded-xl"
+                                >
+                                    <a
+                                        :href="developer.github_url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <svg
+                                            class="size-4"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                        GitHub Profile
+                                    </a>
+                                </Button>
+                                <Button
+                                    v-if="developer.linkedin_url"
+                                    variant="outline"
+                                    as-child
+                                    class="gap-2 rounded-xl"
+                                >
+                                    <a
+                                        :href="developer.linkedin_url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <svg
+                                            class="size-4"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                                            />
+                                        </svg>
+                                        LinkedIn
+                                    </a>
+                                </Button>
+                                <Button
+                                    v-if="developer.youtube_video_id"
+                                    variant="outline"
+                                    as-child
+                                    class="gap-2 rounded-xl"
+                                >
+                                    <a
+                                        :href="`https://www.youtube.com/watch?v=${developer.youtube_video_id}`"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Video class="size-4" />
+                                        Video
+                                    </a>
+                                </Button>
+                                <Button
+                                    v-if="developer.portfolio_url"
+                                    variant="outline"
+                                    as-child
+                                    class="gap-2 rounded-xl"
+                                >
+                                    <a
+                                        :href="developer.portfolio_url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Globe class="size-4" />
+                                        Portfolio
+                                    </a>
+                                </Button>
+                            </div>
+                        </section>
                         <!-- Skills & Technologies -->
                         <section v-if="developer.skills.length > 0">
                             <h2 class="mb-3 text-lg font-semibold">
@@ -408,122 +527,44 @@ function formatNum(n: number): string {
                             </div>
                         </section>
 
-                        <!-- Experience video -->
-                        <section v-if="developer.youtube_video_id">
-                            <h2 class="mb-3 text-lg font-semibold">
-                                Experience Video
+                        <!-- Portfolio & Projects -->
+                        <section v-if="developer.projects && developer.projects.length > 0">
+                            <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                <FolderOpen class="size-5 shrink-0 text-muted-foreground" />
+                                Portfolio & Projects
                             </h2>
-                            <div
-                                class="overflow-hidden rounded-xl border border-border shadow-sm"
-                            >
-                                <div class="aspect-video w-full">
-                                    <iframe
-                                        :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1`"
-                                        title="Experience video"
-                                        class="size-full"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen
-                                    />
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div
+                                    v-for="(project, idx) in developer.projects"
+                                    :key="idx"
+                                    class="rounded-xl border border-border bg-card p-5 shadow-sm"
+                                >
+                                    <h3 class="font-semibold text-foreground">
+                                        {{ project.title }}
+                                    </h3>
+                                    <p
+                                        v-if="project.description"
+                                        class="mt-2 text-sm leading-relaxed text-muted-foreground"
+                                    >
+                                        {{ project.description }}
+                                    </p>
+                                    <a
+                                        v-if="project.link"
+                                        :href="project.link"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                                    >
+                                        View Project
+                                        <ExternalLink class="size-4" />
+                                    </a>
                                 </div>
                             </div>
                         </section>
 
-                        <!-- Get In Touch -->
-                        <section>
-                            <h2 class="mb-4 text-lg font-semibold">
-                                Get In Touch
-                            </h2>
-                            <div class="flex flex-wrap gap-3">
-                                <Button
-                                    variant="outline"
-                                    as-child
-                                    class="gap-2 rounded-xl"
-                                >
-                                    <a :href="`mailto:${developer.email}`">
-                                        <Mail class="size-4" />
-                                        Send Email
-                                    </a>
-                                </Button>
-                                <Button
-                                    v-if="developer.github_url"
-                                    variant="outline"
-                                    as-child
-                                    class="gap-2 rounded-xl"
-                                >
-                                    <a
-                                        :href="developer.github_url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <svg
-                                            class="size-4"
-                                            fill="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                                                clip-rule="evenodd"
-                                            />
-                                        </svg>
-                                        GitHub Profile
-                                    </a>
-                                </Button>
-                                <Button
-                                    v-if="developer.linkedin_url"
-                                    variant="outline"
-                                    as-child
-                                    class="gap-2 rounded-xl"
-                                >
-                                    <a
-                                        :href="developer.linkedin_url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <svg
-                                            class="size-4"
-                                            fill="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                                            />
-                                        </svg>
-                                        LinkedIn
-                                    </a>
-                                </Button>
-                                <Button
-                                    v-if="developer.youtube_video_id"
-                                    variant="outline"
-                                    as-child
-                                    class="gap-2 rounded-xl"
-                                >
-                                    <a
-                                        :href="`https://www.youtube.com/watch?v=${developer.youtube_video_id}`"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <Video class="size-4" />
-                                        Video
-                                    </a>
-                                </Button>
-                                <Button
-                                    v-if="developer.portfolio_url"
-                                    variant="outline"
-                                    as-child
-                                    class="gap-2 rounded-xl"
-                                >
-                                    <a
-                                        :href="developer.portfolio_url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <Globe class="size-4" />
-                                        Portfolio
-                                    </a>
-                                </Button>
-                            </div>
-                        </section>
+
+
+
 
 
                         <!-- Recommendations -->

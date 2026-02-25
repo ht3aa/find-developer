@@ -88,6 +88,9 @@ class DeveloperController extends Controller
             'recommendationsReceived' => fn ($q) => $q
                 ->where('status', RecommendationStatus::APPROVED)
                 ->with('recommender:id,name,job_title_id', 'recommender.jobTitle:id,name'),
+            'projects' => fn ($q) => $q
+                ->withoutGlobalScope(DeveloperScope::class)
+                ->visible(),
         ]);
         $developer->loadCount('recommendationsReceived');
 

@@ -90,6 +90,17 @@ class DeveloperResource extends JsonResource
                 ->all()
             : [];
 
+        $projects = $developer->relationLoaded('projects')
+            ? $developer->projects
+                ->map(fn ($p) => [
+                    'title' => $p->title,
+                    'description' => $p->description,
+                    'link' => $p->link,
+                ])
+                ->values()
+                ->all()
+            : [];
+
         return [
             'id' => $developer->id,
             'name' => $developer->name,
@@ -120,6 +131,7 @@ class DeveloperResource extends JsonResource
             'badges_page_url' => null,
             'recommendations' => $recommendations,
             'work_experience' => $workExperience,
+            'projects' => $projects,
         ];
     }
 
