@@ -16,7 +16,8 @@ export type AuthCanKey =
     | 'viewAnyBadge'
     | 'viewAnyUser'
     | 'viewAnyRole'
-    | 'viewActivityLog';
+    | 'viewActivityLog'
+    | 'viewRecommendationsDashboard';
 
 export type NavItem = {
     title: string;

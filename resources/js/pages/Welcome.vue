@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { computed, onMounted } from 'vue';
-import { Bug } from 'lucide-vue-next';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { Bug, ChevronUp } from 'lucide-vue-next';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
@@ -12,8 +12,23 @@ const flashSuccess = computed(() => (page.props.flash as { success?: string })?.
 
 const reportBugsUrl = 'https://github.com/ht3aa/find-developer';
 
+const showBackToTop = ref(false);
+
+const handleScroll = () => {
+    showBackToTop.value = window.scrollY > 300;
+};
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 onMounted(() => {
     window.scrollTo(0, 0);
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
@@ -55,5 +70,23 @@ onMounted(() => {
         <DeveloperCardSection />
 
         <Footer />
+
+        <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+        >
+            <button
+                v-if="showBackToTop"
+                class="fixed bottom-6 right-6 z-40 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:scale-110"
+                aria-label="Back to top"
+                @click="scrollToTop"
+            >
+                <ChevronUp class="size-5" />
+            </button>
+        </Transition>
     </div>
 </template>

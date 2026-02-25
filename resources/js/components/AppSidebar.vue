@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Shield, User, UserCog, Users } from 'lucide-vue-next';
+import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Shield, ThumbsUp, User, UserCog, Users } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -23,6 +23,7 @@ import usersRoutes from '@/routes/users';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
 import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
+import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -95,6 +96,12 @@ const allMainNavItems: NavItem[] = [
         href: activityLogIndex().url,
         icon: ClipboardList,
         can: 'viewActivityLog',
+    },
+    {
+        title: 'Recommendations',
+        href: developerRecommendationsIndex().url,
+        icon: ThumbsUp,
+        can: 'viewRecommendationsDashboard',
     },
 ];
 

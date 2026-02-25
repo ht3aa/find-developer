@@ -60,6 +60,7 @@ class HandleInertiaRequests extends Middleware
             'viewAnyUser' => $user->can('viewAny', User::class),
             'viewAnyRole' => $user->can('viewAny', Role::class),
             'viewActivityLog' => $user->isSuperAdmin(),
+            'viewRecommendationsDashboard' => $user->isSuperAdmin(),
         ] : [];
 
         return [
