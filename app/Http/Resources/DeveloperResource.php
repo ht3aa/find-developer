@@ -128,6 +128,7 @@ class DeveloperResource extends JsonResource
             'location' => $locationLabel !== null ? ['label' => $locationLabel] : null,
             'skills' => $developer->skills->map(fn ($s) => ['name' => $s->name])->values()->all(),
             'availability_type' => $availabilityTypeArray,
+            'status' => $developer->status->value,
             'profile_url' => $developer->slug ? url("/developers/{$developer->slug}") : null,
             'recommend_url' => $this->recommendUrl($developer),
             'badges_page_url' => null,
