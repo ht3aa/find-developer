@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Badge;
 use App\Models\Developer;
 use App\Models\DeveloperCompany;
+use App\Models\DeveloperProject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -52,6 +53,7 @@ class HandleInertiaRequests extends Middleware
             'viewAnyDeveloper' => $user->can('viewAny', Developer::class),
             'viewDeveloperProfile' => $user->can('viewDeveloperProfile', Developer::class),
             'viewAnyDeveloperCompany' => $user->can('viewAny', DeveloperCompany::class),
+            'viewAnyDeveloperProject' => $user->can('viewAny', DeveloperProject::class),
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
             'viewAnyRole' => $user->can('viewAny', Role::class),

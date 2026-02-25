@@ -39,7 +39,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Create User" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-6xl space-y-6 rounded-xl p-4">
+        <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"

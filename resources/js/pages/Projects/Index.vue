@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { FolderKanban, Plus } from 'lucide-vue-next';
+import DeveloperProjectController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProjectController';
+import DeveloperProjectDataTable from '@/components/developer-project/DeveloperProjectDataTable.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Button } from '@/components/ui/button';
+import { index as developerProjectsIndex, create as developerProjectsCreate } from '@/routes/developer-projects';
+import { dashboard } from '@/routes';
+import type { DeveloperProject } from '@/types/developer-project';
+import type { BreadcrumbItem } from '@/types';
+
+type Props = {
+    projects: DeveloperProject[];
+};
+
+defineProps<Props>();
+
+const page = usePage();
+const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: dashboard().url },
+    { title: 'Projects', href: developerProjectsIndex().url },
+];
+
+function confirmDelete(project: DeveloperProject) {
+    if (
+        window.confirm(
+            `Are you sure you want to delete "${project.title}"?`,
+        )
+    ) {
+        router.delete(DeveloperProjectController.destroy.url(project.id), {
+            preserveScroll: true,
+        });
+    }
+}
+</script>
+
+<template>
+    <Head title="Projects" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div
+                v-if="flash?.success"
+                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+            >
+                {{ flash.success }}
+            </div>
+            <div
+                v-if="flash?.error"
+                class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+            >
+                {{ flash.error }}
+            </div>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Projects
+                    </h1>
+                    <p class="text-muted-foreground">
+                        Manage your portfolio projects
+                    </p>
+                </div>
+                <Button as-child>
+                    <Link :href="developerProjectsCreate().url">
+                        <Plus class="mr-2 h-4 w-4" />
+                        Add Project
+                    </Link>
+                </Button>
+            </div>
+
+            <DeveloperProjectDataTable
+                v-if="projects.length > 0"
+                :data="projects"
+                :on-delete="confirmDelete"
+            />
+
+            <div
+                v-else
+                class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
+            >
+                <FolderKanban class="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 class="mb-2 text-lg font-semibold">No projects yet</h3>
+                <p class="mb-4 text-center text-sm text-muted-foreground">
+                    Add your first project to showcase your work on your profile.
+                </p>
+                <Button as-child>
+                    <Link :href="developerProjectsCreate().url">
+                        <Plus class="mr-2 h-4 w-4" />
+                        Add Project
+                    </Link>
+                </Button>
+            </div>
+        </div>
+    </AppLayout>
+</template>

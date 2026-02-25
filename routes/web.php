@@ -4,6 +4,7 @@ use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
+use App\Http\Controllers\Dashboard\DeveloperProjectController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
@@ -37,7 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('dashboard.developer-profile.download-cv');
 
         Route::resource('work-experience', WorkExperienceController::class)->except(['show']);
+        Route::resource('developer-projects', DeveloperProjectController::class)->except(['show']);
     });
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
