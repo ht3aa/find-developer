@@ -18,6 +18,7 @@ export type AuthCan = {
     viewAnyBadge?: boolean;
     viewAnyUser?: boolean;
     viewAnyRole?: boolean;
+    viewActivityLog?: boolean;
     // Table row actions
     updateDeveloper?: boolean;
     viewDeveloper?: boolean;

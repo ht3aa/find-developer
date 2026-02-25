@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
             'viewAnyRole' => $user->can('viewAny', Role::class),
+            'viewActivityLog' => $user->isSuperAdmin(),
         ] : [];
 
         return [

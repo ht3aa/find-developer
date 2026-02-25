@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\Dashboard\ActivityLogController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('work-experience', WorkExperienceController::class)->except(['show']);
         Route::resource('developer-projects', DeveloperProjectController::class)->except(['show']);
+
+        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
+        Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');
     });
 });
 
