@@ -11,7 +11,7 @@ class BadgeStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\Badge::class);
+        return true;
     }
 
     /**

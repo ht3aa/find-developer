@@ -33,8 +33,6 @@ class BadgeController extends Controller
      */
     public function create(): Response
     {
-        $this->authorize('create', Badge::class);
-
         return Inertia::render('Badges/Create');
     }
 
