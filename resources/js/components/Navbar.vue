@@ -17,12 +17,12 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { publicMethod as badgesPublic } from '@/routes/badges';
-import { dashboard, home, login, register } from '@/routes';
+import { dashboard, home, login, logout, register } from '@/routes';
 
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { name: string } | null });
 const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
-
+const authCan = computed(() => (page.props.auth as { can?: { viewAnyDeveloper?: boolean } })?.can ?? {});
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
@@ -68,8 +68,11 @@ const navItems = [
             <!-- Desktop auth -->
             <div class="hidden items-center gap-2 md:flex">
                 <template v-if="auth.user">
-                    <Button variant="default" as-child>
+                    <Button v-if="authCan.viewAnyDeveloper" variant="default" as-child>
                         <Link :href="dashboard()">Dashboard</Link>
+                    </Button>
+                    <Button variant="outline" as-child>
+                        <Link :href="logout().url" method="post" as="button">Log out</Link>
                     </Button>
                 </template>
                 <template v-else>
@@ -121,8 +124,11 @@ const navItems = [
                     </nav>
                     <div class="flex flex-col gap-2 border-t p-4">
                         <template v-if="auth.user">
-                            <Button variant="default" as-child class="w-full">
+                            <Button v-if="authCan.viewAnyDeveloper" variant="default" as-child class="w-full">
                                 <Link :href="dashboard()">Dashboard</Link>
+                            </Button>
+                            <Button variant="outline" as-child class="w-full">
+                                <Link :href="logout().url" method="post" as="button" class="w-full">Log out</Link>
                             </Button>
                         </template>
                         <template v-else>

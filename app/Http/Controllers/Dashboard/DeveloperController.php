@@ -21,6 +21,7 @@ class DeveloperController extends Controller
      */
     public function index(Request $request): Response
     {
+        $this->authorize('viewAny', Developer::class);
         $search = $request->query('search');
         $searchTerm = is_string($search) ? trim($search) : '';
 
@@ -29,7 +30,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -37,7 +38,7 @@ class DeveloperController extends Controller
             });
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -63,6 +64,7 @@ class DeveloperController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Developer::class);
         $users = \App\Models\User::whereDoesntHave('developer')
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
@@ -78,13 +80,14 @@ class DeveloperController extends Controller
      */
     public function store(StoreDeveloperRequest $request): RedirectResponse
     {
+        $this->authorize('create', Developer::class);
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
         unset($data['skill_ids'], $data['skill_names'], $data['cv']);
 
-        $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
+        $data['slug'] = Str::slug($data['name']).'-'.Str::random(6);
         $data['status'] = $data['status'] ?? \App\Enums\DeveloperStatus::PENDING;
         $data['is_available'] = $data['is_available'] ?? false;
         $data['recommended_by_us'] = $data['recommended_by_us'] ?? false;
@@ -114,6 +117,7 @@ class DeveloperController extends Controller
      */
     public function edit(string $developer): Response
     {
+        $this->authorize('update', $developer);
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)
             ->with(['jobTitle', 'skills', 'badges'])
             ->findOrFail($developer);
@@ -131,6 +135,7 @@ class DeveloperController extends Controller
      */
     public function update(UpdateDeveloperRequest $request, string $developer): RedirectResponse
     {
+        $this->authorize('update', $developer);
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($developer);
 
         $data = $request->validated();

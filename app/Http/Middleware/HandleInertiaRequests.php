@@ -2,9 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Badge;
+use App\Models\Developer;
+use App\Models\DeveloperCompany;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -42,19 +47,29 @@ class HandleInertiaRequests extends Middleware
             $permissions = $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [];
         }
 
+        $user = $request->user();
+        $can = $user ? [
+            'viewAnyDeveloper' => $user->can('viewAny', Developer::class),
+            'viewDeveloperProfile' => $user->can('View:DeveloperProfile'),
+            'viewAnyDeveloperCompany' => $user->can('viewAny', DeveloperCompany::class),
+            'viewAnyBadge' => $user->can('viewAny', Badge::class),
+            'viewAnyUser' => $user->can('viewAny', User::class),
+            'viewAnyRole' => $user->can('viewAny', Role::class),
+        ] : [];
 
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
                 'permissions' => $permissions,
+                'can' => $can,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
-                'info' => fn() => $request->session()->get('info'),
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
         ];
     }

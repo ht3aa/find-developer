@@ -17,6 +17,7 @@ class BadgeController extends Controller
      */
     public function index(Request $request): Response
     {
+        $this->authorize('viewAny', Badge::class);
 
         $badges = Badge::query()
             ->withCount('developers')
@@ -33,6 +34,8 @@ class BadgeController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Badge::class);
+
         return Inertia::render('Badges/Create');
     }
 
@@ -41,6 +44,7 @@ class BadgeController extends Controller
      */
     public function store(BadgeStoreRequest $request): RedirectResponse
     {
+        $this->authorize('create', Badge::class);
         Badge::create($request->validated());
 
         return redirect()->route('badges.index')
@@ -52,6 +56,7 @@ class BadgeController extends Controller
      */
     public function edit(Badge $badge): Response
     {
+        $this->authorize('update', $badge);
 
         return Inertia::render('Badges/Edit', [
             'badge' => $badge,
@@ -63,6 +68,7 @@ class BadgeController extends Controller
      */
     public function update(BadgeUpdateRequest $request, Badge $badge): RedirectResponse
     {
+        $this->authorize('update', $badge);
         $badge->update($request->validated());
 
         return redirect()->route('badges.index')
@@ -74,7 +80,7 @@ class BadgeController extends Controller
      */
     public function destroy(Request $request, Badge $badge): RedirectResponse
     {
-
+        $this->authorize('delete', $badge);
         $badge->delete();
 
         return redirect()->route('badges.index')

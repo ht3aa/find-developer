@@ -24,7 +24,7 @@ import { store } from '@/routes/password/confirm';
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="password">Password</Label>
+                    <Label for="password">Password <span class="text-destructive">*</span></Label>
                     <Input
                         id="password"
                         type="password"

@@ -21,15 +21,15 @@ import { index as developersIndex } from '@/routes/developers';
 import rolesRoutes from '@/routes/roles';
 import usersRoutes from '@/routes/users';
 import { index as workExperienceIndex } from '@/routes/work-experience';
-import { type NavItem } from '@/types';
+import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
 
 const page = usePage();
-const userPermissions = computed(() => (page.props.auth as { permissions?: string[] })?.permissions ?? []);
+const authCan = computed(() => (page.props.auth as { can?: Record<AuthCanKey, boolean> })?.can ?? {});
 
 function canSeeNavItem(item: NavItem): boolean {
-    if (!item.permission) return true;
-    return userPermissions.value.includes(item.permission);
+    if (!item.can) return true;
+    return authCan.value[item.can] === true;
 }
 
 const allMainNavItems: NavItem[] = [
@@ -37,38 +37,43 @@ const allMainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+        can: 'viewAnyDeveloper',
     },
     {
         title: 'Developer Profile',
         href: developerProfileIndex().url,
         icon: User,
+        can: 'viewDeveloperProfile',
     },
     {
         title: 'Work Experience',
         href: workExperienceIndex().url,
         icon: Briefcase,
+        can: 'viewAnyDeveloperCompany',
     },
     {
         title: 'Badges',
         href: badgesIndex(),
         icon: Award,
+        can: 'viewAnyBadge',
     },
     {
         title: 'Developers',
         href: developersIndex(),
         icon: Users,
+        can: 'viewAnyDeveloper',
     },
     {
         title: 'Users',
         href: usersRoutes.index.url(),
         icon: UserCog,
-        permission: 'View:Users',
+        can: 'viewAnyUser',
     },
     {
         title: 'Roles',
         href: rolesRoutes.index.url(),
         icon: Shield,
-        permission: 'View:Roles',
+        can: 'viewAnyRole',
     },
 ];
 

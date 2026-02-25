@@ -9,10 +9,22 @@ export type User = {
     [key: string]: unknown;
 };
 
+/** Abilities shared from Laravel Gate (e.g. viewAny(Developer::class) -> viewAnyDeveloper). */
+export type AuthCan = {
+    viewAnyDeveloper?: boolean;
+    viewDeveloperProfile?: boolean;
+    viewAnyDeveloperCompany?: boolean;
+    viewAnyBadge?: boolean;
+    viewAnyUser?: boolean;
+    viewAnyRole?: boolean;
+};
+
 export type Auth = {
     user: User;
     /** Permission names the user has (from Spatie, via roles/direct). */
     permissions?: string[];
+    /** Laravel Gate/policy results for sidebar and UI. */
+    can?: AuthCan;
 };
 
 export type TwoFactorConfigContent = {

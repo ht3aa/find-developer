@@ -54,7 +54,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <CardContent class="space-y-6">
                         <div class="space-y-4">
                             <div class="grid gap-2">
-                                <Label for="name">Name</Label>
+                                <Label for="name">Name <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="name"
                                     name="name"

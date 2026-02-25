@@ -6,6 +6,15 @@ export type BreadcrumbItem = {
     href?: string;
 };
 
+/** Keys for auth.can shared from Laravel (Gate/policy checks). */
+export type AuthCanKey =
+    | 'viewAnyDeveloper'
+    | 'viewDeveloperProfile'
+    | 'viewAnyDeveloperCompany'
+    | 'viewAnyBadge'
+    | 'viewAnyUser'
+    | 'viewAnyRole';
+
 export type NavItem = {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
@@ -13,6 +22,6 @@ export type NavItem = {
     isActive?: boolean;
     /** When false, uses Inertia Link for internal navigation. Default true for external links. */
     external?: boolean;
-    /** Spatie permission name (e.g. "View:Users"). Item is hidden if user doesn't have it. */
-    permission?: string;
+    /** Laravel Gate/policy ability key from auth.can. Item is hidden if user doesn't have it. */
+    can?: AuthCanKey;
 };

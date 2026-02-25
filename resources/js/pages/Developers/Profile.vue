@@ -254,7 +254,7 @@ function submitForm(): void {
                             >
                                 <div class="space-y-4">
                                     <div class="grid gap-2">
-                                        <Label for="name">Name</Label>
+                                        <Label for="name">Name <span class="text-destructive">*</span></Label>
                                         <Input
                                             id="name"
                                             v-model="formData.name"
@@ -267,7 +267,7 @@ function submitForm(): void {
                                     </div>
 
                                     <div class="grid gap-2">
-                                        <Label for="email">Email</Label>
+                                        <Label for="email">Email <span class="text-destructive">*</span></Label>
                                         <Input
                                             id="email"
                                             v-model="formData.email"
@@ -304,7 +304,7 @@ function submitForm(): void {
                                     </div>
 
                                     <div class="grid gap-2">
-                                        <Label for="years_of_experience">Years of experience</Label>
+                                        <Label for="years_of_experience">Years of experience <span class="text-destructive">*</span></Label>
                                         <Input
                                             id="years_of_experience"
                                             v-model.number="formData.years_of_experience"

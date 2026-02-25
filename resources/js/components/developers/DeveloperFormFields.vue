@@ -152,7 +152,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
 
         <div class="space-y-4">
             <div class="grid gap-2">
-                <Label for="name">Name</Label>
+                <Label for="name">Name <span class="text-destructive">*</span></Label>
                 <Input
                     id="name"
                     v-model="formData.name"
@@ -165,7 +165,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="email">Email</Label>
+                <Label for="email">Email <span class="text-destructive">*</span></Label>
                 <Input
                     id="email"
                     v-model="formData.email"
@@ -190,7 +190,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="job_title">Job title</Label>
+                <Label for="job_title">Job title <span class="text-destructive">*</span></Label>
                 <SearchableSelect
                     id="job_title"
                     v-model="jobTitleModel"
@@ -203,7 +203,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="years_of_experience">Years of experience</Label>
+                <Label for="years_of_experience">Years of experience <span class="text-destructive">*</span></Label>
                 <Input
                     id="years_of_experience"
                     v-model.number="formData.years_of_experience"

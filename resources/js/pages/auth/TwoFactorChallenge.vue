@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     InputOTP,
     InputOTPGroup,
@@ -104,13 +105,17 @@ const code = ref<string>('');
                     reset-on-error
                     #default="{ errors, processing, clearErrors }"
                 >
-                    <Input
-                        name="recovery_code"
-                        type="text"
-                        placeholder="Enter recovery code"
-                        :autofocus="showRecoveryInput"
-                        required
-                    />
+                    <div class="grid gap-2">
+                        <Label for="recovery_code">Recovery code <span class="text-destructive">*</span></Label>
+                        <Input
+                            id="recovery_code"
+                            name="recovery_code"
+                            type="text"
+                            placeholder="Enter recovery code"
+                            :autofocus="showRecoveryInput"
+                            required
+                        />
+                    </div>
                     <InputError :message="errors.recovery_code" />
                     <Button type="submit" class="w-full" :disabled="processing"
                         >Continue</Button

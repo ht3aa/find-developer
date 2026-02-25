@@ -115,7 +115,7 @@ function submit(): void {
                     <form class="space-y-6" @submit.prevent="submit">
                         <div class="space-y-4">
                             <div class="grid gap-2">
-                                <Label for="company_name">Company Name</Label>
+                                <Label for="company_name">Company Name <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="company_name"
                                     v-model="formData.company_name"
@@ -176,7 +176,7 @@ function submit(): void {
 
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <div class="grid gap-2">
-                                    <Label for="start_date">Start Date</Label>
+                                    <Label for="start_date">Start Date <span class="text-destructive">*</span></Label>
                                     <Input
                                         id="start_date"
                                         v-model="formData.start_date"

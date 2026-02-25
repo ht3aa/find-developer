@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\RoleController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
 use App\Http\Controllers\PublicBadgeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [DeveloperController::class, 'index'])->name('home');
 Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
@@ -21,9 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
@@ -42,4 +40,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

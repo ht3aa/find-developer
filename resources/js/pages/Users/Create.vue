@@ -67,7 +67,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <CardContent class="space-y-6">
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="grid gap-2">
-                                <Label for="name">Name</Label>
+                                <Label for="name">Name <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="name"
                                     name="name"
@@ -78,7 +78,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <InputError :message="errors.name" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="email">Email</Label>
+                                <Label for="email">Email <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="email"
                                     name="email"
@@ -93,7 +93,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="grid gap-2">
-                                <Label for="password">Password</Label>
+                                <Label for="password">Password <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="password"
                                     name="password"
@@ -105,7 +105,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <InputError :message="errors.password" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="password_confirmation">Confirm password</Label>
+                                <Label for="password_confirmation">Confirm password <span class="text-destructive">*</span></Label>
                                 <Input
                                     id="password_confirmation"
                                     name="password_confirmation"
@@ -119,7 +119,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="grid gap-2">
-                                <Label for="user_type">User type</Label>
+                                <Label for="user_type">User type <span class="text-destructive">*</span></Label>
                                 <select
                                     id="user_type"
                                     name="user_type"
