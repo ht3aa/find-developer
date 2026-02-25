@@ -216,7 +216,7 @@ onMounted(() => {
 
 <template>
     <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div class="sticky top-16 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
+        <div class="sticky top-16 z-sticky-bar mb-6 w-1/2 mx-auto flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
             <div class="relative flex min-w-0 flex-1">
                 <Search
                     class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -226,14 +226,14 @@ onMounted(() => {
                     v-model="searchQuery"
                     type="search"
                     placeholder="Search by name, email, or skills..."
-                    class="h-10 flex-1 pl-9"
+                    class="h-10 flex-1 border border-input pl-9"
                     autocomplete="off"
                 />
             </div>
             <Sheet v-model:open="advancedOpen">
                 <SheetTrigger as-child>
                     <Button
-                        variant="outline"
+                        variant="default"
                         size="default"
                         class="relative h-10 shrink-0 gap-2"
                     >
@@ -420,7 +420,7 @@ onMounted(() => {
                 class="mt-8 flex justify-center"
             >
                 <Button
-                    variant="outline"
+                    variant="default"
                     :disabled="loadingMore"
                     @click="loadMore"
                 >
