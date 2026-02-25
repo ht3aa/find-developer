@@ -32,22 +32,11 @@ class DeveloperResource extends JsonResource
             : [];
 
         $badges = $developer->badges->map(function ($badge) {
-            $item = [
+            return [
                 'name' => $badge->name,
                 'color' => $badge->color,
+                'icon' => $badge->icon,
             ];
-            if (method_exists($badge, 'getIconHtml')) {
-                try {
-                    $html = $badge->getIconHtml();
-                    if ($html !== null && $html !== '') {
-                        $item['icon_html'] = $html;
-                    }
-                } catch (\Throwable) {
-                    // Skip icon if unavailable (e.g. Filament not loaded)
-                }
-            }
-
-            return $item;
         })->values()->all();
 
         return [

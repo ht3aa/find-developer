@@ -15,6 +15,7 @@ import {
 import { computed } from 'vue';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
+import BadgeIcon from '@/components/BadgeIcon.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -113,11 +114,7 @@ function formatNum(n: number): string {
                                                 : {}
                                         "
                                     >
-                                        <span
-                                            v-if="badge.icon_html"
-                                            class="size-4 [&>svg]:size-4"
-                                            v-html="badge.icon_html"
-                                        />
+                                        <BadgeIcon v-if="badge.icon" :icon="badge.icon" />
                                     </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
