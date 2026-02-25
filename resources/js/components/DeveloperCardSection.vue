@@ -38,6 +38,8 @@ const yearsMax = ref(initialFilters.yearsMax ?? '');
 const advancedOpen = ref(false);
 const developers = ref<Developer[]>([]);
 const loading = ref(false);
+const loadingMore = ref(false);
+const nextPageUrl = ref<string | null>(null);
 
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
@@ -126,17 +128,36 @@ function getFilters(): DeveloperFilters {
     };
 }
 
-async function fetchDevelopers(url?: string): Promise<void> {
-    loading.value = true;
+async function fetchDevelopers(url?: string, append = false): Promise<void> {
+    if (append) {
+        loadingMore.value = true;
+    } else {
+        loading.value = true;
+    }
     try {
         const target = url ?? buildDevelopersApiUrl(API_BASE, getFilters());
         const res = await fetch(target);
         if (!res.ok) throw new Error('Failed to fetch developers');
         const data = await res.json();
-        developers.value = data.data ?? [];
-        updateUrlWithFilters(getFilters());
+        const newDevelopers = data.data ?? [];
+        if (append) {
+            developers.value = [...developers.value, ...newDevelopers];
+        } else {
+            developers.value = newDevelopers;
+        }
+        nextPageUrl.value = data.links?.next ?? null;
+        if (!append) {
+            updateUrlWithFilters(getFilters());
+        }
     } finally {
         loading.value = false;
+        loadingMore.value = false;
+    }
+}
+
+function loadMore(): void {
+    if (nextPageUrl.value && !loadingMore.value) {
+        fetchDevelopers(nextPageUrl.value, true);
     }
 }
 
@@ -370,15 +391,27 @@ onMounted(() => {
         >
             No developers found.
         </div>
-        <div
-            v-else
-            class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
-            <DeveloperCard
-                v-for="developer in developers"
-                :key="developer.id"
-                :developer="developer"
-            />
-        </div>
+        <template v-else>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <DeveloperCard
+                    v-for="developer in developers"
+                    :key="developer.id"
+                    :developer="developer"
+                />
+            </div>
+            <div
+                v-if="nextPageUrl && developers.length > 0"
+                class="mt-8 flex justify-center"
+            >
+                <Button
+                    variant="outline"
+                    :disabled="loadingMore"
+                    @click="loadMore"
+                >
+                    <span v-if="loadingMore">Loading...</span>
+                    <span v-else>Load more</span>
+                </Button>
+            </div>
+        </template>
     </section>
 </template>
