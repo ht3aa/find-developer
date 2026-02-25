@@ -133,12 +133,12 @@ function removeValue(value: string, event: Event): void {
         :name="id ?? instanceId"
         :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
         :multiple="multiple"
-        :open="open"
+        :open="effectiveOpen"
         :open-on-click="true"
         :ignore-filter="!!optionsUrl"
         :reset-search-term-on-select="false"
         @update:model-value="emit('update:modelValue', multiple ? (Array.isArray($event) ? $event : []) : (Array.isArray($event) ? $event[0] ?? null : $event ?? null))"
-        @update:open="emit('update:open', $event)"
+        @update:open="handleOpenChange"
     >
         <ComboboxAnchor
             :class="cn(

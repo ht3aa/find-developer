@@ -28,7 +28,7 @@ class WorkExperienceController extends Controller
         $experiences = DeveloperCompany::with(['jobTitle', 'parent'])
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
                 'company_name' => $e->company_name,
                 'job_title' => $e->jobTitle?->name ?? null,
@@ -67,9 +67,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
+                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
             ]);
 
         return Inertia::render('WorkExperience/Create', [
@@ -122,9 +122,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
+                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
             ]);
 
         return Inertia::render('WorkExperience/Edit', [
