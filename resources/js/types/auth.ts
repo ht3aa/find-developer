@@ -15,6 +15,7 @@ export type AuthCan = {
     viewDeveloperProfile?: boolean;
     viewAnyDeveloperCompany?: boolean;
     viewAnyDeveloperProject?: boolean;
+    viewAnyDeveloperBlog?: boolean;
     viewAnyBadge?: boolean;
     viewAnyUser?: boolean;
     viewAnyRole?: boolean;

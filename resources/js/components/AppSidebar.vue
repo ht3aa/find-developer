@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Award, BookOpen, Briefcase, ClipboardList, Folder, FolderKanban, Home, LayoutGrid, Shield, User, UserCog, Users } from 'lucide-vue-next';
+import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Shield, User, UserCog, Users } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -20,6 +20,7 @@ import { index as developerProfileIndex } from '@/routes/dashboard/developer-pro
 import { index as developersIndex } from '@/routes/developers';
 import rolesRoutes from '@/routes/roles';
 import usersRoutes from '@/routes/users';
+import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
 import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import { index as workExperienceIndex } from '@/routes/work-experience';
@@ -58,6 +59,12 @@ const allMainNavItems: NavItem[] = [
         href: developerProjectsIndex().url,
         icon: FolderKanban,
         can: 'viewAnyDeveloperProject',
+    },
+    {
+        title: 'Blogs',
+        href: developerBlogsIndex().url,
+        icon: FileText,
+        can: 'viewAnyDeveloperBlog',
     },
     {
         title: 'Badges',
