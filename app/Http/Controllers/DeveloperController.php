@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DeveloperResource;
+use App\Models\Developer;
 use App\Repositories\DeveloperRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,11 +69,16 @@ class DeveloperController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource (developer profile by slug).
      */
-    public function show(string $id): Response|RedirectResponse
+    public function show(Developer $developer): Response
     {
-        return redirect()->route('home');
+        $developer->load(['jobTitle', 'skills', 'badges']);
+        $developer->loadCount('recommendationsReceived');
+
+        return Inertia::render('Developers/Show', [
+            'developer' => (new DeveloperResource($developer))->resolve(),
+        ]);
     }
 
     /**
