@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { Search, SlidersHorizontal } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
+import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -131,8 +132,18 @@ const sortOptions = [
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 
+        <Hero
+            :can-register="canRegister"
+            badge="Find developers"
+            title="Find the right developer for your project"
+            description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
+            primary-action-label="Browse developers"
+            secondary-action-label="Sign up"
+        />
+
         <!-- Sticky search bar + advanced filters -->
         <section
+            data-hero-search
             class="sticky top-16 z-sticky-bar flex w-full flex-col items-center border-b border-border bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:py-5 lg:pt-6 lg:pb-5"
         >
             <div class="flex w-full max-w-3xl items-center gap-3">
