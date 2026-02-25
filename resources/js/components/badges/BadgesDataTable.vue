@@ -12,7 +12,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { getColumns } from './columns';
+import type { AuthCan } from '@/types/auth';
 import type { Badge } from '@/types/badge';
 
 const props = defineProps<{
@@ -20,13 +23,20 @@ const props = defineProps<{
     onDelete: (badge: Badge) => void;
 }>();
 
-const columns = getColumns(props.onDelete);
+const page = usePage();
+const can = computed(() => ({
+    ...((page.props.auth as { can?: Partial<AuthCan> })?.can ?? {}),
+    ...((page.props as { can?: Partial<AuthCan> }).can ?? {}),
+}));
+const columns = computed(() => getColumns(props.onDelete, can.value));
 
 const table = useVueTable({
     get data() {
         return props.data;
     },
-    columns,
+    get columns() {
+        return columns.value;
+    },
     getCoreRowModel: getCoreRowModel(),
 });
 </script>

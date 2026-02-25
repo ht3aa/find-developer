@@ -19,6 +19,9 @@ class DeveloperRecommendationController extends Controller
     public function show(Developer $developer): Response|RedirectResponse
     {
         $user = request()->user();
+
+        $this->authorize('recommend', $developer);
+
         if (! $user?->developer) {
             return redirect()->route('home')
                 ->with('error', 'You need a developer profile to recommend others.');
@@ -45,6 +48,9 @@ class DeveloperRecommendationController extends Controller
     public function store(StoreDeveloperRecommendationRequest $request, Developer $developer): RedirectResponse
     {
         $recommender = $request->user()->developer;
+
+        $this->authorize('recommend', $developer);
+
         if ($recommender->recommendationsGiven()->where('recommended_id', $developer->id)->exists()) {
             return redirect()->route('developers.show', $developer->slug)
                 ->with('info', 'You have already recommended this developer.');

@@ -10,9 +10,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { AuthCan } from '@/types/auth';
 import type { Role } from '@/types/role';
 
-export function getColumns(onDelete: (role: Role) => void): ColumnDef<Role>[] {
+export function getColumns(
+    onDelete: (role: Role) => void,
+    can: Partial<AuthCan> = {},
+): ColumnDef<Role>[] {
     return [
         {
             accessorKey: 'name',
@@ -43,8 +47,41 @@ export function getColumns(onDelete: (role: Role) => void): ColumnDef<Role>[] {
         {
             id: 'actions',
             header: '',
-            cell: ({ row }) =>
-                h(DropdownMenu, null, {
+            cell: ({ row }) => {
+                const showEdit = can.updateRole !== false;
+                const showDelete = can.deleteRole !== false;
+                if (!showEdit && !showDelete) return null;
+                const items = [
+                    showEdit
+                        ? h(
+                              DropdownMenuItem,
+                              { asChild: true },
+                              () =>
+                                  h(
+                                      Link,
+                                      { href: RoleController.edit.url(row.original.id) },
+                                      () => [
+                                          h(Pencil, { class: 'mr-2 h-4 w-4' }),
+                                          'Edit',
+                                      ],
+                                  ),
+                          )
+                        : null,
+                    showDelete
+                        ? h(
+                              DropdownMenuItem,
+                              {
+                                  class: 'text-destructive focus:text-destructive',
+                                  onClick: () => onDelete(row.original),
+                              },
+                              () => [
+                                  h(Trash2, { class: 'mr-2 h-4 w-4' }),
+                                  'Delete',
+                              ],
+                          )
+                        : null,
+                ].filter(Boolean);
+                return h(DropdownMenu, null, {
                     default: () => [
                         h(DropdownMenuTrigger, { asChild: true }, () =>
                             h(
@@ -56,34 +93,10 @@ export function getColumns(onDelete: (role: Role) => void): ColumnDef<Role>[] {
                                 ],
                             ),
                         ),
-                        h(DropdownMenuContent, { align: 'end' }, () => [
-                            h(
-                                DropdownMenuItem,
-                                { asChild: true },
-                                () =>
-                                    h(
-                                        Link,
-                                        { href: RoleController.edit.url(row.original.id) },
-                                        () => [
-                                            h(Pencil, { class: 'mr-2 h-4 w-4' }),
-                                            'Edit',
-                                        ],
-                                    ),
-                            ),
-                            h(
-                                DropdownMenuItem,
-                                {
-                                    class: 'text-destructive focus:text-destructive',
-                                    onClick: () => onDelete(row.original),
-                                },
-                                () => [
-                                    h(Trash2, { class: 'mr-2 h-4 w-4' }),
-                                    'Delete',
-                                ],
-                            ),
-                        ]),
+                        h(DropdownMenuContent, { align: 'end' }, () => items),
                     ],
-                }),
+                });
+            },
         },
     ];
 }

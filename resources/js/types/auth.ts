@@ -17,6 +17,17 @@ export type AuthCan = {
     viewAnyBadge?: boolean;
     viewAnyUser?: boolean;
     viewAnyRole?: boolean;
+    // Table row actions
+    updateDeveloper?: boolean;
+    viewDeveloper?: boolean;
+    updateUser?: boolean;
+    deleteUser?: boolean;
+    updateRole?: boolean;
+    deleteRole?: boolean;
+    updateBadge?: boolean;
+    deleteBadge?: boolean;
+    updateDeveloperCompany?: boolean;
+    deleteDeveloperCompany?: boolean;
 };
 
 export type Auth = {

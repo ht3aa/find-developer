@@ -2,10 +2,12 @@ import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import BadgeActionsCell from '@/components/badges/BadgeActionsCell.vue';
 import { Badge as BadgeUi } from '@/components/ui/badge';
+import type { AuthCan } from '@/types/auth';
 import type { Badge as BadgeType } from '@/types/badge';
 
 export function getColumns(
     onDelete: (badge: BadgeType) => void,
+    can: Partial<AuthCan> = {},
 ): ColumnDef<BadgeType>[] {
     return [
         {
@@ -77,6 +79,7 @@ export function getColumns(
                 h(BadgeActionsCell, {
                     badge: row.original,
                     onDelete,
+                    can,
                 }),
         },
     ];

@@ -24,8 +24,14 @@ class BadgeController extends Controller
             ->orderBy('name')
             ->get();
 
+        $user = $request->user();
+
         return Inertia::render('Badges/Index', [
             'badges' => $badges,
+            'can' => [
+                'updateBadge' => $user->can('update', new Badge),
+                'deleteBadge' => $user->can('delete', new Badge),
+            ],
         ]);
     }
 

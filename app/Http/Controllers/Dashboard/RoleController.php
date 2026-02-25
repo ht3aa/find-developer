@@ -24,13 +24,19 @@ class RoleController extends Controller
 
         $roles = Role::withCount('users')->orderBy('name')->get();
 
+        $user = auth()->user();
+
         return Inertia::render('Roles/Index', [
-            'roles' => $roles->map(fn (Role $r) => [
+            'roles' => $roles->map(fn(Role $r) => [
                 'id' => $r->id,
                 'name' => $r->name,
                 'guard_name' => $r->guard_name,
                 'users_count' => $r->users_count,
             ]),
+            'can' => [
+                'updateRole' => $user->can('update', new Role),
+                'deleteRole' => $user->can('delete', new Role),
+            ],
         ]);
     }
 

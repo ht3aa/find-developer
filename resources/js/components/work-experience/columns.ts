@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import WorkExperienceActionsCell from '@/components/work-experience/WorkExperienceActionsCell.vue';
+import type { AuthCan } from '@/types/auth';
 import type { WorkExperience } from '@/types/work-experience';
 
 function formatDateRange(startDate: string, endDate: string | null, isCurrent: boolean): string {
@@ -15,6 +16,7 @@ function formatDateRange(startDate: string, endDate: string | null, isCurrent: b
 
 export function getColumns(
     onDelete: (workExperience: WorkExperience) => void,
+    can: Partial<AuthCan> = {},
 ): ColumnDef<WorkExperience>[] {
     return [
         {
@@ -79,6 +81,7 @@ export function getColumns(
                 h(WorkExperienceActionsCell, {
                     workExperience: row.original,
                     onDelete,
+                    can,
                 }),
         },
     ];

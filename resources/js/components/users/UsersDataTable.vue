@@ -4,6 +4,8 @@ import {
     getCoreRowModel,
     useVueTable,
 } from '@tanstack/vue-table';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import {
     Table,
     TableBody,
@@ -13,6 +15,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { getColumns } from './columns';
+import type { AuthCan } from '@/types/auth';
 import type { UserTableRow } from '@/types/user';
 
 const props = defineProps<{
@@ -20,13 +23,23 @@ const props = defineProps<{
     onDelete: (user: UserTableRow) => void;
 }>();
 
-const columns = getColumns(props.onDelete);
+const page = usePage();
+const can = computed(() => ({
+    ...((page.props.auth as { can?: Partial<AuthCan> })?.can ?? {}),
+    ...((page.props as { can?: Partial<AuthCan> }).can ?? {}),
+}));
+const currentUserId = computed(() => (page.props.auth as { user?: { id: number } })?.user?.id);
+const columns = computed(() =>
+    getColumns(props.onDelete, can.value, currentUserId.value),
+);
 
 const table = useVueTable({
     get data() {
         return props.data;
     },
-    columns,
+    get columns() {
+        return columns.value;
+    },
     getCoreRowModel: getCoreRowModel(),
 });
 </script>

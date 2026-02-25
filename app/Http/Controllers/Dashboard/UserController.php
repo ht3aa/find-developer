@@ -43,9 +43,15 @@ class UserController extends Controller
             'roles' => $u->roles->map(fn (Role $r) => ['id' => $r->id, 'name' => $r->name]),
         ]);
 
+        $user = $request->user();
+
         return Inertia::render('Users/Index', [
             'users' => $users,
             'filters' => ['search' => $searchTerm],
+            'can' => [
+                'updateUser' => $user->can('update', new User),
+                'deleteUser' => $user->can('delete', new User),
+            ],
         ]);
     }
 

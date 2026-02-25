@@ -79,4 +79,9 @@ class DeveloperPolicy
     {
         return $user->can('Update:DeveloperProfile') || $user->isSuperAdmin();
     }
+
+    public function recommend(User $user, Developer $developer): bool
+    {
+        return $user->can('Recommend:Developers') || $user->isSuperAdmin();
+    }
 }

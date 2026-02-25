@@ -4,6 +4,8 @@ import {
     getCoreRowModel,
     useVueTable,
 } from '@tanstack/vue-table';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import {
     Table,
     TableBody,
@@ -13,19 +15,27 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { getColumns } from './columns';
+import type { AuthCan } from '@/types/auth';
 import type { DeveloperTableRow } from '@/types/developer-table';
 
 const props = defineProps<{
     data: DeveloperTableRow[];
 }>();
 
-const columns = getColumns();
+const page = usePage();
+const can = computed(() => ({
+    ...((page.props.auth as { can?: Partial<AuthCan> })?.can ?? {}),
+    ...((page.props as { can?: Partial<AuthCan> }).can ?? {}),
+}));
+const columns = computed(() => getColumns(can.value));
 
 const table = useVueTable({
     get data() {
         return props.data;
     },
-    columns,
+    get columns() {
+        return columns.value;
+    },
     getCoreRowModel: getCoreRowModel(),
 });
 </script>

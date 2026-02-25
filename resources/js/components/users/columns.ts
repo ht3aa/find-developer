@@ -11,10 +11,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { AuthCan } from '@/types/auth';
 import type { UserTableRow } from '@/types/user';
 
 export function getColumns(
     onDelete: (user: UserTableRow) => void,
+    can: Partial<AuthCan> = {},
+    currentUserId?: number,
 ): ColumnDef<UserTableRow>[] {
     return [
         {
@@ -67,8 +70,42 @@ export function getColumns(
         {
             id: 'actions',
             header: '',
-            cell: ({ row }) =>
-                h(DropdownMenu, null, {
+            cell: ({ row }) => {
+                const showEdit = can.updateUser !== false;
+                const showDelete =
+                    can.deleteUser !== false && row.original.id !== currentUserId;
+                if (!showEdit && !showDelete) return null;
+                const items = [
+                    showEdit
+                        ? h(
+                              DropdownMenuItem,
+                              { asChild: true },
+                              () =>
+                                  h(
+                                      Link,
+                                      { href: UserController.edit.url(row.original.id) },
+                                      () => [
+                                          h(Pencil, { class: 'mr-2 h-4 w-4' }),
+                                          'Edit',
+                                      ],
+                                  ),
+                          )
+                        : null,
+                    showDelete
+                        ? h(
+                              DropdownMenuItem,
+                              {
+                                  class: 'text-destructive focus:text-destructive',
+                                  onClick: () => onDelete(row.original),
+                              },
+                              () => [
+                                  h(Trash2, { class: 'mr-2 h-4 w-4' }),
+                                  'Delete',
+                              ],
+                          )
+                        : null,
+                ].filter(Boolean);
+                return h(DropdownMenu, null, {
                     default: () => [
                         h(DropdownMenuTrigger, { asChild: true }, () =>
                             h(
@@ -80,34 +117,10 @@ export function getColumns(
                                 ],
                             ),
                         ),
-                        h(DropdownMenuContent, { align: 'end' }, () => [
-                            h(
-                                DropdownMenuItem,
-                                { asChild: true },
-                                () =>
-                                    h(
-                                        Link,
-                                        { href: UserController.edit.url(row.original.id) },
-                                        () => [
-                                            h(Pencil, { class: 'mr-2 h-4 w-4' }),
-                                            'Edit',
-                                        ],
-                                    ),
-                            ),
-                            h(
-                                DropdownMenuItem,
-                                {
-                                    class: 'text-destructive focus:text-destructive',
-                                    onClick: () => onDelete(row.original),
-                                },
-                                () => [
-                                    h(Trash2, { class: 'mr-2 h-4 w-4' }),
-                                    'Delete',
-                                ],
-                            ),
-                        ]),
+                        h(DropdownMenuContent, { align: 'end' }, () => items),
                     ],
-                }),
+                });
+            },
         },
     ];
 }

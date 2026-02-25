@@ -51,10 +51,16 @@ class DeveloperController extends Controller
             'profile_url' => $d->slug ? route('developers.show', $d->slug) : null,
         ]);
 
+        $user = $request->user();
+
         return Inertia::render('Developers/Index', [
             'developers' => $developers,
             'filters' => [
                 'search' => $searchTerm,
+            ],
+            'can' => [
+                'updateDeveloper' => $user->can('update', new Developer),
+                'viewDeveloper' => $user->can('view', new Developer),
             ],
         ]);
     }
