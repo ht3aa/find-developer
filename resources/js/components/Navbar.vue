@@ -24,9 +24,6 @@ const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
 
 const navItems = [
     { label: 'Home', href: home() },
-    { label: 'Blog', href: '#' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact Us', href: '#contact' },
 ];
 </script>
 

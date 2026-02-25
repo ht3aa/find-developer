@@ -269,28 +269,7 @@ const sortOptions = [
             </div>
         </section>
 
-        <!-- Developer counts -->
-        <div class="flex w-full justify-center gap-3 px-4 py-4 sm:py-5">
-            <div
-                class="flex flex-col items-center gap-1 rounded-lg border border-border bg-card px-6 py-3 shadow-sm transition-colors hover:border-primary/30"
-            >
-                <span class="text-2xl font-bold text-primary">{{ developerCount }}</span>
-                <span class="text-xs text-muted-foreground">
-                    {{ developerCount === 1 ? 'developer' : 'developers' }}
-                </span>
-            </div>
-            <div
-                class="flex flex-col items-center gap-1 rounded-lg border border-border bg-card px-6 py-3 shadow-sm transition-colors hover:border-primary/30"
-            >
-                <span class="flex items-center gap-1.5">
-                    <span class="size-2 rounded-full bg-primary" />
-                    <span class="text-2xl font-bold text-primary">{{ recommendedDeveloperCount }}</span>
-                </span>
-                <span class="text-xs text-muted-foreground">recommended</span>
-            </div>
-        </div>
-
-        <!-- Developers section -->
+         <!-- Developers section -->
         <DeveloperCardSection
             :key="`${filterSearch ?? ''}-${sortBy}-${filterName}-${filterJobTitle}-${filterSkill}-${yearsMin}-${yearsMax}`"
             :developers="developers"
