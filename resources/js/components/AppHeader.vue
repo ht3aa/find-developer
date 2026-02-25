@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { Award, BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { Award, BookOpen, Folder, Home, LayoutGrid, Menu, Search } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -35,7 +35,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
-import { dashboard } from '@/routes';
+import { dashboard, home } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import type { BreadcrumbItem, NavItem } from '@/types';
 
@@ -68,6 +68,12 @@ const mainNavItems: NavItem[] = [
 ];
 
 const rightNavItems: NavItem[] = [
+    {
+        title: 'Developers',
+        href: home(),
+        icon: Home,
+        external: false,
+    },
     {
         title: 'Repository',
         href: 'https://github.com/laravel/vue-starter-kit',
@@ -131,21 +137,37 @@ const rightNavItems: NavItem[] = [
                                     </Link>
                                 </nav>
                                 <div class="flex flex-col space-y-4">
-                                    <a
+                                    <template
                                         v-for="item in rightNavItems"
                                         :key="item.title"
-                                        :href="toUrl(item.href)"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="flex items-center space-x-2 text-sm font-medium"
                                     >
-                                        <component
-                                            v-if="item.icon"
-                                            :is="item.icon"
-                                            class="h-5 w-5"
-                                        />
-                                        <span>{{ item.title }}</span>
-                                    </a>
+                                        <a
+                                            v-if="item.external !== false"
+                                            :href="toUrl(item.href)"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="flex items-center space-x-2 text-sm font-medium"
+                                        >
+                                            <component
+                                                v-if="item.icon"
+                                                :is="item.icon"
+                                                class="h-5 w-5"
+                                            />
+                                            <span>{{ item.title }}</span>
+                                        </a>
+                                        <Link
+                                            v-else
+                                            :href="item.href"
+                                            class="flex items-center space-x-2 text-sm font-medium"
+                                        >
+                                            <component
+                                                v-if="item.icon"
+                                                :is="item.icon"
+                                                class="h-5 w-5"
+                                            />
+                                            <span>{{ item.title }}</span>
+                                        </Link>
+                                    </template>
                                 </div>
                             </div>
                         </SheetContent>
@@ -221,6 +243,7 @@ const rightNavItems: NavItem[] = [
                                                 class="group h-9 w-9 cursor-pointer"
                                             >
                                                 <a
+                                                    v-if="item.external !== false"
                                                     :href="toUrl(item.href)"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
@@ -233,6 +256,15 @@ const rightNavItems: NavItem[] = [
                                                         class="size-5 opacity-80 group-hover:opacity-100"
                                                     />
                                                 </a>
+                                                <Link v-else :href="item.href">
+                                                    <span class="sr-only">{{
+                                                        item.title
+                                                    }}</span>
+                                                    <component
+                                                        :is="item.icon"
+                                                        class="size-5 opacity-80 group-hover:opacity-100"
+                                                    />
+                                                </Link>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>

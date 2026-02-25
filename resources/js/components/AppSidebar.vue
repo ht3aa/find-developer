@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Award, BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Award, BookOpen, Folder, Home, LayoutGrid } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -13,7 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, home } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -32,6 +32,12 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
+    {
+        title: 'Developers',
+        href: home(),
+        icon: Home,
+        external: false,
+    },
     {
         title: 'Github Repo',
         href: 'https://github.com/laravel/vue-starter-kit',
