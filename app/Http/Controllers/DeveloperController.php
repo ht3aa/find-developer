@@ -32,7 +32,6 @@ class DeveloperController extends Controller
             'filterSearch' => $request->input('filter.search'),
             'filters' => [
                 'search' => ($request->query('filter') ?? [])['search'] ?? null,
-                'name' => ($request->query('filter') ?? [])['name'] ?? null,
                 'job_title.name' => ($request->query('filter') ?? [])['job_title.name'] ?? null,
                 'skill' => ($request->query('filter') ?? [])['skill'] ?? null,
                 'years_min' => ($request->query('filter') ?? [])['years_min'] ?? null,

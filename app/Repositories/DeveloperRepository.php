@@ -30,12 +30,10 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->where(function ($query) use ($term) {
                         $query->where('developers.name', 'like', $term)
-                            ->orWhereHas('jobTitle', function ($q) use ($term) {
-                                $q->where('name', 'like', $term);
-                            })
+                            ->orWhere('developers.email', 'like', $term)
                             ->orWhereHas('skills', function ($q) use ($term) {
                                 $q->where('skills.name', 'like', $term);
                             });
@@ -45,7 +43,7 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->whereHas('skills', function ($q) use ($term) {
                         $q->where('skills.name', 'like', $term);
                     });
@@ -85,12 +83,10 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->where(function ($query) use ($term) {
                         $query->where('developers.name', 'like', $term)
-                            ->orWhereHas('jobTitle', function ($q) use ($term) {
-                                $q->where('name', 'like', $term);
-                            })
+                            ->orWhere('developers.email', 'like', $term)
                             ->orWhereHas('skills', function ($q) use ($term) {
                                 $q->where('skills.name', 'like', $term);
                             });
@@ -100,7 +96,7 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->whereHas('skills', function ($q) use ($term) {
                         $q->where('skills.name', 'like', $term);
                     });

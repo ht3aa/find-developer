@@ -19,7 +19,6 @@ import type { Developer } from '@/types/developer';
 
 type Filters = {
     search?: string | null;
-    name?: string | null;
     'job_title.name'?: string | null;
     skill?: string | null;
     years_min?: string | null;
@@ -57,7 +56,6 @@ const props = withDefaults(
 );
 
 const searchQuery = ref(props.filterSearch ?? props.filters?.search ?? '');
-const filterName = ref(props.filters?.name ?? '');
 const filterJobTitle = ref(props.filters?.['job_title.name'] ?? '');
 const filterSkill = ref(props.filters?.skill ?? '');
 const yearsMin = ref(props.filters?.years_min ?? '');
@@ -70,7 +68,6 @@ function buildFilterUrl(overrides?: { search?: string }): string {
     const params = new URLSearchParams();
     const search = overrides?.search !== undefined ? overrides.search : searchQuery.value;
     if (search) params.set('filter[search]', search);
-    if (filterName.value) params.set('filter[name]', filterName.value);
     if (filterJobTitle.value) params.set('filter[job_title.name]', filterJobTitle.value);
     if (filterSkill.value) params.set('filter[skill]', filterSkill.value);
     if (yearsMin.value) params.set('filter[years_min]', yearsMin.value);
@@ -83,7 +80,6 @@ function buildFilterUrl(overrides?: { search?: string }): string {
 function clearFilters(): void {
     advancedOpen.value = false;
     searchQuery.value = '';
-    filterName.value = '';
     filterJobTitle.value = '';
     filterSkill.value = '';
     yearsMin.value = '';
@@ -97,7 +93,7 @@ watch(debouncedQuery, () => {
 }, { immediate: false });
 
 watchDebounced(
-    () => [filterName.value, filterJobTitle.value, filterSkill.value, yearsMin.value, yearsMax.value, sortBy.value],
+    () => [filterJobTitle.value, filterSkill.value, yearsMin.value, yearsMax.value, sortBy.value],
     () => {
         router.get(buildFilterUrl(), {}, { preserveState: true, replace: true });
     },
@@ -108,7 +104,6 @@ watch(
     () => [props.filters, props.sort],
     () => {
         searchQuery.value = props.filterSearch ?? props.filters?.search ?? '';
-        filterName.value = props.filters?.name ?? '';
         filterJobTitle.value = props.filters?.['job_title.name'] ?? '';
         filterSkill.value = props.filters?.skill ?? '';
         yearsMin.value = props.filters?.years_min ?? '';
@@ -158,7 +153,7 @@ const sortOptions = [
                     <Input
                         v-model="searchQuery"
                         type="search"
-                        placeholder="Search developers by skill, e.g. Laravel, Vue, React..."
+                        placeholder="Search by name, email, or skills..."
                         class="h-11 w-full border-0 bg-transparent pl-12 pr-4 text-base shadow-none placeholder:text-muted-foreground focus-visible:ring-0 sm:h-12 sm:pl-12"
                         autocomplete="off"
                     />
@@ -183,17 +178,6 @@ const sortOptions = [
                                 Advanced filters
                             </h2>
                             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                <div class="space-y-2">
-                                    <Label for="filter-name">Name</Label>
-                                    <Input
-                                        id="filter-name"
-                                        v-model="filterName"
-                                        type="text"
-                                        placeholder="Developer name"
-                                        class="w-full"
-                                        autocomplete="off"
-                                    />
-                                </div>
                                 <div class="space-y-2">
                                     <Label for="filter-job-title">Job title</Label>
                                     <Input
@@ -272,7 +256,7 @@ const sortOptions = [
 
          <!-- Developers section -->
         <DeveloperCardSection
-            :key="`${filterSearch ?? ''}-${sortBy}-${filterName}-${filterJobTitle}-${filterSkill}-${yearsMin}-${yearsMax}`"
+            :key="`${filterSearch ?? ''}-${sortBy}-${filterJobTitle}-${filterSkill}-${yearsMin}-${yearsMax}`"
             :developers="developers"
             :meta="meta"
             :links="links"
