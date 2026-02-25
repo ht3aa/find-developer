@@ -3,6 +3,8 @@
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
+use App\Http\Controllers\Dashboard\RoleController;
+use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
@@ -26,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
+        Route::resource('roles', RoleController::class)->except(['show']);
+        Route::resource('users', UserController::class)->except(['show']);
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])
             ->name('dashboard.developer-profile.index');
@@ -36,4 +40,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

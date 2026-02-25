@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Award, BookOpen, Briefcase, Folder, Home, LayoutGrid, User, Users } from 'lucide-vue-next';
+import { Award, BookOpen, Briefcase, Folder, Home, LayoutGrid, Shield, User, UserCog, Users } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -17,6 +17,8 @@ import { dashboard, home } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { index as developersIndex } from '@/routes/developers';
+import { index as rolesIndex } from '@/routes/roles';
+import { index as usersIndex } from '@/routes/users';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -46,6 +48,16 @@ const mainNavItems: NavItem[] = [
         title: 'Developers',
         href: developersIndex(),
         icon: Users,
+    },
+    {
+        title: 'Users',
+        href: usersIndex(),
+        icon: UserCog,
+    },
+    {
+        title: 'Roles',
+        href: rolesIndex(),
+        icon: Shield,
     },
 ];
 
