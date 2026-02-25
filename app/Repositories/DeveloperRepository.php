@@ -40,6 +40,27 @@ class DeveloperRepository
                             });
                     });
                 }),
+                AllowedFilter::callback('skill', function ($query, $value) {
+                    if (blank($value)) {
+                        return;
+                    }
+                    $term = '%'.addcslashes($value, '%_').'%';
+                    $query->whereHas('skills', function ($q) use ($term) {
+                        $q->where('skills.name', 'like', $term);
+                    });
+                }),
+                AllowedFilter::callback('years_min', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $query->where('years_of_experience', '>=', (int) $value);
+                }),
+                AllowedFilter::callback('years_max', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $query->where('years_of_experience', '<=', (int) $value);
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts(['name', 'years_of_experience', 'created_at'])

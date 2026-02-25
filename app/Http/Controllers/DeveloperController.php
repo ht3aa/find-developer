@@ -27,6 +27,15 @@ class DeveloperController extends Controller
             'canRegister' => Features::enabled(Features::registration()),
             'developers' => DeveloperResource::collection($paginator->items())->resolve(),
             'filterSearch' => $request->input('filter.search'),
+            'filters' => [
+                'search' => ($request->query('filter') ?? [])['search'] ?? null,
+                'name' => ($request->query('filter') ?? [])['name'] ?? null,
+                'job_title.name' => ($request->query('filter') ?? [])['job_title.name'] ?? null,
+                'skill' => ($request->query('filter') ?? [])['skill'] ?? null,
+                'years_min' => ($request->query('filter') ?? [])['years_min'] ?? null,
+                'years_max' => ($request->query('filter') ?? [])['years_max'] ?? null,
+            ],
+            'sort' => $request->input('sort', 'name'),
             'meta' => [
                 'current_page' => $paginator->currentPage(),
                 'last_page' => $paginator->lastPage(),
