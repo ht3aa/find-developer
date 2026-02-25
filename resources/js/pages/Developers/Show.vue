@@ -36,6 +36,7 @@ const props = defineProps<{
 
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { is_admin?: boolean } } | undefined);
+const flash = computed(() => page.props.flash as { success?: string; error?: string; info?: string } | undefined);
 
 const expandedDescriptions = ref<Set<string>>(new Set());
 const DESCRIPTION_TRUNCATE_LENGTH = 200;
@@ -124,6 +125,26 @@ function formatNum(n: number): string {
             </div>
 
             <div class="mx-auto max-w-5xl px-4 py-8 sm:py-12">
+                <!-- Flash messages -->
+                <div
+                    v-if="flash?.success"
+                    class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+                >
+                    {{ flash.success }}
+                </div>
+                <div
+                    v-if="flash?.info"
+                    class="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-200"
+                >
+                    {{ flash.info }}
+                </div>
+                <div
+                    v-if="flash?.error"
+                    class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+                >
+                    {{ flash.error }}
+                </div>
+
                 <!-- Hero -->
                 <header class="mb-8">
                     <div class="flex items-start gap-5">
