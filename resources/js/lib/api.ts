@@ -2,9 +2,12 @@ export type DeveloperFilters = {
     search?: string;
     jobTitle?: string[];
     skill?: string[];
+    badge?: string[];
+    availabilityType?: string[];
+    hasUrls?: string[];
+    isAvailable?: string;
     yearsMin?: string;
     yearsMax?: string;
-    sort?: string;
 };
 
 function toFilterValue(val: string | string[] | null | undefined): string {
@@ -24,9 +27,15 @@ export function buildDevelopersApiUrl(base: string, filters: DeveloperFilters): 
     if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
     const skillVal = toFilterValue(filters.skill);
     if (skillVal) params.set('filter[skill]', skillVal);
+    const badgeVal = toFilterValue(filters.badge);
+    if (badgeVal) params.set('filter[badge]', badgeVal);
+    const availabilityTypeVal = toFilterValue(filters.availabilityType);
+    if (availabilityTypeVal) params.set('filter[availability_type]', availabilityTypeVal);
+    const hasUrlsVal = toFilterValue(filters.hasUrls);
+    if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
+    if (filters.isAvailable && filters.isAvailable !== 'all') params.set('filter[is_available]', filters.isAvailable);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
-    if (filters.sort && filters.sort !== 'name') params.set('sort', filters.sort);
     const q = params.toString();
     return q ? `${base}?${q}` : base;
 }
@@ -42,9 +51,12 @@ export function parseFiltersFromUrl(): DeveloperFilters {
         search: filter.search ?? '',
         jobTitle: parseFilterArray(filter['job_title.name']),
         skill: parseFilterArray(filter.skill),
+        badge: parseFilterArray(filter.badge),
+        availabilityType: parseFilterArray(filter.availability_type),
+        hasUrls: parseFilterArray(filter.has_urls),
+        isAvailable: filter.is_available ?? 'all',
         yearsMin: filter.years_min ?? '',
         yearsMax: filter.years_max ?? '',
-        sort: params.get('sort') ?? 'name',
     };
 }
 
@@ -55,9 +67,15 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
     const skillVal = toFilterValue(filters.skill);
     if (skillVal) params.set('filter[skill]', skillVal);
+    const badgeVal = toFilterValue(filters.badge);
+    if (badgeVal) params.set('filter[badge]', badgeVal);
+    const availabilityTypeVal = toFilterValue(filters.availabilityType);
+    if (availabilityTypeVal) params.set('filter[availability_type]', availabilityTypeVal);
+    const hasUrlsVal = toFilterValue(filters.hasUrls);
+    if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
+    if (filters.isAvailable && filters.isAvailable !== 'all') params.set('filter[is_available]', filters.isAvailable);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
-    if (filters.sort && filters.sort !== 'name') params.set('sort', filters.sort);
     const q = params.toString();
     const newUrl = q ? `${window.location.pathname}?${q}` : window.location.pathname;
     window.history.replaceState({}, '', newUrl);

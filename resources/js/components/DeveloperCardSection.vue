@@ -29,24 +29,87 @@ const searchQuery = ref(initialFilters.search ?? '');
 const debouncedQuery = refDebounced(searchQuery, 500);
 const filterJobTitle = ref<string[]>(initialFilters.jobTitle ?? []);
 const filterSkill = ref<string[]>(initialFilters.skill ?? []);
+const filterBadge = ref<string[]>(initialFilters.badge ?? []);
+const filterAvailabilityType = ref<string[]>(initialFilters.availabilityType ?? []);
+const filterHasUrls = ref<string[]>(initialFilters.hasUrls ?? []);
+const isAvailable = ref(initialFilters.isAvailable ?? 'all');
 const yearsMin = ref(initialFilters.yearsMin ?? '');
 const yearsMax = ref(initialFilters.yearsMax ?? '');
-const sortBy = ref(initialFilters.sort ?? 'name');
 const advancedOpen = ref(false);
 const developers = ref<Developer[]>([]);
 const loading = ref(false);
 
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
+const badgeSelectOpen = ref(false);
+const availabilityTypeSelectOpen = ref(false);
+const hasUrlsSelectOpen = ref(false);
+
+const availabilityTypeOptions = [
+    { value: 'full-time', label: 'Full-time' },
+    { value: 'part-time', label: 'Part-time' },
+    { value: 'freelance', label: 'Freelance' },
+    { value: 'hybrid', label: 'Hybrid' },
+    { value: 'remote', label: 'Remote' },
+    { value: 'remote-full-time', label: 'Remote Full-time' },
+    { value: 'hybrid-full-time', label: 'Hybrid Full-time' },
+] as const;
+
+const hasUrlsOptions = [
+    { value: 'github', label: 'GitHub' },
+    { value: 'linkedin', label: 'LinkedIn' },
+    { value: 'portfolio', label: 'Portfolio' },
+    { value: 'youtube', label: 'YouTube' },
+] as const;
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
-    if (open) skillSelectOpen.value = false;
+    if (open) {
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
+    }
 }
 
 function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
-    if (open) jobTitleSelectOpen.value = false;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
+    }
+}
+
+function onBadgeOpenChange(open: boolean): void {
+    badgeSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
+    }
+}
+
+function onAvailabilityTypeOpenChange(open: boolean): void {
+    availabilityTypeSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
+    }
+}
+
+function onHasUrlsOpenChange(open: boolean): void {
+    hasUrlsSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+    }
 }
 
 function getFilters(): DeveloperFilters {
@@ -54,9 +117,12 @@ function getFilters(): DeveloperFilters {
         search: debouncedQuery.value,
         jobTitle: filterJobTitle.value,
         skill: filterSkill.value,
+        badge: filterBadge.value,
+        availabilityType: filterAvailabilityType.value,
+        hasUrls: filterHasUrls.value,
+        isAvailable: isAvailable.value,
         yearsMin: yearsMin.value,
         yearsMax: yearsMax.value,
-        sort: sortBy.value,
     };
 }
 
@@ -82,25 +148,25 @@ function clearFilters(): void {
     searchQuery.value = '';
     filterJobTitle.value = [];
     filterSkill.value = [];
+    filterBadge.value = [];
+    filterAvailabilityType.value = [];
+    filterHasUrls.value = [];
+    isAvailable.value = 'all';
     yearsMin.value = '';
     yearsMax.value = '';
-    sortBy.value = 'name';
     fetchDevelopers(API_BASE);
 }
-
-const sortOptions = [
-    { value: 'name', label: 'Name' },
-    { value: 'years_of_experience', label: 'Years of experience' },
-    { value: '-created_at', label: 'Newest first' },
-] as const;
 
 const activeFilterCount = computed(() => {
     let count = 0;
     if (filterJobTitle.value.length > 0) count += filterJobTitle.value.length;
     if (filterSkill.value.length > 0) count += filterSkill.value.length;
+    if (filterBadge.value.length > 0) count += filterBadge.value.length;
+    if (filterAvailabilityType.value.length > 0) count += filterAvailabilityType.value.length;
+    if (filterHasUrls.value.length > 0) count += filterHasUrls.value.length;
+    if (isAvailable.value && isAvailable.value !== 'all') count++;
     if (yearsMin.value) count++;
     if (yearsMax.value) count++;
-    if (sortBy.value && sortBy.value !== 'name') count++;
     return count;
 });
 
@@ -112,6 +178,9 @@ watch(advancedOpen, (isOpen: boolean) => {
     if (!isOpen) {
         jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
     }
 });
 
@@ -122,7 +191,7 @@ onMounted(() => {
 
 <template>
     <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div class="sticky top-16 z-10 mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
+        <div class="sticky top-16 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
             <div class="relative flex min-w-0 flex-1">
                 <Search
                     class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -163,7 +232,7 @@ onMounted(() => {
                             Advanced filters
                         </SheetTitle>
                         <SheetDescription class="sr-only">
-                            Filter developers by job title, skills, years of experience, and sort order.
+                            Filter developers by job title, skills, badges, availability type, has URLs, availability status, and years of experience.
                         </SheetDescription>
                         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             <div class="space-y-2">
@@ -195,6 +264,58 @@ onMounted(() => {
                                 />
                             </div>
                             <div class="space-y-2">
+                                <Label for="filter-badge">Badge</Label>
+                                <SearchableSelect
+                                    id="filter-badge"
+                                    :model-value="filterBadge"
+                                    :open="badgeSelectOpen"
+                                    options-url="/api/badges"
+                                    placeholder="e.g. Laravel Expert"
+                                    multiple
+                                    :max-options="50"
+                                    @update:model-value="filterBadge = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:open="onBadgeOpenChange"
+                                />
+                            </div>
+                            <div class="space-y-2">
+                                <Label for="filter-availability-type">Availability type</Label>
+                                <SearchableSelect
+                                    id="filter-availability-type"
+                                    :model-value="filterAvailabilityType"
+                                    :open="availabilityTypeSelectOpen"
+                                    :options="availabilityTypeOptions"
+                                    placeholder="e.g. Full-time, Remote"
+                                    multiple
+                                    @update:model-value="filterAvailabilityType = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:open="onAvailabilityTypeOpenChange"
+                                />
+                            </div>
+                            <div class="space-y-2">
+                                <Label for="filter-has-urls">Has URLs</Label>
+                                <SearchableSelect
+                                    id="filter-has-urls"
+                                    :model-value="filterHasUrls"
+                                    :open="hasUrlsSelectOpen"
+                                    :options="hasUrlsOptions"
+                                    placeholder="e.g. GitHub, LinkedIn"
+                                    multiple
+                                    @update:model-value="filterHasUrls = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:open="onHasUrlsOpenChange"
+                                />
+                            </div>
+                            <div class="space-y-2">
+                                <Label for="filter-is-available">Availability</Label>
+                                <select
+                                    id="filter-is-available"
+                                    v-model="isAvailable"
+                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="all">All</option>
+                                    <option value="1">Available</option>
+                                    <option value="0">Not available</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
                                 <Label for="filter-years-min">Min. years of experience</Label>
                                 <Input
                                     id="filter-years-min"
@@ -215,22 +336,6 @@ onMounted(() => {
                                     placeholder="Any"
                                     class="w-full"
                                 />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-sort">Sort by</Label>
-                                <select
-                                    id="filter-sort"
-                                    v-model="sortBy"
-                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                >
-                                    <option
-                                        v-for="opt in sortOptions"
-                                        :key="opt.value"
-                                        :value="opt.value"
-                                    >
-                                        {{ opt.label }}
-                                    </option>
-                                </select>
                             </div>
                         </div>
                         <div class="mt-6 flex flex-wrap items-center gap-2">

@@ -78,6 +78,55 @@ class DeveloperRepository
                     }
                     $query->where('years_of_experience', '<=', (int) $value);
                 }),
+                AllowedFilter::callback('availability_type', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $query->where(function ($q) use ($values) {
+                        foreach ($values as $val) {
+                            $q->orWhereJsonContains('availability_type', $val);
+                        }
+                    });
+                }),
+                AllowedFilter::callback('has_urls', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $columnMap = [
+                        'github' => 'github_url',
+                        'linkedin' => 'linkedin_url',
+                        'portfolio' => 'portfolio_url',
+                        'youtube' => 'youtube_url',
+                    ];
+                    $query->where(function ($q) use ($values, $columnMap) {
+                        foreach ($values as $val) {
+                            $col = $columnMap[$val] ?? null;
+                            if ($col) {
+                                $q->orWhere(function ($q2) use ($col) {
+                                    $q2->whereNotNull($col)->where($col, '!=', '');
+                                });
+                            }
+                        }
+                    });
+                }),
+                AllowedFilter::callback('badge', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $query->whereHas('badges', function ($q) use ($values) {
+                        $q->whereIn('badges.name', $values);
+                    });
+                }),
+                AllowedFilter::callback('is_available', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    $query->where('developers.is_available', $bool);
+                }),
             ])
             ->allowedSorts(['name', 'years_of_experience', 'created_at'])
             ->orderBy('badges_count', 'desc')
@@ -148,6 +197,55 @@ class DeveloperRepository
                         return;
                     }
                     $query->where('years_of_experience', '<=', (int) $value);
+                }),
+                AllowedFilter::callback('availability_type', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $query->where(function ($q) use ($values) {
+                        foreach ($values as $val) {
+                            $q->orWhereJsonContains('availability_type', $val);
+                        }
+                    });
+                }),
+                AllowedFilter::callback('has_urls', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $columnMap = [
+                        'github' => 'github_url',
+                        'linkedin' => 'linkedin_url',
+                        'portfolio' => 'portfolio_url',
+                        'youtube' => 'youtube_url',
+                    ];
+                    $query->where(function ($q) use ($values, $columnMap) {
+                        foreach ($values as $val) {
+                            $col = $columnMap[$val] ?? null;
+                            if ($col) {
+                                $q->orWhere(function ($q2) use ($col) {
+                                    $q2->whereNotNull($col)->where($col, '!=', '');
+                                });
+                            }
+                        }
+                    });
+                }),
+                AllowedFilter::callback('badge', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $query->whereHas('badges', function ($q) use ($values) {
+                        $q->whereIn('badges.name', $values);
+                    });
+                }),
+                AllowedFilter::callback('is_available', function ($query, $value) {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+                    $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                    $query->where('developers.is_available', $bool);
                 }),
             ]);
 
