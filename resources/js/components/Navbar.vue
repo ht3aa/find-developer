@@ -2,7 +2,6 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { Menu } from 'lucide-vue-next';
 import { computed } from 'vue';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Button } from '@/components/ui/button';
 import {
     NavigationMenu,
@@ -41,8 +40,10 @@ const navItems = [
                 :href="home()"
                 class="flex items-center gap-2 font-semibold text-foreground"
             >
-                <AppLogoIcon
-                    class="size-6 fill-current text-foreground"
+                <img
+                    src="/light-logo.svg"
+                    alt=""
+                    class="h-8 w-auto shrink-0 sm:h-9"
                 />
                 <span class="hidden sm:inline-block">Find Developer</span>
             </Link>
@@ -101,7 +102,11 @@ const navItems = [
                             :href="home()"
                             class="flex items-center gap-2 font-semibold text-foreground"
                         >
-                            <AppLogoIcon class="size-6 fill-current" />
+                            <img
+                                src="/light-logo.svg"
+                                alt=""
+                                class="h-8 w-auto shrink-0"
+                            />
                             <span>Find Developer</span>
                         </Link>
                     </SheetHeader>

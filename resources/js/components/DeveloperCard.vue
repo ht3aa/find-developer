@@ -99,7 +99,7 @@ function formatNum(n: number): string {
 </script>
 
 <template>
-    <Card class="relative overflow-hidden border bg-card text-card-foreground shadow-sm">
+    <Card class="relative flex h-full flex-col overflow-hidden border bg-card text-card-foreground shadow-sm">
         <!-- Recommended pill -->
         <div
             v-if="developer.recommended_by_us"
@@ -174,9 +174,10 @@ function formatNum(n: number): string {
             </Badge>
         </CardHeader>
 
-        <CardContent class="flex flex-col gap-3 pt-0">
-            <!-- Details list -->
-            <ul class="flex flex-col gap-2 text-sm text-muted-foreground">
+        <CardContent class="flex flex-1 flex-col gap-3 pt-0">
+            <div class="flex flex-1 flex-col gap-3">
+                <!-- Details list -->
+                <ul class="flex flex-col gap-2 text-sm text-muted-foreground">
                 <li class="flex items-center gap-2">
                     <Briefcase class="size-4 shrink-0 text-muted-foreground" />
                     <span>{{ developer.years_of_experience }} years experience</span>
@@ -264,29 +265,8 @@ function formatNum(n: number): string {
                 </li>
             </ul>
 
-            <!-- Skills -->
-            <div v-if="developer.skills.length > 0" class="flex flex-wrap gap-1.5">
-                <Badge
-                    v-for="(skill, index) in displaySkills"
-                    :key="skill.name"
-                    variant="secondary"
-                    class="text-xs font-normal"
-                >
-                    {{ skill.name }}
-                </Badge>
-                <Button
-                    v-if="hasMoreSkills"
-                    variant="ghost"
-                    size="sm"
-                    class="h-6 px-2 text-xs"
-                    @click="skillsExpanded = !skillsExpanded"
-                >
-                    {{ skillsExpanded ? 'Show less' : `+${hiddenSkillsCount} more` }}
-                </Button>
-            </div>
-
-            <!-- Social / links -->
-            <div class="flex flex-wrap gap-2">
+                <!-- Social / links -->
+                <div class="flex flex-wrap gap-2">
                 <TooltipProvider v-if="developer.portfolio_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
@@ -374,14 +354,15 @@ function formatNum(n: number): string {
                         <TooltipContent>CV / Resume</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
+                </div>
             </div>
 
             <!-- View profile -->
             <Button
                 v-if="profileUrl"
                 as-child
-                variant="default"
-                class="mt-1 w-full gap-2"
+                variant="ghost"
+                class="mt-auto w-full gap-2 border border-border hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
                 <Link :href="profileUrl" class="inline-flex items-center gap-2">
                     <User class="size-4" />
