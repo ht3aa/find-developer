@@ -1,22 +1,43 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { Search } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import DeveloperCard from '@/components/DeveloperCard.vue';
 import Navbar from '@/components/Navbar.vue';
 import { Input } from '@/components/ui/input';
+import type { Developer } from '@/types/developer';
 
-defineProps<{
+const props = defineProps<{
     canRegister?: boolean;
+    developers: Developer[];
+    filterSearch?: string | null;
+    meta: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        from: number | null;
+        to: number | null;
+    };
+    links: {
+        prev: string | null;
+        next: string | null;
+    };
 }>();
 
-const searchQuery = ref('');
+const searchQuery = ref(props.filterSearch ?? '');
 const debouncedQuery = refDebounced(searchQuery, 300);
 
-watch(debouncedQuery, (query) => {
-    if (query === '') return;
-    // TODO: run live search, e.g. fetch results or navigate
-});
+function homeUrl(query: string): string {
+    if (!query) return '/';
+    const params = new URLSearchParams({ 'filter[search]': query });
+    return `/?${params.toString()}`;
+}
+
+watch(debouncedQuery, (query: string) => {
+    router.get(homeUrl(query), {}, { preserveState: true, replace: true });
+}, { immediate: false });
 </script>
 
 <template>
@@ -47,6 +68,49 @@ watch(debouncedQuery, (query) => {
                         autocomplete="off"
                     />
                 </div>
+            </div>
+        </section>
+
+        <!-- Developers section -->
+        <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div
+                v-if="developers.length === 0"
+                class="rounded-lg border border-dashed py-12 text-center text-[#706f6c] dark:text-[#A1A09A]"
+            >
+                No developers found.
+            </div>
+            <div
+                v-else
+                class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+                <DeveloperCard
+                    v-for="developer in developers"
+                    :key="developer.id"
+                    :developer="developer"
+                />
+            </div>
+
+            <div
+                v-if="meta.last_page > 1"
+                class="mt-8 flex items-center justify-center gap-4"
+            >
+                <Link
+                    v-if="links.prev"
+                    :href="links.prev"
+                    class="text-sm font-medium text-[#1b1b18] hover:underline dark:text-[#EDEDEC]"
+                >
+                    Previous
+                </Link>
+                <span class="text-sm text-[#706f6c] dark:text-[#A1A09A]">
+                    Page {{ meta.current_page }} of {{ meta.last_page }}
+                </span>
+                <Link
+                    v-if="links.next"
+                    :href="links.next"
+                    class="text-sm font-medium text-[#1b1b18] hover:underline dark:text-[#EDEDEC]"
+                >
+                    Next
+                </Link>
             </div>
         </section>
     </div>

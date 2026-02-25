@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\Currency;
+use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+
+#[ScopedBy([UserScope::class])]
+class UserService extends Model
+{
+    use HasFactory, LogsActivity;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'slug',
+        'description',
+        'price',
+        'price_currency',
+        'is_active',
+        'time_minutes',
+    ];
+
+    protected $casts = [
+        'price' => 'integer',
+        'price_currency' => Currency::class,
+        'is_active' => 'boolean',
+        'time_minutes' => 'integer',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($service) {
+            if (empty($service->slug)) {
+                $service->slug = Str::slug($service->name);
+            }
+        });
+
+        static::updating(function ($service) {
+            if ($service->isDirty('name') && empty($service->slug)) {
+                $service->slug = Str::slug($service->name);
+            }
+        });
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(UserAppointment::class);
+    }
+
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'badge_user_service')
+            ->withTimestamps();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->logOnly(['*']);
+    }
+}

@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\DeveloperResource;
+use App\Repositories\DeveloperRepository;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Laravel\Fortify\Features;
+
+class DeveloperController extends Controller
+{
+    public function __construct(
+        private DeveloperRepository $developerRepository
+    ) {}
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): Response
+    {
+        $paginator = $this->developerRepository->getPaginated($request, 12);
+
+        return Inertia::render('Welcome', [
+            'canRegister' => Features::enabled(Features::registration()),
+            'developers' => DeveloperResource::collection($paginator->items())->resolve(),
+            'filterSearch' => $request->input('filter.search'),
+            'meta' => [
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
+            'links' => [
+                'prev' => $paginator->previousPageUrl(),
+                'next' => $paginator->nextPageUrl(),
+            ],
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): Response|RedirectResponse
+    {
+        return Inertia::render('Developers/Create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        return redirect()->route('home');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id): Response|RedirectResponse
+    {
+        return redirect()->route('home');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id): Response|RedirectResponse
+    {
+        return redirect()->route('home');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id): RedirectResponse
+    {
+        return redirect()->route('home');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id): RedirectResponse
+    {
+        return redirect()->route('home');
+    }
+}
