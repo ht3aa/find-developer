@@ -19,7 +19,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        $this->authorize('viewDeveloperProfile', auth()->user());
+        $this->authorize('viewDeveloperProfile', auth()->user()?->developer);
 
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -32,7 +32,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $this->authorize('updateDeveloperProfile', auth()->user());
+        $this->authorize('updateDeveloperProfile', auth()->user()?->developer);
 
         $request->user()->fill($request->validated());
 

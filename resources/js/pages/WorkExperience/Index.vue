@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { Briefcase, Plus } from 'lucide-vue-next';
 import WorkExperienceController from '@/actions/App/Http/Controllers/Dashboard/WorkExperienceController';
 import WorkExperienceDataTable from '@/components/work-experience/WorkExperienceDataTable.vue';
@@ -15,6 +16,9 @@ type Props = {
 };
 
 defineProps<Props>();
+
+const page = usePage();
+const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -39,6 +43,18 @@ function confirmDelete(workExperience: WorkExperience) {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div
+                v-if="flash?.success"
+                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+            >
+                {{ flash.success }}
+            </div>
+            <div
+                v-if="flash?.error"
+                class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+            >
+                {{ flash.error }}
+            </div>
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">

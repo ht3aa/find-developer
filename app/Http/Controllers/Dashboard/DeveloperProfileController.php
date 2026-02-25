@@ -22,7 +22,10 @@ class DeveloperProfileController extends Controller
      */
     public function index(Request $request): Response
     {
+
         $developer = $request->user()->developer;
+
+        $this->authorize('viewDeveloperProfile', $developer);
 
         if (! $developer) {
             return Inertia::render('Developers/Profile', [
@@ -55,7 +58,7 @@ class DeveloperProfileController extends Controller
                 ->withErrors(['developer' => 'You do not have a developer profile.']);
         }
 
-        $this->authorize('update', $developer);
+        $this->authorize('updateDeveloperProfile', $developer);
 
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
@@ -106,7 +109,7 @@ class DeveloperProfileController extends Controller
             ])
             ->findOrFail($developer->id);
 
-        $this->authorize('update', $developer);
+        $this->authorize('updateDeveloperProfile', $developer);
 
         $filename = str($developer->name)->slug()->append('-cv.pdf')->toString();
 
