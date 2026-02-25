@@ -25,7 +25,15 @@ class DeveloperRepository
             ->withCount('badges')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
-                AllowedFilter::partial('job_title.name'),
+                AllowedFilter::callback('job_title.name', function ($query, $value) {
+                    if (blank($value)) {
+                        return;
+                    }
+                    $term = '%'.addcslashes($value, '%_').'%';
+                    $query->whereHas('jobTitle', function ($q) use ($term) {
+                        $q->where('name', 'like', $term);
+                    });
+                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     if (blank($value)) {
                         return;
@@ -78,7 +86,15 @@ class DeveloperRepository
             ->where('recommended_by_us', true)
             ->allowedFilters([
                 AllowedFilter::partial('name'),
-                AllowedFilter::partial('job_title.name'),
+                AllowedFilter::callback('job_title.name', function ($query, $value) {
+                    if (blank($value)) {
+                        return;
+                    }
+                    $term = '%'.addcslashes($value, '%_').'%';
+                    $query->whereHas('jobTitle', function ($q) use ($term) {
+                        $q->where('name', 'like', $term);
+                    });
+                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     if (blank($value)) {
                         return;

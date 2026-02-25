@@ -7,12 +7,15 @@ import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
+import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
     Sheet,
     SheetContent,
+    SheetDescription,
+    SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
 import type { Developer } from '@/types/developer';
@@ -32,7 +35,9 @@ const props = withDefaults(
         developers: Developer[];
         filterSearch?: string | null;
         filters?: Filters;
+        jobTitles?: { value: string; label: string }[];
         recommendedDeveloperCount?: number;
+        skills?: { value: string; label: string }[];
         sort?: string;
         meta: {
             current_page: number;
@@ -50,7 +55,9 @@ const props = withDefaults(
     {
         developerCount: 0,
         filters: () => ({}),
+        jobTitles: () => [],
         recommendedDeveloperCount: 0,
+        skills: () => [],
         sort: 'name',
     },
 );
@@ -63,6 +70,20 @@ const yearsMax = ref(props.filters?.years_max ?? '');
 const sortBy = ref(props.sort);
 const advancedOpen = ref(false);
 const debouncedQuery = refDebounced(searchQuery, 300);
+
+// Ensure only one SearchableSelect is open at a time to prevent interaction conflicts
+const jobTitleSelectOpen = ref(false);
+const skillSelectOpen = ref(false);
+
+function onJobTitleOpenChange(open: boolean): void {
+    jobTitleSelectOpen.value = open;
+    if (open) skillSelectOpen.value = false;
+}
+
+function onSkillOpenChange(open: boolean): void {
+    skillSelectOpen.value = open;
+    if (open) jobTitleSelectOpen.value = false;
+}
 
 function buildFilterUrl(overrides?: { search?: string }): string {
     const params = new URLSearchParams();
@@ -112,6 +133,13 @@ watch(
     },
     { deep: true },
 );
+
+watch(advancedOpen, (isOpen: boolean) => {
+    if (!isOpen) {
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+    }
+});
 
 const sortOptions = [
     { value: 'name', label: 'Name' },
@@ -174,30 +202,37 @@ const sortOptions = [
                         class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
                     >
                         <div class="mx-auto w-full max-w-4xl py-6 pr-10">
-                            <h2 class="mb-4 text-lg font-semibold">
+                            <SheetTitle class="mb-4 text-lg font-semibold">
                                 Advanced filters
-                            </h2>
+                            </SheetTitle>
+                            <SheetDescription class="sr-only">
+                                Filter developers by job title, skills, years of experience, and sort order.
+                            </SheetDescription>
                             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 <div class="space-y-2">
                                     <Label for="filter-job-title">Job title</Label>
-                                    <Input
+                                    <SearchableSelect
                                         id="filter-job-title"
-                                        v-model="filterJobTitle"
-                                        type="text"
+                                        :model-value="filterJobTitle || null"
+                                        :open="jobTitleSelectOpen"
+                                        :options="jobTitles"
                                         placeholder="e.g. Backend Developer"
-                                        class="w-full"
-                                        autocomplete="off"
+                                        :max-options="50"
+                                        @update:model-value="filterJobTitle = $event ?? ''"
+                                        @update:open="onJobTitleOpenChange"
                                     />
                                 </div>
                                 <div class="space-y-2">
                                     <Label for="filter-skill">Skill</Label>
-                                    <Input
+                                    <SearchableSelect
                                         id="filter-skill"
-                                        v-model="filterSkill"
-                                        type="text"
+                                        :model-value="filterSkill || null"
+                                        :open="skillSelectOpen"
+                                        :options="skills"
                                         placeholder="e.g. Laravel, Vue"
-                                        class="w-full"
-                                        autocomplete="off"
+                                        :max-options="50"
+                                        @update:model-value="filterSkill = $event ?? ''"
+                                        @update:open="onSkillOpenChange"
                                     />
                                 </div>
                                 <div class="space-y-2">

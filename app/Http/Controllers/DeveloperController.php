@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\RecommendationStatus;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
+use App\Models\JobTitle;
 use App\Models\Scopes\DeveloperScope;
+use App\Models\Skill;
 use App\Repositories\DeveloperRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,10 +28,30 @@ class DeveloperController extends Controller
     {
         $paginator = $this->developerRepository->getPaginated($request, 12);
 
+        $jobTitles = JobTitle::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->limit(50)
+            ->get(['id', 'name'])
+            ->map(fn ($j) => ['value' => $j->name, 'label' => $j->name])
+            ->values()
+            ->all();
+
+        $skills = Skill::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->limit(50)
+            ->get(['id', 'name'])
+            ->map(fn ($s) => ['value' => $s->name, 'label' => $s->name])
+            ->values()
+            ->all();
+
         return Inertia::render('Welcome', [
             'canRegister' => Features::enabled(Features::registration()),
             'developers' => DeveloperResource::collection($paginator->items())->resolve(),
             'filterSearch' => $request->input('filter.search'),
+            'jobTitles' => $jobTitles,
+            'skills' => $skills,
             'filters' => [
                 'search' => ($request->query('filter') ?? [])['search'] ?? null,
                 'job_title.name' => ($request->query('filter') ?? [])['job_title.name'] ?? null,
