@@ -32,7 +32,7 @@ const navItems = [
 
 <template>
     <header
-        class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        class="sticky top-0 z-sticky-nav w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
             <!-- Logo -->

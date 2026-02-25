@@ -99,55 +99,27 @@ function formatNum(n: number): string {
 </script>
 
 <template>
-    <Card class="relative flex h-full flex-col overflow-hidden border bg-card text-card-foreground shadow-sm">
+    <Card
+        class="group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 ring-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-primary/20"
+    >
+        <!-- Top accent gradient -->
+        <div
+            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary to-secondary opacity-90"
+        />
+
         <!-- Recommended pill -->
         <div
             v-if="developer.recommended_by_us"
-            class="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+            class="absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-3 py-1.5 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm"
         >
             <Star class="size-3.5 shrink-0" />
             Recommended
         </div>
 
-        <!-- Badges row -->
-        <div
-            v-if="developer.badges.length > 0"
-            class="flex flex-wrap gap-1.5 px-6 pt-6"
-        >
-            <TooltipProvider v-for="badge in developer.badges" :key="badge.name">
-                <Tooltip>
-                    <TooltipTrigger as-child>
-                        <Link
-                            :href="badgesPageUrl"
-                            class="inline-flex size-8 items-center justify-center rounded-md border transition-colors hover:opacity-90"
-                            :style="
-                                badge.color
-                                    ? {
-                                          background: `${badge.color}20`,
-                                          borderColor: `${badge.color}40`,
-                                          color: badge.color,
-                                      }
-                                    : {}
-                            "
-                        >
-                            <span
-                                v-if="badge.icon_html"
-                                class="size-4 [&>svg]:size-4"
-                                v-html="badge.icon_html"
-                            />
-                        </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>{{ badge.name }}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </div>
-
         <!-- YouTube embed -->
         <div
             v-if="developer.youtube_video_id"
-            class="aspect-video w-full overflow-hidden bg-muted"
+            class="relative aspect-video w-full overflow-hidden bg-muted"
         >
             <iframe
                 :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
@@ -158,119 +130,187 @@ function formatNum(n: number): string {
             />
         </div>
 
-        <CardHeader class="gap-2 pb-2">
-            <CardTitle class="text-lg font-semibold leading-tight">
-                <Link
-                    v-if="profileUrl"
-                    :href="profileUrl"
-                    class="text-foreground hover:underline"
+        <CardHeader class="space-y-3 px-6 pb-3 pt-6">
+            <!-- Badges row -->
+            <div
+                v-if="developer.badges.length > 0"
+                class="flex flex-wrap gap-2"
+            >
+            <TooltipProvider v-for="badge in developer.badges" :key="badge.name">
+                <Tooltip>
+                    <TooltipTrigger as-child>
+                        <Link
+                            :href="badgesPageUrl"
+                            class="inline-flex size-9 items-center justify-center rounded-lg border transition-all duration-200 hover:scale-110 hover:opacity-100"
+                            :class="badge.color ? '' : 'border-border bg-muted'"
+                            :style="
+                                badge.color
+                                    ? {
+                                          background: `${badge.color}18`,
+                                          borderColor: `${badge.color}50`,
+                                          color: badge.color,
+                                      }
+                                    : {}
+                            "
+                        >
+                            <span
+                                v-if="badge.icon_html"
+                                class="size-4.5 [&>svg]:size-4.5"
+                                v-html="badge.icon_html"
+                            />
+                        </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{{ badge.name }}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            </div>
+
+            <div class="space-y-2">
+                <CardTitle class="text-xl font-bold leading-tight tracking-tight">
+                    <Link
+                        v-if="profileUrl"
+                        :href="profileUrl"
+                        class="text-foreground transition-colors hover:text-primary"
+                    >
+                        {{ developer.name }}
+                    </Link>
+                    <span v-else>{{ developer.name }}</span>
+                </CardTitle>
+                <Badge
+                    variant="outline"
+                    class="w-fit rounded-md px-2.5 py-0.5 text-xs font-medium"
                 >
-                    {{ developer.name }}
-                </Link>
-                <span v-else>{{ developer.name }}</span>
-            </CardTitle>
-            <Badge variant="secondary" class="w-fit text-xs">
-                {{ developer.job_title?.name }}
-            </Badge>
+                    {{ developer.job_title?.name }}
+                </Badge>
+            </div>
         </CardHeader>
 
-        <CardContent class="flex flex-1 flex-col gap-3 pt-0">
-            <div class="flex flex-1 flex-col gap-3">
-                <!-- Details list -->
-                <ul class="flex flex-col gap-2 text-sm text-muted-foreground">
-                <li class="flex items-center gap-2">
-                    <Briefcase class="size-4 shrink-0 text-muted-foreground" />
-                    <span>{{ developer.years_of_experience }} years experience</span>
+        <CardContent class="flex flex-1 flex-col gap-4 px-6">
+            <!-- Availability pill -->
+            <div class="flex flex-wrap items-center gap-2">
+                <span
+                    class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+                    :class="
+                        developer.is_available
+                            ? 'bg-availability-available/15 text-availability-available ring-1 ring-availability-available/30'
+                            : 'bg-availability-unavailable/15 text-availability-unavailable ring-1 ring-availability-unavailable/30'
+                    "
+                >
+                    <span
+                        class="size-1.5 rounded-full"
+                        :class="
+                            developer.is_available
+                                ? 'bg-availability-available animate-pulse'
+                                : 'bg-availability-unavailable'
+                        "
+                    />
+                    {{ developer.is_available ? 'Available' : 'Not available' }}
+                </span>
+                <div
+                    v-if="
+                        developer.availability_type &&
+                        developer.availability_type.length > 0
+                    "
+                    class="flex flex-wrap gap-1"
+                >
+                    <Badge
+                        v-for="type in developer.availability_type"
+                        :key="type.value"
+                        variant="outline"
+                        class="text-xs font-normal"
+                    >
+                        {{ type.label }}
+                    </Badge>
+                </div>
+            </div>
+
+            <!-- Details grid -->
+            <ul class="flex flex-col gap-2.5 text-sm">
+                <li class="flex items-center gap-3 text-muted-foreground">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                        <Briefcase class="size-4 text-muted-foreground" />
+                    </span>
+                    <span class="font-medium text-foreground">
+                        {{ developer.years_of_experience }} years experience
+                    </span>
                 </li>
-                <li v-if="developer.location" class="flex items-center gap-2">
-                    <MapPin class="size-4 shrink-0" />
+                <li
+                    v-if="developer.location"
+                    class="flex items-center gap-3 text-muted-foreground"
+                >
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                        <MapPin class="size-4" />
+                    </span>
                     <span>{{ developer.location.label }}</span>
                 </li>
-                <li v-if="developer.phone" class="flex items-center gap-2">
-                    <Phone class="size-4 shrink-0" />
+                <li
+                    v-if="developer.phone"
+                    class="flex items-center gap-3 text-muted-foreground"
+                >
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                        <Phone class="size-4" />
+                    </span>
                     <a
                         :href="`tel:${developer.phone}`"
-                        class="text-foreground hover:underline"
+                        class="font-medium text-foreground transition-colors hover:text-primary"
                     >
                         {{ developer.phone }}
                     </a>
                 </li>
 
-                <!-- Salary (admin sees amount; others see subscribe CTA) -->
+                <!-- Salary -->
                 <li
                     v-if="
                         developer.expected_salary_from || developer.expected_salary_to
                     "
-                    class="flex items-center gap-2"
+                    class="flex items-center gap-3 text-muted-foreground"
                 >
-                    <span class="flex size-4 shrink-0 items-center justify-center text-muted-foreground">
-                        <span class="text-base leading-none">$</span>
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                        <span class="text-sm font-bold leading-none">$</span>
                     </span>
                     <template v-if="showSalary">
-                        <span>{{ salaryLabel }}</span>
+                        <span class="font-medium text-foreground">{{ salaryLabel }}</span>
                     </template>
                     <template v-else>
                         <a
                             :href="subscribeToSeeSalaryUrl"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="text-foreground hover:underline"
+                            class="font-medium text-foreground transition-colors hover:text-primary"
                         >
                             Subscribe to see salary
                         </a>
                     </template>
                 </li>
 
-                <!-- Availability -->
-                <li class="flex items-center gap-2">
-                    <Clock class="size-4 shrink-0" />
-                    <span
-                        :class="
-                            developer.is_available
-                                ? 'text-primary'
-                                : 'text-muted-foreground'
-                        "
-                    >
-                        {{ developer.is_available ? 'Available' : 'Not available' }}
-                    </span>
-                </li>
-                <li
-                    v-if="
-                        developer.availability_type &&
-                        developer.availability_type.length > 0
-                    "
-                    class="flex items-center gap-2"
-                >
-                    <Clock class="size-4 shrink-0" />
-                    <div class="flex flex-wrap gap-1">
-                        <Badge
-                            v-for="type in developer.availability_type"
-                            :key="type.value"
-                            variant="outline"
-                            class="text-xs"
-                        >
-                            {{ type.label }}
-                        </Badge>
-                    </div>
-                </li>
                 <li
                     v-if="developer.recommendations_received_count > 0"
-                    class="flex items-center gap-2"
+                    class="flex items-center gap-3 text-muted-foreground"
                 >
-                    <ThumbsUp class="size-4 shrink-0" />
-                    <span class="font-medium">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/80">
+                        <ThumbsUp class="size-4" />
+                    </span>
+                    <span class="font-medium text-foreground">
                         {{ developer.recommendations_received_count }}
                         {{ developer.recommendations_received_count === 1 ? 'Recommendation' : 'Recommendations' }}
                     </span>
                 </li>
             </ul>
 
-                <!-- Social / links -->
-                <div class="flex flex-wrap gap-2">
+            <!-- Social links + View profile (grouped at bottom) -->
+            <div class="mt-auto flex flex-col gap-3">
+            <div class="flex flex-wrap gap-2">
                 <TooltipProvider v-if="developer.portfolio_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <Button variant="outline" size="icon" as-child class="size-8">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                as-child
+                                class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                            >
                                 <a
                                     :href="developer.portfolio_url!"
                                     target="_blank"
@@ -287,7 +327,12 @@ function formatNum(n: number): string {
                 <TooltipProvider v-if="developer.github_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <Button variant="outline" size="icon" as-child class="size-8">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                as-child
+                                class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                            >
                                 <a
                                     :href="developer.github_url!"
                                     target="_blank"
@@ -306,7 +351,12 @@ function formatNum(n: number): string {
                 <TooltipProvider v-if="developer.linkedin_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <Button variant="outline" size="icon" as-child class="size-8">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                as-child
+                                class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                            >
                                 <a
                                     :href="developer.linkedin_url!"
                                     target="_blank"
@@ -325,7 +375,12 @@ function formatNum(n: number): string {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <Button variant="outline" size="icon" as-child class="size-8">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                as-child
+                                class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                            >
                                 <a :href="`mailto:${developer.email}`">
                                     <Mail class="size-4" />
                                     <span class="sr-only">Email</span>
@@ -338,7 +393,12 @@ function formatNum(n: number): string {
                 <TooltipProvider v-if="developer.cv_path_url">
                     <Tooltip>
                         <TooltipTrigger as-child>
-                            <Button variant="outline" size="icon" as-child class="size-8">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                as-child
+                                class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                            >
                                 <a
                                     :href="developer.cv_path_url!"
                                     target="_blank"
@@ -354,22 +414,22 @@ function formatNum(n: number): string {
                         <TooltipContent>CV / Resume</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-                </div>
             </div>
 
-            <!-- View profile -->
+            <!-- View profile CTA -->
             <Button
                 v-if="profileUrl"
                 as-child
                 variant="ghost"
-                class="mt-auto w-full gap-2 border border-border hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                class="w-full border border-border hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
                 <Link :href="profileUrl" class="inline-flex items-center gap-2">
                     <User class="size-4" />
                     View Full Profile
-                    <ChevronRight class="size-4" />
+                    <ChevronRight class="size-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
             </Button>
+            </div>
         </CardContent>
     </Card>
 </template>

@@ -27,9 +27,11 @@ type Filters = {
 const props = withDefaults(
     defineProps<{
         canRegister?: boolean;
+        developerCount?: number;
         developers: Developer[];
         filterSearch?: string | null;
         filters?: Filters;
+        recommendedDeveloperCount?: number;
         sort?: string;
         meta: {
             current_page: number;
@@ -45,7 +47,9 @@ const props = withDefaults(
         };
     }>(),
     {
+        developerCount: 0,
         filters: () => ({}),
+        recommendedDeveloperCount: 0,
         sort: 'name',
     },
 );
@@ -129,7 +133,7 @@ const sortOptions = [
 
         <!-- Sticky search bar + advanced filters -->
         <section
-            class="sticky top-16 z-10 flex w-full flex-col items-center border-b border-border bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:py-5 lg:pt-6 lg:pb-5"
+            class="sticky top-16 z-sticky-bar flex w-full flex-col items-center border-b border-border bg-background/95 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:py-5 lg:pt-6 lg:pb-5"
         >
             <div class="flex w-full max-w-3xl items-center gap-3">
                 <div
@@ -253,6 +257,27 @@ const sortOptions = [
                 </Sheet>
             </div>
         </section>
+
+        <!-- Developer counts -->
+        <div class="flex w-full justify-center gap-3 px-4 py-4 sm:py-5">
+            <div
+                class="flex flex-col items-center gap-1 rounded-lg border border-border bg-card px-6 py-3 shadow-sm transition-colors hover:border-primary/30"
+            >
+                <span class="text-2xl font-bold text-primary">{{ developerCount }}</span>
+                <span class="text-xs text-muted-foreground">
+                    {{ developerCount === 1 ? 'developer' : 'developers' }}
+                </span>
+            </div>
+            <div
+                class="flex flex-col items-center gap-1 rounded-lg border border-border bg-card px-6 py-3 shadow-sm transition-colors hover:border-primary/30"
+            >
+                <span class="flex items-center gap-1.5">
+                    <span class="size-2 rounded-full bg-primary" />
+                    <span class="text-2xl font-bold text-primary">{{ recommendedDeveloperCount }}</span>
+                </span>
+                <span class="text-xs text-muted-foreground">recommended</span>
+            </div>
+        </div>
 
         <!-- Developers section -->
         <DeveloperCardSection

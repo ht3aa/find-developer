@@ -8,6 +8,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+    /* Z-index scale for sticky/fixed/overlay elements (low to high) */
+    --z-sticky-bar: 15;
+    --z-sticky-nav: 20;
+    --z-dropdown: 40;
+    --z-overlay: 50;
+
     --font-sans:
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
@@ -40,6 +46,9 @@
 
     --color-destructive: var(--destructive);
     --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-availability-available: var(--availability-available);
+    --color-availability-unavailable: var(--availability-unavailable);
 
     --color-border: var(--border);
     --color-input: var(--input);
@@ -80,6 +89,13 @@
 }
 
 @layer utilities {
+    .z-sticky-bar {
+        z-index: var(--z-sticky-bar);
+    }
+    .z-sticky-nav {
+        z-index: var(--z-sticky-nav);
+    }
+
     body,
     html {
         --font-sans:
@@ -99,7 +115,7 @@
     --card-foreground: hsl(0 0% 9%);
     --popover: hsl(0 0% 100%);
     --popover-foreground: hsl(0 0% 9%);
-    --primary: hsl(43 96% 56%);
+    --primary: hsl(43, 97%, 46%);
     --primary-foreground: hsl(0 0% 9%);
     --secondary: hsl(32 95% 44%);
     --secondary-foreground: hsl(0 0% 100%);
@@ -127,6 +143,8 @@
     --sidebar-border: hsl(43 20% 91%);
     --sidebar-ring: hsl(43 96% 56%);
     --sidebar: hsl(43 25% 98%);
+    --availability-available: hsl(142 76% 36%);
+    --availability-unavailable: hsl(0 72% 51%);
 }
 
 /*
@@ -166,6 +184,8 @@
     --sidebar-border: hsl(43 20% 18%);
     --sidebar-ring: hsl(43 96% 56%);
     --sidebar: hsl(0 0% 7%);
+    --availability-available: hsl(142 76% 42%);
+    --availability-unavailable: hsl(0 72% 55%);
 }
 
 @layer base {
