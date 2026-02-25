@@ -128,11 +128,25 @@ class DeveloperResource extends JsonResource
             'skills' => $developer->skills->map(fn ($s) => ['name' => $s->name])->values()->all(),
             'availability_type' => $availabilityTypeArray,
             'profile_url' => $developer->slug ? url("/developers/{$developer->slug}") : null,
+            'recommend_url' => $this->recommendUrl($developer),
             'badges_page_url' => null,
             'recommendations' => $recommendations,
             'work_experience' => $workExperience,
             'projects' => $projects,
         ];
+    }
+
+    private function recommendUrl(Developer $developer): ?string
+    {
+        if (! $developer->slug) {
+            return null;
+        }
+        $user = request()->user();
+        if ($user?->developer?->id === $developer->id) {
+            return null;
+        }
+
+        return route('developers.recommend', $developer->slug);
     }
 
     private function formatDuration(?CarbonInterface $start, ?CarbonInterface $end, bool $isCurrent): ?string

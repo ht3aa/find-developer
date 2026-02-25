@@ -754,6 +754,17 @@ function formatNum(n: number): string {
                                         View CV / Resume
                                     </a>
                                 </Button>
+                                <Button
+                                    v-if="developer.recommend_url"
+                                    variant="outline"
+                                    class="w-full gap-2 rounded-xl"
+                                    as-child
+                                >
+                                    <a :href="developer.recommend_url">
+                                        <ThumbsUp class="size-4" />
+                                        Recommend
+                                    </a>
+                                </Button>
                             </div>
                         </div>
                     </aside>

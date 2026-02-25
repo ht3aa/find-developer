@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\DeveloperRecommendationController;
 use App\Http\Controllers\PublicBadgeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -9,6 +10,7 @@ use Inertia\Inertia;
 Route::get('/', [DeveloperController::class, 'index'])->name('home');
 Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
 Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
+Route::get('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'show'])->name('developers.recommend')->middleware(['auth', 'verified']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

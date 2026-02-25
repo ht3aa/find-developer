@@ -74,6 +74,7 @@ export type Developer = {
     skills: DeveloperSkill[];
     availability_type: DeveloperAvailabilityType[];
     profile_url?: string;
+    recommend_url?: string | null;
     badges_page_url?: string;
     recommendations?: DeveloperRecommendation[];
     work_experience?: WorkExperienceEntry[];
