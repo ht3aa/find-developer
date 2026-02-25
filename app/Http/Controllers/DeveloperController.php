@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RecommendationStatus;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
+use App\Models\Scopes\DeveloperScope;
 use App\Repositories\DeveloperRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,6 +79,12 @@ class DeveloperController extends Controller
             'jobTitle',
             'skills',
             'badges',
+            'companies' => fn ($q) => $q
+                ->withoutGlobalScope(DeveloperScope::class)
+                ->topLevel()
+                ->visible()
+                ->with(['jobTitle:id,name', 'children' => fn ($c) => $c->withoutGlobalScope(DeveloperScope::class)->visible()->with('jobTitle:id,name')])
+                ->orderByDesc('start_date'),
             'recommendationsReceived' => fn ($q) => $q
                 ->where('status', RecommendationStatus::APPROVED)
                 ->with('recommender:id,name,job_title_id', 'recommender.jobTitle:id,name'),

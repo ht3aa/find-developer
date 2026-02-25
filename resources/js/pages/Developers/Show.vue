@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Briefcase,
+    Building2,
     FileText,
     Globe,
     Mail,
@@ -12,7 +13,7 @@ import {
     ThumbsUp,
     Video,
 } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
@@ -33,6 +34,32 @@ const props = defineProps<{
 
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { is_admin?: boolean } } | undefined);
+
+const expandedDescriptions = ref<Set<string>>(new Set());
+const DESCRIPTION_TRUNCATE_LENGTH = 200;
+
+function toggleDescription(entryIdx: number, roleIdx: number): void {
+    const key = `${entryIdx}-${roleIdx}`;
+    const next = new Set(expandedDescriptions.value);
+    if (next.has(key)) {
+        next.delete(key);
+    } else {
+        next.add(key);
+    }
+    expandedDescriptions.value = next;
+}
+
+function isExpanded(entryIdx: number, roleIdx: number): boolean {
+    return expandedDescriptions.value.has(`${entryIdx}-${roleIdx}`);
+}
+
+function shouldTruncate(description: string | null | undefined): boolean {
+    return !!description && description.length > DESCRIPTION_TRUNCATE_LENGTH;
+}
+
+function truncatedText(text: string): string {
+    return text.slice(0, DESCRIPTION_TRUNCATE_LENGTH).trim() + '…';
+}
 const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 const isGuest = computed(() => !auth.value?.user);
 
@@ -236,6 +263,148 @@ function formatNum(n: number): string {
                                 >
                                     {{ skill.name }}
                                 </Badge>
+                            </div>
+                        </section>
+
+                        <!-- Work Experience -->
+                        <section v-if="developer.work_experience && developer.work_experience.length > 0">
+                            <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                <Building2 class="size-5 shrink-0 text-muted-foreground" />
+                                Work Experience
+                            </h2>
+                            <div class="space-y-6">
+                                <div
+                                    v-for="(entry, entryIdx) in developer.work_experience"
+                                    :key="entryIdx"
+                                    class="rounded-xl border border-border bg-card p-5 shadow-sm"
+                                >
+                                    <!-- Company header -->
+                                    <div class="mb-4 flex items-start gap-4">
+                                        <div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                                            <Building2 class="size-6" />
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <h3 class="text-base font-semibold text-foreground">
+                                                {{ entry.company_name }}
+                                            </h3>
+                                            <span
+                                                v-if="entry.total_duration"
+                                                class="mt-1 block text-sm text-muted-foreground"
+                                            >
+                                                {{ entry.total_duration }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Multiple roles timeline -->
+                                    <div
+                                        v-if="entry.roles.length > 1"
+                                        class="space-y-0"
+                                    >
+                                        <div
+                                            v-for="(role, roleIdx) in entry.roles"
+                                            :key="roleIdx"
+                                            class="relative flex gap-4"
+                                        >
+                                            <div class="flex min-w-0 flex-col items-center pt-0.5">
+                                                <span class="size-2 shrink-0 rounded-full bg-primary/70" />
+                                                <span
+                                                    v-if="roleIdx < entry.roles.length - 1"
+                                                    class="mt-1 min-h-6 w-px flex-1 bg-border"
+                                                />
+                                            </div>
+                                            <div class="min-w-0 flex-1 pb-6 last:pb-0">
+                                                <div class="font-medium text-foreground">
+                                                    {{ role.job_title || '—' }}
+                                                </div>
+                                                <div class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+                                                    <span v-if="role.start_date">
+                                                        {{ role.start_date }}
+                                                        —
+                                                        <span
+                                                            v-if="role.is_current"
+                                                            class="font-medium text-primary"
+                                                        >
+                                                            Present
+                                                        </span>
+                                                        <template v-else>
+                                                            {{ role.end_date || '—' }}
+                                                        </template>
+                                                    </span>
+                                                    <span class="text-muted-foreground/70">·</span>
+                                                    <span>{{ role.duration || '< 1 mo' }}</span>
+                                                </div>
+                                                <div
+                                                    v-if="role.description"
+                                                    class="mt-2"
+                                                >
+                                                    <p
+                                                        class="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                                                    >
+                                                        {{ isExpanded(entryIdx, roleIdx) || !shouldTruncate(role.description) ? role.description : truncatedText(role.description) }}
+                                                    </p>
+                                                    <button
+                                                        v-if="shouldTruncate(role.description)"
+                                                        type="button"
+                                                        class="mt-1 text-sm font-medium text-primary hover:underline"
+                                                        :aria-expanded="isExpanded(entryIdx, roleIdx)"
+                                                        @click="toggleDescription(entryIdx, roleIdx)"
+                                                    >
+                                                        {{ isExpanded(entryIdx, roleIdx) ? 'Read less' : 'Read more' }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Single role -->
+                                    <div v-else-if="entry.roles.length === 1">
+                                        <div
+                                            v-for="(role, roleIdx) in entry.roles"
+                                            :key="roleIdx"
+                                        >
+                                            <div class="font-medium text-foreground">
+                                                {{ role.job_title || '—' }}
+                                            </div>
+                                            <div class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+                                                <span v-if="role.start_date">
+                                                    {{ role.start_date }}
+                                                    —
+                                                    <span
+                                                        v-if="role.is_current"
+                                                        class="font-medium text-primary"
+                                                    >
+                                                        Present
+                                                    </span>
+                                                    <template v-else>
+                                                        {{ role.end_date || '—' }}
+                                                    </template>
+                                                </span>
+                                                <span class="text-muted-foreground/70">·</span>
+                                                <span>{{ role.duration || '< 1 mo' }}</span>
+                                            </div>
+                                            <div
+                                                v-if="role.description"
+                                                class="mt-2"
+                                            >
+                                                <p
+                                                    class="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                                                >
+                                                    {{ isExpanded(entryIdx, roleIdx) || !shouldTruncate(role.description) ? role.description : truncatedText(role.description) }}
+                                                </p>
+                                                <button
+                                                    v-if="shouldTruncate(role.description)"
+                                                    type="button"
+                                                    class="mt-1 text-sm font-medium text-primary hover:underline"
+                                                    :aria-expanded="isExpanded(entryIdx, roleIdx)"
+                                                    @click="toggleDescription(entryIdx, roleIdx)"
+                                                >
+                                                    {{ isExpanded(entryIdx, roleIdx) ? 'Read less' : 'Read more' }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
 

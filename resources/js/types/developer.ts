@@ -28,6 +28,21 @@ export type DeveloperRecommendation = {
     recommender_job_title?: string | null;
 };
 
+export type WorkExperienceRole = {
+    job_title: string | null;
+    start_date: string | null;
+    end_date: string | null;
+    is_current: boolean;
+    duration: string | null;
+    description: string | null;
+};
+
+export type WorkExperienceEntry = {
+    company_name: string;
+    roles: WorkExperienceRole[];
+    total_duration?: string | null;
+};
+
 export type Developer = {
     id: number;
     name: string;
@@ -55,4 +70,5 @@ export type Developer = {
     profile_url?: string;
     badges_page_url?: string;
     recommendations?: DeveloperRecommendation[];
+    work_experience?: WorkExperienceEntry[];
 };
