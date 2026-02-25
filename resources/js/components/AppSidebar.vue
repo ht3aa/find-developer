@@ -37,7 +37,7 @@ const allMainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-        can: 'viewAnyDeveloper',
+        can: 'viewDeveloperProfile',
     },
     {
         title: 'Developer Profile',

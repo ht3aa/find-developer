@@ -51,6 +51,7 @@ export type DeveloperProject = {
 
 export type Developer = {
     id: number;
+    user_id?: number | null;
     name: string;
     slug?: string | null;
     email: string;

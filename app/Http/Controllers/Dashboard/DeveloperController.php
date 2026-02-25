@@ -117,16 +117,29 @@ class DeveloperController extends Controller
      */
     public function edit(string $developer): Response
     {
-        $this->authorize('update', $developer);
-        $developer = Developer::withoutGlobalScope(ApprovedScope::class)
+        $developerModel = Developer::withoutGlobalScope(ApprovedScope::class)
             ->with(['jobTitle', 'skills', 'badges'])
             ->findOrFail($developer);
 
-        $developer = (new \App\Http\Resources\DeveloperResource($developer))->resolve();
+        $this->authorize('update', $developerModel);
+
+        $developer = (new \App\Http\Resources\DeveloperResource($developerModel))->resolve();
+
+        $usersQuery = \App\Models\User::query()->orderBy('name');
+        if ($developerModel->user_id) {
+            $usersQuery->where(function ($q) use ($developerModel) {
+                $q->whereDoesntHave('developer')
+                    ->orWhere('id', $developerModel->user_id);
+            });
+        } else {
+            $usersQuery->whereDoesntHave('developer');
+        }
+        $users = $usersQuery->get(['id', 'name', 'email']);
 
         return Inertia::render('Developers/Edit', [
             'developer' => $developer,
             'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'users' => $users,
         ]);
     }
 
@@ -135,8 +148,8 @@ class DeveloperController extends Controller
      */
     public function update(UpdateDeveloperRequest $request, string $developer): RedirectResponse
     {
-        $this->authorize('update', $developer);
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($developer);
+        $this->authorize('update', $developer);
 
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;

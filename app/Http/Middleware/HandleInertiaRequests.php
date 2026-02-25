@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         $can = $user ? [
             'viewAnyDeveloper' => $user->can('viewAny', Developer::class),
-            'viewDeveloperProfile' => $user->can('View:DeveloperProfile'),
+            'viewDeveloperProfile' => $user->can('viewDeveloperProfile', Developer::class),
             'viewAnyDeveloperCompany' => $user->can('viewAny', DeveloperCompany::class),
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
@@ -67,9 +67,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'info' => fn () => $request->session()->get('info'),
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'info' => fn() => $request->session()->get('info'),
             ],
         ];
     }

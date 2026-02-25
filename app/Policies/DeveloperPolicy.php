@@ -70,4 +70,13 @@ class DeveloperPolicy
     {
         return $user->can('ForceDelete:Developers') || $user->isSuperAdmin();
     }
+
+    public function viewDeveloperProfile(User $user, ?Developer $developer = null): bool
+    {
+        return $user->can('View:DeveloperProfile') || $user->isSuperAdmin();
+    }
+    public function updateDeveloperProfile(User $user, ?Developer $developer = null): bool
+    {
+        return $user->can('Update:DeveloperProfile') || $user->isSuperAdmin();
+    }
 }

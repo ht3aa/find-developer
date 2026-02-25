@@ -19,6 +19,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $this->authorize('viewDeveloperProfile', auth()->user());
+
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
@@ -30,6 +32,8 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $this->authorize('updateDeveloperProfile', auth()->user());
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -46,6 +50,8 @@ class ProfileController extends Controller
      */
     public function destroy(ProfileDeleteRequest $request): RedirectResponse
     {
+        $this->authorize('deleteDeveloperProfile', auth()->user());
+
         $user = $request->user();
 
         Auth::logout();

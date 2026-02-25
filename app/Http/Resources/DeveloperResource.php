@@ -103,6 +103,7 @@ class DeveloperResource extends JsonResource
 
         return [
             'id' => $developer->id,
+            'user_id' => $developer->user_id,
             'name' => $developer->name,
             'slug' => $developer->slug,
             'email' => $developer->email,

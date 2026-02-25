@@ -6,6 +6,7 @@ import DeveloperProfileController from '@/actions/App/Http/Controllers/Dashboard
 import DeveloperCard from '@/components/DeveloperCard.vue';
 import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
+import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';

@@ -26,21 +26,21 @@ class UserController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term);
             });
         }
 
-        $users = $query->paginate(15)->withQueryString()->through(fn(User $u) => [
+        $users = $query->paginate(15)->withQueryString()->through(fn (User $u) => [
             'id' => $u->id,
             'name' => $u->name,
             'email' => $u->email,
             'user_type' => $u->user_type->value,
             'user_type_label' => $u->user_type->getLabel(),
             'can_access_admin_panel' => $u->can_access_admin_panel,
-            'roles' => $u->roles->map(fn(Role $r) => ['id' => $r->id, 'name' => $r->name]),
+            'roles' => $u->roles->map(fn (Role $r) => ['id' => $r->id, 'name' => $r->name]),
         ]);
 
         return Inertia::render('Users/Index', [
@@ -71,7 +71,8 @@ class UserController extends Controller
         $user = User::create($data);
 
         if (! empty($roleIds)) {
-            $user->syncRoles($roleIds);
+            $roles = Role::whereIn('id', $roleIds)->get();
+            $user->syncRoles($roles);
         }
 
         return redirect()
@@ -113,7 +114,11 @@ class UserController extends Controller
         }
 
         $user->update($data);
-        $user->syncRoles($roleIds);
+
+        $roles = empty($roleIds)
+            ? []
+            : Role::whereIn('id', $roleIds)->get();
+        $user->syncRoles($roles);
 
         return redirect()
             ->route('users.index')

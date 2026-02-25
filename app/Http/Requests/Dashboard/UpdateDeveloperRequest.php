@@ -28,6 +28,7 @@ class UpdateDeveloperRequest extends FormRequest
         $developer = $this->route('developer');
 
         return [
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',

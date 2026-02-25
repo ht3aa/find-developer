@@ -52,6 +52,7 @@ const formData = computed({
 });
 
 const jobTitleSelectOpen = ref(false);
+const userSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const statusSelectOpen = ref(false);
@@ -87,6 +88,17 @@ const skillsModel = computed({
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
+        userSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        statusSelectOpen.value = false;
+    }
+}
+
+function onUserSelectOpenChange(open: boolean): void {
+    userSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
@@ -97,6 +109,7 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        userSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
@@ -106,6 +119,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        userSelectOpen.value = false;
         skillSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
@@ -115,6 +129,7 @@ function onStatusOpenChange(open: boolean): void {
     statusSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        userSelectOpen.value = false;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
@@ -139,13 +154,15 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
 <template>
     <div class="space-y-6">
         <div v-if="showUserSelect" class="grid gap-2">
-            <Label for="user_id">User</Label>
+            <Label for="user_id">User <span class="text-destructive">*</span></Label>
             <SearchableSelect
                 id="user_id"
                 :model-value="String(formData.user_id ?? '')"
+                :open="userSelectOpen"
                 :options="users.map((u) => ({ value: String(u.id), label: `${u.name} (${u.email})` }))"
-                placeholder="Select a user without a developer profile"
+                placeholder="Search by name or email..."
                 @update:model-value="onUserSelect"
+                @update:open="onUserSelectOpenChange"
             />
             <InputError :message="errors?.user_id" />
         </div>

@@ -14,15 +14,18 @@ import type { Developer } from '@/types/developer';
 import type { BreadcrumbItem } from '@/types';
 
 type JobTitleOption = { id: number; name: string };
+type UserOption = { id: number; name: string; email: string };
 
 type Props = {
     developer: Developer;
     jobTitles: JobTitleOption[];
+    users: UserOption[];
 };
 
 const props = defineProps<Props>();
 
 const formData = ref<Record<string, unknown>>({
+    user_id: null,
     name: '',
     email: '',
     phone: '',
@@ -57,6 +60,7 @@ watch(
     () => props.developer,
     (dev) => {
         formData.value = reactive({
+            user_id: dev.user_id ?? null,
             name: dev.name,
             email: dev.email,
             phone: dev.phone ?? '',
@@ -84,6 +88,7 @@ function submit(): void {
         (j) => j.name === (d.job_title as { name?: string })?.name,
     );
     const payload: Record<string, unknown> = {
+        user_id: d.user_id ?? null,
         name: d.name ?? '',
         email: d.email ?? '',
         phone: d.phone ?? '',
@@ -145,6 +150,8 @@ function submit(): void {
                             v-model="formData"
                             :errors="formErrors"
                             :job-titles="jobTitles"
+                            :users="users"
+                            show-user-select
                             show-admin-fields
                         />
 

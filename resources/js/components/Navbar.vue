@@ -22,7 +22,7 @@ import { dashboard, home, login, logout, register } from '@/routes';
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { name: string } | null });
 const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
-const authCan = computed(() => (page.props.auth as { can?: { viewAnyDeveloper?: boolean } })?.can ?? {});
+const authCan = computed(() => (page.props.auth as { can?: { viewDeveloperProfile: boolean } })?.can ?? {});
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
@@ -68,7 +68,7 @@ const navItems = [
             <!-- Desktop auth -->
             <div class="hidden items-center gap-2 md:flex">
                 <template v-if="auth.user">
-                    <Button v-if="authCan.viewAnyDeveloper" variant="default" as-child>
+                    <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child>
                         <Link :href="dashboard()">Dashboard</Link>
                     </Button>
                     <Button variant="outline" as-child>
@@ -124,7 +124,7 @@ const navItems = [
                     </nav>
                     <div class="flex flex-col gap-2 border-t p-4">
                         <template v-if="auth.user">
-                            <Button v-if="authCan.viewAnyDeveloper" variant="default" as-child class="w-full">
+                            <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child class="w-full">
                                 <Link :href="dashboard()">Dashboard</Link>
                             </Button>
                             <Button variant="outline" as-child class="w-full">

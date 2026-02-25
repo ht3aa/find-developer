@@ -111,6 +111,8 @@ class CreateNewUser implements CreatesNewUsers
             'user_type' => UserType::DEVELOPER,
         ]);
 
+        $developer->update(['user_id' => $user->id]);
+
         return $user;
     }
 }
