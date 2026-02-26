@@ -2,6 +2,7 @@
 import { ArrowDown } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import Duck from '@/components/Duck.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -47,6 +48,22 @@ function scrollToSearch(): void {
             />
         </div>
 
+        <!-- Decorative ducks (click to quack) -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="pointer-events-auto absolute left-[8%] top-[15%] rotate-[-15deg]">
+                <Duck size="size-14" class="opacity-90" />
+            </div>
+            <div class="pointer-events-auto absolute right-[12%] top-[25%] rotate-[20deg]">
+                <Duck size="size-10" class="opacity-85" />
+            </div>
+            <div class="pointer-events-auto absolute left-[15%] bottom-[20%] rotate-[10deg]">
+                <Duck size="size-12" class="opacity-80" />
+            </div>
+            <div class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]">
+                <Duck size="size-11" class="opacity-85" />
+            </div>
+        </div>
+
         <div class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
             <div class="flex flex-col items-center text-center">
                 <!-- Success message -->
@@ -57,13 +74,19 @@ function scrollToSearch(): void {
                     {{ props.successMessage }}
                 </div>
                 <!-- Badge -->
-                <Badge
+                <div
                     v-if="props.badge != null"
-                    variant="secondary"
-                    class="mb-6 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm"
+                    class="mb-6 flex items-center justify-center gap-2"
                 >
-                    {{ props.badge }}
-                </Badge>
+                    <Duck size="size-8" class="rotate-[-12deg] shrink-0" />
+                    <Badge
+                        variant="secondary"
+                        class="rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm"
+                    >
+                        {{ props.badge }}
+                    </Badge>
+                    <Duck size="size-8" class="rotate-[12deg] shrink-0" />
+                </div>
 
                 <!-- Title -->
                 <h1

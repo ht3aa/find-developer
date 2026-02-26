@@ -271,7 +271,7 @@ function formatNum(n: number): string {
                             >
                                 <div class="aspect-video w-full">
                                     <iframe
-                                        :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1`"
+                                        :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=1&mute=1`"
                                         title="Experience video"
                                         class="size-full"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

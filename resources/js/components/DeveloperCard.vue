@@ -157,7 +157,7 @@ function formatNum(n: number): string {
             class="relative aspect-video w-full overflow-hidden bg-muted"
         >
             <iframe
-                :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=0&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
+                :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=1&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
                 title="YouTube video"
                 class="size-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
