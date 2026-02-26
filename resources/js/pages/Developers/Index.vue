@@ -31,21 +31,30 @@ type PaginatedDevelopers = {
 
 type Props = {
     developers: PaginatedDevelopers;
-    filters?: { search?: string };
+    filters?: { search?: string; status?: string };
 };
 
 const props = withDefaults(defineProps<Props>(), {
-    filters: () => ({ search: '' }),
+    filters: () => ({ search: '', status: '' }),
 });
 
 const page = usePage();
 const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
 
 const searchQuery = ref(props.filters.search ?? '');
+const statusQuery = ref(props.filters.status ?? 'all');
 const debouncedSearch = refDebounced(searchQuery, 300);
 
 watch(debouncedSearch, (value) => {
-    router.get(developersIndex().url, { search: value || undefined }, {
+    router.get(developersIndex().url, { search: value || undefined, status: statusQuery.value || undefined }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
+});
+
+watch(statusQuery, (value) => {
+    router.get(developersIndex().url, { status: value || undefined, search: debouncedSearch.value || undefined }, {
         preserveState: true,
         preserveScroll: true,
         replace: true,
@@ -55,6 +64,14 @@ watch(debouncedSearch, (value) => {
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Developers', href: developersIndex().url },
+];
+
+const statuses = [
+    { value: '', label: 'All Statuses' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'rejected', label: 'Rejected' },
+    { value: 'experience_changed', label: 'Experience Changed' },
 ];
 </script>
 
@@ -91,14 +108,29 @@ const breadcrumbs: BreadcrumbItem[] = [
             </div>
 
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div class="relative flex-1 sm:max-w-sm">
-                    <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                        v-model="searchQuery"
-                        type="search"
-                        placeholder="Search by name, email..."
-                        class="pl-9"
-                    />
+                <div class="flex flex-1 gap-2 sm:max-w-md">
+                    <div class="relative flex-1">
+                        <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            v-model="searchQuery"
+                            type="search"
+                            placeholder="Search by name, email..."
+                            class="pl-9"
+                        />
+                    </div>
+                    <select
+                        v-model="statusQuery"
+                        class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-[180px]"
+                    >
+                        <option value="" disabled>Select status</option>
+                        <option
+                            v-for="status in statuses"
+                            :key="status.value"
+                            :value="status.value"
+                        >
+                            {{ status.label }}
+                        </option>
+                    </select>
                 </div>
                 <p
                     v-if="developers.total > 0"
