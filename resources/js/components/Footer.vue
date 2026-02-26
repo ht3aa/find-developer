@@ -13,8 +13,7 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Github, href: 'https://github.com/ht3aa/find-developer', label: 'GitHub' },
 ];
 </script>
 

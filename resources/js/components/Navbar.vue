@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { Menu } from 'lucide-vue-next';
+import { Menu, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/sheet';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import { dashboard, home, login, logout, register } from '@/routes';
+import { useAppearance } from '@/composables/useAppearance';
 
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { name: string } | null });
@@ -26,8 +27,16 @@ const authCan = computed(() => (page.props.auth as { can?: { viewDeveloperProfil
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
-    // { label: 'Blogs', href: '/blogs' },
 ];
+
+const { appearance, resolvedAppearance, updateAppearance } = useAppearance();
+
+const themeIcon = computed(() => (resolvedAppearance.value === 'dark' ? Moon : Sun));
+
+const toggleTheme = () => {
+    const nextTheme = appearance.value === 'dark' ? 'light' : 'dark';
+    updateAppearance(nextTheme);
+};
 </script>
 
 <template>
@@ -68,6 +77,14 @@ const navItems = [
 
             <!-- Desktop auth -->
             <div class="hidden items-center gap-2 md:flex">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Toggle theme"
+                    @click="toggleTheme"
+                >
+                    <component :is="themeIcon" class="size-5" />
+                </Button>
                 <template v-if="auth.user">
                     <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child>
                         <Link :href="dashboard()">Dashboard</Link>
@@ -124,6 +141,15 @@ const navItems = [
                         </Link>
                     </nav>
                     <div class="flex flex-col gap-2 border-t p-4">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            class="w-full"
+                            aria-label="Toggle theme"
+                            @click="toggleTheme"
+                        >
+                            <component :is="themeIcon" class="size-5" />
+                        </Button>
                         <template v-if="auth.user">
                             <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child class="w-full">
                                 <Link :href="dashboard()">Dashboard</Link>
