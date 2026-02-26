@@ -14,7 +14,7 @@
         .detail-row:last-child { border-bottom: none; }
         .label { font-weight: bold; color: #666; width: 140px; }
         .value { color: #333; flex: 1; }
-        .btn { display: inline-block; padding: 10px 20px; background-color: rgb(0, 49, 173); color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: rgb(207, 207, 207); color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; }
         .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
     </style>
 </head>
