@@ -44,6 +44,5 @@ jobs:
             php artisan route:cache
             php artisan view:cache
             php artisan icon:cache
-            php artisan filament:optimize
             sudo supervisorctl restart all
             sudo systemctl restart nginx php8.4-fpm
