@@ -12,6 +12,9 @@ use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
 use App\Models\Skill;
 use App\Models\User;
+use App\Notifications\DeveloperCredentialsNotification;
+use App\Rules\UniqueDeveloperSlug;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -33,15 +36,7 @@ class CreateNewUser implements CreatesNewUsers
                 'required',
                 'string',
                 'max:255',
-                function (string $attribute, mixed $value, \Closure $fail): void {
-                    $slug = Str::slug($value);
-                    if (Developer::withoutGlobalScope(ApprovedScope::class)
-                        ->where('slug', $slug)
-                        ->exists()
-                    ) {
-                        $fail('A developer with this name already exists. Please Add more details to your name to make it unique.');
-                    }
-                },
+                new UniqueDeveloperSlug(),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
             'job_title_id' => ['required', 'integer', 'exists:job_titles,id'],
@@ -62,8 +57,6 @@ class CreateNewUser implements CreatesNewUsers
 
         $validated = Validator::make($input, $rules)->validate();
 
-
-
         $jobTitleId = isset($validated['job_title_id']) && $validated['job_title_id']
             ? (int) $validated['job_title_id']
             : null;
@@ -74,7 +67,7 @@ class CreateNewUser implements CreatesNewUsers
         $developerData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'slug' => Str::slug($input['name']) . '-' . Str::random(6),
+            'slug' => Str::slug($validated['name']),
             'phone' => $validated['phone'] ?? null,
             'job_title_id' => $jobTitleId,
             'years_of_experience' => (int) ($validated['years_of_experience'] ?? 0),
@@ -104,14 +97,18 @@ class CreateNewUser implements CreatesNewUsers
             $developer->update(['cv_path' => $path]);
         }
 
+        $temporaryPassword = Str::uuid()->toString();
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Str::uuid(),
+            'password' => Hash::make($temporaryPassword),
             'user_type' => UserType::DEVELOPER,
         ]);
 
         $developer->update(['user_id' => $user->id]);
+
+        $developer->notify(new DeveloperCredentialsNotification($temporaryPassword));
 
         return $user;
     }

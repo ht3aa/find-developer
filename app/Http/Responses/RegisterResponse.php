@@ -15,7 +15,7 @@ class RegisterResponse implements RegisterResponseContract
      */
     public function toResponse($request)
     {
-        $message = 'Your information has been saved and is waiting for approval.';
+        $message = 'Your information has been saved and is waiting for approval. You will receive an email with your temporary password.';
 
         return $request->wantsJson()
             ? new JsonResponse(['message' => $message], 201)
