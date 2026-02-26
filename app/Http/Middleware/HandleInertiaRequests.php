@@ -50,12 +50,13 @@ class HandleInertiaRequests extends Middleware
         }
 
         $user = $request->user();
+        $isDeveloper = $user?->isDeveloper();
         $can = $user ? [
-            'viewAnyDeveloper' => $user->can('viewAny', Developer::class),
-            'viewDeveloperProfile' => $user->can('viewDeveloperProfile', Developer::class),
-            'viewAnyDeveloperCompany' => $user->can('viewAny', DeveloperCompany::class),
-            'viewAnyDeveloperProject' => $user->can('viewAny', DeveloperProject::class),
-            'viewAnyDeveloperBlog' => $user->can('viewAny', DeveloperBlog::class),
+            'viewAnyDeveloper' => $isDeveloper && $user->can('viewAny', Developer::class),
+            'viewDeveloperProfile' => $isDeveloper && $user->can('viewDeveloperProfile', Developer::class),
+            'viewAnyDeveloperCompany' => $isDeveloper && $user->can('viewAny', DeveloperCompany::class),
+            'viewAnyDeveloperProject' => $isDeveloper && $user->can('viewAny', DeveloperProject::class),
+            'viewAnyDeveloperBlog' => $isDeveloper && $user->can('viewAny', DeveloperBlog::class),
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
             'viewAnyRole' => $user->can('viewAny', Role::class),
@@ -73,9 +74,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'info' => fn () => $request->session()->get('info'),
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'info' => fn() => $request->session()->get('info'),
             ],
         ];
     }
