@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Spatie\Permission\Models\Role;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -105,6 +106,9 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($temporaryPassword),
             'user_type' => UserType::DEVELOPER,
         ]);
+
+        // assign developer role to the user
+        $user->assignRole(Role::where('name', 'developer')->first());
 
         $developer->update(['user_id' => $user->id]);
 
