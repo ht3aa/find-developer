@@ -12,6 +12,7 @@ use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
 use App\Models\Skill;
 use App\Models\User;
+use App\Rules\UniqueDeveloperSlug;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -33,15 +34,7 @@ class CreateNewUser implements CreatesNewUsers
                 'required',
                 'string',
                 'max:255',
-                function (string $attribute, mixed $value, \Closure $fail): void {
-                    $slug = Str::slug($value);
-                    if (Developer::withoutGlobalScope(ApprovedScope::class)
-                        ->where('slug', $slug)
-                        ->exists()
-                    ) {
-                        $fail('A developer with this name already exists. Please Add more details to your name to make it unique.');
-                    }
-                },
+                new UniqueDeveloperSlug(),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
             'job_title_id' => ['required', 'integer', 'exists:job_titles,id'],
