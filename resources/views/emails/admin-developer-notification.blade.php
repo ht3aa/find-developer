@@ -47,7 +47,7 @@
                     <span class="value">{{ $developer->jobTitle?->name ?? 'N/A' }}</span>
                 </div>
             </div>
-            <a href="{{ route('developers.show', $developer->slug) }}" class="btn">View Developer Profile</a>
+            <a href="{{ route('developers.edit', $developer->slug) }}" class="btn">View Developer Profile</a>
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} Find Developer. All rights reserved.</p>
