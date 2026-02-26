@@ -10,8 +10,8 @@
         .header { background-color: rgb(0, 49, 173); color: white; padding: 20px; text-align: center; }
         .content { padding: 20px; background-color: #f9f9f9; }
         .message { background: white; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #ddd; }
-        .btn { display: inline-block; padding: 10px 20px; background-color: rgb(0, 49, 173); color: white; text-decoration: none; border-radius: 5px;15px; }
-        .footer { margin-top:  text-align: center; padding: 20px; font-size: 12px; color: #666; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: rgb(0, 49, 173); color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
     </style>
 </head>
 <body>
