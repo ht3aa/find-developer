@@ -45,7 +45,7 @@ class CreateNewUser implements CreatesNewUsers
             'portfolio_url' => ['nullable', 'url', 'max:500'],
             'github_url' => ['nullable', 'url', 'max:500'],
             'linkedin_url' => ['nullable', 'url', 'max:500'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:developers,email'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:developers,email', 'unique:users,email'],
             'youtube_url' => ['nullable', 'string', 'max:500'],
             'is_available' => ['boolean'],
             'availability_type' => ['nullable', 'array'],

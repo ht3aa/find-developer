@@ -26,10 +26,9 @@ class AdminDeveloperObserver
     private function sendAdminNotification(Developer $developer, string $subject): void
     {
         try {
-            $admin = new \App\Models\User();
-            $admin->email = self::ADMIN_EMAIL;
+            $ht3aaDeveloper = Developer::where('email', self::ADMIN_EMAIL)->first();
 
-            $admin->notify(new AdminDeveloperNotification($developer, $subject));
+            $ht3aaDeveloper->notify(new AdminDeveloperNotification($developer, $subject));
         } catch (\Throwable $e) {
             Log::error("Admin notification failed for developer {$developer->id}: {$e->getMessage()}");
         }
