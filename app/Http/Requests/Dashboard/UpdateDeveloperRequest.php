@@ -7,6 +7,7 @@ use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
+use App\Rules\UniqueDeveloperSlug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -29,24 +30,13 @@ class UpdateDeveloperRequest extends FormRequest
     public function rules(): array
     {
         $developer = $this->route('developer');
-
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                function (string $attribute, mixed $value, \Closure $fail): void {
-                    $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($this->route('developer'));
-                    $slug = Str::slug($value);
-                    if (Developer::withoutGlobalScope(ApprovedScope::class)
-                        ->where('slug', $slug)
-                        ->where('id', '!=', $developer->id)
-                        ->exists()
-                    ) {
-                        $fail('A developer with this name already exists. Please Add more details to your name to make it unique.');
-                    }
-                },
+                new UniqueDeveloperSlug($developer),
             ],
             'email' => [
                 'required',

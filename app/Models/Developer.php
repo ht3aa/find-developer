@@ -9,6 +9,7 @@ use App\Enums\SubscriptionPlan;
 use App\Enums\WorldGovernorate;
 use App\Helpers\StorageHelper;
 use App\Models\Scopes\ApprovedScope;
+use App\Observers\AdminDeveloperObserver;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
@@ -23,7 +24,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ScopedBy([ApprovedScope::class])]
-#[ObservedBy(DeveloperObserver::class)]
+#[ObservedBy([DeveloperObserver::class, AdminDeveloperObserver::class])]
 class Developer extends Model
 {
     use HasFactory, LogsActivity, Notifiable;

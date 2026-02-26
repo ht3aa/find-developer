@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\DeveloperStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Requests\StoreDeveloperRequest;
@@ -23,6 +24,7 @@ class DeveloperController extends Controller
     {
         $this->authorize('viewAny', Developer::class);
         $search = $request->query('search');
+        $status = $request->query('status');
         $searchTerm = is_string($search) ? trim($search) : '';
 
         $query = Developer::withoutGlobalScope(ApprovedScope::class)
@@ -36,6 +38,10 @@ class DeveloperController extends Controller
                     ->orWhere('email', 'like', $term)
                     ->orWhere('slug', 'like', $term);
             });
+        }
+
+        if ($status !== null && $status !== '') {
+            $query->where('status', $status);
         }
 
         $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
@@ -57,6 +63,7 @@ class DeveloperController extends Controller
             'developers' => $developers,
             'filters' => [
                 'search' => $searchTerm,
+                'status' => $status ?? '',
             ],
             'can' => [
                 'updateDeveloper' => $user->can('update', new Developer),

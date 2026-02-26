@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Helpers\DeveloperMessageHelper;
 use App\Models\Developer;
 use App\Models\User;
+use App\Notifications\DeveloperApprovedNotification;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -56,16 +57,7 @@ class DeveloperObserver
 
             // Only send email if developer has an email address
             if (! empty($developer->email)) {
-                $message = "Hello {$developer->name}\n\n";
-                $message .= "Congratulations! Your developer profile has been approved.\n\n";
-                $message .= "Best Regards\n";
-                $message .= 'Hasan Tahseen an Admin in '.config('app.url').' platform';
-
-                $developer->notify(new MailtrapNotification(
-                    subject: 'Developer Profile Approved',
-                    message: $message,
-                    category: 'Developer Approval'
-                ));
+                $developer->notify(new DeveloperApprovedNotification($developer));
             }
         }
 
