@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
         }
 
         $user = $request->user();
-        $isDeveloper = $user->isDeveloper();
+        $isDeveloper = $user?->isDeveloper();
         $can = $user ? [
             'viewAnyDeveloper' => $isDeveloper && $user->can('viewAny', Developer::class),
             'viewDeveloperProfile' => $isDeveloper && $user->can('viewDeveloperProfile', Developer::class),
