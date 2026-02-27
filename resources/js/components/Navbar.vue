@@ -27,6 +27,7 @@ const authCan = computed(() => (page.props.auth as { can?: { viewDeveloperProfil
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
+    { label: 'Charts', href: '/charts' },
 ];
 
 const { appearance, resolvedAppearance, updateAppearance } = useAppearance();
