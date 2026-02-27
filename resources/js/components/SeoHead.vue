@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, onMounted, onBeforeUnmount } from 'vue';
 
 const props = withDefaults(
     defineProps<{
@@ -60,6 +60,23 @@ const jsonLdString = computed(() => {
     const data = Array.isArray(props.jsonLd) ? props.jsonLd : [props.jsonLd];
     return JSON.stringify(data.length === 1 ? data[0] : data);
 });
+
+let jsonLdEl: HTMLScriptElement | null = null;
+
+onMounted(() => {
+    if (!jsonLdString.value) return;
+    jsonLdEl = document.createElement('script');
+    jsonLdEl.type = 'application/ld+json';
+    jsonLdEl.textContent = jsonLdString.value;
+    document.head.appendChild(jsonLdEl);
+});
+
+onBeforeUnmount(() => {
+    if (jsonLdEl?.parentNode) {
+        jsonLdEl.parentNode.removeChild(jsonLdEl);
+        jsonLdEl = null;
+    }
+});
 </script>
 
 <template>
@@ -83,12 +100,5 @@ const jsonLdString = computed(() => {
 
         <!-- Canonical -->
         <link v-if="canonicalUrl" rel="canonical" :href="canonicalUrl" />
-
-        <!-- JSON-LD -->
-        <script
-            v-if="jsonLdString"
-            type="application/ld+json"
-            v-text="jsonLdString"
-        />
     </Head>
 </template>
