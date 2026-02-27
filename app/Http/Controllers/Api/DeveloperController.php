@@ -16,12 +16,15 @@ class DeveloperController extends Controller
 
     /**
      * Display a paginated listing of developers with filters.
+     * Includes total_developers and recommended_developers counts in the response.
      */
     public function index(Request $request)
     {
-
         $paginator = $this->developerRepository->getPaginated($request, 12);
 
-        return DeveloperResource::collection($paginator);
+        return DeveloperResource::collection($paginator)->additional([
+            'total_developers' => $paginator->total(),
+            'recommended_developers' => Developer::where('recommended_by_us', true)->count(),
+        ]);
     }
 }
