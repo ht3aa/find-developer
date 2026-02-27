@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\Dashboard\ActivityLogController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
@@ -33,6 +34,7 @@ Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.publ
 Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.index');
 Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
 Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
+Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'show'])->name('developers.recommend');
     Route::post('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'store'])->name('developers.recommendations.store');
