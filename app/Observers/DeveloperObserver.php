@@ -42,7 +42,7 @@ class DeveloperObserver
                     $user->assignRole($role);
                 }
 
-                Developer::withoutEvents(fn () => $developer->update(['user_id' => $user->id]));
+                Developer::withoutEvents(fn() => $developer->update(['user_id' => $user->id]));
 
                 try {
                     $developer->notify(new MailtrapNotification(
@@ -59,11 +59,6 @@ class DeveloperObserver
             if (! empty($developer->email)) {
                 $developer->notify(new DeveloperApprovedNotification($developer));
             }
-        }
-
-        // When youtube_url is updated, set status to PENDING for re-review
-        if ($developer->wasChanged('youtube_url') && $developer->status !== DeveloperStatus::PENDING) {
-            Developer::withoutEvents(fn () => $developer->update(['status' => DeveloperStatus::PENDING]));
         }
     }
 

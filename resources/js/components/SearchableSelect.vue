@@ -52,6 +52,18 @@ const emit = defineEmits<{
 const searchTerm = ref('');
 const fetchedOptions = ref<{ value: string; label: string }[]>([]);
 const optionsLoading = ref(false);
+const internalOpen = ref(false);
+
+const effectiveOpen = computed(() =>
+    props.open !== undefined ? props.open : internalOpen.value,
+);
+
+function handleOpenChange(open: boolean): void {
+    if (props.open === undefined) {
+        internalOpen.value = open;
+    }
+    emit('update:open', open);
+}
 
 const selectedValues = computed(() => {
     const val = props.modelValue;

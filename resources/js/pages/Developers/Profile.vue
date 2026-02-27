@@ -10,7 +10,6 @@ import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -54,6 +53,8 @@ function extractYoutubeVideoId(url: string | null | undefined): string | null {
     return m ? m[1] : null;
 }
 
+const isAvailable = ref(false);
+
 const previewDeveloper = computed(() => {
     if (!formData.value) return null;
     const d = formData.value;
@@ -68,7 +69,7 @@ const previewDeveloper = computed(() => {
         expected_salary_from: d.expected_salary_from ? Number(d.expected_salary_from) : null,
         expected_salary_to: d.expected_salary_to ? Number(d.expected_salary_to) : null,
         currency: d.salary_currency || null,
-        is_available: d.is_available,
+        is_available: isAvailable.value,
         bio: d.bio || null,
         portfolio_url: d.portfolio_url || null,
         github_url: d.github_url || null,
@@ -124,8 +125,10 @@ watch(
     () => props.developer,
     (dev) => {
         if (dev) {
+            isAvailable.value = Boolean(dev.is_available);
             formData.value = reactive({
                 ...dev,
+                is_available: isAvailable.value,
                 job_title: dev.job_title,
                 location: dev.location,
                 skills: [...(dev.skills ?? [])],
@@ -134,10 +137,15 @@ watch(
             });
         } else {
             formData.value = null;
+            isAvailable.value = false;
         }
     },
     { immediate: true },
 );
+
+watch(isAvailable, (v) => {
+    if (formData.value) formData.value.is_available = v;
+});
 
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
@@ -187,7 +195,7 @@ function submitForm(): void {
         github_url: d.github_url ?? null,
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: (d as Record<string, unknown>).youtube_url as string | null ?? null,
-        is_available: d.is_available ?? false,
+        is_available: isAvailable.value ? 1 : 0,
         availability_type: (d.availability_type ?? []).map((a) => a.value),
         skill_names: (d.skills ?? []).map((s) => s.name),
     };
@@ -435,11 +443,13 @@ function submitForm(): void {
 
                                     <div class="flex items-center gap-4">
                                         <div class="flex items-center space-x-2">
-                                            <Checkbox
+                                            <input
                                                 id="is_available"
-                                                v-model:checked="formData.is_available"
+                                                v-model="isAvailable"
+                                                type="checkbox"
                                                 name="is_available"
                                                 value="1"
+                                                class="size-4 shrink-0 rounded border border-input shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
                                             />
                                             <Label for="is_available">Available</Label>
                                         </div>
