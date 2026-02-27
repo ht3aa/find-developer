@@ -15,7 +15,18 @@ use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', function () {
+    $sitemapUrl = rtrim(config('app.url'), '/').'/sitemap.xml';
+
+    return response("User-agent: *\nAllow: /\n\nSitemap: {$sitemapUrl}\n", 200, [
+        'Content-Type' => 'text/plain',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->name('robots');
 
 Route::get('/', [DeveloperController::class, 'index'])->name('home');
 Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');

@@ -1,23 +1,60 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { User } from 'lucide-vue-next';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import type { PublicBlogDetail } from '@/types/developer-blog';
 
-defineProps<{
+const props = defineProps<{
     blog: PublicBlogDetail;
 }>();
+
+const page = usePage();
+const appUrl = computed(() => (page.props.appUrl as string) ?? '');
 
 function formatDate(iso: string | null): string {
     if (!iso) return '';
     const d = new Date(iso);
     return d.toLocaleDateString(undefined, { dateStyle: 'long' });
 }
+
+const blogCanonical = computed(() => `/blogs/${props.blog.slug}`);
+
+const articleJsonLd = computed(() => {
+    const b = props.blog;
+    const base: Record<string, unknown> = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: b.title,
+        description: b.excerpt ?? undefined,
+        datePublished: b.published_at ?? undefined,
+        ...(b.featured_image_url ? { image: b.featured_image_url } : {}),
+    };
+    const url = appUrl.value ? `${appUrl.value.replace(/\/$/, '')}${blogCanonical.value}` : undefined;
+    if (url) base.url = url;
+    if (b.developer) {
+        base.author = {
+            '@type': 'Person',
+            name: b.developer.name,
+            url: appUrl.value ? `${appUrl.value.replace(/\/$/, '')}/developers/${b.developer.slug}` : undefined,
+        };
+    }
+    return base;
+});
 </script>
 
 <template>
-    <Head :title="blog.title">
+    <SeoHead
+        :title="blog.title"
+        :description="blog.excerpt"
+        :image="blog.featured_image_url"
+        :canonical="blogCanonical"
+        og-type="article"
+        :json-ld="articleJsonLd"
+    />
+    <Head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>

@@ -16,6 +16,7 @@ import {
     Video,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import SeoHead from '@/components/SeoHead.vue';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
@@ -35,6 +36,31 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
+const appUrl = computed(() => (page.props.appUrl as string) ?? '');
+
+const developerMetaDescription = computed(() => {
+    const d = props.developer;
+    const job = d.job_title?.name;
+    const exp = d.years_of_experience;
+    const parts = [d.bio].filter(Boolean);
+    if (job) parts.unshift(`${job} developer`);
+    if (exp) parts.unshift(`${exp} year${exp === 1 ? '' : 's'} experience`);
+    return parts.join(' · ') || undefined;
+});
+
+const personJsonLd = computed(() => {
+    const d = props.developer;
+    const base: Record<string, unknown> = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: d.name,
+        jobTitle: d.job_title?.name,
+        description: d.bio ?? undefined,
+    };
+    if (d.profile_url) base.url = d.profile_url.startsWith('http') ? d.profile_url : `${appUrl.value.replace(/\/$/, '')}${d.profile_url.startsWith('/') ? '' : '/'}${d.profile_url}`;
+    if (d.skills?.length) base.skills = d.skills.map((s) => s.name);
+    return base;
+});
 const auth = computed(() => page.props.auth as { user?: { is_admin?: boolean } } | undefined);
 const flash = computed(() => page.props.flash as { success?: string; error?: string; info?: string } | undefined);
 
@@ -104,7 +130,12 @@ function formatNum(n: number): string {
 </script>
 
 <template>
-    <Head :title="`${developer.name} | Find Developer`" />
+    <SeoHead
+        :title="developer.name"
+        :description="developerMetaDescription"
+        :canonical="developer.profile_url"
+        :json-ld="personJsonLd"
+    />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

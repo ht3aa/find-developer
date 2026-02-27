@@ -5,6 +5,7 @@ import BadgeIcon from '@/components/BadgeIcon.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { home } from '@/routes';
 import type { Badge as BadgeType } from '@/types/badge';
@@ -15,7 +16,12 @@ defineProps<{
 </script>
 
 <template>
-    <Head title="Badges">
+    <SeoHead
+        title="Badges"
+        description="Badges represent skills, achievements, and certifications earned by our developers. Browse the full catalog."
+        canonical="/badges"
+    />
+    <Head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
