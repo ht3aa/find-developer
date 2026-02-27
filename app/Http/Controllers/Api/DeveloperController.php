@@ -23,7 +23,7 @@ class DeveloperController extends Controller
         $paginator = $this->developerRepository->getPaginated($request, 12);
 
         return DeveloperResource::collection($paginator)->additional([
-            'total_developers' => $paginator->total(),
+            'total_developers' => Developer::count(),
             'recommended_developers' => Developer::where('recommended_by_us', true)->count(),
         ]);
     }
