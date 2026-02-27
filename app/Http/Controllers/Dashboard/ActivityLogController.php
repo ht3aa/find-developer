@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -109,6 +110,27 @@ class ActivityLogController extends Controller
                 'created_at' => $activity->created_at->toIso8601String(),
                 'updated_at' => $activity->updated_at->toIso8601String(),
             ],
+        ]);
+    }
+
+    /**
+     * Return the properties (attributes / old values) for an activity log entry (super admin only).
+     */
+    public function properties(Request $request, int $id): JsonResponse
+    {
+        if (! $request->user()->isSuperAdmin()) {
+            abort(403);
+        }
+
+        $modelClass = config('activitylog.activity_model');
+        $activity = $modelClass::find($id);
+
+        if (! $activity) {
+            abort(404);
+        }
+
+        return response()->json([
+            'properties' => $activity->properties?->toArray() ?? [],
         ]);
     }
 }
