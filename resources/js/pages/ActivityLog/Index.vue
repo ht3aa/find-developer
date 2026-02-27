@@ -2,8 +2,15 @@
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
-import { ClipboardList, Copy, ExternalLink, Search } from 'lucide-vue-next';
+import { Box, ClipboardList, Copy, ExternalLink, Loader2, Search } from 'lucide-vue-next';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -49,6 +56,79 @@ const searchQuery = ref(props.filters.search ?? '');
 const debouncedSearch = refDebounced(searchQuery, 300);
 const copiedEmail = ref<string | null>(null);
 let copiedEmailTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const modalOpen = ref(false);
+const modalProperties = ref<Record<string, unknown> | null>(null);
+const modalLoading = ref(false);
+const modalActivityId = ref<number | null>(null);
+let fetchAbortController: AbortController | null = null;
+
+function propertiesUrl(id: number): string {
+    return `${activityLogShow(id).url}/properties`;
+}
+
+async function openPropertiesModal(activity: ActivityLogEntry): Promise<void> {
+    if (fetchAbortController) {
+        fetchAbortController.abort();
+        fetchAbortController = null;
+    }
+    modalActivityId.value = activity.id;
+    modalProperties.value = null;
+    modalLoading.value = true;
+    modalOpen.value = true;
+    fetchAbortController = new AbortController();
+    try {
+        const res = await fetch(propertiesUrl(activity.id), {
+            signal: fetchAbortController.signal,
+            headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (modalActivityId.value === activity.id) {
+            modalProperties.value = data.properties ?? {};
+        }
+    } catch {
+        if (modalActivityId.value === activity.id) {
+            modalProperties.value = {};
+        }
+    } finally {
+        if (modalActivityId.value === activity.id) {
+            modalLoading.value = false;
+        }
+        fetchAbortController = null;
+    }
+}
+
+type PropertyRow = { property: string; oldValue: unknown; newValue: unknown };
+
+function formatPropertyValue(value: unknown): string {
+    if (value === null || value === undefined) return '—';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+}
+
+const modalPropertiesRows = computed<PropertyRow[]>(() => {
+    const p = modalProperties.value;
+    if (!p || typeof p !== 'object') return [];
+    const attrs = (p.attributes as Record<string, unknown>) ?? {};
+    const old = (p.old as Record<string, unknown>) ?? {};
+    const keys = new Set([...Object.keys(attrs), ...Object.keys(old)]);
+    if (keys.size > 0) {
+        return [...keys].sort().map((key) => ({
+            property: key,
+            oldValue: old[key],
+            newValue: attrs[key],
+        }));
+    }
+    return Object.entries(p)
+        .filter(([k]) => k !== 'attributes' && k !== 'old')
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => ({ property: key, oldValue: undefined, newValue: value }));
+});
+
+const hasModalProperties = computed(
+    () => modalPropertiesRows.value.length > 0,
+);
 
 async function copyCauserEmail(email: string): Promise<void> {
     try {
@@ -139,7 +219,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <TableHead class="w-[120px]">Subject</TableHead>
                             <TableHead class="w-[180px]">Causer email</TableHead>
                             <TableHead class="w-[80px]">Log</TableHead>
-                            <TableHead class="w-[70px]" />
+                            <TableHead class="w-[160px]" />
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -187,7 +267,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <TableCell class="text-muted-foreground text-xs">
                                 {{ activity.log_name ?? 'default' }}
                             </TableCell>
-                            <TableCell>
+                            <TableCell class="flex items-center gap-2">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    class="h-8 gap-1"
+                                    @click="openPropertiesModal(activity)"
+                                >
+                                    <Box class="size-3.5" />
+                                    Properties
+                                </Button>
                                 <Link
                                     :href="activityLogShow(activity.id).url"
                                     class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -216,6 +305,56 @@ const breadcrumbs: BreadcrumbItem[] = [
                 v-if="activities.links?.length"
                 :links="activities.links"
             />
+
+            <Dialog :open="modalOpen" @update:open="modalOpen = $event">
+                <DialogContent class="sm:max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>
+                            Properties (attributes / old values)
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div class="mt-2 max-h-[420px] overflow-auto">
+                        <div
+                            v-if="modalLoading"
+                            class="flex items-center justify-center gap-2 py-12 text-muted-foreground"
+                        >
+                            <Loader2 class="size-5 animate-spin" />
+                            <span>Loading…</span>
+                        </div>
+                        <Table v-else-if="hasModalProperties">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead class="w-[140px]">Property</TableHead>
+                                    <TableHead>Old value</TableHead>
+                                    <TableHead>New value</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <TableRow
+                                    v-for="row in modalPropertiesRows"
+                                    :key="row.property"
+                                >
+                                    <TableCell class="font-medium">
+                                        {{ row.property }}
+                                    </TableCell>
+                                    <TableCell class="font-mono text-muted-foreground text-xs">
+                                        {{ formatPropertyValue(row.oldValue) }}
+                                    </TableCell>
+                                    <TableCell class="font-mono text-xs">
+                                        {{ formatPropertyValue(row.newValue) }}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                        <p
+                            v-else
+                            class="py-8 text-center text-sm text-muted-foreground"
+                        >
+                            No properties recorded for this activity.
+                        </p>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
