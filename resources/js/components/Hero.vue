@@ -3,6 +3,7 @@ import { ArrowDown } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Duck from '@/components/Duck.vue';
+import DotGrid from '@/components/animations/DotGrid.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -37,6 +38,20 @@ function scrollToSearch(): void {
             class="pointer-events-none absolute inset-0 overflow-hidden"
             aria-hidden="true"
         >
+    <DotGrid
+      :dot-size="3"
+      :gap="100"
+      base-color="#C4C2BC"
+      active-color="#F59E0B"
+      :proximity="140"
+      :speed-trigger="80"
+      :shock-radius="220"
+      :shock-strength="4"
+      :max-speed="4000"
+      :resistance="800"
+      :return-duration="1.8"
+      class-name="custom-dot-grid"
+    />
             <div
                 class="absolute -left-40 -top-40 size-80 rounded-full bg-primary/10 blur-3xl"
             />

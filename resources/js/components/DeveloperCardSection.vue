@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core';
-import { Award, Search, SlidersHorizontal, Users } from 'lucide-vue-next';
+import { Award, FilterX, Search, SlidersHorizontal, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
@@ -206,6 +206,45 @@ onMounted(() => {
 
 <template>
     <section id="developers" class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div
+            v-if="stats"
+            class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
+        >
+            <div
+                class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
+            >
+                <div
+                    class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15 sm:size-14"
+                >
+                    <Users class="size-6 sm:size-7" aria-hidden="true" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+                        {{ stats.total }}
+                    </p>
+                    <p class="mt-0.5 text-sm text-muted-foreground">
+                        Developers in the system
+                    </p>
+                </div>
+            </div>
+            <div
+                class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
+            >
+                <div
+                    class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 transition-colors group-hover:bg-amber-500/15 dark:text-amber-400"
+                >
+                    <Award class="size-6 sm:size-7" aria-hidden="true" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+                        {{ stats.recommended }}
+                    </p>
+                    <p class="mt-0.5 text-sm text-muted-foreground">
+                        Recommended developers
+                    </p>
+                </div>
+            </div>
+        </div>
         <div class="sticky w-1/2 mx-auto top-18 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
             <div class="relative flex min-w-0 flex-1 border border-primary rounded-md">
                 <Search
@@ -381,45 +420,7 @@ onMounted(() => {
                 </SheetContent>
             </Sheet>
         </div>
-        <div
-            v-if="stats"
-            class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
-        >
-            <div
-                class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
-            >
-                <div
-                    class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15 sm:size-14"
-                >
-                    <Users class="size-6 sm:size-7" aria-hidden="true" />
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
-                        {{ stats.total }}
-                    </p>
-                    <p class="mt-0.5 text-sm text-muted-foreground">
-                        Developers in the system
-                    </p>
-                </div>
-            </div>
-            <div
-                class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
-            >
-                <div
-                    class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 transition-colors group-hover:bg-amber-500/15 dark:text-amber-400"
-                >
-                    <Award class="size-6 sm:size-7" aria-hidden="true" />
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
-                        {{ stats.recommended }}
-                    </p>
-                    <p class="mt-0.5 text-sm text-muted-foreground">
-                        Recommended developers
-                    </p>
-                </div>
-            </div>
-        </div>
+
         <div
             v-if="loading"
             class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -432,9 +433,18 @@ onMounted(() => {
         </div>
         <div
             v-else-if="developers.length === 0"
-            class="rounded-lg border border-dashed border-border py-12 text-center text-muted-foreground"
+            class="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border py-12 text-center text-muted-foreground"
         >
-            No developers found.
+            <p>No developers found.</p>
+            <Button
+                variant="outline"
+                size="sm"
+                class="gap-2"
+                @click="clearFilters"
+            >
+                <FilterX class="h-4 w-4" aria-hidden="true" />
+                Clear filters
+            </Button>
         </div>
         <template v-else>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
