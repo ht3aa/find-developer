@@ -421,8 +421,8 @@ function submitForm(): void {
                                             @update:model-value="
                                                 (v) => {
                                                     const arr = Array.isArray(v) ? v : v ? [v] : [];
-                                                    if (formData.value) {
-                                                        formData.value.availability_type = arr.map((val) => {
+                                                    if (formData) {
+                                                        formData.availability_type = arr.map((val) => {
                                                             const opt = availabilityTypeOptions.find((o) => o.value === val);
                                                             return { value: String(val), label: opt?.label ?? String(val) };
                                                         });
