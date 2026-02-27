@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import Pagination from '@/components/Pagination.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { Card, CardContent } from '@/components/ui/card';
 import type { PublicBlogEntry } from '@/types/developer-blog';
 
@@ -32,7 +33,12 @@ function formatDate(iso: string | null): string {
 </script>
 
 <template>
-    <Head title="Blog">
+    <SeoHead
+        title="Blog"
+        description="Articles and posts from our developers. Read about their experience, tips, and insights."
+        canonical="/blogs"
+    />
+    <Head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
