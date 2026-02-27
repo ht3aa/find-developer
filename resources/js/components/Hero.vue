@@ -66,16 +66,24 @@ function scrollToSearch(): void {
         <!-- Decorative ducks (click to quack) -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="pointer-events-auto absolute left-[8%] top-[15%] rotate-[-15deg]">
-                <Duck size="size-14" class="opacity-90" />
+                <div class="hero-duck hero-duck-1">
+                    <Duck size="size-14" class="opacity-90" />
+                </div>
             </div>
             <div class="pointer-events-auto absolute right-[12%] top-[25%] rotate-[20deg]">
-                <Duck size="size-10" class="opacity-85" />
+                <div class="hero-duck hero-duck-2">
+                    <Duck size="size-10" class="opacity-85" />
+                </div>
             </div>
             <div class="pointer-events-auto absolute left-[15%] bottom-[20%] rotate-[10deg]">
-                <Duck size="size-12" class="opacity-80" />
+                <div class="hero-duck hero-duck-3">
+                    <Duck size="size-12" class="opacity-80" />
+                </div>
             </div>
             <div class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]">
-                <Duck size="size-11" class="opacity-85" />
+                <div class="hero-duck hero-duck-4">
+                    <Duck size="size-11" class="opacity-85" />
+                </div>
             </div>
         </div>
 
@@ -136,3 +144,39 @@ function scrollToSearch(): void {
         />
     </section>
 </template>
+
+<style scoped>
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.hero-duck {
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-duck-1 {
+    animation-duration: 2.8s;
+    animation-delay: 0s;
+}
+
+.hero-duck-2 {
+    animation-duration: 3.2s;
+    animation-delay: 0.4s;
+}
+
+.hero-duck-3 {
+    animation-duration: 3s;
+    animation-delay: 0.7s;
+}
+
+.hero-duck-4 {
+    animation-duration: 2.6s;
+    animation-delay: 0.2s;
+}
+</style>
