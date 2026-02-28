@@ -21,4 +21,36 @@ class DeveloperMessageHelper
 
         return $message;
     }
+
+    /**
+     * Header text for bulk emails sent to developers.
+     */
+    public static function bulkMessageHeader(string $developerName): string
+    {
+        $name = config('app.name');
+
+        return "Hello {$developerName},\n\n"
+            ."You are receiving this message from the {$name} platform.\n\n"
+            ."---\n\n";
+    }
+
+    /**
+     * Footer text for bulk emails sent to developers.
+     */
+    public static function bulkMessageFooter(): string
+    {
+        $url = config('app.url');
+
+        return "\n\n---\n\n"
+            ."Best Regards,\n"
+            .'The team at '.$url;
+    }
+
+    /**
+     * Build the full bulk email message body with header, content and footer.
+     */
+    public static function bulkMessageBody(string $content, string $developerName): string
+    {
+        return self::bulkMessageHeader($developerName).trim($content).self::bulkMessageFooter();
+    }
 }

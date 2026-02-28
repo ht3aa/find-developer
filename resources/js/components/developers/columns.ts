@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import type { AuthCan } from '@/types/auth';
 import type { DeveloperTableRow } from '@/types/developer-table';
 
+const checkboxClass =
+    'size-4 shrink-0 rounded-[4px] border border-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+
 function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
     return status === 'approved'
         ? 'default'
@@ -18,6 +21,40 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
 
 export function getColumns(can: Partial<AuthCan> = {}): ColumnDef<DeveloperTableRow>[] {
     return [
+        {
+            id: 'select',
+            header: ({ table }) => {
+                const checked = table.getIsAllRowsSelected();
+                const indeterminate = table.getIsSomeRowsSelected() && !checked;
+                return h('input', {
+                    type: 'checkbox',
+                    class: checkboxClass,
+                    checked,
+                    ref: (el: unknown) => {
+                        const input = el as HTMLInputElement | null;
+                        if (input) input.indeterminate = indeterminate;
+                    },
+                    'aria-label': 'Select all',
+                    onChange: (e: Event) => {
+                        const target = e.target as HTMLInputElement;
+                        table.toggleAllRowsSelected(target.checked);
+                    },
+                });
+            },
+            cell: ({ row }) =>
+                h('input', {
+                    type: 'checkbox',
+                    class: checkboxClass,
+                    checked: row.getIsSelected(),
+                    'aria-label': 'Select row',
+                    onChange: (e: Event) => {
+                        const target = e.target as HTMLInputElement;
+                        row.toggleSelected(target.checked);
+                    },
+                }),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: 'name',
             header: 'Name',
