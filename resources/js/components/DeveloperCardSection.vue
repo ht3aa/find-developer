@@ -44,6 +44,7 @@ const loadingMore = ref(false);
 const nextPageUrl = ref<string | null>(null);
 
 const stats = ref<{ total: number; recommended: number } | null>(null);
+const paginationTotal = ref<number | null>(null);
 
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
@@ -127,7 +128,6 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
         const res = await fetch(target);
         if (!res.ok) throw new Error('Failed to fetch developers');
         const data = await res.json();
-        console.log(data);
         const newDevelopers = data.data ?? [];
         if (append) {
             developers.value = [...developers.value, ...newDevelopers];
@@ -135,6 +135,9 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
             developers.value = newDevelopers;
             if (data.total_developers !== undefined && data.recommended_developers !== undefined) {
                 stats.value = { total: data.total_developers, recommended: data.recommended_developers };
+            }
+            if (data.meta?.total !== undefined) {
+                paginationTotal.value = data.meta.total;
             }
         }
         nextPageUrl.value = data.links?.next ?? null;
@@ -259,6 +262,13 @@ onMounted(() => {
                     autocomplete="off"
                 />
             </div>
+            <p
+                v-if="paginationTotal !== null"
+                class="shrink-0 text-sm tabular-nums text-muted-foreground"
+                aria-live="polite"
+            >
+                {{ paginationTotal }} developer{{ paginationTotal === 1 ? '' : 's' }}
+            </p>
             <Sheet v-model:open="advancedOpen">
                 <SheetTrigger as-child>
                     <Button
