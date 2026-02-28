@@ -2,12 +2,27 @@
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
-import { Plus, Search, Users } from 'lucide-vue-next';
+import { ChevronDown, Mail, Plus, Search, Users } from 'lucide-vue-next';
 import DevelopersDataTable from '@/components/developers/DevelopersDataTable.vue';
 import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { create as developersCreate, index as developersIndex } from '@/routes/developers';
 import { dashboard } from '@/routes';
 import type { DeveloperTableRow } from '@/types/developer-table';
@@ -32,6 +47,7 @@ type PaginatedDevelopers = {
 type Props = {
     developers: PaginatedDevelopers;
     filters?: { search?: string; status?: string };
+    bulkEmailUrl?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -73,6 +89,31 @@ const statuses = [
     { value: 'rejected', label: 'Rejected' },
     { value: 'experience_changed', label: 'Experience Changed' },
 ];
+
+const bulkEmailOpen = ref(false);
+const bulkEmailForm = ref({ title: '', subject: '', category: '' });
+const bulkEmailSubmitting = ref(false);
+
+function openBulkEmailDialog() {
+    bulkEmailForm.value = { title: '', subject: '', category: '' };
+    bulkEmailOpen.value = true;
+}
+
+function submitBulkEmail() {
+    if (!props.bulkEmailUrl || !props.developers.data.length) return;
+    const developerIds = props.developers.data.map((d: DeveloperTableRow) => d.id);
+    bulkEmailSubmitting.value = true;
+    router.post(props.bulkEmailUrl, {
+        developer_ids: developerIds,
+        title: bulkEmailForm.value.title,
+        subject: bulkEmailForm.value.subject,
+        category: bulkEmailForm.value.category,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => { bulkEmailOpen.value = false; },
+        onFinish: () => { bulkEmailSubmitting.value = false; },
+    });
+}
 </script>
 
 <template>
@@ -99,13 +140,94 @@ const statuses = [
                         View and manage all developers in the platform
                     </p>
                 </div>
-                <Button as-child>
-                    <Link :href="developersCreate().url">
-                        <Plus class="mr-2 h-4 w-4" />
-                        Add Developer
-                    </Link>
-                </Button>
+                <div class="flex items-center gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger as-child>
+                            <Button
+                                variant="outline"
+                                :disabled="!developers.data.length"
+                            >
+                                Bulk actions
+                                <ChevronDown class="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                :disabled="!developers.data.length"
+                                @select="openBulkEmailDialog"
+                            >
+                                <Mail class="mr-2 h-4 w-4" />
+                                Send Mailtrap email
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button as-child>
+                        <Link :href="developersCreate().url">
+                            <Plus class="mr-2 h-4 w-4" />
+                            Add Developer
+                        </Link>
+                    </Button>
+                </div>
             </div>
+
+            <Dialog v-model:open="bulkEmailOpen">
+                <DialogContent class="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Send Mailtrap email</DialogTitle>
+                        <DialogDescription>
+                            Send an email to all {{ developers.data.length }} developer(s) on this page. Title is used as the email body heading.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form
+                        class="grid gap-4 py-4"
+                        @submit.prevent="submitBulkEmail"
+                    >
+                        <div class="grid gap-2">
+                            <Label for="bulk-email-title">Title</Label>
+                            <Input
+                                id="bulk-email-title"
+                                v-model="bulkEmailForm.title"
+                                placeholder="Email title / heading"
+                                required
+                            />
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="bulk-email-subject">Subject</Label>
+                            <textarea
+                                id="bulk-email-subject"
+                                v-model="bulkEmailForm.subject"
+                                rows="3"
+                                placeholder="Email subject line"
+                                required
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            />
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="bulk-email-category">Category</Label>
+                            <Input
+                                id="bulk-email-category"
+                                v-model="bulkEmailForm.category"
+                                placeholder="e.g. Newsletter, Notification"
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                @click="bulkEmailOpen = false"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                :disabled="bulkEmailSubmitting"
+                            >
+                                {{ bulkEmailSubmitting ? 'Sending…' : 'Send' }}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex flex-1 gap-2 sm:max-w-md">
@@ -143,6 +265,7 @@ const statuses = [
             <DevelopersDataTable
                 v-if="developers.data.length > 0"
                 :data="developers.data"
+                :bulk-email-url="bulkEmailUrl"
             />
 
             <div

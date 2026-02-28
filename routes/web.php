@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
+        Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
         Route::resource('roles', RoleController::class)->except(['show']);
         Route::resource('users', UserController::class)->except(['show']);

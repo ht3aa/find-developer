@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Enums\DeveloperStatus;
+use App\Helpers\DeveloperMessageHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\BulkEmailDevelopersRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Requests\StoreDeveloperRequest;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
+use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -69,7 +71,43 @@ class DeveloperController extends Controller
                 'updateDeveloper' => $user->can('update', new Developer),
                 'viewDeveloper' => $user->can('view', new Developer),
             ],
+            'bulkEmailUrl' => route('developers.bulk-email'),
         ]);
+    }
+
+    /**
+     * Send Mailtrap email to selected developers.
+     */
+    public function bulkEmail(BulkEmailDevelopersRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $developerIds = $validated['developer_ids'];
+        $title = $validated['title'];
+        $subject = $validated['subject'];
+        $category = $validated['category'] ?? null;
+
+        dd('hi');
+
+        $developers = Developer::withoutGlobalScope(ApprovedScope::class)
+            ->whereIn('id', $developerIds)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->get();
+
+        if ($developers->isEmpty()) {
+            return redirect()
+                ->route('developers.index')
+                ->with('error', 'No valid developer emails to send to.');
+        }
+
+        foreach ($developers as $developer) {
+            $message = DeveloperMessageHelper::bulkMessageBody($title, $developer->name);
+            $developer->notify(new MailtrapNotification($subject, $message, $category));
+        }
+
+        return redirect()
+            ->route('developers.index')
+            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
     }
 
     /**
