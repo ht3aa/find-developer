@@ -100,7 +100,7 @@ class DeveloperController extends Controller
         }
 
         foreach ($developers as $developer) {
-            $message = DeveloperMessageHelper::bulkMessageBody($title, $developer->name);
+            $message = DeveloperMessageHelper::bulkMessageBody($subject, $developer->name);
             $developer->notify(new MailtrapNotification($title, $message, $category));
         }
 
@@ -133,7 +133,7 @@ class DeveloperController extends Controller
         }
 
         foreach ($developers as $developer) {
-            $message = DeveloperMessageHelper::bulkMessageBody($title, $developer->name);
+            $message = DeveloperMessageHelper::bulkMessageBody($subject, $developer->name);
             $developer->notify(new MailtrapNotification($title, $message, $category));
         }
 
