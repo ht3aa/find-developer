@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\DeveloperMessageHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\BulkEmailAllDevelopersRequest;
 use App\Http\Requests\Dashboard\BulkEmailDevelopersRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Requests\StoreDeveloperRequest;
@@ -34,7 +35,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -46,7 +47,7 @@ class DeveloperController extends Controller
             $query->where('status', $status);
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -72,7 +73,40 @@ class DeveloperController extends Controller
                 'viewDeveloper' => $user->can('view', new Developer),
             ],
             'bulkEmailUrl' => route('developers.bulk-email'),
+            'bulkEmailAllUrl' => route('developers.bulk-email-all'),
         ]);
+    }
+
+    /**
+     * Send Mailtrap email to all developers in the system.
+     */
+    public function bulkEmailAll(BulkEmailAllDevelopersRequest $request): RedirectResponse
+    {
+        $validated = $request->validated();
+        $title = $validated['title'];
+        $subject = $validated['subject'];
+        $category = $validated['category'] ?? null;
+
+        $developers = Developer::withoutGlobalScope(ApprovedScope::class)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->orderBy('name')
+            ->get();
+
+        if ($developers->isEmpty()) {
+            return redirect()
+                ->route('developers.index')
+                ->with('error', 'No valid developer emails to send to.');
+        }
+
+        foreach ($developers as $developer) {
+            $message = DeveloperMessageHelper::bulkMessageBody($title, $developer->name);
+            $developer->notify(new MailtrapNotification($subject, $message, $category));
+        }
+
+        return redirect()
+            ->route('developers.index')
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**
@@ -85,7 +119,6 @@ class DeveloperController extends Controller
         $title = $validated['title'];
         $subject = $validated['subject'];
         $category = $validated['category'] ?? null;
-
 
         $developers = Developer::withoutGlobalScope(ApprovedScope::class)
             ->whereIn('id', $developerIds)
@@ -106,7 +139,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**

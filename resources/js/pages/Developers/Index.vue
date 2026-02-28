@@ -48,6 +48,7 @@ type Props = {
     developers: PaginatedDevelopers;
     filters?: { search?: string; status?: string };
     bulkEmailUrl?: string;
+    bulkEmailAllUrl?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -99,12 +100,10 @@ function openBulkEmailDialog() {
     bulkEmailOpen.value = true;
 }
 
-function submitBulkEmail() {
-    if (!props.bulkEmailUrl || !props.developers.data.length) return;
-    const developerIds = props.developers.data.map((d: DeveloperTableRow) => d.id);
+function submitBulkEmailAll() {
+    if (!props.bulkEmailAllUrl) return;
     bulkEmailSubmitting.value = true;
-    router.post(props.bulkEmailUrl, {
-        developer_ids: developerIds,
+    router.post(props.bulkEmailAllUrl, {
         title: bulkEmailForm.value.title,
         subject: bulkEmailForm.value.subject,
         category: bulkEmailForm.value.category,
@@ -143,19 +142,13 @@ function submitBulkEmail() {
                 <div class="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger as-child>
-                            <Button
-                                variant="outline"
-                                :disabled="!developers.data.length"
-                            >
+                            <Button variant="outline">
                                 Bulk actions
                                 <ChevronDown class="ml-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                                :disabled="!developers.data.length"
-                                @select="openBulkEmailDialog"
-                            >
+                            <DropdownMenuItem @select="openBulkEmailDialog">
                                 <Mail class="mr-2 h-4 w-4" />
                                 Send Mailtrap email
                             </DropdownMenuItem>
@@ -175,12 +168,12 @@ function submitBulkEmail() {
                     <DialogHeader>
                         <DialogTitle>Send Mailtrap email</DialogTitle>
                         <DialogDescription>
-                            Send an email to all {{ developers.data.length }} developer(s) on this page. Title is used as the email body heading.
+                            Send an email to all developers in the system. Title is used as the email body heading.
                         </DialogDescription>
                     </DialogHeader>
                     <form
                         class="grid gap-4 py-4"
-                        @submit.prevent="submitBulkEmail"
+                        @submit.prevent="submitBulkEmailAll"
                     >
                         <div class="grid gap-2">
                             <Label for="bulk-email-title">Title</Label>
