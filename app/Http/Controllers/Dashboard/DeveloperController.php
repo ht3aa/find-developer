@@ -86,7 +86,6 @@ class DeveloperController extends Controller
         $subject = $validated['subject'];
         $category = $validated['category'] ?? null;
 
-        dd('hi');
 
         $developers = Developer::withoutGlobalScope(ApprovedScope::class)
             ->whereIn('id', $developerIds)
