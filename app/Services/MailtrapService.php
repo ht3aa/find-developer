@@ -19,7 +19,7 @@ class MailtrapService
     public function __construct()
     {
         $this->apiUrl = 'https://send.api.mailtrap.io/api/send';
-        $this->apiToken = config('mail.mailers.mailtrap.secret', env('MAILTRAP_SECRET'));
+        $this->apiToken = config('mail.mailers.smtp.password', env('MAILTRAP_SECRET'));
         $this->defaultFromEmail = config('mail.from.address');
         $this->defaultFromName = config('mail.from.name');
     }
