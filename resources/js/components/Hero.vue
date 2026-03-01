@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ArrowDown } from 'lucide-vue-next';
+import { router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { ArrowDown, Loader2 } from 'lucide-vue-next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import Duck from '@/components/Duck.vue';
 import DotGrid from '@/components/animations/DotGrid.vue';
 
@@ -13,6 +16,8 @@ const props = withDefaults(
         primaryActionLabel?: string;
         primaryActionHref?: string;
         successMessage?: string;
+        /** When set, shows the newsletter signup field in the hero. */
+        newsletterStoreUrl?: string;
     }>(),
     {
         badge: 'Find developers',
@@ -22,10 +27,24 @@ const props = withDefaults(
     },
 );
 
+const page = usePage();
+const errors = computed(() => (page.props.errors as Record<string, string> | undefined) ?? {});
+const email = ref('');
+const submitting = ref(false);
+
 function scrollToSearch(): void {
     document
         .querySelector(props.primaryActionHref ?? '')
         ?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function submitNewsletter(): void {
+    if (!props.newsletterStoreUrl || !email.value.trim()) return;
+    submitting.value = true;
+    router.post(props.newsletterStoreUrl, { email: email.value.trim() }, {
+        preserveScroll: true,
+        onFinish: () => { submitting.value = false; },
+    });
 }
 </script>
 
@@ -135,6 +154,52 @@ function scrollToSearch(): void {
                     {{ props.primaryActionLabel }}
                     <ArrowDown class="size-4" aria-hidden="true" />
                 </Button>
+
+                <!-- Newsletter signup -->
+                <div
+                    v-if="props.newsletterStoreUrl"
+                    class="mt-12 w-full max-w-md"
+                >
+                    <p class="mb-3 text-sm font-medium text-muted-foreground">
+                        Get updates in your inbox
+                    </p>
+                    <form
+                        class="flex flex-col gap-2 sm:flex-row sm:items-center"
+                        @submit.prevent="submitNewsletter"
+                    >
+                        <Input
+                            v-model="email"
+                            type="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            class="flex-1"
+                            :disabled="submitting"
+                            :aria-invalid="!!errors?.email"
+                            :aria-describedby="errors?.email ? 'newsletter-email-error' : undefined"
+                        />
+                        <Button
+                            type="submit"
+                            class="shrink-0"
+                            :disabled="submitting || !email.trim()"
+                        >
+                            <Loader2
+                                v-if="submitting"
+                                class="size-4 animate-spin"
+                                aria-hidden
+                            />
+                            <span>{{ submitting ? 'Subscribing…' : 'Subscribe' }}</span>
+                        </Button>
+                    </form>
+                    <p
+                        v-if="errors.email"
+                        id="newsletter-email-error"
+                        class="mt-2 text-sm text-destructive"
+                        role="alert"
+                    >
+                        {{ errors.email }}
+                    </p>
+                </div>
             </div>
         </div>
 

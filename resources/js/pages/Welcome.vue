@@ -11,6 +11,7 @@ import SeoHead from '@/components/SeoHead.vue';
 const page = usePage();
 const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
 const appUrl = computed(() => (page.props.appUrl as string) ?? '');
+const newsletterStoreUrl = computed(() => (page.props.newsletterStoreUrl as string) ?? '');
 const webSiteJsonLd = computed(() => ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -81,6 +82,7 @@ onUnmounted(() => {
             primary-action-label="Browse developers"
             primary-action-href="#developers"
             :success-message="flashSuccess ?? undefined"
+            :newsletter-store-url="newsletterStoreUrl || undefined"
         />
 
         <DeveloperCardSection />
