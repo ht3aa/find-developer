@@ -36,6 +36,7 @@ class DeveloperResource extends JsonResource
         $badges = $developer->badges->map(function ($badge) {
             return [
                 'name' => $badge->name,
+                'slug' => $badge->slug,
                 'color' => $badge->color,
                 'icon' => $badge->icon,
             ];
