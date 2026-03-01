@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { Download, Info, User } from 'lucide-vue-next';
+import { Check, Circle, Download, Info, User } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
 import DeveloperProfileController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProfileController';
 import DeveloperCard from '@/components/DeveloperCard.vue';
@@ -147,6 +147,27 @@ watch(isAvailable, (v) => {
     if (formData.value) formData.value.is_available = v;
 });
 
+const newsletterTodos = computed(() => {
+    const d = formData.value;
+    const badgesCount = (d?.badges ?? []).length;
+    const hasWorkExperience = (props.developer?.work_experience ?? []).length > 0;
+    const hasProjects = (props.developer?.projects ?? []).length > 0;
+    const hasCv = Boolean(d?.cv_path_url);
+    const hasSkills = (d?.skills ?? []).length > 0;
+    return [
+        { label: 'Marked as available', done: isAvailable.value },
+        { label: 'At least 2 badges', done: badgesCount >= 2 },
+        { label: 'Work experience', done: hasWorkExperience },
+        { label: 'Projects', done: hasProjects },
+        { label: 'CV uploaded', done: hasCv },
+        { label: 'Skills added', done: hasSkills },
+    ];
+});
+
+const allNewsletterRequirementsMet = computed(
+    () => newsletterTodos.value.length > 0 && newsletterTodos.value.every((t) => t.done),
+);
+
 const jobTitleSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
@@ -249,6 +270,36 @@ function submitForm(): void {
             </div>
 
             <template v-if="developer && formData">
+                <template v-if="!allNewsletterRequirementsMet">
+                    <div class="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                        <p class="mb-3 flex gap-2 text-sm text-muted-foreground">
+                            <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                            <span>
+                                Only developers who are available, have at least 2 badges, work experience, projects, a CV, and skills are included in the newsletter sent to companies emails.
+                            </span>
+                        </p>
+                        <ul class="flex flex-wrap gap-x-6 gap-y-1.5 text-sm">
+                            <li
+                                v-for="todo in newsletterTodos"
+                                :key="todo.label"
+                                class="flex items-center gap-2"
+                            >
+                                <Check
+                                    v-if="todo.done"
+                                    class="h-4 w-4 shrink-0 text-green-600 dark:text-green-400"
+                                />
+                                <Circle
+                                    v-else
+                                    class="h-4 w-4 shrink-0 text-muted-foreground"
+                                />
+                                <span :class="{ 'text-muted-foreground': !todo.done }">
+                                    {{ todo.label }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </template>
+
                 <div class="grid gap-6 lg:grid-cols-2">
                     <Card>
                         <CardHeader class="pb-4">
@@ -257,14 +308,6 @@ function submitForm(): void {
                             </h3>
                         </CardHeader>
                         <CardContent>
-                            <p
-                                class="mb-4 flex gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-muted-foreground"
-                            >
-                                <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                                <span>
-                                    Only developers who are available, have at least 2 badges, work experience, projects, a CV, and skills are included in the newsletter sent to companies emails.
-                                </span>
-                            </p>
                             <form
                                 class="space-y-6"
                                 @submit.prevent="submitForm"

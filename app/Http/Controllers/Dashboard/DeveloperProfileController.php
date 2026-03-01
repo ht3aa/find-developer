@@ -35,7 +35,7 @@ class DeveloperProfileController extends Controller
         }
 
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)
-            ->with(['jobTitle', 'skills', 'badges'])
+            ->with(['jobTitle', 'skills', 'badges', 'companies' => ['jobTitle'], 'projects'])
             ->find($developer->id);
 
         $developer = (new DeveloperResource($developer))->resolve();
