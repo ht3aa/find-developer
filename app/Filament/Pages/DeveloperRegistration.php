@@ -19,13 +19,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Pages\SimplePage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
-
 
 class DeveloperRegistration extends SimplePage implements HasForms
 {
@@ -61,7 +59,7 @@ class DeveloperRegistration extends SimplePage implements HasForms
                         TextInput::make('name')
                             ->required()
                             ->rules([
-                                fn(): Closure => function (string $attribute, $value, Closure $fail) {
+                                fn (): Closure => function (string $attribute, $value, Closure $fail) {
                                     if (Developer::withoutGlobalScopes()->where('slug', Str::slug($value))->exists()) {
                                         $fail('The name you provided is already taken, please add extra information to your name to make it unique.');
                                     }
@@ -89,8 +87,8 @@ class DeveloperRegistration extends SimplePage implements HasForms
                     ->schema([
                         Select::make('job_title_id')
                             ->label('Job Title')
-                            ->options(fn() => JobTitle::active()->limit(50)->pluck('name', 'id'))
-                            ->getSearchResultsUsing(fn(string $query) => JobTitle::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                            ->options(fn () => JobTitle::active()->limit(50)->pluck('name', 'id'))
+                            ->getSearchResultsUsing(fn (string $query) => JobTitle::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'id'))
                             ->required()
                             ->searchable(),
 
@@ -128,9 +126,9 @@ class DeveloperRegistration extends SimplePage implements HasForms
 
                         Select::make('skills')
                             ->multiple()
-                            ->options(fn() => Skill::active()->limit(50)->pluck('name', 'id'))
+                            ->options(fn () => Skill::active()->limit(50)->pluck('name', 'id'))
                             ->preload()
-                            ->getSearchResultsUsing(fn(string $query) => Skill::active()->where('name', 'like', '%' . $query . '%')->limit(50)->pluck('name', 'id'))
+                            ->getSearchResultsUsing(fn (string $query) => Skill::active()->where('name', 'like', '%'.$query.'%')->limit(50)->pluck('name', 'id'))
                             ->searchable()
                             ->columnSpanFull(),
                     ])
