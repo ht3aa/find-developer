@@ -114,12 +114,19 @@ const allMainNavItems: NavItem[] = [
 
 const mainNavItems = computed(() => allMainNavItems.filter(canSeeNavItem));
 
+const supportEmail = 'ht3aa2001@gmail.com';
+
 const footerNavItems: NavItem[] = [
     {
         title: 'Home',
         href: home(),
         icon: Home,
         external: false,
+    },
+    {
+        title: 'Support',
+        href: `mailto:${supportEmail}`,
+        icon: Mail,
     },
     {
         title: 'Github Repo',

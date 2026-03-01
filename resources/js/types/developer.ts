@@ -1,5 +1,6 @@
 export type DeveloperBadge = {
     name: string;
+    slug?: string | null;
     color?: string | null;
     icon?: string | null;
     icon_html?: string;

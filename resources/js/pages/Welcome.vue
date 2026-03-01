@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Bug, ChevronUp } from 'lucide-vue-next';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';

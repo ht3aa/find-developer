@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDeveloperRequest;
 use App\Http\Resources\DeveloperResource;
+use App\Models\Badge;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -68,7 +69,17 @@ class DeveloperProfileController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
 
+        $experienceUpdated = isset($data['years_of_experience'])
+            && (int) $data['years_of_experience'] !== (int) $developer->years_of_experience;
+
         $developer->update($data);
+
+        if ($experienceUpdated) {
+            $experienceValidatedBadge = Badge::where('slug', 'experience-validated')->first();
+            if ($experienceValidatedBadge) {
+                $developer->badges()->detach($experienceValidatedBadge->id);
+            }
+        }
 
         if ($cvFile) {
             $disk = 's3';

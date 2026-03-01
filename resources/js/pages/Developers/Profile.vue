@@ -8,6 +8,14 @@ import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -173,6 +181,12 @@ const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const cvFile = ref<File | null>(null);
 const cvUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
+const showExperienceBadgeModal = ref(false);
+
+const hasExperienceValidatedBadge = computed(
+    () =>
+        props.developer?.badges?.some((b) => b.slug === 'experience-validated') ?? false,
+);
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
@@ -200,11 +214,10 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
 
 const submitting = ref(false);
 
-function submitForm(): void {
-    if (!props.developer || !formData.value) return;
+function buildPayload(): Record<string, unknown> | null {
+    if (!props.developer || !formData.value) return null;
     const d = formData.value;
     const jobTitle = props.jobTitles.find((j) => j.name === d.job_title?.name);
-    submitting.value = true;
     const payload: Record<string, unknown> = {
         name: d.name ?? '',
         email: d.email ?? '',
@@ -223,6 +236,13 @@ function submitForm(): void {
     if (cvFile.value) {
         payload.cv = cvFile.value;
     }
+    return payload;
+}
+
+function doSubmit(): void {
+    const payload = buildPayload();
+    if (!payload) return;
+    submitting.value = true;
     router.put(DeveloperProfileController.update.url(), payload, {
         preserveScroll: true,
         forceFormData: !!cvFile.value,
@@ -234,6 +254,24 @@ function submitForm(): void {
             submitting.value = false;
         },
     });
+}
+
+function submitForm(): void {
+    const payload = buildPayload();
+    if (!payload) return;
+    const experienceChanged =
+        Number(formData.value?.years_of_experience) !==
+        Number(props.developer?.years_of_experience);
+    if (hasExperienceValidatedBadge.value && experienceChanged) {
+        showExperienceBadgeModal.value = true;
+        return;
+    }
+    doSubmit();
+}
+
+function confirmExperienceChangeAndSubmit(): void {
+    showExperienceBadgeModal.value = false;
+    doSubmit();
 }
 </script>
 
@@ -529,6 +567,37 @@ function submitForm(): void {
                             </form>
                         </CardContent>
                     </Card>
+
+                    <Dialog
+                        :open="showExperienceBadgeModal"
+                        @update:open="showExperienceBadgeModal = $event"
+                    >
+                        <DialogContent
+                            :show-close-button="true"
+                            class="sm:max-w-md"
+                        >
+                            <DialogHeader>
+                                <DialogTitle>Experience changed</DialogTitle>
+                                <DialogDescription>
+                                    Changing your years of experience will remove your
+                                    <strong>Experience Validated</strong> badge. You will need to
+                                    re-schedule a meeting with an admin to get the badge again.
+                                    Do you want to continue?
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter class="gap-2 sm:gap-0">
+                                <Button
+                                    variant="outline"
+                                    @click="showExperienceBadgeModal = false"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button @click="confirmExperienceChangeAndSubmit">
+                                    Continue
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
 
                     <Card class="h-fit">
                         <CardHeader class="pb-4">
