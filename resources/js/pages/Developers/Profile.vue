@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { Download, User } from 'lucide-vue-next';
+import { Download, Info, User } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
 import DeveloperProfileController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProfileController';
 import DeveloperCard from '@/components/DeveloperCard.vue';
@@ -257,6 +257,14 @@ function submitForm(): void {
                             </h3>
                         </CardHeader>
                         <CardContent>
+                            <p
+                                class="mb-4 flex gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-muted-foreground"
+                            >
+                                <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                                <span>
+                                    Only developers who are available, have at least 2 badges, companies, projects, a CV, and skills are included in the newsletter sent to companies emails.
+                                </span>
+                            </p>
                             <form
                                 class="space-y-6"
                                 @submit.prevent="submitForm"

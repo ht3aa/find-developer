@@ -12,7 +12,7 @@ class SendNewsletterDevelopersCommand extends Command
 {
     protected $signature = 'newsletter:send-developers';
 
-    protected $description = 'Select 10 available developers (with at least 2 badges) by experience and email them to newsletter subscribers.';
+    protected $description = 'Select 10 available developers (with at least 2 badges, companies, projects, CV, and skills) by experience and email them to newsletter subscribers.';
 
     public function handle(): int
     {
@@ -24,13 +24,13 @@ class SendNewsletterDevelopersCommand extends Command
 
         if ($developers->count() < 10) {
             $this->warn(sprintf(
-                'Only %d developer(s) found (available, with at least 2 badges). Need 10 (4 below 2y, 4 between 2–4y, 2 above 4y).',
+                'Only %d developer(s) found (available, with at least 2 badges, companies, projects, CV, and skills). Need 10 (4 below 2y, 4 between 2–4y, 2 above 4y).',
                 $developers->count()
             ));
         }
 
         if ($developers->isEmpty()) {
-            $this->error('No developers match the criteria. No emails sent.');
+            $this->error('No developers match the criteria (available, 2+ badges, companies, projects, CV, skills). No emails sent.');
 
             return self::FAILURE;
         }
@@ -65,6 +65,11 @@ class SendNewsletterDevelopersCommand extends Command
             ->available()
             ->withCount('badges')
             ->having('badges_count', '>=', 2)
+            ->whereHas('companies')
+            ->whereHas('projects')
+            ->whereHas('skills')
+            ->whereNotNull('cv_path')
+            ->where('cv_path', '!=', '')
             ->with(['jobTitle:id,name']);
 
         return $query->byExperience($minYears, $maxYears);
