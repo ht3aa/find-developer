@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DeveloperProfileController extends Controller
 {
@@ -95,7 +94,7 @@ class DeveloperProfileController extends Controller
     /**
      * Download the authenticated user's developer profile as a PDF CV.
      */
-    public function downloadCv(Request $request): StreamedResponse
+    public function downloadCv(Request $request)
     {
         $developer = $request->user()->developer;
 
