@@ -76,6 +76,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
 
                             <div class="grid gap-2">
+                                <Label>Slug</Label>
+                                <p class="font-mono text-sm text-muted-foreground">
+                                    {{ badge.slug }}
+                                </p>
+                            </div>
+
+                            <div class="grid gap-2">
                                 <Label for="description">Description</Label>
                                 <Input
                                     id="description"

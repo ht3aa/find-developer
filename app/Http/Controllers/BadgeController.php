@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class BadgeController extends Controller
 {
@@ -51,7 +53,16 @@ class BadgeController extends Controller
     public function store(BadgeStoreRequest $request): RedirectResponse
     {
         $this->authorize('create', Badge::class);
-        Badge::create($request->validated());
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
+
+        if (Badge::where('slug', $data['slug'])->exists()) {
+            throw ValidationException::withMessages([
+                'name' => 'Badge with this name already exists.',
+            ]);
+        }
+
+        Badge::create($data);
 
         return redirect()->route('badges.index')
             ->with('success', 'Badge created successfully.');
@@ -75,7 +86,16 @@ class BadgeController extends Controller
     public function update(BadgeUpdateRequest $request, Badge $badge): RedirectResponse
     {
         $this->authorize('update', $badge);
-        $badge->update($request->validated());
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
+
+        if (Badge::where('slug', $data['slug'])->exists()) {
+            throw ValidationException::withMessages([
+                'name' => 'Badge with this name already exists.',
+            ]);
+        }
+
+        $badge->update($data);
 
         return redirect()->route('badges.index')
             ->with('success', 'Badge updated successfully.');

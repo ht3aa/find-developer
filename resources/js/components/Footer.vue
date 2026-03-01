@@ -5,11 +5,16 @@ import { Separator } from '@/components/ui/separator';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import { home, login, register } from '@/routes';
 
+const supportEmail = 'ht3aa2001@gmail.com';
+
+const supportMailto = `mailto:${supportEmail}`;
+
 const footerLinks = [
-    { title: 'Home', href: home() },
-    { title: 'Badges', href: badgesPublic() },
-    { title: 'Sign In', href: login() },
-    { title: 'Sign Up', href: register() },
+    { title: 'Home', href: home(), isMailto: false },
+    { title: 'Badges', href: badgesPublic(), isMailto: false },
+    { title: 'Support', href: supportMailto, isMailto: true },
+    { title: 'Sign In', href: login(), isMailto: false },
+    { title: 'Sign Up', href: register(), isMailto: false },
 ];
 
 const socialLinks = [
@@ -39,14 +44,25 @@ const socialLinks = [
             <nav
                 class="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground"
             >
-                <Link
-                    v-for="{ title, href } in footerLinks"
+                <template
+                    v-for="{ title, href, isMailto } in footerLinks"
                     :key="title"
-                    :href="href"
-                    class="transition-colors hover:text-foreground"
                 >
-                    {{ title }}
-                </Link>
+                    <a
+                        v-if="isMailto"
+                        :href="href"
+                        class="transition-colors hover:text-foreground"
+                    >
+                        {{ title }}
+                    </a>
+                    <Link
+                        v-else
+                        :href="href"
+                        class="transition-colors hover:text-foreground"
+                    >
+                        {{ title }}
+                    </Link>
+                </template>
             </nav>
         </div>
 
@@ -60,7 +76,13 @@ const socialLinks = [
                 <Link :href="home()" class="font-medium text-foreground hover:underline">
                     Find Developer
                 </Link>
-                . All rights reserved.
+                . All rights reserved. Support:
+                <a
+                    :href="`mailto:${supportEmail}`"
+                    class="font-medium text-foreground hover:underline"
+                >
+                    {{ supportEmail }}
+                </a>
             </p>
 
             <div class="flex items-center gap-4">

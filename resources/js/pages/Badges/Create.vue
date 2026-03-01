@@ -67,6 +67,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
 
                             <div class="grid gap-2">
+                                <Label>Slug</Label>
+                                <p class="text-sm text-muted-foreground">
+                                    Generated from the name when saved (e.g. laravel-expert).
+                                </p>
+                            </div>
+
+                            <div class="grid gap-2">
                                 <Label for="description">Description</Label>
                                 <Input
                                     id="description"
