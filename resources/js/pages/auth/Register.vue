@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
+import { Info } from 'lucide-vue-next';
 import DeveloperFormFields from '@/components/developers/DeveloperFormFields.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
@@ -86,6 +87,14 @@ function submit(): void {
         <Head title="Register as a developer" />
 
         <form class="flex flex-col gap-6" @submit.prevent="submit">
+            <p
+                class="flex gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-muted-foreground"
+            >
+                <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span>
+                    Only developers who are available, have at least 2 badges, companies, projects, a CV, and skills are included in the newsletter sent to subscribers.
+                </span>
+            </p>
             <DeveloperFormFields
                 ref="formRef"
                 v-model="formData"
