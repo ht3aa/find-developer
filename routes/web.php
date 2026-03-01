@@ -9,11 +9,13 @@ use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperCont
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
 use App\Http\Controllers\Dashboard\DeveloperRecommendationController as DashboardDeveloperRecommendationController;
+use App\Http\Controllers\Dashboard\NewsletterController as DashboardNewsletterController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\SitemapController;
@@ -30,6 +32,7 @@ Route::get('/robots.txt', function () {
 })->name('robots');
 
 Route::get('/', [DeveloperController::class, 'index'])->name('home');
+Route::post('newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
 Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.index');
 Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
@@ -63,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('developer-blogs', DeveloperBlogController::class)->except(['show']);
         Route::resource('developer-recommendations', DashboardDeveloperRecommendationController::class)->only(['index', 'edit', 'update', 'destroy']);
 
+        Route::get('newsletter', [DashboardNewsletterController::class, 'index'])->name('dashboard.newsletter.index');
         Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
         Route::get('activity-log/{id}/properties', [ActivityLogController::class, 'properties'])->name('dashboard.activity-log.properties')->whereNumber('id');
         Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');

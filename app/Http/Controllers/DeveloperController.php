@@ -21,6 +21,7 @@ class DeveloperController extends Controller
     {
         return Inertia::render('Welcome', [
             'canRegister' => Features::enabled(Features::registration()),
+            'newsletterStoreUrl' => route('newsletter.store'),
         ]);
     }
 
