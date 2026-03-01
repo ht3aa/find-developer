@@ -161,7 +161,7 @@ function submitNewsletter(): void {
                     class="mt-12 w-full max-w-md"
                 >
                     <p class="mb-3 text-sm font-medium text-muted-foreground">
-                        Get updates in your inbox
+                        Get developers spotlight in your inbox
                     </p>
                     <form
                         class="flex flex-col gap-2 sm:flex-row sm:items-center"
