@@ -12,7 +12,7 @@
         .developer-name { font-weight: bold; font-size: 1.1em; margin-bottom: 4px; }
         .developer-meta { font-size: 0.9em; color: #666; margin-bottom: 8px; }
         .recommended { display: inline-block; background-color: #0d9488; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; margin-left: 6px; }
-        .btn { display: inline-block; padding: 8px 16px; background-color: rgb(0, 49, 173); color: white; text-decoration: none; border-radius: 5px; margin-top: 8px; font-size: 0.9em; }
+        .btn { display: inline-block; padding: 8px 16px; background-color: rgb(187, 187, 187); color: white; text-decoration: none; border-radius: 5px; margin-top: 8px; font-size: 0.9em; }
         .btn:hover { text-decoration: underline; }
         .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
     </style>
