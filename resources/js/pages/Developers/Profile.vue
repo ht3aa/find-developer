@@ -262,7 +262,7 @@ function submitForm(): void {
                             >
                                 <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                                 <span>
-                                    Only developers who are available, have at least 2 badges, companies, projects, a CV, and skills are included in the newsletter sent to companies emails.
+                                    Only developers who are available, have at least 2 badges, work experience, projects, a CV, and skills are included in the newsletter sent to companies emails.
                                 </span>
                             </p>
                             <form
