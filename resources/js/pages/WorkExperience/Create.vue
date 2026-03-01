@@ -135,6 +135,8 @@ function submit(): void {
                                     :options="jobTitles.map((j) => ({ value: j.id.toString(), label: j.name }))"
                                     placeholder="Select job title (optional)"
                                     allow-clear
+                                    :open="jobTitleSelectOpen"
+                                    @update:open="onJobTitleOpenChange"
                                 />
                                 <InputError :message="formErrors.job_title_id" />
                             </div>

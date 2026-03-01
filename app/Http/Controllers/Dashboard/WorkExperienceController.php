@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\StoreWorkExperienceRequest;
 use App\Http\Requests\Dashboard\UpdateWorkExperienceRequest;
 use App\Models\DeveloperCompany;
+use App\Models\JobTitle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,7 +31,7 @@ class WorkExperienceController extends Controller
         $experiences = DeveloperCompany::with(['jobTitle', 'parent'])
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
                 'company_name' => $e->company_name,
                 'job_title' => $e->jobTitle?->name ?? null,
@@ -77,9 +78,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
+                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
             ]);
 
         return Inertia::render('WorkExperience/Create', [
@@ -136,9 +137,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn (DeveloperCompany $e) => [
+            ->map(fn(DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
+                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
             ]);
 
         return Inertia::render('WorkExperience/Edit', [
@@ -159,7 +160,7 @@ class WorkExperienceController extends Controller
                 'is_current' => $workExperience->is_current,
                 'show_company' => $workExperience->show_company,
             ],
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->limit(100)->get(['id', 'name']),
             'parentOptions' => $parentOptions,
         ]);
     }
