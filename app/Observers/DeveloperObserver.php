@@ -41,7 +41,7 @@ class DeveloperObserver
                     $user->assignRole($role);
                 }
 
-                Developer::withoutEvents(fn() => $developer->update(['user_id' => $user->id]));
+                Developer::withoutEvents(fn () => $developer->update(['user_id' => $user->id]));
 
                 try {
                     $developer->notify(new MailtrapNotification(
@@ -59,7 +59,7 @@ class DeveloperObserver
                 $message = "Hello {$developer->name}\n\n";
                 $message .= "Congratulations! Your developer profile has been approved.\n\n";
                 $message .= "Best Regards\n";
-                $message .= 'Hasan Tahseen an Admin in ' . config('app.url') . ' platform';
+                $message .= 'Hasan Tahseen an Admin in '.config('app.url').' platform';
 
                 $developer->notify(new MailtrapNotification(
                     subject: 'Developer Profile Approved',
@@ -71,7 +71,7 @@ class DeveloperObserver
 
         // When youtube_url is updated, set status to PENDING for re-review
         if ($developer->wasChanged('youtube_url') && $developer->status !== DeveloperStatus::PENDING) {
-            Developer::withoutEvents(fn() => $developer->update(['status' => DeveloperStatus::PENDING]));
+            Developer::withoutEvents(fn () => $developer->update(['status' => DeveloperStatus::PENDING]));
         }
     }
 
