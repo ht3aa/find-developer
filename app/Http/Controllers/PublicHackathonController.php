@@ -17,11 +17,12 @@ class PublicHackathonController extends Controller
      */
     public function index(Request $request): Response
     {
+
         $hackathons = Hackathon::query()
             ->with('rewardBadge:id,name,slug,icon,color')
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn (Hackathon $h) => [
+            ->map(fn(Hackathon $h) => [
                 'id' => $h->id,
                 'title' => $h->title,
                 'slug' => $h->slug,
@@ -105,21 +106,25 @@ class PublicHackathonController extends Controller
 
         $hackathon->load(['teams.members.developer:id,name,slug,email', 'teams.votes']);
 
-        $teams = $hackathon->teams
-            ->map(fn (HackathonTeam $team) => [
+        $teams = $hackathon->teams()->when($hackathon->current_team_id_to_vote, function ($query) use ($hackathon) {
+            $query->where('id', $hackathon->current_team_id_to_vote);
+        })
+            ->orderBy('title')
+            ->get()
+            ->map(fn(HackathonTeam $team) => [
                 'id' => $team->id,
                 'title' => $team->title,
                 'logo_url' => $team->logo_url,
                 'votes_count' => $team->votes->where('is_voted', true)->count(),
                 'has_voted' => $developerId
                     ? $team->votes
-                        ->where('subscriber_developer_id', $developerId)
-                        ->where('is_voted', true)
-                        ->isNotEmpty()
+                    ->where('subscriber_developer_id', $developerId)
+                    ->where('is_voted', true)
+                    ->isNotEmpty()
                     : false,
                 'vote_url' => route('hackathons.teams.vote', [$hackathon->slug, $team]),
                 'members' => $team->members
-                    ->map(fn ($member) => [
+                    ->map(fn($member) => [
                         'id' => $member->id,
                         'position' => $member->position->value,
                         'position_label' => $member->position->label(),

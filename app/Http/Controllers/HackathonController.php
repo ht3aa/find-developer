@@ -99,6 +99,7 @@ class HackathonController extends Controller
         $this->authorize('update', $hackathon);
 
         $badges = Badge::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']);
+        $teams = $hackathon->teams()->orderBy('title')->get(['id', 'title']);
 
         return Inertia::render('Hackathons/Dashboard/Edit', [
             'hackathon' => [
@@ -113,8 +114,10 @@ class HackathonController extends Controller
                 'reward_description' => $hackathon->reward_description,
                 'start_date' => $hackathon->start_date?->toDateString(),
                 'end_date' => $hackathon->end_date?->toDateString(),
+                'current_team_id_to_vote' => $hackathon->current_team_id_to_vote,
             ],
             'badges' => $badges,
+            'teams' => $teams,
         ]);
     }
 

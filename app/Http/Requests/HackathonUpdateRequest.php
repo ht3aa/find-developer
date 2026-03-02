@@ -24,6 +24,9 @@ class HackathonUpdateRequest extends FormRequest
         if ($this->has('reward_badge_id') && $this->reward_badge_id === '') {
             $this->merge(['reward_badge_id' => null]);
         }
+        if ($this->has('current_team_id_to_vote') && $this->current_team_id_to_vote === '') {
+            $this->merge(['current_team_id_to_vote' => null]);
+        }
     }
 
     public function rules(): array
@@ -37,6 +40,7 @@ class HackathonUpdateRequest extends FormRequest
             'reward_description' => ['nullable', 'string', 'max:1000'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'current_team_id_to_vote' => ['nullable', 'integer', 'exists:hackathon_teams,id'],
         ];
     }
 }

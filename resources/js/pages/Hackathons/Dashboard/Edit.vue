@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { Trophy } from 'lucide-vue-next';
 import HackathonController from '@/actions/App/Http/Controllers/HackathonController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
+import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,18 +27,33 @@ export type DashboardHackathonEdit = {
     reward_description: string | null;
     start_date: string | null;
     end_date: string | null;
+    current_team_id_to_vote: number | null;
 };
 
 type BadgeOption = { id: number; name: string };
 
+type TeamOption = { id: number; title: string };
+
 type Props = {
     hackathon: DashboardHackathonEdit;
     badges: BadgeOption[];
+    teams: TeamOption[];
 };
 
 const props = defineProps<Props>();
 
 const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
+
+const currentTeamIdToVote = ref<string | null>(
+    props.hackathon.current_team_id_to_vote != null
+        ? String(props.hackathon.current_team_id_to_vote)
+        : null,
+);
+const currentTeamSelectOpen = ref(false);
+
+function onCurrentTeamOpenChange(open: boolean): void {
+    currentTeamSelectOpen.value = open;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -159,6 +176,23 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             >{{ hackathon.reward_description ?? '' }}</textarea>
                             <InputError :message="errors.reward_description" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="current_team_id_to_vote">Current team in voting</Label>
+                            <SearchableSelect
+                                id="current_team_id_to_vote"
+                                v-model="currentTeamIdToVote"
+                                :options="[
+                                    { value: null, label: 'No active voting team' },
+                                    ...teams.map((t) => ({ value: String(t.id), label: t.title })),
+                                ]"
+                                :open="currentTeamSelectOpen"
+                                placeholder="Select team in voting..."
+                                @update:open="onCurrentTeamOpenChange"
+                            />
+                            <input type="hidden" name="current_team_id_to_vote" :value="currentTeamIdToVote ?? ''" />
+                            <InputError :message="errors.current_team_id_to_vote" />
                         </div>
 
                         <div class="grid gap-2">

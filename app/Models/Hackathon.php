@@ -25,6 +25,7 @@ class Hackathon extends Model
         'reward_description',
         'start_date',
         'end_date',
+        'current_team_id_to_vote',
     ];
 
     protected function casts(): array
@@ -55,6 +56,11 @@ class Hackathon extends Model
         return $this->hasMany(HackathonTeam::class);
     }
 
+    public function currentVotingTeam(): BelongsTo
+    {
+        return $this->belongsTo(HackathonTeam::class, 'current_team_id_to_vote');
+    }
+
     protected static function boot(): void
     {
         parent::boot();
@@ -75,7 +81,7 @@ class Hackathon extends Model
     public function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => StorageHelper::url($this->image),
+            get: fn () => StorageHelper::url($this->image),
         );
     }
 }
