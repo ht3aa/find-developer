@@ -84,3 +84,12 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     const newUrl = q ? `${window.location.pathname}?${q}` : window.location.pathname;
     window.history.replaceState({}, '', newUrl);
 }
+
+/**
+ * Returns the absolute page URL with the given filters applied (for sharing or AI prompts).
+ */
+export function getFilteredPageUrl(filters: DeveloperFilters): string {
+    const withQuery = buildDevelopersApiUrl('', filters);
+    const query = withQuery.startsWith('?') ? withQuery.slice(1) : '';
+    return `${window.location.origin}${window.location.pathname}${query ? `?${query}` : ''}`;
+}
