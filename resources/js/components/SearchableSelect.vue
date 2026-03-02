@@ -62,6 +62,9 @@ function handleOpenChange(open: boolean): void {
     if (props.open === undefined) {
         internalOpen.value = open;
     }
+    if (open && props.optionsUrl) {
+        fetchOptions();
+    }
     emit('update:open', open);
 }
 
@@ -73,7 +76,9 @@ const selectedValues = computed(() => {
 
 const selectedOptions = computed(() =>
     selectedValues.value.map((v) => {
-        const opt = displayOptions.value.find((o) => o.value === v || o.label === v);
+        const opt = displayOptions.value.find(
+            (o) => String(o.value) === String(v) || String(o.label) === String(v),
+        );
         return opt ?? { value: v, label: v };
     }),
 );
@@ -106,11 +111,50 @@ async function fetchOptions(): Promise<void> {
     optionsLoading.value = true;
     try {
         const url = new URL(props.optionsUrl, window.location.origin);
-        if (searchTerm.value) url.searchParams.set('search', searchTerm.value);
+        if (searchTerm.value) {
+            url.searchParams.set('search', searchTerm.value);
+            url.searchParams.set('filter[search]', searchTerm.value);
+        }
         const res = await fetch(url.toString());
         if (!res.ok) throw new Error('Failed to fetch options');
         const json = await res.json();
-        fetchedOptions.value = Array.isArray(json.data) ? json.data : [];
+        const items = Array.isArray(json.data) ? json.data : [];
+        fetchedOptions.value = items.map((item: any) => {
+            if (item && typeof item === 'object') {
+                if ('value' in item && 'label' in item) {
+                    return {
+                        value: String((item as { value: unknown }).value),
+                        label: String((item as { label: unknown }).label),
+                    };
+                }
+
+                if ('id' in item && 'name' in item) {
+                    return {
+                        value: String((item as { id: unknown }).id),
+                        label: String((item as { name: unknown }).name),
+                    };
+                }
+            }
+
+            const anyItem = item as { id?: unknown; name?: unknown; value?: unknown; label?: unknown };
+            const fallbackValue =
+                anyItem.id ??
+                anyItem.value ??
+                anyItem.name ??
+                anyItem.label ??
+                '';
+            const fallbackLabel =
+                anyItem.name ??
+                anyItem.label ??
+                anyItem.value ??
+                anyItem.id ??
+                '';
+
+            return {
+                value: String(fallbackValue),
+                label: String(fallbackLabel),
+            };
+        });
     } catch {
         fetchedOptions.value = [];
     } finally {
@@ -143,7 +187,7 @@ function removeValue(value: string, event: Event): void {
 <template>
     <Combobox
         :name="id ?? instanceId"
-        :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
+        :model-value="multiple ? selectedValues : (selectedValues[1] ?? null)"
         :multiple="multiple"
         :open="effectiveOpen"
         :open-on-click="true"
@@ -215,16 +259,6 @@ function removeValue(value: string, event: Event): void {
                     :placeholder="placeholder"
                     class="flex-1 border-0 rounded-none pr-10"
                 />
-                <button
-                    v-if="optionsUrl"
-                    type="button"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label="Search"
-                    :disabled="optionsLoading"
-                    @click="fetchOptions"
-                >
-                    <Search class="size-4" />
-                </button>
             </div>
             <ComboboxViewport>
                 <ComboboxEmpty>
