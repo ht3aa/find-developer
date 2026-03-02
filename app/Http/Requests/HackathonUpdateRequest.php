@@ -27,6 +27,9 @@ class HackathonUpdateRequest extends FormRequest
         if ($this->has('current_team_id_to_vote') && $this->current_team_id_to_vote === '') {
             $this->merge(['current_team_id_to_vote' => null]);
         }
+        if (! $this->has('enable_voting')) {
+            $this->merge(['enable_voting' => false]);
+        }
     }
 
     public function rules(): array
@@ -41,6 +44,7 @@ class HackathonUpdateRequest extends FormRequest
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'current_team_id_to_vote' => ['nullable', 'integer', 'exists:hackathon_teams,id'],
+            'enable_voting' => ['boolean'],
         ];
     }
 }

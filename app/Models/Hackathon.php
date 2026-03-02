@@ -26,6 +26,7 @@ class Hackathon extends Model
         'start_date',
         'end_date',
         'current_team_id_to_vote',
+        'enable_voting',
     ];
 
     protected function casts(): array
@@ -33,6 +34,7 @@ class Hackathon extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
+            'enable_voting' => 'boolean',
         ];
     }
 

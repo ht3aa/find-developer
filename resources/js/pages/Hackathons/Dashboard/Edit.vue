@@ -9,6 +9,7 @@ import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { index as hackathonsIndex, edit as hackathonsEdit } from '@/routes/hackathons';
@@ -28,6 +29,7 @@ export type DashboardHackathonEdit = {
     start_date: string | null;
     end_date: string | null;
     current_team_id_to_vote: number | null;
+    enable_voting: boolean;
 };
 
 type BadgeOption = { id: number; name: string };
@@ -193,6 +195,26 @@ const breadcrumbs: BreadcrumbItem[] = [
                             />
                             <input type="hidden" name="current_team_id_to_vote" :value="currentTeamIdToVote ?? ''" />
                             <InputError :message="errors.current_team_id_to_vote" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <div class="flex items-center gap-2">
+                                <input type="hidden" name="enable_voting" value="0" />
+                                <Checkbox
+                                    id="enable_voting"
+                                    name="enable_voting"
+                                    value="1"
+                                    :default-value="hackathon.enable_voting"
+                                    class="h-5 w-5"
+                                />
+                                <Label for="enable_voting" class="cursor-pointer font-normal">
+                                    Enable voting for subscribers
+                                </Label>
+                            </div>
+                            <p class="text-xs text-muted-foreground">
+                                When enabled, subscribed developers can vote for teams on the public teams page.
+                            </p>
+                            <InputError :message="errors.enable_voting" />
                         </div>
 
                         <div class="grid gap-2">

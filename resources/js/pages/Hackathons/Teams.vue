@@ -10,6 +10,7 @@ type PublicHackathonTeamsHackathon = {
     id: number;
     title: string;
     slug: string;
+    enable_voting: boolean;
 };
 
 type PublicHackathonTeamMember = {
@@ -120,13 +121,15 @@ function toggleVote(team: PublicHackathonTeam): void {
                                 <p class="mt-1 text-xs text-muted-foreground">
                                     {{ team.members.length }}
                                     {{ team.members.length === 1 ? 'member' : 'members' }}
-                                    ·
-                                    {{ team.votes_count }}
-                                    {{ team.votes_count === 1 ? 'vote' : 'votes' }}
+                                    <template v-if="hackathon.enable_voting">
+                                        ·
+                                        {{ team.votes_count }}
+                                        {{ team.votes_count === 1 ? 'vote' : 'votes' }}
+                                    </template>
                                 </p>
                             </div>
                             <button
-                                v-if="canVote"
+                                v-if="hackathon.enable_voting && canVote"
                                 type="button"
                                 class="shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors"
                                 :class="

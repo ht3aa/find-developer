@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\HackathonTeam;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class HackathonTeamPolicy
 {
@@ -77,7 +76,7 @@ class HackathonTeamPolicy
 
         $hackathon = $team->hackathon;
 
-        if (! $hackathon) {
+        if (! $hackathon || ! $hackathon->enable_voting) {
             return false;
         }
 

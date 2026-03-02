@@ -22,7 +22,7 @@ class PublicHackathonController extends Controller
             ->with('rewardBadge:id,name,slug,icon,color')
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn(Hackathon $h) => [
+            ->map(fn (Hackathon $h) => [
                 'id' => $h->id,
                 'title' => $h->title,
                 'slug' => $h->slug,
@@ -103,6 +103,10 @@ class PublicHackathonController extends Controller
     {
         $user = $request->user();
         $developerId = $user?->developer?->id;
+        $isSubscriber = $developerId
+            ? $hackathon->subscribers()->where('developer_id', $developerId)->exists()
+            : false;
+        $enableVoting = (bool) $hackathon->enable_voting;
 
         $hackathon->load(['teams.members.developer:id,name,slug,email', 'teams.votes']);
 
@@ -111,20 +115,20 @@ class PublicHackathonController extends Controller
         })
             ->orderBy('title')
             ->get()
-            ->map(fn(HackathonTeam $team) => [
+            ->map(fn (HackathonTeam $team) => [
                 'id' => $team->id,
                 'title' => $team->title,
                 'logo_url' => $team->logo_url,
                 'votes_count' => $team->votes->where('is_voted', true)->count(),
                 'has_voted' => $developerId
                     ? $team->votes
-                    ->where('subscriber_developer_id', $developerId)
-                    ->where('is_voted', true)
-                    ->isNotEmpty()
+                        ->where('subscriber_developer_id', $developerId)
+                        ->where('is_voted', true)
+                        ->isNotEmpty()
                     : false,
                 'vote_url' => route('hackathons.teams.vote', [$hackathon->slug, $team]),
                 'members' => $team->members
-                    ->map(fn($member) => [
+                    ->map(fn ($member) => [
                         'id' => $member->id,
                         'position' => $member->position->value,
                         'position_label' => $member->position->label(),
@@ -145,9 +149,10 @@ class PublicHackathonController extends Controller
                 'id' => $hackathon->id,
                 'title' => $hackathon->title,
                 'slug' => $hackathon->slug,
+                'enable_voting' => $enableVoting,
             ],
             'teams' => $teams,
-            'canVote' => (bool) $developerId,
+            'canVote' => $enableVoting && $isSubscriber,
         ]);
     }
 }

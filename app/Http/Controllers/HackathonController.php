@@ -115,6 +115,7 @@ class HackathonController extends Controller
                 'start_date' => $hackathon->start_date?->toDateString(),
                 'end_date' => $hackathon->end_date?->toDateString(),
                 'current_team_id_to_vote' => $hackathon->current_team_id_to_vote,
+                'enable_voting' => $hackathon->enable_voting,
             ],
             'badges' => $badges,
             'teams' => $teams,
