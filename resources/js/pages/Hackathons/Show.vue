@@ -24,6 +24,8 @@ export type PublicHackathonDetail = {
     start_date: string | null;
     end_date: string | null;
     created_at: string | null;
+    has_teams?: boolean;
+    teams_url?: string | null;
 };
 
 const props = defineProps<{
@@ -122,17 +124,29 @@ function scrollToRegister(): void {
                             {{ formatDate(hackathon.created_at) }}
                         </time>
                     </div>
-                    <Button
-                        v-if="canSubscribe || isGuest"
-                        type="button"
-                        variant="outline"
-                        class="shrink-0"
-                        @click="scrollToRegister"
-                    >
-                        <UserPlus class="mr-2 size-4 shrink-0" aria-hidden="true" />
-                        Register
-                        <ChevronDown class="ml-2 size-4 shrink-0" aria-hidden="true" />
-                    </Button>
+                    <div class="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-3">
+                        <Button
+                            v-if="canSubscribe || isGuest"
+                            type="button"
+                            variant="outline"
+                            class="shrink-0"
+                            @click="scrollToRegister"
+                        >
+                            <UserPlus class="mr-2 size-4 shrink-0" aria-hidden="true" />
+                            Register
+                            <ChevronDown class="ml-2 size-4 shrink-0" aria-hidden="true" />
+                        </Button>
+                        <Button
+                            v-if="hackathon.has_teams && hackathon.teams_url"
+                            as-child
+                            variant="outline"
+                            class="shrink-0"
+                        >
+                            <Link :href="hackathon.teams_url">
+                                View teams
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             </header>
 

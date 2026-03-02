@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Developer;
 use App\Models\Hackathon;
+use App\Models\HackathonTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -51,7 +52,7 @@ class PublicHackathonController extends Controller
      */
     public function show(Request $request, Hackathon $hackathon): Response
     {
-        $hackathon->load('rewardBadge:id,name,slug,icon,color');
+        $hackathon->load(['rewardBadge:id,name,slug,icon,color', 'teams']);
 
         $user = $request->user();
         $canSubscribe = $user?->can('viewDeveloperProfile', Developer::class) ?? false;
@@ -82,11 +83,54 @@ class PublicHackathonController extends Controller
                 'start_date' => $hackathon->start_date?->toDateString(),
                 'end_date' => $hackathon->end_date?->toDateString(),
                 'created_at' => $hackathon->created_at?->toIso8601String(),
+                'has_teams' => $hackathon->teams->isNotEmpty(),
+                'teams_url' => $hackathon->teams->isNotEmpty()
+                    ? route('hackathons.teams.public', $hackathon->slug)
+                    : null,
             ],
             'canSubscribe' => $canSubscribe,
             'alreadySubscribed' => $alreadySubscribed,
             'subscribersCount' => $hackathon->subscribers()->count(),
             'subscribeUrl' => route('hackathons.subscribe', $hackathon->slug),
+        ]);
+    }
+
+    /**
+     * Display the teams and members for the specified hackathon (public).
+     */
+    public function teams(Hackathon $hackathon): Response
+    {
+        $hackathon->load(['teams.members.developer:id,name,slug,email']);
+
+        $teams = $hackathon->teams
+            ->map(fn (HackathonTeam $team) => [
+                'id' => $team->id,
+                'title' => $team->title,
+                'logo_url' => $team->logo_url,
+                'members' => $team->members
+                    ->map(fn ($member) => [
+                        'id' => $member->id,
+                        'position' => $member->position->value,
+                        'position_label' => $member->position->label(),
+                        'developer' => $member->developer ? [
+                            'id' => $member->developer->id,
+                            'name' => $member->developer->name,
+                            'slug' => $member->developer->slug,
+                            'email' => $member->developer->email,
+                        ] : null,
+                    ])
+                    ->values()
+                    ->all(),
+            ])
+            ->values();
+
+        return Inertia::render('Hackathons/Teams', [
+            'hackathon' => [
+                'id' => $hackathon->id,
+                'title' => $hackathon->title,
+                'slug' => $hackathon->slug,
+            ],
+            'teams' => $teams,
         ]);
     }
 }

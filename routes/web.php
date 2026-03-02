@@ -45,6 +45,8 @@ Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.
 Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
 Route::get('hackathons', [PublicHackathonController::class, 'index'])->name('hackathons.public');
 Route::get('hackathons/{hackathon:slug}', [PublicHackathonController::class, 'show'])->name('hackathons.show');
+Route::get('hackathons/{hackathon:slug}/teams', [PublicHackathonController::class, 'teams'])
+    ->name('hackathons.teams.public');
 Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
 Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
 Route::middleware(['auth', 'verified'])->group(function () {
