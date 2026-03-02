@@ -15,7 +15,10 @@ use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
+use App\Http\Controllers\HackathonAttendanceController;
 use App\Http\Controllers\HackathonController;
+use App\Http\Controllers\HackathonSubscribeController;
+use App\Http\Controllers\HackathonSubscribersController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
@@ -45,6 +48,7 @@ Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'show'])->name('developers.recommend');
     Route::post('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'store'])->name('developers.recommendations.store');
+    Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -52,6 +56,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
+        Route::get('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
+        Route::patch('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
+        Route::get('hackathons/{hackathon}/subscribers/create', [HackathonSubscribersController::class, 'create'])->name('hackathons.subscribers.create');
+        Route::post('hackathons/{hackathon}/subscribers', [HackathonSubscribersController::class, 'store'])->name('hackathons.subscribers.store');
+        Route::get('hackathons/{hackathon}/subscribers/{subscriber}/edit', [HackathonSubscribersController::class, 'edit'])->name('hackathons.subscribers.edit');
+        Route::put('hackathons/{hackathon}/subscribers/{subscriber}', [HackathonSubscribersController::class, 'update'])->name('hackathons.subscribers.update');
+        Route::get('hackathons/{hackathon}/subscribers', [HackathonSubscribersController::class, 'index'])->name('hackathons.subscribers.index');
         Route::resource('hackathons', HackathonController::class)->except(['show']);
         Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');

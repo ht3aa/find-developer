@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Form, Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Award } from 'lucide-vue-next';
+import { Award, CheckCircle2, ChevronDown, UserPlus } from 'lucide-vue-next';
 import BadgeIcon from '@/components/BadgeIcon.vue';
 import Footer from '@/components/Footer.vue';
+import InputError from '@/components/InputError.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+import { login } from '@/routes';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 export type PublicHackathonDetail = {
     id: number;
@@ -24,7 +28,16 @@ export type PublicHackathonDetail = {
 
 const props = defineProps<{
     hackathon: PublicHackathonDetail;
+    canSubscribe: boolean;
+    alreadySubscribed: boolean;
+    subscribersCount: number;
+    subscribeUrl: string;
 }>();
+
+const page = usePage();
+const flash = computed(() => page.props.flash as { success?: string; error?: string; info?: string } | undefined);
+const auth = computed(() => page.props.auth as { user: unknown } | undefined);
+const isGuest = computed(() => !auth.value?.user);
 
 function formatDate(iso: string | null): string {
     if (!iso) return '';
@@ -47,6 +60,10 @@ function youtubeEmbedUrl(url: string | null): string | null {
 }
 
 const embedUrl = computed(() => youtubeEmbedUrl(props.hackathon.youtube_url));
+
+function scrollToRegister(): void {
+    document.getElementById('hackathon-register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
 
 <template>
@@ -64,25 +81,59 @@ const embedUrl = computed(() => youtubeEmbedUrl(props.hackathon.youtube_url));
         <Navbar />
 
         <article class="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+            <div
+                v-if="flash?.success"
+                class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+            >
+                {{ flash.success }}
+            </div>
+            <div
+                v-if="flash?.error"
+                class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+            >
+                {{ flash.error }}
+            </div>
+            <div
+                v-if="flash?.info"
+                class="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-800 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-200"
+            >
+                {{ flash.info }}
+            </div>
+
             <header class="mb-8">
-                <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-                    {{ hackathon.title }}
-                </h1>
-                <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-                    <time v-if="hackathon.start_date || hackathon.end_date" :datetime="hackathon.start_date ?? hackathon.end_date ?? undefined">
-                        <span v-if="hackathon.start_date && hackathon.end_date">
-                            {{ formatDate(hackathon.start_date) }} – {{ formatDate(hackathon.end_date) }}
-                        </span>
-                        <span v-else>{{ formatDate(hackathon.start_date ?? hackathon.end_date) }}</span>
-                    </time>
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+                            {{ hackathon.title }}
+                        </h1>
+                        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                            <time v-if="hackathon.start_date || hackathon.end_date" :datetime="hackathon.start_date ?? hackathon.end_date ?? undefined">
+                                <span v-if="hackathon.start_date && hackathon.end_date">
+                                    {{ formatDate(hackathon.start_date) }} – {{ formatDate(hackathon.end_date) }}
+                                </span>
+                                <span v-else>{{ formatDate(hackathon.start_date ?? hackathon.end_date) }}</span>
+                            </time>
+                        </div>
+                        <time
+                            v-if="hackathon.created_at && !hackathon.start_date && !hackathon.end_date"
+                            class="mt-2 block text-sm text-muted-foreground"
+                            :datetime="hackathon.created_at"
+                        >
+                            {{ formatDate(hackathon.created_at) }}
+                        </time>
+                    </div>
+                    <Button
+                        v-if="canSubscribe || isGuest"
+                        type="button"
+                        variant="outline"
+                        class="shrink-0"
+                        @click="scrollToRegister"
+                    >
+                        <UserPlus class="mr-2 size-4 shrink-0" aria-hidden="true" />
+                        Register
+                        <ChevronDown class="ml-2 size-4 shrink-0" aria-hidden="true" />
+                    </Button>
                 </div>
-                <time
-                    v-if="hackathon.created_at && !hackathon.start_date && !hackathon.end_date"
-                    class="mt-2 block text-sm text-muted-foreground"
-                    :datetime="hackathon.created_at"
-                >
-                    {{ formatDate(hackathon.created_at) }}
-                </time>
             </header>
 
             <div
@@ -151,6 +202,66 @@ const embedUrl = computed(() => youtubeEmbedUrl(props.hackathon.youtube_url));
                 >
                     {{ hackathon.reward_description }}
                 </p>
+            </section>
+
+            <section
+                id="hackathon-register"
+                v-if="canSubscribe || subscribersCount > 0 || isGuest"
+                class="mb-8 rounded-xl border border-border bg-muted/30 p-6 scroll-mt-8"
+            >
+                <div class="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+                    <UserPlus class="size-4 shrink-0" aria-hidden="true" />
+                    <span>{{ subscribersCount }} {{ subscribersCount === 1 ? 'developer' : 'developers' }} registered</span>
+                </div>
+                <div
+                    v-if="isGuest"
+                    class="rounded-lg border border-amber-200 bg-amber-50 py-3 px-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200"
+                >
+                    <p class="font-medium">
+                        Please log in to register for this hackathon.
+                    </p>
+                    <Link
+                        :href="login.url()"
+                        class="mt-2 inline-block font-medium text-amber-700 underline hover:no-underline dark:text-amber-300"
+                    >
+                        Log in
+                    </Link>
+                </div>
+                <div
+                    v-else-if="canSubscribe && alreadySubscribed"
+                    class="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 py-3 px-4 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+                >
+                    <CheckCircle2 class="size-5 shrink-0" aria-hidden="true" />
+                    You're registered for this hackathon. You will receive a confirmation email once it's approved.
+                </div>
+                <Form
+                    v-else-if="canSubscribe && !alreadySubscribed"
+                    :action="subscribeUrl"
+                    method="post"
+                    class="space-y-3"
+                    v-slot="{ errors, processing }"
+                >
+                    <div class="grid gap-2">
+                        <Label for="message">
+                            Confirm your attendance
+                        </Label>
+                        <p class="text-xs text-muted-foreground">
+                            Add a short message to confirm you will attend this hackathon.
+                        </p>
+                        <textarea
+                            id="message"
+                            name="message"
+                            required
+                            rows="3"
+                            placeholder="e.g. I'm excited to join and looking forward to the event!"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                        <InputError :message="errors.message" />
+                    </div>
+                    <Button type="submit" :disabled="processing">
+                        Register for this hackathon
+                    </Button>
+                </Form>
             </section>
 
             <footer class="mt-12 border-t pt-8">

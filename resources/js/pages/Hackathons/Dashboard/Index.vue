@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { MoreHorizontal, Pencil, Plus, Trash2, Trophy } from 'lucide-vue-next';
+import { MoreHorizontal, Pencil, Plus, Trash2, Trophy, Users } from 'lucide-vue-next';
 import HackathonController from '@/actions/App/Http/Controllers/HackathonController';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,7 @@ export type DashboardHackathonEntry = {
 
 type Props = {
     hackathons: DashboardHackathonEntry[];
-    can: { updateHackathon?: boolean; deleteHackathon?: boolean };
+    can: { updateHackathon?: boolean; deleteHackathon?: boolean; viewHackathonSubscribers?: boolean };
 };
 
 defineProps<Props>();
@@ -107,6 +107,7 @@ function confirmDelete(h: DashboardHackathonEntry) {
                             <TableHead>Dates</TableHead>
                             <TableHead>Reward</TableHead>
                             <TableHead>YouTube</TableHead>
+                            <TableHead v-if="can?.viewHackathonSubscribers">Subscribers</TableHead>
                             <TableHead class="w-12" />
                         </TableRow>
                     </TableHeader>
@@ -145,6 +146,24 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                     Link
                                 </a>
                                 <span v-else class="text-muted-foreground">—</span>
+                            </TableCell>
+                            <TableCell v-if="can?.viewHackathonSubscribers">
+                                <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <Link
+                                        :href="`/dashboard/hackathons/${h.id}/subscribers`"
+                                        class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                                    >
+                                        <Users class="size-4 shrink-0" />
+                                        Subscribers
+                                    </Link>
+                                    <Link
+                                        v-if="h.start_date && h.end_date"
+                                        :href="`/dashboard/hackathons/${h.id}/attendance`"
+                                        class="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                                    >
+                                        Attendance
+                                    </Link>
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>

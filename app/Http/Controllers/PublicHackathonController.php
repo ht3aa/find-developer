@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Developer;
 use App\Models\Hackathon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -52,6 +53,15 @@ class PublicHackathonController extends Controller
     {
         $hackathon->load('rewardBadge:id,name,slug,icon,color');
 
+        $user = $request->user();
+        $canSubscribe = $user?->can('viewDeveloperProfile', Developer::class) ?? false;
+        $alreadySubscribed = false;
+        if ($canSubscribe && $user->developer) {
+            $alreadySubscribed = $hackathon->subscribers()
+                ->where('developer_id', $user->developer->id)
+                ->exists();
+        }
+
         return Inertia::render('Hackathons/Show', [
             'hackathon' => [
                 'id' => $hackathon->id,
@@ -73,6 +83,10 @@ class PublicHackathonController extends Controller
                 'end_date' => $hackathon->end_date?->toDateString(),
                 'created_at' => $hackathon->created_at?->toIso8601String(),
             ],
+            'canSubscribe' => $canSubscribe,
+            'alreadySubscribed' => $alreadySubscribed,
+            'subscribersCount' => $hackathon->subscribers()->count(),
+            'subscribeUrl' => route('hackathons.subscribe', $hackathon->slug),
         ]);
     }
 }
