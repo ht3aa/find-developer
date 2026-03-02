@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { Users } from 'lucide-vue-next';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
@@ -23,13 +23,26 @@ type PublicHackathonTeam = {
     id: number;
     title: string;
     logo_url: string | null;
+    votes_count: number;
+    has_voted: boolean;
+    vote_url: string;
     members: PublicHackathonTeamMember[];
 };
 
 const props = defineProps<{
     hackathon: PublicHackathonTeamsHackathon;
     teams: PublicHackathonTeam[];
+    canVote: boolean;
 }>();
+
+function toggleVote(team: PublicHackathonTeam): void {
+    if (!props.canVote) return;
+    router.post(
+        team.vote_url,
+        {},
+        { preserveScroll: true },
+    );
+}
 </script>
 
 <template>
@@ -107,8 +120,24 @@ const props = defineProps<{
                                 <p class="mt-1 text-xs text-muted-foreground">
                                     {{ team.members.length }}
                                     {{ team.members.length === 1 ? 'member' : 'members' }}
+                                    ·
+                                    {{ team.votes_count }}
+                                    {{ team.votes_count === 1 ? 'vote' : 'votes' }}
                                 </p>
                             </div>
+                            <button
+                                v-if="canVote"
+                                type="button"
+                                class="shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors"
+                                :class="
+                                    team.has_voted
+                                        ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
+                                        : 'border-border bg-background text-foreground hover:bg-muted'
+                                "
+                                @click="toggleVote(team)"
+                            >
+                                {{ team.has_voted ? 'Unvote' : 'Vote' }}
+                            </button>
                         </CardHeader>
                         <CardContent class="flex-1 space-y-3 pt-0">
                             <div

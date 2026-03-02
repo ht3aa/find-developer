@@ -26,6 +26,11 @@ class HackathonTeam extends Model
         return $this->hasMany(HackathonTeamMember::class);
     }
 
+    public function votes(): HasMany
+    {
+        return $this->hasMany(HackathonTeamVote::class);
+    }
+
     public function logoUrl(): Attribute
     {
         return Attribute::make(

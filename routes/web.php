@@ -21,6 +21,7 @@ use App\Http\Controllers\HackathonSubscribeController;
 use App\Http\Controllers\HackathonSubscribersController;
 use App\Http\Controllers\HackathonTeamController;
 use App\Http\Controllers\HackathonTeamMemberController;
+use App\Http\Controllers\HackathonTeamVoteController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
@@ -53,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'show'])->name('developers.recommend');
     Route::post('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'store'])->name('developers.recommendations.store');
     Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
+    Route::post('hackathons/{hackathon:slug}/teams/{team}/vote', [HackathonTeamVoteController::class, 'store'])->name('hackathons.teams.vote');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -98,15 +98,26 @@ class PublicHackathonController extends Controller
     /**
      * Display the teams and members for the specified hackathon (public).
      */
-    public function teams(Hackathon $hackathon): Response
+    public function teams(Request $request, Hackathon $hackathon): Response
     {
-        $hackathon->load(['teams.members.developer:id,name,slug,email']);
+        $user = $request->user();
+        $developerId = $user?->developer?->id;
+
+        $hackathon->load(['teams.members.developer:id,name,slug,email', 'teams.votes']);
 
         $teams = $hackathon->teams
             ->map(fn (HackathonTeam $team) => [
                 'id' => $team->id,
                 'title' => $team->title,
                 'logo_url' => $team->logo_url,
+                'votes_count' => $team->votes->where('is_voted', true)->count(),
+                'has_voted' => $developerId
+                    ? $team->votes
+                        ->where('subscriber_developer_id', $developerId)
+                        ->where('is_voted', true)
+                        ->isNotEmpty()
+                    : false,
+                'vote_url' => route('hackathons.teams.vote', [$hackathon->slug, $team]),
                 'members' => $team->members
                     ->map(fn ($member) => [
                         'id' => $member->id,
@@ -131,6 +142,7 @@ class PublicHackathonController extends Controller
                 'slug' => $hackathon->slug,
             ],
             'teams' => $teams,
+            'canVote' => (bool) $developerId,
         ]);
     }
 }
