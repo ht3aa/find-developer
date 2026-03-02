@@ -17,10 +17,14 @@ class DeveloperController extends Controller
     /**
      * Display a paginated listing of developers with filters.
      * Includes total_developers and recommended_developers counts in the response.
+     * Accepts per_page (1–500); default 12 for UI, use 500 for AI/export to get all in one response.
      */
     public function index(Request $request)
     {
-        $paginator = $this->developerRepository->getPaginated($request, 12);
+        $requested = (int) $request->input('per_page', 12);
+        $perPage = min(max(1, $requested), 500);
+
+        $paginator = $this->developerRepository->getPaginated($request, $perPage);
 
         return DeveloperResource::collection($paginator)->additional([
             'total_developers' => Developer::count(),

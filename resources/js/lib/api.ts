@@ -94,11 +94,17 @@ export function getFilteredPageUrl(filters: DeveloperFilters): string {
     return `${window.location.origin}${window.location.pathname}${query ? `?${query}` : ''}`;
 }
 
+/** Max per_page for the AI prompt URL so the AI gets all results in one response. */
+const AI_PROMPT_PER_PAGE = 500;
+
 /**
  * Returns the absolute API URL that returns filtered developers as JSON (for AI/tools that fetch data).
+ * Uses per_page=500 so the AI receives up to 500 developers in a single response.
  */
 export function getFilteredApiUrl(filters: DeveloperFilters): string {
     const path = '/api/developers';
     const withQuery = buildDevelopersApiUrl(path, filters);
-    return `${window.location.origin}${withQuery}`;
+    const base = `${window.location.origin}${withQuery}`;
+    const separator = withQuery.includes('?') ? '&' : '?';
+    return `${base}${separator}per_page=${AI_PROMPT_PER_PAGE}`;
 }
