@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { refDebounced } from '@vueuse/core';
-import { Award, FilterX, Search, SlidersHorizontal, Users } from 'lucide-vue-next';
+import { refDebounced, useClipboard } from '@vueuse/core';
+import { Award, Check, Copy, FilterX, Search, SlidersHorizontal, Sparkles, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
@@ -19,6 +19,7 @@ import type { Developer } from '@/types/developer';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
+    getFilteredPageUrl,
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
@@ -174,6 +175,23 @@ function clearFilters(): void {
     fetchDevelopers(API_BASE);
 }
 
+const filteredPageUrl = computed(() => getFilteredPageUrl(getFilters()));
+
+const aiPromptText = computed(() => {
+    const url = filteredPageUrl.value;
+    return `I need help finding the best developer match. Please open this URL and review the results:
+
+${url}
+
+This page shows developers already filtered by my criteria (e.g. skills, job title, availability, experience). Open the link, look at the listed developer profiles, and recommend the best match for my needs—or summarize the options so I can decide.`;
+});
+
+const { copy: copyToClipboard, copied: aiPromptCopied } = useClipboard({ copiedDuring: 2000 });
+
+function copyAiPrompt(): void {
+    copyToClipboard(aiPromptText.value);
+}
+
 const activeFilterCount = computed(() => {
     let count = 0;
     if (filterJobTitle.value.length > 0) count += filterJobTitle.value.length;
@@ -292,9 +310,24 @@ onMounted(() => {
                     class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
                 >
                     <div class="mx-auto w-full max-w-4xl py-6 pr-10">
-                        <SheetTitle class="mb-4 text-lg font-semibold">
-                            Advanced filters
-                        </SheetTitle>
+                        <div class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                            <SheetTitle class="text-lg font-semibold">
+                                Advanced filters
+                            </SheetTitle>
+                            <div
+                                v-if="paginationTotal !== null"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5"
+                                aria-live="polite"
+                            >
+                                <Users class="size-4 shrink-0 text-primary" aria-hidden="true" />
+                                <span class="text-base font-semibold tabular-nums tracking-tight text-foreground">
+                                    {{ paginationTotal }}
+                                </span>
+                                <span class="text-sm text-muted-foreground">
+                                    developer{{ paginationTotal === 1 ? '' : 's' }}
+                                </span>
+                            </div>
+                        </div>
                         <SheetDescription class="sr-only">
                             Filter developers by job title, skills, badges, availability type, has URLs, availability status, recommended status, and years of experience.
                         </SheetDescription>
@@ -425,6 +458,53 @@ onMounted(() => {
                             >
                                 Clear all
                             </Button>
+                        </div>
+
+                        <div
+                            class="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200"
+                        >
+                            <div class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+                                <div class="flex min-w-0 flex-1 items-start gap-3">
+                                    <div
+                                        class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                                    >
+                                        <Sparkles class="size-5" aria-hidden="true" />
+                                    </div>
+                                    <div class="min-w-0 flex-1 space-y-1">
+                                        <Label class="text-base font-semibold tracking-tight text-foreground">
+                                            AI prompt
+                                        </Label>
+                                        <p class="text-sm text-muted-foreground">
+                                            Copy this text and share it with an AI assistant so it can search this site using your current filters and find the best match.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="default"
+                                    class="shrink-0 gap-2 border-primary"
+                                    :aria-label="aiPromptCopied ? 'Copied' : 'Copy AI prompt'"
+                                    @click="copyAiPrompt"
+                                >
+                                    <Check
+                                        v-if="aiPromptCopied"
+                                        class="size-4 text-green-600 dark:text-green-400"
+                                        aria-hidden="true"
+                                    />
+                                    <Copy v-else class="size-4" aria-hidden="true" />
+                                    <span>{{ aiPromptCopied ? 'Copied' : 'Copy' }}</span>
+                                </Button>
+                            </div>
+                            <div class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3">
+                                <textarea
+                                    :value="aiPromptText"
+                                    readonly
+                                    rows="6"
+                                    class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 text-sm font-mono leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                                    aria-label="AI prompt text"
+                                />
+                            </div>
                         </div>
                     </div>
                 </SheetContent>
