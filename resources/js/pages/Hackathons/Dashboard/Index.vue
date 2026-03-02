@@ -41,7 +41,7 @@ export type DashboardHackathonEntry = {
 
 type Props = {
     hackathons: DashboardHackathonEntry[];
-    can: { updateHackathon?: boolean; deleteHackathon?: boolean; viewHackathonSubscribers?: boolean };
+    can: { updateHackathon?: boolean; deleteHackathon?: boolean; viewHackathonSubscribers?: boolean; viewHackathonTeams?: boolean };
 };
 
 defineProps<Props>();
@@ -107,7 +107,7 @@ function confirmDelete(h: DashboardHackathonEntry) {
                             <TableHead>Dates</TableHead>
                             <TableHead>Reward</TableHead>
                             <TableHead>YouTube</TableHead>
-                            <TableHead v-if="can?.viewHackathonSubscribers">Subscribers</TableHead>
+                            <TableHead v-if="can?.viewHackathonSubscribers || can?.viewHackathonTeams">Manage</TableHead>
                             <TableHead class="w-12" />
                         </TableRow>
                     </TableHeader>
@@ -147,9 +147,10 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                 </a>
                                 <span v-else class="text-muted-foreground">—</span>
                             </TableCell>
-                            <TableCell v-if="can?.viewHackathonSubscribers">
+                            <TableCell v-if="can?.viewHackathonSubscribers || can?.viewHackathonTeams">
                                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                                     <Link
+                                        v-if="can?.viewHackathonSubscribers"
                                         :href="`/dashboard/hackathons/${h.id}/subscribers`"
                                         class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
                                     >
@@ -157,11 +158,18 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                         Subscribers
                                     </Link>
                                     <Link
-                                        v-if="h.start_date && h.end_date"
+                                        v-if="h.start_date && h.end_date && can?.viewHackathonSubscribers"
                                         :href="`/dashboard/hackathons/${h.id}/attendance`"
                                         class="inline-flex items-center text-sm font-medium text-primary hover:underline"
                                     >
                                         Attendance
+                                    </Link>
+                                    <Link
+                                        v-if="can?.viewHackathonTeams"
+                                        :href="`/dashboard/hackathons/${h.id}/teams`"
+                                        class="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                                    >
+                                        Teams
                                     </Link>
                                 </div>
                             </TableCell>

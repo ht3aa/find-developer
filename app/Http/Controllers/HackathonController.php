@@ -50,6 +50,7 @@ class HackathonController extends Controller
                 'updateHackathon' => $user->can('update', new Hackathon),
                 'deleteHackathon' => $user->can('delete', new Hackathon),
                 'viewHackathonSubscribers' => $user->isSuperAdmin(),
+                'viewHackathonTeams' => $user->isSuperAdmin(),
             ],
         ]);
     }

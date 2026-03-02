@@ -50,6 +50,11 @@ class Hackathon extends Model
         return $this->hasMany(HackathonAttendance::class);
     }
 
+    public function teams(): HasMany
+    {
+        return $this->hasMany(HackathonTeam::class);
+    }
+
     protected static function boot(): void
     {
         parent::boot();
@@ -70,7 +75,7 @@ class Hackathon extends Model
     public function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => StorageHelper::url($this->image),
+            get: fn() => StorageHelper::url($this->image),
         );
     }
 }
