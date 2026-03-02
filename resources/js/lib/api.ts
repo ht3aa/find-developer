@@ -86,10 +86,19 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
 }
 
 /**
- * Returns the absolute page URL with the given filters applied (for sharing or AI prompts).
+ * Returns the absolute page URL with the given filters applied (for sharing or human browsing).
  */
 export function getFilteredPageUrl(filters: DeveloperFilters): string {
     const withQuery = buildDevelopersApiUrl('', filters);
     const query = withQuery.startsWith('?') ? withQuery.slice(1) : '';
     return `${window.location.origin}${window.location.pathname}${query ? `?${query}` : ''}`;
+}
+
+/**
+ * Returns the absolute API URL that returns filtered developers as JSON (for AI/tools that fetch data).
+ */
+export function getFilteredApiUrl(filters: DeveloperFilters): string {
+    const path = '/api/developers';
+    const withQuery = buildDevelopersApiUrl(path, filters);
+    return `${window.location.origin}${withQuery}`;
 }

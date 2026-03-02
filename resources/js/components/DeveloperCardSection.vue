@@ -19,6 +19,7 @@ import type { Developer } from '@/types/developer';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
+    getFilteredApiUrl,
     getFilteredPageUrl,
     parseFiltersFromUrl,
     updateUrlWithFilters,
@@ -176,14 +177,21 @@ function clearFilters(): void {
 }
 
 const filteredPageUrl = computed(() => getFilteredPageUrl(getFilters()));
+const filteredApiUrl = computed(() => getFilteredApiUrl(getFilters()));
 
 const aiPromptText = computed(() => {
-    const url = filteredPageUrl.value;
-    return `I need help finding the best developer match. Please open this URL and review the results:
+    const apiUrl = filteredApiUrl.value;
+    const pageUrl = filteredPageUrl.value;
+    return `I need help finding the best developer match. To get the actual list of developers (not just an empty page), use this data URL:
 
-${url}
+${apiUrl}
 
-This page shows developers already filtered by my criteria (e.g. skills, job title, availability, experience). Open the link, look at the listed developer profiles, and recommend the best match for my needs—or summarize the options so I can decide.`;
+Instructions:
+1. Send a GET request to the URL above. It returns JSON (not HTML).
+2. The response has a "data" array: each item is a developer profile (name, skills, job title, bio, links, etc.).
+3. Use that data to recommend the best match for my needs, or summarize the options so I can decide.
+
+Filters are already applied in the URL (e.g. job title, skills, availability). For human browsing you can also open: ${pageUrl}`;
 });
 
 const { copy: copyToClipboard, copied: aiPromptCopied } = useClipboard({ copiedDuring: 2000 });
