@@ -17,6 +17,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { publicMethod as badgesPublic } from '@/routes/badges';
+import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 import { dashboard, home, login, logout, register } from '@/routes';
 import { useAppearance } from '@/composables/useAppearance';
 
@@ -27,6 +28,7 @@ const authCan = computed(() => (page.props.auth as { can?: { viewDeveloperProfil
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
+    { label: 'Hackathons', href: hackathonsPublic() },
     { label: 'Charts', href: '/charts' },
 ];
 

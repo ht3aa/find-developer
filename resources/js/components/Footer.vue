@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import { Github, Twitter } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { publicMethod as badgesPublic } from '@/routes/badges';
+import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 import { home, login, register } from '@/routes';
 
 const supportEmail = 'ht3aa2001@gmail.com';
@@ -12,6 +13,7 @@ const supportMailto = `mailto:${supportEmail}`;
 const footerLinks = [
     { title: 'Home', href: home(), isMailto: false },
     { title: 'Badges', href: badgesPublic(), isMailto: false },
+    { title: 'Hackathons', href: hackathonsPublic(), isMailto: false },
     { title: 'Support', href: supportMailto, isMailto: true },
     { title: 'Sign In', href: login(), isMailto: false },
     { title: 'Sign Up', href: register(), isMailto: false },

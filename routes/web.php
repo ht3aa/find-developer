@@ -15,9 +15,11 @@ use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperRecommendationController;
+use App\Http\Controllers\HackathonController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
+use App\Http\Controllers\PublicHackathonController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +38,8 @@ Route::post('newsletter', [NewsletterController::class, 'store'])->name('newslet
 Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
 Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.index');
 Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+Route::get('hackathons', [PublicHackathonController::class, 'index'])->name('hackathons.public');
+Route::get('hackathons/{hackathon:slug}', [PublicHackathonController::class, 'show'])->name('hackathons.show');
 Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
 Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -48,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('dashboard')->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
+        Route::resource('hackathons', HackathonController::class)->except(['show']);
         Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);

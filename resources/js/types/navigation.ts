@@ -14,6 +14,7 @@ export type AuthCanKey =
     | 'viewAnyDeveloperProject'
     | 'viewAnyDeveloperBlog'
     | 'viewAnyBadge'
+    | 'viewAnyHackathon'
     | 'viewAnyUser'
     | 'viewAnyRole'
     | 'viewActivityLog'

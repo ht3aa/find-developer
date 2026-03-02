@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Mail, Shield, ThumbsUp, User, UserCog, Users } from 'lucide-vue-next';
+import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Mail, Shield, ThumbsUp, Trophy, User, UserCog, Users } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -25,6 +25,7 @@ import { index as developerProjectsIndex } from '@/routes/developer-projects';
 import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
+import { index as hackathonsIndex } from '@/routes/hackathons';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -73,6 +74,12 @@ const allMainNavItems: NavItem[] = [
         href: badgesIndex(),
         icon: Award,
         can: 'viewAnyBadge',
+    },
+    {
+        title: 'Hackathons',
+        href: hackathonsIndex(),
+        icon: Trophy,
+        can: 'viewAnyHackathon',
     },
     {
         title: 'Developers',

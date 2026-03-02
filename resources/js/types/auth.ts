@@ -17,6 +17,7 @@ export type AuthCan = {
     viewAnyDeveloperProject?: boolean;
     viewAnyDeveloperBlog?: boolean;
     viewAnyBadge?: boolean;
+    viewAnyHackathon?: boolean;
     viewAnyUser?: boolean;
     viewAnyRole?: boolean;
     viewActivityLog?: boolean;
@@ -31,6 +32,8 @@ export type AuthCan = {
     deleteRole?: boolean;
     updateBadge?: boolean;
     deleteBadge?: boolean;
+    updateHackathon?: boolean;
+    deleteHackathon?: boolean;
     updateDeveloperCompany?: boolean;
     deleteDeveloperCompany?: boolean;
     updateDeveloperProject?: boolean;
