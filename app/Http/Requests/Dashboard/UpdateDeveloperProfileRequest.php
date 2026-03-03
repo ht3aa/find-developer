@@ -19,7 +19,13 @@ class UpdateDeveloperProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $developer = $this->user()->developer;
+
+        if (! $developer) {
+            return true;
+        }
+
+        return $this->user()->can('updateDeveloperProfile', $developer);
     }
 
     /**
