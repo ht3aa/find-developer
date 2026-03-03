@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HackathonMemberPosition;
-use App\Http\Requests\HackathonTeamMemberCreateRequest;
-use App\Http\Requests\HackathonTeamMemberDestroyRequest;
-use App\Http\Requests\HackathonTeamMemberEditRequest;
-use App\Http\Requests\HackathonTeamMemberIndexRequest;
-use App\Http\Requests\StoreHackathonTeamMemberRequest;
-use App\Http\Requests\UpdateHackathonTeamMemberRequest;
+use App\Http\Requests\Dashboard\HackathonTeamMemberCreateRequest;
+use App\Http\Requests\Dashboard\HackathonTeamMemberDestroyRequest;
+use App\Http\Requests\Dashboard\HackathonTeamMemberEditRequest;
+use App\Http\Requests\Dashboard\HackathonTeamMemberIndexRequest;
+use App\Http\Requests\Dashboard\StoreHackathonTeamMemberRequest;
+use App\Http\Requests\Dashboard\UpdateHackathonTeamMemberRequest;
 use App\Models\Developer;
 use App\Models\Hackathon;
 use App\Models\HackathonTeam;

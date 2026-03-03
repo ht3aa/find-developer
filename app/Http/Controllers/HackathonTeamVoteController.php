@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\VoteHackathonTeamRequest;
+use App\Http\Requests\Dashboard\VoteHackathonTeamRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonTeam;
 use App\Models\HackathonTeamVote;

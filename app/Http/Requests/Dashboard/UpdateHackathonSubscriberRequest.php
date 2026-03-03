@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use App\Enums\HackathonSubscriberStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreHackathonSubscriberRequest extends FormRequest
+class UpdateHackathonSubscriberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request (super admin only).
@@ -23,25 +23,9 @@ class StoreHackathonSubscriberRequest extends FormRequest
      */
     public function rules(): array
     {
-        $hackathonId = $this->route('hackathon')->id;
-
         return [
-            'developer_id' => [
-                'required',
-                'integer',
-                'exists:developers,id',
-                Rule::unique('hackathon_subscribers', 'developer_id')
-                    ->where('hackathon_id', $hackathonId),
-            ],
             'message' => ['required', 'string', 'max:2000'],
             'status' => ['required', 'string', Rule::enum(HackathonSubscriberStatus::class)],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'developer_id.unique' => 'This developer is already subscribed to this hackathon.',
         ];
     }
 }

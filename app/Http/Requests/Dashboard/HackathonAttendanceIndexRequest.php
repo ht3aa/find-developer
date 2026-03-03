@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class HackathonTeamIndexRequest extends FormRequest
+class HackathonAttendanceIndexRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('viewAny', \App\Models\HackathonTeam::class);
+        return $this->user()?->isSuperAdmin() ?? false;
     }
 
     public function rules(): array

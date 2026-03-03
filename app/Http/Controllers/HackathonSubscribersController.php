@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HackathonSubscriberStatus;
-use App\Http\Requests\HackathonSubscriberCreateRequest;
-use App\Http\Requests\HackathonSubscriberEditRequest;
-use App\Http\Requests\HackathonSubscriberIndexRequest;
-use App\Http\Requests\StoreHackathonSubscriberRequest;
-use App\Http\Requests\UpdateHackathonSubscriberRequest;
+use App\Http\Requests\Dashboard\HackathonSubscriberCreateRequest;
+use App\Http\Requests\Dashboard\HackathonSubscriberEditRequest;
+use App\Http\Requests\Dashboard\HackathonSubscriberIndexRequest;
+use App\Http\Requests\Dashboard\StoreHackathonSubscriberRequest;
+use App\Http\Requests\Dashboard\UpdateHackathonSubscriberRequest;
 use App\Models\Developer;
 use App\Models\Hackathon;
 use App\Models\HackathonSubscriber;

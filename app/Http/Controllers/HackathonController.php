@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\HackathonCreateRequest;
-use App\Http\Requests\HackathonDestroyRequest;
-use App\Http\Requests\HackathonEditRequest;
-use App\Http\Requests\HackathonIndexRequest;
-use App\Http\Requests\HackathonStoreRequest;
-use App\Http\Requests\HackathonUpdateRequest;
+use App\Http\Requests\Dashboard\HackathonCreateRequest;
+use App\Http\Requests\Dashboard\HackathonDestroyRequest;
+use App\Http\Requests\Dashboard\HackathonEditRequest;
+use App\Http\Requests\Dashboard\HackathonIndexRequest;
+use App\Http\Requests\Dashboard\HackathonStoreRequest;
+use App\Http\Requests\Dashboard\HackathonUpdateRequest;
 use App\Models\Badge;
 use App\Models\Hackathon;
 use Illuminate\Http\RedirectResponse;

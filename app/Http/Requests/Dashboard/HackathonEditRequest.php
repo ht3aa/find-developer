@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use App\Models\Hackathon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class HackathonDestroyRequest extends FormRequest
+class HackathonEditRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,7 +15,7 @@ class HackathonDestroyRequest extends FormRequest
             return false;
         }
 
-        return $this->user()->can('delete', $hackathon);
+        return $this->user()->can('update', $hackathon);
     }
 
     public function rules(): array

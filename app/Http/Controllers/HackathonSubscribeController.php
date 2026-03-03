@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HackathonSubscriberStatus;
-use App\Http\Requests\SubscribeHackathonRequest;
+use App\Http\Requests\Dashboard\SubscribeHackathonRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonSubscriber;
 use Illuminate\Http\RedirectResponse;

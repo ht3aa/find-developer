@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\HackathonAttendanceIndexRequest;
-use App\Http\Requests\UpdateHackathonAttendanceRequest;
+use App\Http\Requests\Dashboard\HackathonAttendanceIndexRequest;
+use App\Http\Requests\Dashboard\UpdateHackathonAttendanceRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonAttendance;
 use Carbon\Carbon;

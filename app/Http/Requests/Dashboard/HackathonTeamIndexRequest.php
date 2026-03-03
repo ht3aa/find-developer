@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
-use App\Models\Hackathon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class HackathonCreateRequest extends FormRequest
+class HackathonTeamIndexRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', Hackathon::class);
+        return $this->user()->can('viewAny', \App\Models\HackathonTeam::class);
     }
 
     public function rules(): array

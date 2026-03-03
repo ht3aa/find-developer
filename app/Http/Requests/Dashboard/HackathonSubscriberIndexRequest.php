@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class HackathonAttendanceIndexRequest extends FormRequest
+class HackathonSubscriberIndexRequest extends FormRequest
 {
     public function authorize(): bool
     {

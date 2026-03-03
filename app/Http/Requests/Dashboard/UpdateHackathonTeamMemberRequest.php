@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use App\Enums\HackathonMemberPosition;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreHackathonTeamMemberRequest extends FormRequest
+class UpdateHackathonTeamMemberRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,7 +18,8 @@ class StoreHackathonTeamMemberRequest extends FormRequest
      */
     public function rules(): array
     {
-        $teamId = $this->route('team')->id;
+        $team = $this->route('team');
+        $member = $this->route('member');
 
         return [
             'developer_id' => [
@@ -26,7 +27,8 @@ class StoreHackathonTeamMemberRequest extends FormRequest
                 'integer',
                 'exists:developers,id',
                 Rule::unique('hackathon_team_members', 'developer_id')
-                    ->where('hackathon_team_id', $teamId),
+                    ->where('hackathon_team_id', $team->id)
+                    ->ignore($member->id),
             ],
             'position' => ['required', 'string', Rule::enum(HackathonMemberPosition::class)],
         ];
