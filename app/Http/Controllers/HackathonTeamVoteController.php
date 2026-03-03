@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\VoteHackathonTeamRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonTeam;
 use App\Models\HackathonTeamVote;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
 class HackathonTeamVoteController extends Controller
 {
-    public function store(Request $request, Hackathon $hackathon, HackathonTeam $team): RedirectResponse
+    public function store(VoteHackathonTeamRequest $request, Hackathon $hackathon, HackathonTeam $team): RedirectResponse
     {
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
-
-        $this->authorize('vote', $team);
 
         $developer = $request->user()->developer;
 
