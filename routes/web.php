@@ -27,6 +27,7 @@ use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\PublicHackathonController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\IsSuperAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
@@ -61,6 +62,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
+        Route::middleware([IsSuperAdmin::class])->group(function () {
+            Route::resource('roles', RoleController::class)->except(['show']);
+            Route::resource('users', UserController::class)->except(['show']);
+        });
+
         Route::resource('badges', BadgeController::class)->except(['show']);
         Route::get('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
         Route::patch('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
@@ -85,8 +91,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
-        Route::resource('roles', RoleController::class)->except(['show']);
-        Route::resource('users', UserController::class)->except(['show']);
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])
             ->name('dashboard.developer-profile.index');
