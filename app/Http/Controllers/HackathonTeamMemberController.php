@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HackathonMemberPosition;
+use App\Http\Requests\HackathonTeamMemberCreateRequest;
+use App\Http\Requests\HackathonTeamMemberDestroyRequest;
+use App\Http\Requests\HackathonTeamMemberEditRequest;
+use App\Http\Requests\HackathonTeamMemberIndexRequest;
 use App\Http\Requests\StoreHackathonTeamMemberRequest;
 use App\Http\Requests\UpdateHackathonTeamMemberRequest;
 use App\Models\Developer;
@@ -10,13 +14,12 @@ use App\Models\Hackathon;
 use App\Models\HackathonTeam;
 use App\Models\HackathonTeamMember;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HackathonTeamMemberController extends Controller
 {
-    public function index(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
+    public function index(HackathonTeamMemberIndexRequest $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
@@ -53,7 +56,7 @@ class HackathonTeamMemberController extends Controller
         ]);
     }
 
-    public function create(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
+    public function create(HackathonTeamMemberCreateRequest $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
@@ -100,7 +103,7 @@ class HackathonTeamMemberController extends Controller
             ->with('success', 'Team member added successfully.');
     }
 
-    public function edit(Request $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): Response
+    public function edit(HackathonTeamMemberEditRequest $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): Response
     {
         if ($team->hackathon_id !== $hackathon->id || $member->hackathon_team_id !== $team->id) {
             abort(404);
@@ -162,7 +165,7 @@ class HackathonTeamMemberController extends Controller
             ->with('success', 'Team member updated successfully.');
     }
 
-    public function destroy(Request $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): RedirectResponse
+    public function destroy(HackathonTeamMemberDestroyRequest $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): RedirectResponse
     {
         if ($member->hackathon_team_id !== $team->id || $team->hackathon_id !== $hackathon->id) {
             abort(404);

@@ -6,12 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class HackathonStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', \App\Models\Hackathon::class);
     }
 
     /**

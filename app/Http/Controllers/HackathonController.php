@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HackathonCreateRequest;
+use App\Http\Requests\HackathonDestroyRequest;
+use App\Http\Requests\HackathonEditRequest;
+use App\Http\Requests\HackathonIndexRequest;
 use App\Http\Requests\HackathonStoreRequest;
 use App\Http\Requests\HackathonUpdateRequest;
 use App\Models\Badge;
 use App\Models\Hackathon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -15,13 +18,8 @@ use Inertia\Response;
 
 class HackathonController extends Controller
 {
-    /**
-     * Display a listing of the resource (super admin only).
-     */
-    public function index(Request $request): Response
+    public function index(HackathonIndexRequest $request): Response
     {
-        $this->authorize('viewAny', Hackathon::class);
-
         $hackathons = Hackathon::query()
             ->with('rewardBadge:id,name')
             ->orderByDesc('created_at')
@@ -55,13 +53,8 @@ class HackathonController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): Response
+    public function create(HackathonCreateRequest $request): Response
     {
-        $this->authorize('create', Hackathon::class);
-
         $badges = Badge::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Hackathons/Dashboard/Create', [
@@ -69,13 +62,8 @@ class HackathonController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(HackathonStoreRequest $request): RedirectResponse
     {
-        $this->authorize('create', Hackathon::class);
-
         $data = $request->validated();
         $data['slug'] = Str::slug($data['title']);
 
@@ -91,13 +79,8 @@ class HackathonController extends Controller
             ->with('success', 'Hackathon created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Hackathon $hackathon): Response
+    public function edit(HackathonEditRequest $request, Hackathon $hackathon): Response
     {
-        $this->authorize('update', $hackathon);
-
         $badges = Badge::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']);
         $teams = $hackathon->teams()->orderBy('title')->get(['id', 'title']);
 
@@ -122,13 +105,8 @@ class HackathonController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(HackathonUpdateRequest $request, Hackathon $hackathon): RedirectResponse
     {
-        $this->authorize('update', $hackathon);
-
         $data = $request->validated();
         $data['slug'] = Str::slug($data['title']);
 
@@ -144,13 +122,8 @@ class HackathonController extends Controller
             ->with('success', 'Hackathon updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request, Hackathon $hackathon): RedirectResponse
+    public function destroy(HackathonDestroyRequest $request, Hackathon $hackathon): RedirectResponse
     {
-        $this->authorize('delete', $hackathon);
-
         $hackathon->delete();
 
         return redirect()->route('hackathons.index')

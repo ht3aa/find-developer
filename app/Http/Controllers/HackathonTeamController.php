@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HackathonTeamCreateRequest;
+use App\Http\Requests\HackathonTeamDestroyRequest;
+use App\Http\Requests\HackathonTeamEditRequest;
+use App\Http\Requests\HackathonTeamIndexRequest;
 use App\Http\Requests\StoreHackathonTeamRequest;
 use App\Http\Requests\UpdateHackathonTeamRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonTeam;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HackathonTeamController extends Controller
 {
-    public function index(Request $request, Hackathon $hackathon): Response
+    public function index(HackathonTeamIndexRequest $request, Hackathon $hackathon): Response
     {
         $teams = $hackathon->teams()
             ->withCount(['votes as votes_count' => fn ($q) => $q->where('is_voted', true)])
@@ -39,7 +42,7 @@ class HackathonTeamController extends Controller
         ]);
     }
 
-    public function create(Request $request, Hackathon $hackathon): Response
+    public function create(HackathonTeamCreateRequest $request, Hackathon $hackathon): Response
     {
         return Inertia::render('Hackathons/Dashboard/Teams/Create', [
             'hackathon' => [
@@ -67,7 +70,7 @@ class HackathonTeamController extends Controller
             ->with('success', 'Team created successfully.');
     }
 
-    public function edit(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
+    public function edit(HackathonTeamEditRequest $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
@@ -112,7 +115,7 @@ class HackathonTeamController extends Controller
             ->with('success', 'Team updated successfully.');
     }
 
-    public function destroy(Request $request, Hackathon $hackathon, HackathonTeam $team): RedirectResponse
+    public function destroy(HackathonTeamDestroyRequest $request, Hackathon $hackathon, HackathonTeam $team): RedirectResponse
     {
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);

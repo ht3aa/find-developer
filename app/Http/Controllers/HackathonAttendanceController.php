@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HackathonAttendanceIndexRequest;
 use App\Http\Requests\UpdateHackathonAttendanceRequest;
 use App\Models\Hackathon;
 use App\Models\HackathonAttendance;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HackathonAttendanceController extends Controller
 {
-    public function index(Request $request, Hackathon $hackathon): Response
+    public function index(HackathonAttendanceIndexRequest $request, Hackathon $hackathon): Response
     {
         $hackathon->loadMissing('subscribers.developer:id,name,slug');
 
@@ -67,9 +67,6 @@ class HackathonAttendanceController extends Controller
         ]);
     }
 
-    /**
-     * Update attendance for a subscriber on a date (super admin only).
-     */
     public function update(UpdateHackathonAttendanceRequest $request, Hackathon $hackathon): RedirectResponse
     {
         $validated = $request->validated();

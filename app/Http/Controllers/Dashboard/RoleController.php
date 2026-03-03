@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\RoleCreateRequest;
+use App\Http\Requests\Dashboard\RoleDestroyRequest;
+use App\Http\Requests\Dashboard\RoleEditRequest;
+use App\Http\Requests\Dashboard\RoleIndexRequest;
 use App\Http\Requests\Dashboard\StoreRoleRequest;
 use App\Http\Requests\Dashboard\UpdateRoleRequest;
 use App\Services\PolicyPermissionService;
@@ -18,10 +22,8 @@ class RoleController extends Controller
         private PolicyPermissionService $policyPermissionService
     ) {}
 
-    public function index(): Response
+    public function index(RoleIndexRequest $request): Response
     {
-        $this->authorize('viewAny', Role::class);
-
         $roles = Role::withCount('users')->orderBy('name')->get();
 
         $user = auth()->user();
@@ -40,10 +42,8 @@ class RoleController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(RoleCreateRequest $request): Response
     {
-        $this->authorize('create', Role::class);
-
         $permissionsByResource = $this->policyPermissionService->getPermissionsGroupedByResource();
 
         return Inertia::render('Roles/Create', [
@@ -53,8 +53,6 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $this->authorize('create', Role::class);
-
         $data = $request->validated();
         $permissionIds = $data['permission_ids'] ?? [];
         unset($data['permission_ids']);
@@ -68,10 +66,8 @@ class RoleController extends Controller
             ->with('success', 'Role created successfully.');
     }
 
-    public function edit(Role $role): Response
+    public function edit(RoleEditRequest $request, Role $role): Response
     {
-        $this->authorize('update', $role);
-
         $role->load('permissions');
         $permissionsByResource = $this->policyPermissionService->getPermissionsGroupedByResource();
 
@@ -88,8 +84,6 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
-        $this->authorize('update', $role);
-
         $data = $request->validated();
         $permissionIds = $data['permission_ids'] ?? [];
         unset($data['permission_ids']);
@@ -103,10 +97,8 @@ class RoleController extends Controller
             ->with('success', 'Role updated successfully.');
     }
 
-    public function destroy(Role $role): RedirectResponse
+    public function destroy(RoleDestroyRequest $request, Role $role): RedirectResponse
     {
-        $this->authorize('delete', $role);
-
         $role->delete();
 
         return redirect()

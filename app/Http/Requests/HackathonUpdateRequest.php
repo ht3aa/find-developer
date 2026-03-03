@@ -6,12 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class HackathonUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        $hackathon = $this->route('hackathon');
+
+        if (! $hackathon instanceof \App\Models\Hackathon) {
+            return false;
+        }
+
+        return $this->user()->can('update', $hackathon);
     }
 
     /**

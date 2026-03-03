@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\HackathonSubscriberStatus;
+use App\Http\Requests\HackathonSubscriberCreateRequest;
+use App\Http\Requests\HackathonSubscriberEditRequest;
+use App\Http\Requests\HackathonSubscriberIndexRequest;
 use App\Http\Requests\StoreHackathonSubscriberRequest;
 use App\Http\Requests\UpdateHackathonSubscriberRequest;
 use App\Models\Developer;
 use App\Models\Hackathon;
 use App\Models\HackathonSubscriber;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HackathonSubscribersController extends Controller
 {
-    public function index(Request $request, Hackathon $hackathon): Response
+    public function index(HackathonSubscriberIndexRequest $request, Hackathon $hackathon): Response
     {
         $subscribers = $hackathon->subscribers()
             ->with('developer:id,name,slug,email')
@@ -46,7 +48,7 @@ class HackathonSubscribersController extends Controller
         ]);
     }
 
-    public function create(Request $request, Hackathon $hackathon): Response
+    public function create(HackathonSubscriberCreateRequest $request, Hackathon $hackathon): Response
     {
         $subscribedDeveloperIds = $hackathon->subscribers()->pluck('developer_id');
         $developers = Developer::query()
@@ -71,9 +73,6 @@ class HackathonSubscribersController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created subscriber (super admin only).
-     */
     public function store(StoreHackathonSubscriberRequest $request, Hackathon $hackathon): RedirectResponse
     {
         $data = $request->validated();
@@ -88,7 +87,7 @@ class HackathonSubscribersController extends Controller
             ->with('success', 'Subscriber added successfully.');
     }
 
-    public function edit(Request $request, Hackathon $hackathon, HackathonSubscriber $subscriber): Response
+    public function edit(HackathonSubscriberEditRequest $request, Hackathon $hackathon, HackathonSubscriber $subscriber): Response
     {
         if ($subscriber->hackathon_id !== $hackathon->id) {
             abort(404);
@@ -122,9 +121,6 @@ class HackathonSubscribersController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified subscriber (super admin only).
-     */
     public function update(UpdateHackathonSubscriberRequest $request, Hackathon $hackathon, HackathonSubscriber $subscriber): RedirectResponse
     {
         if ($subscriber->hackathon_id !== $hackathon->id) {
