@@ -5,18 +5,16 @@ namespace App\Http\Requests\Dashboard;
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
+use App\Models\Developer;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreDeveloperRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Developer::class);
     }
 
     /**
