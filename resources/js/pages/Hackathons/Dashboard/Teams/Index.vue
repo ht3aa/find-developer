@@ -28,6 +28,7 @@ export type TeamEntry = {
     logo: string | null;
     logo_url: string | null;
     members_count: number;
+    votes_count: number;
 };
 
 const props = defineProps<{
@@ -96,6 +97,7 @@ function confirmDelete(team: TeamEntry): void {
                             <TableHead class="w-16">Logo</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Members</TableHead>
+                            <TableHead class="w-24 text-right">Votes</TableHead>
                             <TableHead class="w-12" />
                         </TableRow>
                     </TableHeader>
@@ -121,6 +123,9 @@ function confirmDelete(team: TeamEntry): void {
                                     <Users class="size-4 shrink-0" />
                                     {{ t.members_count }} member{{ t.members_count !== 1 ? 's' : '' }}
                                 </Link>
+                            </TableCell>
+                            <TableCell class="text-right tabular-nums">
+                                {{ t.votes_count }}
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>

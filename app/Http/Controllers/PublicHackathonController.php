@@ -108,18 +108,20 @@ class PublicHackathonController extends Controller
             : false;
         $enableVoting = (bool) $hackathon->enable_voting;
 
-        $hackathon->load(['teams.members.developer:id,name,slug,email', 'teams.votes']);
-
-        $teams = $hackathon->teams()->when($hackathon->current_team_id_to_vote, function ($query) use ($hackathon) {
-            $query->where('id', $hackathon->current_team_id_to_vote);
-        })
+        $teams = $hackathon->teams()
+            ->when($hackathon->current_team_id_to_vote, function ($query) use ($hackathon) {
+                $query->where('id', $hackathon->current_team_id_to_vote);
+            })
+            ->with(['votes', 'members.developer:id,name,slug,email'])
+            ->withCount(['votes as votes_count' => fn ($q) => $q->where('is_voted', true)])
+            ->orderByDesc('votes_count')
             ->orderBy('title')
             ->get()
             ->map(fn (HackathonTeam $team) => [
                 'id' => $team->id,
                 'title' => $team->title,
                 'logo_url' => $team->logo_url,
-                'votes_count' => $team->votes->where('is_voted', true)->count(),
+                'votes_count' => $team->votes_count,
                 'has_voted' => $developerId
                     ? $team->votes
                         ->where('subscriber_developer_id', $developerId)

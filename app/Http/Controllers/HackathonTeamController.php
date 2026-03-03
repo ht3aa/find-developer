@@ -21,14 +21,17 @@ class HackathonTeamController extends Controller
         }
 
         $teams = $hackathon->teams()
+            ->withCount(['votes as votes_count' => fn ($q) => $q->where('is_voted', true)])
+            ->orderByDesc('votes_count')
             ->orderBy('title')
             ->get()
-            ->map(fn(HackathonTeam $t) => [
+            ->map(fn (HackathonTeam $t) => [
                 'id' => $t->id,
                 'title' => $t->title,
                 'logo' => $t->logo,
                 'logo_url' => $t->logo_url,
                 'members_count' => $t->members()->count(),
+                'votes_count' => $t->votes_count,
             ]);
 
         return Inertia::render('Hackathons/Dashboard/Teams/Index', [
