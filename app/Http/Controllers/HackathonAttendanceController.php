@@ -13,15 +13,8 @@ use Inertia\Response;
 
 class HackathonAttendanceController extends Controller
 {
-    /**
-     * Display the attendance table for a hackathon (super admin only).
-     */
     public function index(Request $request, Hackathon $hackathon): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $hackathon->loadMissing('subscribers.developer:id,name,slug');
 
         $start = $hackathon->start_date?->toDateString();
@@ -70,7 +63,7 @@ class HackathonAttendanceController extends Controller
             'dates' => $dates,
             'subscribers' => $subscribers,
             'attendances' => $attendances,
-            'updateUrl' => route('hackathons.attendance.update', $hackathon),
+            'updateUrl' => route('attendance.update', $hackathon),
         ]);
     }
 
@@ -90,7 +83,7 @@ class HackathonAttendanceController extends Controller
             ['attended' => $validated['attended']]
         );
 
-        return redirect()->route('hackathons.attendance.index', $hackathon)
+        return redirect()->route('attendance.index', $hackathon)
             ->with('success', 'Attendance updated.');
     }
 }

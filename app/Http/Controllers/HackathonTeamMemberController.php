@@ -18,10 +18,6 @@ class HackathonTeamMemberController extends Controller
 {
     public function index(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
@@ -59,10 +55,6 @@ class HackathonTeamMemberController extends Controller
 
     public function create(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
@@ -90,7 +82,7 @@ class HackathonTeamMemberController extends Controller
             ],
             'developers' => $developers,
             'positionOptions' => $positionOptions,
-            'storeUrl' => route('hackathons.teams.members.store', [$hackathon, $team]),
+            'storeUrl' => route('teams.members.store', [$hackathon, $team]),
         ]);
     }
 
@@ -104,16 +96,12 @@ class HackathonTeamMemberController extends Controller
         $data['position'] = HackathonMemberPosition::from($data['position']);
         $team->members()->create($data);
 
-        return redirect()->route('hackathons.teams.members.index', [$hackathon, $team])
+        return redirect()->route('teams.members.index', [$hackathon, $team])
             ->with('success', 'Team member added successfully.');
     }
 
     public function edit(Request $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($team->hackathon_id !== $hackathon->id || $member->hackathon_team_id !== $team->id) {
             abort(404);
         }
@@ -154,7 +142,7 @@ class HackathonTeamMemberController extends Controller
             ],
             'developers' => $developers,
             'positionOptions' => $positionOptions,
-            'updateUrl' => route('hackathons.teams.members.update', [$hackathon, $team, $member]),
+            'updateUrl' => route('teams.members.update', [$hackathon, $team, $member]),
         ]);
     }
 
@@ -170,23 +158,19 @@ class HackathonTeamMemberController extends Controller
             'position' => HackathonMemberPosition::from($data['position']),
         ]);
 
-        return redirect()->route('hackathons.teams.members.index', [$hackathon, $team])
+        return redirect()->route('teams.members.index', [$hackathon, $team])
             ->with('success', 'Team member updated successfully.');
     }
 
     public function destroy(Request $request, Hackathon $hackathon, HackathonTeam $team, HackathonTeamMember $member): RedirectResponse
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($member->hackathon_team_id !== $team->id || $team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
 
         $member->delete();
 
-        return redirect()->route('hackathons.teams.members.index', [$hackathon, $team])
+        return redirect()->route('teams.members.index', [$hackathon, $team])
             ->with('success', 'Team member removed successfully.');
     }
 }

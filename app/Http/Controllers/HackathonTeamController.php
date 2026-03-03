@@ -16,10 +16,6 @@ class HackathonTeamController extends Controller
 {
     public function index(Request $request, Hackathon $hackathon): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $teams = $hackathon->teams()
             ->withCount(['votes as votes_count' => fn ($q) => $q->where('is_voted', true)])
             ->orderByDesc('votes_count')
@@ -45,16 +41,12 @@ class HackathonTeamController extends Controller
 
     public function create(Request $request, Hackathon $hackathon): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         return Inertia::render('Hackathons/Dashboard/Teams/Create', [
             'hackathon' => [
                 'id' => $hackathon->id,
                 'title' => $hackathon->title,
             ],
-            'storeUrl' => route('hackathons.teams.store', $hackathon),
+            'storeUrl' => route('teams.store', $hackathon),
         ]);
     }
 
@@ -71,16 +63,12 @@ class HackathonTeamController extends Controller
             $team->update(['logo' => $path]);
         }
 
-        return redirect()->route('hackathons.teams.index', $hackathon)
+        return redirect()->route('teams.index', $hackathon)
             ->with('success', 'Team created successfully.');
     }
 
     public function edit(Request $request, Hackathon $hackathon, HackathonTeam $team): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
@@ -96,7 +84,7 @@ class HackathonTeamController extends Controller
                 'logo' => $team->logo,
                 'logo_url' => $team->logo_url,
             ],
-            'updateUrl' => route('hackathons.teams.update', [$hackathon, $team]),
+            'updateUrl' => route('teams.update', [$hackathon, $team]),
         ]);
     }
 
@@ -120,23 +108,19 @@ class HackathonTeamController extends Controller
             $team->update(['logo' => $path]);
         }
 
-        return redirect()->route('hackathons.teams.index', $hackathon)
+        return redirect()->route('teams.index', $hackathon)
             ->with('success', 'Team updated successfully.');
     }
 
     public function destroy(Request $request, Hackathon $hackathon, HackathonTeam $team): RedirectResponse
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($team->hackathon_id !== $hackathon->id) {
             abort(404);
         }
 
         $team->delete();
 
-        return redirect()->route('hackathons.teams.index', $hackathon)
+        return redirect()->route('teams.index', $hackathon)
             ->with('success', 'Team deleted successfully.');
     }
 }

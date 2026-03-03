@@ -15,15 +15,8 @@ use Inertia\Response;
 
 class HackathonSubscribersController extends Controller
 {
-    /**
-     * Display the subscribers for a hackathon (super admin only).
-     */
     public function index(Request $request, Hackathon $hackathon): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $subscribers = $hackathon->subscribers()
             ->with('developer:id,name,slug,email')
             ->orderBy('created_at')
@@ -53,15 +46,8 @@ class HackathonSubscribersController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new subscriber (super admin only).
-     */
     public function create(Request $request, Hackathon $hackathon): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $subscribedDeveloperIds = $hackathon->subscribers()->pluck('developer_id');
         $developers = Developer::query()
             ->whereNotIn('id', $subscribedDeveloperIds)
@@ -81,7 +67,7 @@ class HackathonSubscribersController extends Controller
             ],
             'developers' => $developers,
             'statusOptions' => $statusOptions,
-            'storeUrl' => route('hackathons.subscribers.store', $hackathon),
+            'storeUrl' => route('subscribers.store', $hackathon),
         ]);
     }
 
@@ -98,19 +84,12 @@ class HackathonSubscribersController extends Controller
             'status' => $data['status'],
         ]);
 
-        return redirect()->route('hackathons.subscribers.index', $hackathon)
+        return redirect()->route('subscribers.index', $hackathon)
             ->with('success', 'Subscriber added successfully.');
     }
 
-    /**
-     * Show the form for editing the specified subscriber (super admin only).
-     */
     public function edit(Request $request, Hackathon $hackathon, HackathonSubscriber $subscriber): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         if ($subscriber->hackathon_id !== $hackathon->id) {
             abort(404);
         }
@@ -139,7 +118,7 @@ class HackathonSubscribersController extends Controller
                 'status' => $subscriber->status->value,
             ],
             'statusOptions' => $statusOptions,
-            'updateUrl' => route('hackathons.subscribers.update', [$hackathon, $subscriber]),
+            'updateUrl' => route('subscribers.update', [$hackathon, $subscriber]),
         ]);
     }
 
@@ -158,7 +137,7 @@ class HackathonSubscribersController extends Controller
             'status' => HackathonSubscriberStatus::from($data['status']),
         ]);
 
-        return redirect()->route('hackathons.subscribers.index', $hackathon)
+        return redirect()->route('subscribers.index', $hackathon)
             ->with('success', 'Subscriber updated successfully.');
     }
 }

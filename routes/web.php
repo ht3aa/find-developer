@@ -65,29 +65,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
             Route::resource('users', UserController::class)->except(['show']);
+
+
+            Route::prefix('hackathons/{hackathon}')->group(function () {
+                Route::resource('teams', HackathonTeamController::class)->except(['show']);
+                Route::resource('teams.members', HackathonTeamMemberController::class)->except(['show']);
+                Route::resource('subscribers', HackathonSubscribersController::class)->except(['show']);
+                Route::get('attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
+                Route::patch('attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
+            });
         });
 
         Route::resource('badges', BadgeController::class)->except(['show']);
-        Route::get('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
-        Route::patch('hackathons/{hackathon}/attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
-        Route::get('hackathons/{hackathon}/subscribers/create', [HackathonSubscribersController::class, 'create'])->name('hackathons.subscribers.create');
-        Route::post('hackathons/{hackathon}/subscribers', [HackathonSubscribersController::class, 'store'])->name('hackathons.subscribers.store');
-        Route::get('hackathons/{hackathon}/subscribers/{subscriber}/edit', [HackathonSubscribersController::class, 'edit'])->name('hackathons.subscribers.edit');
-        Route::put('hackathons/{hackathon}/subscribers/{subscriber}', [HackathonSubscribersController::class, 'update'])->name('hackathons.subscribers.update');
-        Route::get('hackathons/{hackathon}/subscribers', [HackathonSubscribersController::class, 'index'])->name('hackathons.subscribers.index');
-        Route::get('hackathons/{hackathon}/teams', [HackathonTeamController::class, 'index'])->name('hackathons.teams.index');
-        Route::get('hackathons/{hackathon}/teams/create', [HackathonTeamController::class, 'create'])->name('hackathons.teams.create');
-        Route::post('hackathons/{hackathon}/teams', [HackathonTeamController::class, 'store'])->name('hackathons.teams.store');
-        Route::get('hackathons/{hackathon}/teams/{team}/edit', [HackathonTeamController::class, 'edit'])->name('hackathons.teams.edit');
-        Route::put('hackathons/{hackathon}/teams/{team}', [HackathonTeamController::class, 'update'])->name('hackathons.teams.update');
-        Route::delete('hackathons/{hackathon}/teams/{team}', [HackathonTeamController::class, 'destroy'])->name('hackathons.teams.destroy');
-        Route::get('hackathons/{hackathon}/teams/{team}/members', [HackathonTeamMemberController::class, 'index'])->name('hackathons.teams.members.index');
-        Route::get('hackathons/{hackathon}/teams/{team}/members/create', [HackathonTeamMemberController::class, 'create'])->name('hackathons.teams.members.create');
-        Route::post('hackathons/{hackathon}/teams/{team}/members', [HackathonTeamMemberController::class, 'store'])->name('hackathons.teams.members.store');
-        Route::get('hackathons/{hackathon}/teams/{team}/members/{member}/edit', [HackathonTeamMemberController::class, 'edit'])->name('hackathons.teams.members.edit');
-        Route::put('hackathons/{hackathon}/teams/{team}/members/{member}', [HackathonTeamMemberController::class, 'update'])->name('hackathons.teams.members.update');
-        Route::delete('hackathons/{hackathon}/teams/{team}/members/{member}', [HackathonTeamMemberController::class, 'destroy'])->name('hackathons.teams.members.destroy');
+
         Route::resource('hackathons', HackathonController::class)->except(['show']);
+
+
         Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
