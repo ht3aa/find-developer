@@ -8,21 +8,16 @@ use App\Http\Requests\Dashboard\BulkEmailNewsletterRequest;
 use App\Models\Newsletter;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class NewsletterController extends Controller
 {
     /**
-     * Display a listing of newsletter subscribers (super admin only).
+     * Display a listing of newsletter subscribers.
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $subscribers = Newsletter::query()
             ->orderByDesc('created_at')
             ->paginate(20)

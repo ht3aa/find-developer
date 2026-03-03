@@ -74,6 +74,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::get('attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
                 Route::patch('attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
             });
+
+            Route::get('newsletter', [DashboardNewsletterController::class, 'index'])->name('dashboard.newsletter.index');
+            Route::post('newsletter/bulk-email', [DashboardNewsletterController::class, 'bulkEmail'])->name('dashboard.newsletter.bulk-email');
+            Route::post('newsletter/bulk-email-all', [DashboardNewsletterController::class, 'bulkEmailAll'])->name('dashboard.newsletter.bulk-email-all');
+            Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
+            Route::get('activity-log/{id}/properties', [ActivityLogController::class, 'properties'])->name('dashboard.activity-log.properties')->whereNumber('id');
+            Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');
         });
 
         Route::resource('badges', BadgeController::class)->except(['show']);
@@ -95,13 +102,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('developer-projects', DeveloperProjectController::class)->except(['show']);
         Route::resource('developer-blogs', DeveloperBlogController::class)->except(['show']);
         Route::resource('developer-recommendations', DashboardDeveloperRecommendationController::class)->only(['index', 'edit', 'update', 'destroy']);
-
-        Route::get('newsletter', [DashboardNewsletterController::class, 'index'])->name('dashboard.newsletter.index');
-        Route::post('newsletter/bulk-email', [DashboardNewsletterController::class, 'bulkEmail'])->name('dashboard.newsletter.bulk-email');
-        Route::post('newsletter/bulk-email-all', [DashboardNewsletterController::class, 'bulkEmailAll'])->name('dashboard.newsletter.bulk-email-all');
-        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
-        Route::get('activity-log/{id}/properties', [ActivityLogController::class, 'properties'])->name('dashboard.activity-log.properties')->whereNumber('id');
-        Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');
     });
 });
 
