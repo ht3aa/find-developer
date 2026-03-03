@@ -77,7 +77,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::resource('badges', BadgeController::class)->except(['show']);
-
         Route::resource('hackathons', HackathonController::class)->except(['show']);
 
 
