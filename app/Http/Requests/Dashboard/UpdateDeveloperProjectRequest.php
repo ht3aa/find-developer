@@ -2,16 +2,20 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\DeveloperProject;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDeveloperProjectRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return $this->user()->developer !== null;
+        $developerProject = $this->route('developer_project');
+
+        if (! $developerProject instanceof DeveloperProject) {
+            return false;
+        }
+
+        return $this->user()->can('update', $developerProject);
     }
 
     /**

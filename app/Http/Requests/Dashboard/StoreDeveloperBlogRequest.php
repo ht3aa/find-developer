@@ -3,18 +3,15 @@
 namespace App\Http\Requests\Dashboard;
 
 use App\Enums\BlogStatus;
+use App\Models\DeveloperBlog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreDeveloperBlogRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return $this->user()->developer !== null
-            || $this->user()->isSuperAdmin();
+        return $this->user()->can('create', DeveloperBlog::class);
     }
 
     /**

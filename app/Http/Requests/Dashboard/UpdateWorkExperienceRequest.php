@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\DeveloperCompany;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,12 +25,15 @@ class UpdateWorkExperienceRequest extends FormRequest
         }
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return $this->user()->developer !== null;
+        $workExperience = $this->route('work_experience');
+
+        if (! $workExperience instanceof DeveloperCompany) {
+            return false;
+        }
+
+        return $this->user()->can('update', $workExperience);
     }
 
     /**
