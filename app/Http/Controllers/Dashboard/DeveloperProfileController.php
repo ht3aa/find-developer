@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\UpdateDeveloperProfileRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Badge;
@@ -50,7 +51,7 @@ class DeveloperProfileController extends Controller
     /**
      * Update the authenticated user's developer profile.
      */
-    public function update(UpdateDeveloperRequest $request): RedirectResponse
+    public function update(UpdateDeveloperProfileRequest $request): RedirectResponse
     {
         $developer = auth()->user()->developer;
 
