@@ -1,7 +1,7 @@
-import type { Component } from 'vue';
 import * as outlineIcons from '@heroicons/vue/24/outline';
 import * as solidIcons from '@heroicons/vue/24/solid';
 import * as lucideIcons from 'lucide-vue-next';
+import type { Component } from 'vue';
 
 /**
  * Icon format: "prefix:icon-name"

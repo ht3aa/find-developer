@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core';
+import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useId } from 'vue';
+import { Badge } from '@/components/ui/badge';
 import {
     Combobox,
     ComboboxAnchor,
@@ -12,11 +17,6 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from '@/components/ui/combobox';
-import { Badge } from '@/components/ui/badge';
-import { useDebounceFn } from '@vueuse/core';
-import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useId } from 'vue';
 import { cn } from '@/lib/utils';
 
 const instanceId = useId();

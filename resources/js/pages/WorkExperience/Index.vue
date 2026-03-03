@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Briefcase, Plus } from 'lucide-vue-next';
+import { computed } from 'vue';
 import WorkExperienceController from '@/actions/App/Http/Controllers/Dashboard/WorkExperienceController';
+import { Button } from '@/components/ui/button';
 import WorkExperienceDataTable from '@/components/work-experience/WorkExperienceDataTable.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Button } from '@/components/ui/button';
-import { index as workExperienceIndex, create as workExperienceCreate } from '@/routes/work-experience';
 import { dashboard } from '@/routes';
-import type { WorkExperience } from '@/types/work-experience';
+import { index as workExperienceIndex, create as workExperienceCreate } from '@/routes/work-experience';
 import type { BreadcrumbItem } from '@/types';
+import type { WorkExperience } from '@/types/work-experience';
 
 type Props = {
     workExperiences: WorkExperience[];

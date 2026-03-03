@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed, ref, watch } from 'vue';
 import { Pencil } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -10,8 +10,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as hackathonsIndex } from '@/routes/hackathons';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{

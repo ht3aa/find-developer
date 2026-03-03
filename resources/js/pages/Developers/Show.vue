@@ -16,10 +16,10 @@ import {
     Video,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
-import SeoHead from '@/components/SeoHead.vue';
+import BadgeIcon from '@/components/BadgeIcon.vue';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
-import BadgeIcon from '@/components/BadgeIcon.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {

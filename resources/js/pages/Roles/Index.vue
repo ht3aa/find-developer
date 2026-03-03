@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Plus, Shield } from 'lucide-vue-next';
+import { computed } from 'vue';
 import RoleController from '@/actions/App/Http/Controllers/Dashboard/RoleController';
 import RolesDataTable from '@/components/roles/RolesDataTable.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
-import { index as rolesIndex, create as rolesCreate } from '@/routes/roles';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { Role } from '@/types/role';
+import { index as rolesIndex, create as rolesCreate } from '@/routes/roles';
 import type { BreadcrumbItem } from '@/types';
+import type { Role } from '@/types/role';
 
 type Props = {
     roles: Role[];

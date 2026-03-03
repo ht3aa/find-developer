@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
 import { Placeholder } from '@tiptap/extension-placeholder';
-import { watch } from 'vue';
+import StarterKit from '@tiptap/starter-kit';
+import { useEditor, EditorContent } from '@tiptap/vue-3';
 import { Bold, Italic, List, ListOrdered, Quote, Heading2, Code } from 'lucide-vue-next';
+import { watch } from 'vue';
 import { Button } from '@/components/ui/button';
 
 const props = withDefaults(

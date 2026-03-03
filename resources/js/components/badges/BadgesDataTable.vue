@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { usePage } from '@inertiajs/vue3';
 import {
     FlexRender,
     getCoreRowModel,
     useVueTable,
 } from '@tanstack/vue-table';
+import { computed } from 'vue';
 import {
     Table,
     TableBody,
@@ -12,11 +14,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { getColumns } from './columns';
 import type { AuthCan } from '@/types/auth';
 import type { Badge } from '@/types/badge';
+import { getColumns } from './columns';
 
 const props = defineProps<{
     data: Badge[];

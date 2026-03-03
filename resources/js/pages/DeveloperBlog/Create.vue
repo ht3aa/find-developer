@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { FileText } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import DeveloperBlogController from '@/actions/App/Http/Controllers/Dashboard/DeveloperBlogController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
+import RichTextEditor from '@/components/RichTextEditor.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import RichTextEditor from '@/components/RichTextEditor.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
 import {
     index as developerBlogsIndex,
     create as developerBlogsCreate,
 } from '@/routes/developer-blogs';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type StatusOption = { value: string; label: string };

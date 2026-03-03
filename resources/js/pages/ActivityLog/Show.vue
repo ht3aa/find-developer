@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { ArrowLeft, ClipboardList, User, Box, Calendar, Tag } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed } from 'vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { ActivityLogDetail } from '@/types/activity-log';
+import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import type { BreadcrumbItem } from '@/types';
+import type { ActivityLogDetail } from '@/types/activity-log';
 
 type Props = {
     activity: ActivityLogDetail;

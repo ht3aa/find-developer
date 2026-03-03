@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { MoreHorizontal, Pencil, Plus, Trash2, Trophy, Users } from 'lucide-vue-next';
+import { computed } from 'vue';
 import HackathonController from '@/actions/App/Http/Controllers/HackathonController';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -13,14 +18,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 export type DashboardHackathonEntry = {

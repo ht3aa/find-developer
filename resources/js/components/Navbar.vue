@@ -16,10 +16,10 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { useAppearance } from '@/composables/useAppearance';
+import { dashboard, home, login, logout, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
-import { dashboard, home, login, logout, register } from '@/routes';
-import { useAppearance } from '@/composables/useAppearance';
 
 const page = usePage();
 const auth = computed(() => page.props.auth as { user?: { name: string } | null });

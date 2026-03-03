@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as hackathonsIndex } from '@/routes/hackathons';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 type DeveloperOption = { id: number; name: string };

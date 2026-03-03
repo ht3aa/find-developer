@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { Users } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import DeveloperController from '@/actions/App/Http/Controllers/Dashboard/DeveloperController';
 import DeveloperFormFields from '@/components/developers/DeveloperFormFields.vue';
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { create as developersCreate, index as developersIndex } from '@/routes/developers';
 import { dashboard } from '@/routes';
+import { create as developersCreate, index as developersIndex } from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 
 type UserOption = { id: number; name: string; email: string };

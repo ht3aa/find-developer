@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
-import { computed, ref, watch } from 'vue';
 import { Box, ClipboardList, Copy, ExternalLink, Loader2, Search } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed, ref, watch } from 'vue';
+import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -20,11 +20,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import Pagination from '@/components/Pagination.vue';
-import { index as activityLogIndex, show as activityLogShow } from '@/routes/dashboard/activity-log';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { ActivityLogEntry } from '@/types/activity-log';
+import { index as activityLogIndex, show as activityLogShow } from '@/routes/dashboard/activity-log';
 import type { BreadcrumbItem } from '@/types';
+import type { ActivityLogEntry } from '@/types/activity-log';
 
 type PaginationLink = {
     url: string | null;

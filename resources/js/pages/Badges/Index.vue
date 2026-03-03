@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, Plus } from 'lucide-vue-next';
+import { computed } from 'vue';
 import BadgeController from '@/actions/App/Http/Controllers/BadgeController';
 import BadgesDataTable from '@/components/badges/BadgesDataTable.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
-import { index as badgesIndex, create } from '@/routes/badges';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { Badge as BadgeType } from '@/types/badge';
+import { index as badgesIndex, create } from '@/routes/badges';
 import type { BreadcrumbItem } from '@/types';
+import type { Badge as BadgeType } from '@/types/badge';
 
 type Props = {
     badges: BadgeType[];

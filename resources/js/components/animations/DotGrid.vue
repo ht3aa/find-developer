@@ -7,9 +7,9 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, computed, watch, nextTick, useTemplateRef } from 'vue';
   import { gsap } from 'gsap';
   import { InertiaPlugin } from 'gsap/InertiaPlugin';
+  import { ref, onMounted, onUnmounted, computed, watch, nextTick, useTemplateRef } from 'vue';
   
   gsap.registerPlugin(InertiaPlugin);
   

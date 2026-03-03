@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { Briefcase } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import WorkExperienceController from '@/actions/App/Http/Controllers/Dashboard/WorkExperienceController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -12,11 +12,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
 import {
     index as workExperienceIndex,
     create as workExperienceCreate,
 } from '@/routes/work-experience';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type JobTitleOption = { id: number; name: string };

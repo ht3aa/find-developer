@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
-import { computed, ref, watch } from 'vue';
 import { ChevronDown, Mail, Plus, Search, Users } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 import DevelopersDataTable from '@/components/developers/DevelopersDataTable.vue';
 import Pagination from '@/components/Pagination.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
     Dialog,
     DialogContent,
@@ -21,12 +14,19 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { create as developersCreate, index as developersIndex } from '@/routes/developers';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { DeveloperTableRow } from '@/types/developer-table';
+import { create as developersCreate, index as developersIndex } from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
+import type { DeveloperTableRow } from '@/types/developer-table';
 
 type PaginationLink = {
     url: string | null;

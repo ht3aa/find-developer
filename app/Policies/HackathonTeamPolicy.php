@@ -7,67 +7,47 @@ use App\Models\User;
 
 class HackathonTeamPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('ViewAny:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, HackathonTeam $hackathonTeam): bool
     {
-        return false;
+        return $user->can('View:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('Create:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, HackathonTeam $hackathonTeam): bool
     {
-        return false;
+        return $user->can('Update:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, HackathonTeam $hackathonTeam): bool
     {
-        return false;
+        return $user->can('Delete:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, HackathonTeam $hackathonTeam): bool
     {
-        return false;
+        return $user->can('Restore:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, HackathonTeam $hackathonTeam): bool
     {
-        return false;
+        return $user->can('ForceDelete:HackathonTeams') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can vote for a team.
-     */
     public function vote(User $user, HackathonTeam $team): bool
     {
+        if (! $user->can('Vote:HackathonTeams') && ! $user->isSuperAdmin()) {
+            return false;
+        }
+
         $developer = $user->developer;
 
         if (! $developer) {

@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
 import { Trophy } from 'lucide-vue-next';
+import { ref } from 'vue';
 import HackathonController from '@/actions/App/Http/Controllers/HackathonController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as hackathonsIndex, edit as hackathonsEdit } from '@/routes/hackathons';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex, edit as hackathonsEdit } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 export type DashboardHackathonEdit = {

@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { ChevronDown, Mail } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed, ref } from 'vue';
+import NewsletterDataTable from '@/components/newsletter/NewsletterDataTable.vue';
+import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
     Dialog,
     DialogContent,
@@ -18,12 +13,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import NewsletterDataTable from '@/components/newsletter/NewsletterDataTable.vue';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Pagination from '@/components/Pagination.vue';
-import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import type { BreadcrumbItem } from '@/types';
 
 type Subscriber = {

@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as badgesIndex, create as badgesCreate } from '@/routes/badges';
 import { dashboard } from '@/routes';
+import { index as badgesIndex, create as badgesCreate } from '@/routes/badges';
 import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [

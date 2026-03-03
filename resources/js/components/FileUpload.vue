@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { FileUp, X } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
-import { Label } from '@/components/ui/label';
 import InputError from '@/components/InputError.vue';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 const props = withDefaults(

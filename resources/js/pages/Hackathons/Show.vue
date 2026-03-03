@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Form, Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, CheckCircle2, ChevronDown, UserPlus } from 'lucide-vue-next';
+import { computed } from 'vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
 import Footer from '@/components/Footer.vue';
 import InputError from '@/components/InputError.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
-import { login } from '@/routes';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { login } from '@/routes';
 
 export type PublicHackathonDetail = {
     id: number;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
 import { Chart } from 'chart.js/auto';
+import { onMounted, ref, watch } from 'vue';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 type DataPoint = { label: string; count: number };

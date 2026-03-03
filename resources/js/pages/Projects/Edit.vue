@@ -11,11 +11,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
 import {
     index as developerProjectsIndex,
     edit as developerProjectsEdit,
 } from '@/routes/developer-projects';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type ProjectEdit = {

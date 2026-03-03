@@ -2,9 +2,9 @@
 import { Link } from '@inertiajs/vue3';
 import { Github, Twitter } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
+import { home, login, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
-import { home, login, register } from '@/routes';
 
 const supportEmail = 'ht3aa2001@gmail.com';
 

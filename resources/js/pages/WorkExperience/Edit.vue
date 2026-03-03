@@ -12,11 +12,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
 import {
     index as workExperienceIndex,
     edit as workExperienceEdit,
 } from '@/routes/work-experience';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type JobTitleOption = { id: number; name: string };

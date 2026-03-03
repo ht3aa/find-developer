@@ -8,6 +8,8 @@ import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -16,16 +18,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { dashboard } from '@/routes';
-import type { Developer } from '@/types/developer';
+import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import type { BreadcrumbItem } from '@/types';
+import type { Developer } from '@/types/developer';
 
 const availabilityTypeOptions = [
     { value: 'full-time', label: 'Full-time' },

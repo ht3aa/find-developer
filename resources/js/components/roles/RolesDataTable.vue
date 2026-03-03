@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { usePage } from '@inertiajs/vue3';
 import {
     FlexRender,
     getCoreRowModel,
     useVueTable,
 } from '@tanstack/vue-table';
-import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import {
     Table,
@@ -14,9 +14,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { getColumns } from './columns';
 import type { AuthCan } from '@/types/auth';
 import type { Role } from '@/types/role';
+import { getColumns } from './columns';
 
 const props = defineProps<{
     data: Role[];

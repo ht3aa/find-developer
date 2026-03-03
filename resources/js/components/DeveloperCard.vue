@@ -13,6 +13,9 @@ import {
     User,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import BadgeIcon from '@/components/BadgeIcon.vue';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -25,9 +28,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import BadgeIcon from '@/components/BadgeIcon.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import type { Developer } from '@/types/developer';
 
 const props = withDefaults(

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
-import { computed, ref, watch } from 'vue';
 import { Plus, Search, UserCog } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 import UserController from '@/actions/App/Http/Controllers/Dashboard/UserController';
 import Pagination from '@/components/Pagination.vue';
-import UsersDataTable from '@/components/users/UsersDataTable.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { create as usersCreate, index as usersIndex } from '@/routes/users';
+import UsersDataTable from '@/components/users/UsersDataTable.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { UserTableRow } from '@/types/user';
+import { create as usersCreate, index as usersIndex } from '@/routes/users';
 import type { BreadcrumbItem } from '@/types';
+import type { UserTableRow } from '@/types/user';
 
 type PaginationLink = {
     url: string | null;

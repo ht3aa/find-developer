@@ -15,7 +15,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import type { Developer } from '@/types/developer';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
@@ -24,6 +23,7 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
+import type { Developer } from '@/types/developer';
 import { availabilityTypeOptions, hasUrlsOptions } from '@/utils/developerEnums';
 
 const API_BASE = '/api/developers';

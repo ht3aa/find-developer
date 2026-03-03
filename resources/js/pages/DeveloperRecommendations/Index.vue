@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
 import { ExternalLink, MoreHorizontal, Pencil, ThumbsUp, Trash2 } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 import DeveloperRecommendationController from '@/actions/App/Http/Controllers/Dashboard/DeveloperRecommendationController';
-import AppLayout from '@/layouts/AppLayout.vue';
+import Pagination from '@/components/Pagination.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -19,12 +20,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import Pagination from '@/components/Pagination.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { dashboard } from '@/routes';
 import {
     index as developerRecommendationsIndex,
 } from '@/routes/developer-recommendations';
-import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 type RecommendationRow = {

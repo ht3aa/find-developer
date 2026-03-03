@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { Shield } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import RoleController from '@/actions/App/Http/Controllers/Dashboard/RoleController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as rolesIndex, edit as rolesEdit } from '@/routes/roles';
 import { dashboard } from '@/routes';
+import { index as rolesIndex, edit as rolesEdit } from '@/routes/roles';
 import type { BreadcrumbItem } from '@/types';
 
 type PermissionOption = {

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { FolderKanban, Plus } from 'lucide-vue-next';
+import { computed } from 'vue';
 import DeveloperProjectController from '@/actions/App/Http/Controllers/Dashboard/DeveloperProjectController';
 import DeveloperProjectDataTable from '@/components/developer-project/DeveloperProjectDataTable.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
-import { index as developerProjectsIndex, create as developerProjectsCreate } from '@/routes/developer-projects';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { DeveloperProject } from '@/types/developer-project';
+import { index as developerProjectsIndex, create as developerProjectsCreate } from '@/routes/developer-projects';
 import type { BreadcrumbItem } from '@/types';
+import type { DeveloperProject } from '@/types/developer-project';
 
 type Props = {
     projects: DeveloperProject[];

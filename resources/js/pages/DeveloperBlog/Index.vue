@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { ExternalLink, FileText, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { computed } from 'vue';
 import DeveloperBlogController from '@/actions/App/Http/Controllers/Dashboard/DeveloperBlogController';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -19,11 +19,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { index as developerBlogsIndex, create as developerBlogsCreate } from '@/routes/developer-blogs';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { DeveloperBlogEntry } from '@/types/developer-blog';
+import { index as developerBlogsIndex, create as developerBlogsCreate } from '@/routes/developer-blogs';
 import type { BreadcrumbItem } from '@/types';
+import type { DeveloperBlogEntry } from '@/types/developer-blog';
 
 type Props = {
     blogs: DeveloperBlogEntry[];

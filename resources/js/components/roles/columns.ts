@@ -1,7 +1,7 @@
-import type { ColumnDef } from '@tanstack/vue-table';
-import { h } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import type { ColumnDef } from '@tanstack/vue-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-vue-next';
+import { h } from 'vue';
 import RoleController from '@/actions/App/Http/Controllers/Dashboard/RoleController';
 import { Button } from '@/components/ui/button';
 import {

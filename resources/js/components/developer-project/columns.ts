@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
-import { Badge } from '@/components/ui/badge';
 import DeveloperProjectActionsCell from '@/components/developer-project/DeveloperProjectActionsCell.vue';
+import { Badge } from '@/components/ui/badge';
 import type { AuthCan } from '@/types/auth';
 import type { DeveloperProject } from '@/types/developer-project';
 

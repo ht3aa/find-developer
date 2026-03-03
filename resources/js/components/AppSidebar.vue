@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Mail, Shield, ThumbsUp, Trophy, User, UserCog, Users } from 'lucide-vue-next';
+import { computed } from 'vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -16,16 +16,16 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
+import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
-import { index as developersIndex } from '@/routes/developers';
-import rolesRoutes from '@/routes/roles';
-import usersRoutes from '@/routes/users';
+import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
-import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
-import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
+import { index as developersIndex } from '@/routes/developers';
 import { index as hackathonsIndex } from '@/routes/hackathons';
+import rolesRoutes from '@/routes/roles';
+import usersRoutes from '@/routes/users';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';

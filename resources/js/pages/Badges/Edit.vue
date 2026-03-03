@@ -11,10 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as badgesIndex, edit as badgesEdit } from '@/routes/badges';
 import { dashboard } from '@/routes';
-import type { Badge } from '@/types/badge';
+import { index as badgesIndex, edit as badgesEdit } from '@/routes/badges';
 import type { BreadcrumbItem } from '@/types';
+import type { Badge } from '@/types/badge';
 
 type Props = {
     badge: Badge;

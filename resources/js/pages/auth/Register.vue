@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { Info } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import DeveloperFormFields from '@/components/developers/DeveloperFormFields.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,6 @@ import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { login, register } from '@/routes';
-import { computed, ref } from 'vue';
 
 type JobTitleOption = { id: number; name: string };
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, UserCog, Users } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed } from 'vue';
 import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import { index as developersIndex } from '@/routes/developers';

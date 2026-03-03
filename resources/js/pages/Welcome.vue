@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Bug, ChevronUp } from 'lucide-vue-next';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';

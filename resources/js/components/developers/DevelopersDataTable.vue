@@ -1,20 +1,12 @@
 <script setup lang="ts">
+import { router, usePage } from '@inertiajs/vue3';
 import {
     FlexRender,
     getCoreRowModel,
     useVueTable,
 } from '@tanstack/vue-table';
-import { router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { Mail } from 'lucide-vue-next';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import { computed, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -26,9 +18,17 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getColumns } from './columns';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { AuthCan } from '@/types/auth';
 import type { DeveloperTableRow } from '@/types/developer-table';
+import { getColumns } from './columns';
 
 const props = withDefaults(
     defineProps<{

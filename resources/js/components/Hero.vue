@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { ArrowDown, Loader2 } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+import DotGrid from '@/components/animations/DotGrid.vue';
+import Duck from '@/components/Duck.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Duck from '@/components/Duck.vue';
-import DotGrid from '@/components/animations/DotGrid.vue';
 
 const props = withDefaults(
     defineProps<{

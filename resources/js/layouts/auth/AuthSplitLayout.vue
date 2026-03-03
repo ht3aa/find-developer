@@ -26,7 +26,7 @@ defineProps<{
                 class="flex min-h-0 flex-1 flex-col p-8 pt-16"
             >
                 <iframe
-                    src="https://www.youtube.com/embed/qjpk3l45hfo?autoplay=1&mute=0&loop=1&playlist=qjpk3l45hfo"
+                    src="https://www.youtube.com/embed/qjpk3l45hfo?autoplay=1&mute=1&loop=1&playlist=qjpk3l45hfo"
                     title="Video"
                     class="min-h-0 flex-1 w-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

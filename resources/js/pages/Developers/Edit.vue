@@ -8,10 +8,10 @@ import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { edit as developersEdit, index as developersIndex } from '@/routes/developers';
 import { dashboard } from '@/routes';
-import type { Developer } from '@/types/developer';
+import { edit as developersEdit, index as developersIndex } from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
+import type { Developer } from '@/types/developer';
 
 type JobTitleOption = { id: number; name: string };
 type UserOption = { id: number; name: string; email: string };

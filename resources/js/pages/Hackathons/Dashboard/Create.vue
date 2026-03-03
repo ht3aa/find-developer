@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 type BadgeOption = { id: number; name: string };

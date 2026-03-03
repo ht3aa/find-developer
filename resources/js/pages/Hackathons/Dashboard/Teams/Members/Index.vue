@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Pencil, Plus, Trash2, Users } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed } from 'vue';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -11,10 +12,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { index as hackathonsIndex } from '@/routes/hackathons';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { index as hackathonsIndex } from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 export type MemberEntry = {
