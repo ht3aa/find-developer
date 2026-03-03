@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateDeveloperRequest;
+use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Badge;
 use App\Models\Developer;

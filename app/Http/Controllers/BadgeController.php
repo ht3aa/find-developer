@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BadgeStoreRequest;
-use App\Http\Requests\BadgeUpdateRequest;
+use App\Http\Requests\Dashboard\BadgeStoreRequest;
+use App\Http\Requests\Dashboard\BadgeUpdateRequest;
 use App\Models\Badge;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BadgeController extends Controller
 {
