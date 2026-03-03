@@ -2,17 +2,21 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Badge;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class BadgeUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        $badge = $this->route('badge');
+
+        if (! $badge instanceof Badge) {
+            return false;
+        }
+
+        return $this->user()->can('update', $badge);
     }
 
     /**

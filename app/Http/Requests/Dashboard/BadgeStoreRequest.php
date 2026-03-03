@@ -2,16 +2,14 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Badge;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BadgeStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Badge::class);
     }
 
     /**

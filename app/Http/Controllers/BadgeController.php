@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Dashboard\BadgeCreateRequest;
+use App\Http\Requests\Dashboard\BadgeDestroyRequest;
+use App\Http\Requests\Dashboard\BadgeEditRequest;
+use App\Http\Requests\Dashboard\BadgeIndexRequest;
 use App\Http\Requests\Dashboard\BadgeStoreRequest;
 use App\Http\Requests\Dashboard\BadgeUpdateRequest;
 use App\Models\Badge;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -17,10 +20,8 @@ class BadgeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): Response
+    public function index(BadgeIndexRequest $request): Response
     {
-        $this->authorize('viewAny', Badge::class);
-
         $badges = Badge::query()
             ->withCount('developers')
             ->orderBy('name')
@@ -40,10 +41,8 @@ class BadgeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(BadgeCreateRequest $request): Response
     {
-        $this->authorize('create', Badge::class);
-
         return Inertia::render('Badges/Create');
     }
 
@@ -52,7 +51,6 @@ class BadgeController extends Controller
      */
     public function store(BadgeStoreRequest $request): RedirectResponse
     {
-        $this->authorize('create', Badge::class);
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
 
@@ -71,10 +69,8 @@ class BadgeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Badge $badge): Response
+    public function edit(BadgeEditRequest $request, Badge $badge): Response
     {
-        $this->authorize('update', $badge);
-
         return Inertia::render('Badges/Edit', [
             'badge' => $badge,
         ]);
@@ -85,7 +81,6 @@ class BadgeController extends Controller
      */
     public function update(BadgeUpdateRequest $request, Badge $badge): RedirectResponse
     {
-        $this->authorize('update', $badge);
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
 
@@ -104,9 +99,8 @@ class BadgeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Badge $badge): RedirectResponse
+    public function destroy(BadgeDestroyRequest $request, Badge $badge): RedirectResponse
     {
-        $this->authorize('delete', $badge);
         $badge->delete();
 
         return redirect()->route('badges.index')
