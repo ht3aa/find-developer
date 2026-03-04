@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:public/build/assets/search-Dpa-olrm.js
-import{c}from"./createLucideIcon-DyY1R6qr.js";const r=c("SearchIcon",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["path",{d:"m21 21-4.3-4.3",key:"1qie3q"}]]);export{r as S};
-========
-import{c}from"./createLucideIcon-pj3_qLB0.js";const r=c("SearchIcon",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["path",{d:"m21 21-4.3-4.3",key:"1qie3q"}]]);export{r as S};
->>>>>>>> main-new-design:public/build/assets/search-C9ty8Zor.js
