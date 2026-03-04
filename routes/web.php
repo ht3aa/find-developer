@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', function () {
-    $sitemapUrl = rtrim(config('app.url'), '/') . '/sitemap.xml';
+    $sitemapUrl = rtrim(config('app.url'), '/').'/sitemap.xml';
 
     return response("User-agent: *\nAllow: /\n\nSitemap: {$sitemapUrl}\n", 200, [
         'Content-Type' => 'text/plain',
@@ -49,6 +49,8 @@ Route::get('hackathons', [PublicHackathonController::class, 'index'])->name('hac
 Route::get('hackathons/{hackathon:slug}', [PublicHackathonController::class, 'show'])->name('hackathons.show');
 Route::get('hackathons/{hackathon:slug}/teams', [PublicHackathonController::class, 'teams'])
     ->name('hackathons.teams.public');
+Route::get('hackathons/{hackathon:slug}/subscribers', [PublicHackathonController::class, 'subscribers'])
+    ->name('hackathons.subscribers.public');
 Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
 Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -65,7 +67,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
             Route::resource('users', UserController::class)->except(['show']);
-
 
             Route::prefix('hackathons/{hackathon}')->group(function () {
                 Route::resource('teams', HackathonTeamController::class)->except(['show']);
@@ -86,7 +87,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('badges', BadgeController::class)->except(['show']);
         Route::resource('hackathons', HackathonController::class)->except(['show']);
 
-
         Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
         Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');
         Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
@@ -105,4 +105,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

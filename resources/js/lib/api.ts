@@ -9,6 +9,8 @@ export type DeveloperFilters = {
     isRecommended?: string;
     yearsMin?: string;
     yearsMax?: string;
+    /** Comma-separated developer IDs to restrict results. */
+    ids?: number[];
 };
 
 function toFilterValue(val: string | string[] | null | undefined): string {
@@ -50,6 +52,9 @@ export function buildDevelopersApiUrl(
         params.set('filter[is_recommended]', filters.isRecommended);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    if (filters.ids?.length) {
+        params.set('filter[ids]', filters.ids.join(','));
+    }
     const q = params.toString();
     return q ? `${base}?${q}` : base;
 }
@@ -61,6 +66,14 @@ export function parseFiltersFromUrl(): DeveloperFilters {
         const m = k.match(/^filter\[(.+)\]$/);
         if (m) filter[m[1]] = v;
     }
+    const idsRaw = filter.ids;
+    const ids = idsRaw
+        ? idsRaw
+              .split(',')
+              .map((s) => parseInt(s.trim(), 10))
+              .filter((n) => !Number.isNaN(n))
+        : undefined;
+
     return {
         search: filter.search ?? '',
         jobTitle: parseFilterArray(filter['job_title.name']),
@@ -72,6 +85,7 @@ export function parseFiltersFromUrl(): DeveloperFilters {
         isRecommended: filter.is_recommended ?? 'all',
         yearsMin: filter.years_min ?? '',
         yearsMax: filter.years_max ?? '',
+        ids,
     };
 }
 
@@ -96,6 +110,9 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
         params.set('filter[is_recommended]', filters.isRecommended);
     if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
     if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    if (filters.ids?.length) {
+        params.set('filter[ids]', filters.ids.join(','));
+    }
     const q = params.toString();
     const newUrl = q
         ? `${window.location.pathname}?${q}`

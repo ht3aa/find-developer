@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\HackathonSubscriberStatus;
 use App\Models\Developer;
 use App\Models\Hackathon;
 use App\Models\HackathonTeam;
@@ -95,6 +96,7 @@ class PublicHackathonController extends Controller
             'alreadySubscribed' => $alreadySubscribed,
             'subscribersCount' => $hackathon->subscribers()->count(),
             'subscribeUrl' => route('hackathons.subscribe', $hackathon->slug),
+            'subscribersUrl' => route('hackathons.subscribers.public', $hackathon->slug),
         ]);
     }
 
@@ -157,6 +159,26 @@ class PublicHackathonController extends Controller
             ],
             'teams' => $teams,
             'canVote' => $enableVoting && $isSubscriber,
+        ]);
+    }
+
+    /**
+     * Display the subscribed developers for the specified hackathon (public).
+     */
+    public function subscribers(Request $request, Hackathon $hackathon): Response
+    {
+        $developerIds = $hackathon->subscribers()
+            ->where('status', HackathonSubscriberStatus::Confirmed)
+            ->pluck('developer_id')
+            ->all();
+
+        return Inertia::render('Hackathons/Subscribers', [
+            'hackathon' => [
+                'id' => $hackathon->id,
+                'title' => $hackathon->title,
+                'slug' => $hackathon->slug,
+            ],
+            'developerIds' => $developerIds,
         ]);
     }
 }

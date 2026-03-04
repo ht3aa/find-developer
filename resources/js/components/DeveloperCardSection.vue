@@ -38,6 +38,14 @@ import {
     hasUrlsOptions,
 } from '@/utils/developerEnums';
 
+const props = withDefaults(
+    defineProps<{
+        /** When set, restricts results to these developer IDs (e.g. hackathon subscribers). */
+        developerIds?: number[];
+    }>(),
+    {},
+);
+
 const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
 const searchQuery = ref(initialFilters.search ?? '');
@@ -130,6 +138,7 @@ function getFilters(): DeveloperFilters {
         isRecommended: isRecommended.value,
         yearsMin: yearsMin.value,
         yearsMax: yearsMax.value,
+        ids: props.developerIds?.length ? props.developerIds : undefined,
     };
 }
 
@@ -163,7 +172,7 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
             }
         }
         nextPageUrl.value = data.links?.next ?? null;
-        if (!append) {
+        if (!append && !props.developerIds?.length) {
             updateUrlWithFilters(getFilters());
         }
     } finally {
@@ -193,7 +202,11 @@ function clearFilters(): void {
     isRecommended.value = 'all';
     yearsMin.value = '';
     yearsMax.value = '';
-    fetchDevelopers(API_BASE);
+    fetchDevelopers(
+        props.developerIds?.length
+            ? buildDevelopersApiUrl(API_BASE, { ids: props.developerIds })
+            : API_BASE,
+    );
 }
 
 const filteredPageUrl = computed(() => getFilteredPageUrl(getFilters()));
@@ -266,7 +279,7 @@ onMounted(() => {
         class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
         <div
-            v-if="stats"
+            v-if="stats && !developerIds?.length"
             class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
         >
             <div
