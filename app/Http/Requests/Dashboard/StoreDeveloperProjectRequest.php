@@ -2,16 +2,14 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\DeveloperProject;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDeveloperProjectRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return $this->user()->developer !== null;
+        return $this->user()->can('create', DeveloperProject::class);
     }
 
     /**

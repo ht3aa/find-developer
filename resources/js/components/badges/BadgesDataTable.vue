@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import {
-    FlexRender,
-    getCoreRowModel,
-    useVueTable,
-} from '@tanstack/vue-table';
+import { usePage } from '@inertiajs/vue3';
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table';
+import { computed } from 'vue';
 import {
     Table,
     TableBody,
@@ -12,11 +10,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { getColumns } from './columns';
 import type { AuthCan } from '@/types/auth';
 import type { Badge } from '@/types/badge';
+import { getColumns } from './columns';
 
 const props = defineProps<{
     data: Badge[];
@@ -67,7 +63,9 @@ const table = useVueTable({
                     <TableRow
                         v-for="row in table.getRowModel().rows"
                         :key="row.id"
-                        :data-state="row.getIsSelected() ? 'selected' : undefined"
+                        :data-state="
+                            row.getIsSelected() ? 'selected' : undefined
+                        "
                     >
                         <TableCell
                             v-for="cell in row.getVisibleCells()"

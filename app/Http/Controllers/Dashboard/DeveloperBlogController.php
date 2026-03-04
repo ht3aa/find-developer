@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\DeveloperBlogCreateRequest;
+use App\Http\Requests\Dashboard\DeveloperBlogDestroyRequest;
+use App\Http\Requests\Dashboard\DeveloperBlogEditRequest;
+use App\Http\Requests\Dashboard\DeveloperBlogIndexRequest;
 use App\Http\Requests\Dashboard\StoreDeveloperBlogRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperBlogRequest;
 use App\Models\DeveloperBlog;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,10 +19,8 @@ class DeveloperBlogController extends Controller
     /**
      * Display the developer blogs listing for the authenticated user.
      */
-    public function index(Request $request): Response|RedirectResponse
+    public function index(DeveloperBlogIndexRequest $request): Response|RedirectResponse
     {
-        $this->authorize('viewAny', DeveloperBlog::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -56,10 +57,8 @@ class DeveloperBlogController extends Controller
     /**
      * Show the form for creating a new developer blog.
      */
-    public function create(Request $request): Response|RedirectResponse
+    public function create(DeveloperBlogCreateRequest $request): Response|RedirectResponse
     {
-        $this->authorize('create', DeveloperBlog::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -83,8 +82,6 @@ class DeveloperBlogController extends Controller
      */
     public function store(StoreDeveloperBlogRequest $request): RedirectResponse
     {
-        $this->authorize('create', DeveloperBlog::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -112,9 +109,8 @@ class DeveloperBlogController extends Controller
     /**
      * Show the form for editing the specified developer blog.
      */
-    public function edit(Request $request, DeveloperBlog $developer_blog): Response|RedirectResponse
+    public function edit(DeveloperBlogEditRequest $request, DeveloperBlog $developer_blog): Response|RedirectResponse
     {
-        $this->authorize('update', $developer_blog);
 
         $user = $request->user();
 
@@ -142,8 +138,6 @@ class DeveloperBlogController extends Controller
      */
     public function update(UpdateDeveloperBlogRequest $request, DeveloperBlog $developer_blog): RedirectResponse
     {
-        $this->authorize('update', $developer_blog);
-
         $data = $request->validated();
 
         if (! $request->user()->isSuperAdmin()) {
@@ -167,9 +161,8 @@ class DeveloperBlogController extends Controller
     /**
      * Remove the specified developer blog.
      */
-    public function destroy(Request $request, DeveloperBlog $developer_blog): RedirectResponse
+    public function destroy(DeveloperBlogDestroyRequest $request, DeveloperBlog $developer_blog): RedirectResponse
     {
-        $this->authorize('delete', $developer_blog);
 
         $developer_blog->delete();
 

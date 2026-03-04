@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { ChevronDown, Mail } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed, ref } from 'vue';
+import NewsletterDataTable from '@/components/newsletter/NewsletterDataTable.vue';
+import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
     Dialog,
     DialogContent,
@@ -18,12 +13,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import NewsletterDataTable from '@/components/newsletter/NewsletterDataTable.vue';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Pagination from '@/components/Pagination.vue';
-import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import type { BreadcrumbItem } from '@/types';
 
 type Subscriber = {
@@ -58,7 +58,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const bulkEmailOpen = ref(false);
 const bulkEmailForm = ref({ title: '', body: '', category: '' });
@@ -72,15 +74,23 @@ function openBulkEmailDialog() {
 function submitBulkEmailAll() {
     if (!props.bulkEmailAllUrl) return;
     bulkEmailSubmitting.value = true;
-    router.post(props.bulkEmailAllUrl, {
-        title: bulkEmailForm.value.title,
-        body: bulkEmailForm.value.body,
-        category: bulkEmailForm.value.category,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => { bulkEmailOpen.value = false; },
-        onFinish: () => { bulkEmailSubmitting.value = false; },
-    });
+    router.post(
+        props.bulkEmailAllUrl,
+        {
+            title: bulkEmailForm.value.title,
+            body: bulkEmailForm.value.body,
+            category: bulkEmailForm.value.category,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                bulkEmailOpen.value = false;
+            },
+            onFinish: () => {
+                bulkEmailSubmitting.value = false;
+            },
+        },
+    );
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -93,7 +103,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Newsletter" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -106,7 +118,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">
                         Newsletter
@@ -138,7 +152,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <DialogHeader>
                         <DialogTitle>Send Mailtrap email</DialogTitle>
                         <DialogDescription>
-                            Send an email to all newsletter subscribers. Title is used as the email body heading.
+                            Send an email to all newsletter subscribers. Title
+                            is used as the email body heading.
                         </DialogDescription>
                     </DialogHeader>
                     <form
@@ -162,7 +177,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 rows="3"
                                 placeholder="Email body content"
                                 required
-                                class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                             />
                         </div>
                         <div class="grid gap-2">

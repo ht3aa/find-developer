@@ -51,7 +51,9 @@ const user = page.props.auth.user;
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
                     <div class="grid gap-2">
-                        <Label for="name">Name <span class="text-destructive">*</span></Label>
+                        <Label for="name"
+                            >Name <span class="text-destructive">*</span></Label
+                        >
                         <Input
                             id="name"
                             class="mt-1 block w-full"
@@ -65,7 +67,10 @@ const user = page.props.auth.user;
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="email">Email address <span class="text-destructive">*</span></Label>
+                        <Label for="email"
+                            >Email address
+                            <span class="text-destructive">*</span></Label
+                        >
                         <Input
                             id="email"
                             type="email"

@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\StoreWorkExperienceRequest;
 use App\Http\Requests\Dashboard\UpdateWorkExperienceRequest;
+use App\Http\Requests\Dashboard\WorkExperienceCreateRequest;
+use App\Http\Requests\Dashboard\WorkExperienceDestroyRequest;
+use App\Http\Requests\Dashboard\WorkExperienceEditRequest;
+use App\Http\Requests\Dashboard\WorkExperienceIndexRequest;
 use App\Models\DeveloperCompany;
 use App\Models\JobTitle;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,10 +20,8 @@ class WorkExperienceController extends Controller
     /**
      * Display the work experience listing for the authenticated developer.
      */
-    public function index(Request $request): Response|RedirectResponse
+    public function index(WorkExperienceIndexRequest $request): Response|RedirectResponse
     {
-        $this->authorize('viewAny', DeveloperCompany::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -63,10 +64,8 @@ class WorkExperienceController extends Controller
     /**
      * Show the form for creating a new work experience.
      */
-    public function create(Request $request): Response|RedirectResponse
+    public function create(WorkExperienceCreateRequest $request): Response|RedirectResponse
     {
-        $this->authorize('create', DeveloperCompany::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -94,8 +93,6 @@ class WorkExperienceController extends Controller
      */
     public function store(StoreWorkExperienceRequest $request): RedirectResponse
     {
-        $this->authorize('create', DeveloperCompany::class);
-
         $developer = $request->user()->developer;
 
         $data = $request->validated();
@@ -118,9 +115,8 @@ class WorkExperienceController extends Controller
     /**
      * Show the form for editing the specified work experience.
      */
-    public function edit(Request $request, DeveloperCompany $workExperience): Response|RedirectResponse
+    public function edit(WorkExperienceEditRequest $request, DeveloperCompany $workExperience): Response|RedirectResponse
     {
-        $this->authorize('update', $workExperience);
 
         $developer = $request->user()->developer;
 
@@ -170,8 +166,6 @@ class WorkExperienceController extends Controller
      */
     public function update(UpdateWorkExperienceRequest $request, DeveloperCompany $workExperience): RedirectResponse
     {
-        $this->authorize('update', $workExperience);
-
         $data = $request->validated();
         $data['is_current'] = $data['is_current'] ?? false;
         $data['show_company'] = $data['show_company'] ?? true;
@@ -191,9 +185,8 @@ class WorkExperienceController extends Controller
     /**
      * Remove the specified work experience.
      */
-    public function destroy(Request $request, DeveloperCompany $workExperience): RedirectResponse
+    public function destroy(WorkExperienceDestroyRequest $request, DeveloperCompany $workExperience): RedirectResponse
     {
-        $this->authorize('delete', $workExperience);
 
         $workExperience->delete();
 

@@ -7,6 +7,7 @@ use App\Models\Developer;
 use App\Models\DeveloperBlog;
 use App\Models\DeveloperCompany;
 use App\Models\DeveloperProject;
+use App\Models\Hackathon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -58,6 +59,7 @@ class HandleInertiaRequests extends Middleware
             'viewAnyDeveloperProject' => $isDeveloper && $user->can('viewAny', DeveloperProject::class),
             'viewAnyDeveloperBlog' => $isDeveloper && $user->can('viewAny', DeveloperBlog::class),
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
+            'viewAnyHackathon' => $user->can('viewAny', Hackathon::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
             'viewAnyRole' => $user->can('viewAny', Role::class),
             'viewActivityLog' => $user->isSuperAdmin(),

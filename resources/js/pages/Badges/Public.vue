@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import { Award } from 'lucide-vue-next';
+import { Award, ChevronDown, ChevronUp } from 'lucide-vue-next';
+import { ref } from 'vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { home } from '@/routes';
 import type { Badge as BadgeType } from '@/types/badge';
 
 defineProps<{
     badges: BadgeType[];
 }>();
+
+const expandedBadges = ref<Set<number>>(new Set());
+
+function toggleExpand(badgeId: number) {
+    const next = new Set(expandedBadges.value);
+    if (next.has(badgeId)) {
+        next.delete(badgeId);
+    } else {
+        next.add(badgeId);
+    }
+    expandedBadges.value = next;
+}
 </script>
 
 <template>
@@ -63,7 +75,8 @@ defineProps<{
                         <div
                             class="flex items-center gap-3"
                             :style="{
-                                '--badge-color': badge.color || 'hsl(var(--primary))',
+                                '--badge-color':
+                                    badge.color || 'hsl(var(--primary))',
                             }"
                         >
                             <div
@@ -99,15 +112,42 @@ defineProps<{
                                     class="text-xs text-muted-foreground"
                                 >
                                     {{ badge.developers_count }}
-                                    {{ badge.developers_count === 1 ? 'developer' : 'developers' }}
+                                    {{
+                                        badge.developers_count === 1
+                                            ? 'developer'
+                                            : 'developers'
+                                    }}
                                 </p>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent v-if="badge.description != null" class="pt-0">
-                        <p class="line-clamp-3 text-sm text-muted-foreground">
+                        <p
+                            :class="[
+                                'text-sm text-muted-foreground',
+                                expandedBadges.has(badge.id)
+                                    ? ''
+                                    : 'line-clamp-3',
+                            ]"
+                        >
                             {{ badge.description }}
                         </p>
+                        <button
+                            type="button"
+                            class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                            @click="toggleExpand(badge.id)"
+                        >
+                            <ChevronDown
+                                v-if="!expandedBadges.has(badge.id)"
+                                class="size-3.5"
+                            />
+                            <ChevronUp v-else class="size-3.5" />
+                            {{
+                                expandedBadges.has(badge.id)
+                                    ? 'Read less'
+                                    : 'Read more'
+                            }}
+                        </button>
                     </CardContent>
                 </Card>
             </div>

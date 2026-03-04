@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
 import { Placeholder } from '@tiptap/extension-placeholder';
+import StarterKit from '@tiptap/starter-kit';
+import { useEditor, EditorContent } from '@tiptap/vue-3';
+import {
+    Bold,
+    Italic,
+    List,
+    ListOrdered,
+    Quote,
+    Heading2,
+    Code,
+} from 'lucide-vue-next';
 import { watch } from 'vue';
-import { Bold, Italic, List, ListOrdered, Quote, Heading2, Code } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 
 const props = withDefaults(
@@ -91,9 +99,13 @@ watch(
                 variant="ghost"
                 size="icon"
                 class="h-8 w-8"
-                :class="{ 'bg-muted': editor.isActive('heading', { level: 2 }) }"
+                :class="{
+                    'bg-muted': editor.isActive('heading', { level: 2 }),
+                }"
                 :disabled="disabled"
-                @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+                @click="
+                    editor.chain().focus().toggleHeading({ level: 2 }).run()
+                "
             >
                 <Heading2 class="h-4 w-4" />
             </Button>
@@ -144,7 +156,7 @@ watch(
         </div>
         <EditorContent
             :editor="editor"
-            class="prose prose-sm dark:prose-invert max-w-none min-h-[200px] px-3 py-2 [&_.tiptap]:min-h-[200px] [&_.tiptap]:outline-none [&_.tiptap_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.tiptap_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.tiptap_p.is-editor-empty:first-child::before]:float-left [&_.tiptap_p.is-editor-empty:first-child::before]:h-0 [&_.tiptap_p.is-editor-empty:first-child::before]:pointer-events-none"
+            class="prose prose-sm dark:prose-invert min-h-[200px] max-w-none px-3 py-2 [&_.tiptap]:min-h-[200px] [&_.tiptap]:outline-none [&_.tiptap_p.is-editor-empty:first-child::before]:pointer-events-none [&_.tiptap_p.is-editor-empty:first-child::before]:float-left [&_.tiptap_p.is-editor-empty:first-child::before]:h-0 [&_.tiptap_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.tiptap_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]"
         />
     </div>
 </template>

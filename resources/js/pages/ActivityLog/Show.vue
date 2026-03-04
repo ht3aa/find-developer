@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import {
+    ArrowLeft,
+    ClipboardList,
+    User,
+    Box,
+    Calendar,
+    Tag,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
-import { ArrowLeft, ClipboardList, User, Box, Calendar, Tag } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { ActivityLogDetail } from '@/types/activity-log';
+import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import type { BreadcrumbItem } from '@/types';
+import type { ActivityLogDetail } from '@/types/activity-log';
 
 type Props = {
     activity: ActivityLogDetail;
@@ -41,7 +48,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="flex items-center gap-3">
                     <div
                         class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
@@ -68,7 +77,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="grid gap-6 md:grid-cols-2">
                 <Card>
                     <CardHeader class="pb-2">
-                        <h3 class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <h3
+                            class="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                        >
                             <Tag class="size-4" />
                             Event &amp; log
                         </h3>
@@ -89,13 +100,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </Badge>
                             <span
                                 v-if="activity.log_name"
-                                class="rounded bg-muted px-2 py-0.5 text-xs font-mono"
+                                class="rounded bg-muted px-2 py-0.5 font-mono text-xs"
                             >
                                 {{ activity.log_name }}
                             </span>
                             <span
                                 v-if="activity.batch_uuid"
-                                class="rounded bg-muted px-2 py-0.5 text-xs font-mono"
+                                class="rounded bg-muted px-2 py-0.5 font-mono text-xs"
                                 :title="activity.batch_uuid"
                             >
                                 batch
@@ -106,7 +117,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <Card>
                     <CardHeader class="pb-2">
-                        <h3 class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <h3
+                            class="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                        >
                             <Calendar class="size-4" />
                             Timestamps
                         </h3>
@@ -127,7 +140,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="grid gap-6 md:grid-cols-2">
                 <Card>
                     <CardHeader class="pb-2">
-                        <h3 class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <h3
+                            class="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                        >
                             <Box class="size-4" />
                             Subject
                         </h3>
@@ -135,7 +150,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <CardContent class="space-y-2 text-sm">
                         <p v-if="activity.subject_type_short">
                             <span class="text-muted-foreground">Type:</span>
-                            <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{{ activity.subject_type_short }}</code>
+                            <code
+                                class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                                >{{ activity.subject_type_short }}</code
+                            >
                         </p>
                         <p v-if="activity.subject_id !== null">
                             <span class="text-muted-foreground">ID:</span>
@@ -146,7 +164,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                             {{ activity.subject_label }}
                         </p>
                         <p
-                            v-if="!activity.subject_type && activity.subject_id === null"
+                            v-if="
+                                !activity.subject_type &&
+                                activity.subject_id === null
+                            "
                             class="text-muted-foreground"
                         >
                             —
@@ -156,7 +177,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <Card>
                     <CardHeader class="pb-2">
-                        <h3 class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <h3
+                            class="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+                        >
                             <User class="size-4" />
                             Causer
                         </h3>
@@ -164,7 +187,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <CardContent class="space-y-2 text-sm">
                         <p v-if="activity.causer_type_short">
                             <span class="text-muted-foreground">Type:</span>
-                            <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{{ activity.causer_type_short }}</code>
+                            <code
+                                class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                                >{{ activity.causer_type_short }}</code
+                            >
                         </p>
                         <p v-if="activity.causer_id !== null">
                             <span class="text-muted-foreground">ID:</span>
@@ -175,7 +201,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                             {{ activity.causer_name }}
                         </p>
                         <p
-                            v-if="!activity.causer_type && activity.causer_id === null"
+                            v-if="
+                                !activity.causer_type &&
+                                activity.causer_id === null
+                            "
                             class="text-muted-foreground"
                         >
                             —
@@ -192,13 +221,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </CardHeader>
                 <CardContent>
                     <pre
-                        class="max-h-[420px] overflow-auto rounded-lg border bg-muted/30 p-4 text-xs font-mono leading-relaxed"
-                    >{{ propertiesJson }}</pre>
+                        class="max-h-[420px] overflow-auto rounded-lg border bg-muted/30 p-4 font-mono text-xs leading-relaxed"
+                        >{{ propertiesJson }}</pre
+                    >
                 </CardContent>
             </Card>
 
             <Card v-else>
-                <CardContent class="py-8 text-center text-sm text-muted-foreground">
+                <CardContent
+                    class="py-8 text-center text-sm text-muted-foreground"
+                >
                     No properties recorded for this activity.
                 </CardContent>
             </Card>

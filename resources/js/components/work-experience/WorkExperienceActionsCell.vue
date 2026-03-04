@@ -33,7 +33,9 @@ const hasActions = () => showEdit() || showDelete();
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuItem v-if="showEdit()" as-child>
-                <Link :href="WorkExperienceController.edit.url(workExperience.id)">
+                <Link
+                    :href="WorkExperienceController.edit.url(workExperience.id)"
+                >
                     <Pencil class="mr-2 h-4 w-4" />
                     Edit
                 </Link>

@@ -16,23 +16,33 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { publicMethod as badgesPublic } from '@/routes/badges';
-import { dashboard, home, login, logout, register } from '@/routes';
 import { useAppearance } from '@/composables/useAppearance';
+import { dashboard, home, login, logout, register } from '@/routes';
+import { publicMethod as badgesPublic } from '@/routes/badges';
+import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 
 const page = usePage();
-const auth = computed(() => page.props.auth as { user?: { name: string } | null });
+const auth = computed(
+    () => page.props.auth as { user?: { name: string } | null },
+);
 const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
-const authCan = computed(() => (page.props.auth as { can?: { viewDeveloperProfile: boolean } })?.can ?? {});
+const authCan = computed(
+    () =>
+        (page.props.auth as { can?: { viewDeveloperProfile: boolean } })?.can ??
+        {},
+);
 const navItems = [
     { label: 'Home', href: home() },
     { label: 'Badges', href: badgesPublic() },
+    { label: 'Hackathons', href: hackathonsPublic() },
     { label: 'Charts', href: '/charts' },
 ];
 
 const { appearance, resolvedAppearance, updateAppearance } = useAppearance();
 
-const themeIcon = computed(() => (resolvedAppearance.value === 'dark' ? Moon : Sun));
+const themeIcon = computed(() =>
+    resolvedAppearance.value === 'dark' ? Moon : Sun,
+);
 
 const toggleTheme = () => {
     const nextTheme = appearance.value === 'dark' ? 'light' : 'dark';
@@ -42,9 +52,11 @@ const toggleTheme = () => {
 
 <template>
     <header
-        class="sticky top-0 z-sticky-nav w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        class="z-sticky-nav sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
-        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <div
+            class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"
+        >
             <!-- Logo -->
             <Link
                 :href="home()"
@@ -87,11 +99,17 @@ const toggleTheme = () => {
                     <component :is="themeIcon" class="size-5" />
                 </Button>
                 <template v-if="auth.user">
-                    <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child>
+                    <Button
+                        v-if="authCan.viewDeveloperProfile"
+                        variant="default"
+                        as-child
+                    >
                         <Link :href="dashboard()">Dashboard</Link>
                     </Button>
                     <Button variant="outline" as-child>
-                        <Link :href="logout().url" method="post" as="button">Log out</Link>
+                        <Link :href="logout().url" method="post" as="button"
+                            >Log out</Link
+                        >
                     </Button>
                 </template>
                 <template v-else>
@@ -152,11 +170,22 @@ const toggleTheme = () => {
                             <component :is="themeIcon" class="size-5" />
                         </Button>
                         <template v-if="auth.user">
-                            <Button v-if="authCan.viewDeveloperProfile" variant="default" as-child class="w-full">
+                            <Button
+                                v-if="authCan.viewDeveloperProfile"
+                                variant="default"
+                                as-child
+                                class="w-full"
+                            >
                                 <Link :href="dashboard()">Dashboard</Link>
                             </Button>
                             <Button variant="outline" as-child class="w-full">
-                                <Link :href="logout().url" method="post" as="button" class="w-full">Log out</Link>
+                                <Link
+                                    :href="logout().url"
+                                    method="post"
+                                    as="button"
+                                    class="w-full"
+                                    >Log out</Link
+                                >
                             </Button>
                         </template>
                         <template v-else>

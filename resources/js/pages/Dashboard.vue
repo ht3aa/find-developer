@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, UserCog, Users } from 'lucide-vue-next';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { computed } from 'vue';
 import { Card, CardContent } from '@/components/ui/card';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
 import { index as developersIndex } from '@/routes/developers';
@@ -17,8 +17,17 @@ type DashboardStats = {
 };
 
 const page = usePage();
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
-const stats = computed<DashboardStats>(() => (page.props.stats as DashboardStats) ?? { developers: 0, users: 0, badges: 0 });
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
+const stats = computed<DashboardStats>(
+    () =>
+        (page.props.stats as DashboardStats) ?? {
+            developers: 0,
+            users: 0,
+            badges: 0,
+        },
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -67,12 +76,14 @@ const statCards = computed(() => [
                     v-for="card in statCards"
                     :key="card.title"
                     :href="card.href"
-                    class="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
+                    class="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                     <Card
                         class="transition-colors hover:bg-accent/50 dark:hover:bg-accent/20"
                     >
-                        <CardContent class="flex flex-row items-center gap-4 p-6">
+                        <CardContent
+                            class="flex flex-row items-center gap-4 p-6"
+                        >
                             <div
                                 class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
                             >
@@ -83,13 +94,19 @@ const statCards = computed(() => [
                                 />
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-sm font-medium text-muted-foreground">
+                                <p
+                                    class="text-sm font-medium text-muted-foreground"
+                                >
                                     {{ card.title }}
                                 </p>
-                                <p class="mt-1 text-2xl font-semibold tabular-nums">
+                                <p
+                                    class="mt-1 text-2xl font-semibold tabular-nums"
+                                >
                                     {{ card.value }}
                                 </p>
-                                <p class="mt-0.5 truncate text-xs text-muted-foreground">
+                                <p
+                                    class="mt-0.5 truncate text-xs text-muted-foreground"
+                                >
                                     {{ card.description }}
                                 </p>
                             </div>

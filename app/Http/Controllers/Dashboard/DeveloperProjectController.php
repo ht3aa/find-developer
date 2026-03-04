@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\DeveloperProjectCreateRequest;
+use App\Http\Requests\Dashboard\DeveloperProjectDestroyRequest;
+use App\Http\Requests\Dashboard\DeveloperProjectEditRequest;
+use App\Http\Requests\Dashboard\DeveloperProjectIndexRequest;
 use App\Http\Requests\Dashboard\StoreDeveloperProjectRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperProjectRequest;
 use App\Models\DeveloperProject;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,10 +19,8 @@ class DeveloperProjectController extends Controller
     /**
      * Display the developer projects listing for the authenticated developer.
      */
-    public function index(Request $request): Response|RedirectResponse
+    public function index(DeveloperProjectIndexRequest $request): Response|RedirectResponse
     {
-        $this->authorize('viewAny', DeveloperProject::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -52,10 +53,8 @@ class DeveloperProjectController extends Controller
     /**
      * Show the form for creating a new developer project.
      */
-    public function create(Request $request): Response|RedirectResponse
+    public function create(DeveloperProjectCreateRequest $request): Response|RedirectResponse
     {
-        $this->authorize('create', DeveloperProject::class);
-
         $developer = $request->user()->developer;
 
         if (! $developer) {
@@ -71,8 +70,6 @@ class DeveloperProjectController extends Controller
      */
     public function store(StoreDeveloperProjectRequest $request): RedirectResponse
     {
-        $this->authorize('create', DeveloperProject::class);
-
         $developer = $request->user()->developer;
 
         $data = $request->validated();
@@ -89,9 +86,8 @@ class DeveloperProjectController extends Controller
     /**
      * Show the form for editing the specified developer project.
      */
-    public function edit(Request $request, DeveloperProject $developer_project): Response|RedirectResponse
+    public function edit(DeveloperProjectEditRequest $request, DeveloperProject $developer_project): Response|RedirectResponse
     {
-        $this->authorize('update', $developer_project);
 
         $developer = $request->user()->developer;
 
@@ -116,8 +112,6 @@ class DeveloperProjectController extends Controller
      */
     public function update(UpdateDeveloperProjectRequest $request, DeveloperProject $developer_project): RedirectResponse
     {
-        $this->authorize('update', $developer_project);
-
         $data = $request->validated();
         $data['show_project'] = $data['show_project'] ?? true;
 
@@ -131,9 +125,8 @@ class DeveloperProjectController extends Controller
     /**
      * Remove the specified developer project.
      */
-    public function destroy(Request $request, DeveloperProject $developer_project): RedirectResponse
+    public function destroy(DeveloperProjectDestroyRequest $request, DeveloperProject $developer_project): RedirectResponse
     {
-        $this->authorize('delete', $developer_project);
 
         $developer_project->delete();
 

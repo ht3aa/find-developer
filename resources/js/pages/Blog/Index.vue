@@ -67,10 +67,7 @@ function formatDate(iso: string | null): string {
                     Blog posts will appear here once developers publish them.
                 </p>
             </div>
-            <div
-                v-else
-                class="space-y-8"
-            >
+            <div v-else class="space-y-8">
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <Link
                         v-for="blog in blogs.data"
@@ -78,7 +75,9 @@ function formatDate(iso: string | null): string {
                         :href="`/blogs/${blog.slug}`"
                         class="block transition-opacity hover:opacity-90"
                     >
-                        <Card class="h-full overflow-hidden transition-shadow hover:shadow-md">
+                        <Card
+                            class="h-full overflow-hidden transition-shadow hover:shadow-md"
+                        >
                             <div
                                 v-if="blog.featured_image_url"
                                 class="aspect-video w-full shrink-0 bg-muted"
@@ -90,7 +89,9 @@ function formatDate(iso: string | null): string {
                                 />
                             </div>
                             <CardContent class="p-5">
-                                <h3 class="font-semibold tracking-tight line-clamp-2">
+                                <h3
+                                    class="line-clamp-2 font-semibold tracking-tight"
+                                >
                                     {{ blog.title }}
                                 </h3>
                                 <p
@@ -99,9 +100,16 @@ function formatDate(iso: string | null): string {
                                 >
                                     {{ blog.excerpt }}
                                 </p>
-                                <div class="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-                                    <span>{{ formatDate(blog.published_at) }}</span>
-                                    <span v-if="blog.developer" class="flex items-center gap-1">
+                                <div
+                                    class="mt-4 flex items-center gap-2 text-xs text-muted-foreground"
+                                >
+                                    <span>{{
+                                        formatDate(blog.published_at)
+                                    }}</span>
+                                    <span
+                                        v-if="blog.developer"
+                                        class="flex items-center gap-1"
+                                    >
                                         <User class="size-3.5" />
                                         <Link
                                             :href="`/developers/${blog.developer.slug}`"

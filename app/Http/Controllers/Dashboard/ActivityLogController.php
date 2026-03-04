@@ -11,14 +11,10 @@ use Inertia\Response;
 class ActivityLogController extends Controller
 {
     /**
-     * Display a listing of activity log entries (super admin only).
+     * Display a listing of activity log entries.
      */
     public function index(Request $request): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $modelClass = config('activitylog.activity_model');
         $query = $modelClass::query()
             ->with(['causer', 'subject'])
@@ -66,14 +62,10 @@ class ActivityLogController extends Controller
     }
 
     /**
-     * Display the specified activity log entry (super admin only).
+     * Display the specified activity log entry.
      */
-    public function show(Request $request, int $id): Response
+    public function show(int $id): Response
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $modelClass = config('activitylog.activity_model');
         $activity = $modelClass::with(['causer', 'subject'])->findOrFail($id);
 
@@ -114,14 +106,10 @@ class ActivityLogController extends Controller
     }
 
     /**
-     * Return the properties (attributes / old values) for an activity log entry (super admin only).
+     * Return the properties (attributes / old values) for an activity log entry.
      */
-    public function properties(Request $request, int $id): JsonResponse
+    public function properties(int $id): JsonResponse
     {
-        if (! $request->user()->isSuperAdmin()) {
-            abort(403);
-        }
-
         $modelClass = config('activitylog.activity_model');
         $activity = $modelClass::find($id);
 

@@ -1,7 +1,7 @@
-import type { ColumnDef } from '@tanstack/vue-table';
-import { h } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import type { ColumnDef } from '@tanstack/vue-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-vue-next';
+import { h } from 'vue';
 import RoleController from '@/actions/App/Http/Controllers/Dashboard/RoleController';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,18 +53,19 @@ export function getColumns(
                 if (!showEdit && !showDelete) return null;
                 const items = [
                     showEdit
-                        ? h(
-                              DropdownMenuItem,
-                              { asChild: true },
-                              () =>
-                                  h(
-                                      Link,
-                                      { href: RoleController.edit.url(row.original.id) },
-                                      () => [
-                                          h(Pencil, { class: 'mr-2 h-4 w-4' }),
-                                          'Edit',
-                                      ],
-                                  ),
+                        ? h(DropdownMenuItem, { asChild: true }, () =>
+                              h(
+                                  Link,
+                                  {
+                                      href: RoleController.edit.url(
+                                          row.original.id,
+                                      ),
+                                  },
+                                  () => [
+                                      h(Pencil, { class: 'mr-2 h-4 w-4' }),
+                                      'Edit',
+                                  ],
+                              ),
                           )
                         : null,
                     showDelete
@@ -86,9 +87,17 @@ export function getColumns(
                         h(DropdownMenuTrigger, { asChild: true }, () =>
                             h(
                                 Button,
-                                { variant: 'ghost', size: 'icon', class: 'h-8 w-8' },
+                                {
+                                    variant: 'ghost',
+                                    size: 'icon',
+                                    class: 'h-8 w-8',
+                                },
                                 () => [
-                                    h('span', { class: 'sr-only' }, 'Open menu'),
+                                    h(
+                                        'span',
+                                        { class: 'sr-only' },
+                                        'Open menu',
+                                    ),
                                     h(MoreHorizontal, { class: 'h-4 w-4' }),
                                 ],
                             ),

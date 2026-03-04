@@ -62,7 +62,9 @@ const cvUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
 const jobTitleModel = computed({
     get: () => {
         const name = (formData.value.job_title as { name?: string })?.name;
-        return props.jobTitles.find((j) => j.name === name)?.id.toString() ?? null;
+        return (
+            props.jobTitles.find((j) => j.name === name)?.id.toString() ?? null
+        );
     },
     set: (v: string | null) => {
         const next = { ...formData.value };
@@ -78,10 +80,15 @@ const jobTitleModel = computed({
 
 const skillsModel = computed({
     get: () =>
-        ((formData.value.skills as { name: string }[]) ?? []).map((s) => s.name),
+        ((formData.value.skills as { name: string }[]) ?? []).map(
+            (s) => s.name,
+        ),
     set: (v: string[] | string | null) => {
         const arr = Array.isArray(v) ? v : v ? [v] : [];
-        emit('update:modelValue', { ...formData.value, skills: arr.map((name) => ({ name: String(name) })) });
+        emit('update:modelValue', {
+            ...formData.value,
+            skills: arr.map((name) => ({ name: String(name) })),
+        });
     },
 });
 
@@ -148,18 +155,32 @@ function onUserSelect(userId: string | null): void {
     emit('update:modelValue', next);
 }
 
-defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUploadRef.value?.clear(); } });
+defineExpose({
+    cvFile,
+    cvUploadRef,
+    clearCv: () => {
+        cvFile.value = null;
+        cvUploadRef.value?.clear();
+    },
+});
 </script>
 
 <template>
     <div class="space-y-6">
         <div v-if="showUserSelect" class="grid gap-2">
-            <Label for="user_id">User <span class="text-destructive">*</span></Label>
+            <Label for="user_id"
+                >User <span class="text-destructive">*</span></Label
+            >
             <SearchableSelect
                 id="user_id"
                 :model-value="String(formData.user_id ?? '')"
                 :open="userSelectOpen"
-                :options="users.map((u) => ({ value: String(u.id), label: `${u.name} (${u.email})` }))"
+                :options="
+                    users.map((u) => ({
+                        value: String(u.id),
+                        label: `${u.name} (${u.email})`,
+                    }))
+                "
                 placeholder="Search by name or email..."
                 @update:model-value="onUserSelect"
                 @update:open="onUserSelectOpenChange"
@@ -169,7 +190,9 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
 
         <div class="space-y-4">
             <div class="grid gap-2">
-                <Label for="name">Name <span class="text-destructive">*</span></Label>
+                <Label for="name"
+                    >Name <span class="text-destructive">*</span></Label
+                >
                 <Input
                     id="name"
                     v-model="formData.name"
@@ -182,7 +205,9 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="email">Email <span class="text-destructive">*</span></Label>
+                <Label for="email"
+                    >Email <span class="text-destructive">*</span></Label
+                >
                 <Input
                     id="email"
                     v-model="formData.email"
@@ -207,12 +232,19 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="job_title">Job title <span class="text-destructive">*</span></Label>
+                <Label for="job_title"
+                    >Job title <span class="text-destructive">*</span></Label
+                >
                 <SearchableSelect
                     id="job_title"
                     v-model="jobTitleModel"
                     :open="jobTitleSelectOpen"
-                    :options="jobTitles.map((j) => ({ value: String(j.id), label: j.name }))"
+                    :options="
+                        jobTitles.map((j) => ({
+                            value: String(j.id),
+                            label: j.name,
+                        }))
+                    "
                     placeholder="e.g. Backend Developer"
                     @update:open="onJobTitleOpenChange"
                 />
@@ -220,7 +252,10 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             </div>
 
             <div class="grid gap-2">
-                <Label for="years_of_experience">Years of experience <span class="text-destructive">*</span></Label>
+                <Label for="years_of_experience"
+                    >Years of experience
+                    <span class="text-destructive">*</span></Label
+                >
                 <Input
                     id="years_of_experience"
                     v-model.number="formData.years_of_experience"
@@ -241,7 +276,7 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
                     v-model="formData.bio"
                     name="bio"
                     rows="3"
-                    class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                     placeholder="Brief bio..."
                 />
             </div>
@@ -328,7 +363,13 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
             <Label for="availability_type">Availability type</Label>
             <SearchableSelect
                 id="availability_type"
-                :model-value="((formData.availability_type ?? []) as { value: string }[]).map((a) => a.value)"
+                :model-value="
+                    (
+                        (formData.availability_type ?? []) as {
+                            value: string;
+                        }[]
+                    ).map((a) => a.value)
+                "
                 :open="availabilityTypeSelectOpen"
                 :options="availabilityTypeOptions"
                 placeholder="e.g. Full-time, Remote"
@@ -338,8 +379,13 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
                         const arr = Array.isArray(v) ? v : v ? [v] : [];
                         const next = { ...formData };
                         next.availability_type = arr.map((val) => {
-                            const opt = availabilityTypeOptions.find((o) => o.value === val);
-                            return { value: String(val), label: opt?.label ?? String(val) };
+                            const opt = availabilityTypeOptions.find(
+                                (o) => o.value === val,
+                            );
+                            return {
+                                value: String(val),
+                                label: opt?.label ?? String(val),
+                            };
                         });
                         emit('update:modelValue', next);
                     }
@@ -350,7 +396,11 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
 
         <div class="flex flex-wrap items-center gap-4">
             <div class="flex items-center space-x-2">
-                <input type="hidden" name="is_available" :value="formData.is_available ? '1' : '0'" />
+                <input
+                    type="hidden"
+                    name="is_available"
+                    :value="formData.is_available ? '1' : '0'"
+                />
                 <Checkbox
                     id="is_available"
                     v-model:checked="formData.is_available"
@@ -362,7 +412,11 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
 
             <template v-if="showAdminFields">
                 <div class="flex items-center space-x-2">
-                    <input type="hidden" name="recommended_by_us" :value="formData.recommended_by_us ? '1' : '0'" />
+                    <input
+                        type="hidden"
+                        name="recommended_by_us"
+                        :value="formData.recommended_by_us ? '1' : '0'"
+                    />
                     <Checkbox
                         id="recommended_by_us"
                         v-model:checked="formData.recommended_by_us"
@@ -382,7 +436,13 @@ defineExpose({ cvFile, cvUploadRef, clearCv: () => { cvFile.value = null; cvUplo
                 :open="statusSelectOpen"
                 :options="statusOptions"
                 placeholder="Select status"
-                @update:model-value="(v) => emit('update:modelValue', { ...formData, status: v ?? 'pending' })"
+                @update:model-value="
+                    (v) =>
+                        emit('update:modelValue', {
+                            ...formData,
+                            status: v ?? 'pending',
+                        })
+                "
                 @update:open="onStatusOpenChange"
             />
             <InputError :message="errors?.status" />

@@ -1,20 +1,8 @@
 <script setup lang="ts">
-import {
-    FlexRender,
-    getCoreRowModel,
-    useVueTable,
-} from '@tanstack/vue-table';
 import { router } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { Mail } from 'lucide-vue-next';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import { computed, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -26,6 +14,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import { getColumns, type SubscriberRow } from './columns';
 
 const props = withDefaults(
@@ -48,7 +44,9 @@ function formatDate(iso: string): string {
     });
 }
 
-const rowIndexOffset = computed(() => (props.from != null ? props.from - 1 : 0));
+const rowIndexOffset = computed(() =>
+    props.from != null ? props.from - 1 : 0,
+);
 const columns = computed(() => getColumns(rowIndexOffset.value, formatDate));
 
 const rowSelection = ref<Record<string, boolean>>({});
@@ -69,7 +67,9 @@ const table = useVueTable({
     },
     onRowSelectionChange: (updaterOrValue) => {
         rowSelection.value =
-            typeof updaterOrValue === 'function' ? updaterOrValue(rowSelection.value) : updaterOrValue;
+            typeof updaterOrValue === 'function'
+                ? updaterOrValue(rowSelection.value)
+                : updaterOrValue;
     },
     enableRowSelection: true,
 });
@@ -96,23 +96,29 @@ function openBulkEmailDialog() {
 
 function submitBulkEmail() {
     if (!props.bulkEmailUrl) return;
-    const ids = selectedRows.value.map((r: { original: SubscriberRow }) => r.original.id);
+    const ids = selectedRows.value.map(
+        (r: { original: SubscriberRow }) => r.original.id,
+    );
     bulkEmailSubmitting.value = true;
-    router.post(props.bulkEmailUrl, {
-        subscriber_ids: ids,
-        title: bulkEmailForm.value.title,
-        body: bulkEmailForm.value.body,
-        category: bulkEmailForm.value.category,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            bulkEmailOpen.value = false;
-            rowSelection.value = {};
+    router.post(
+        props.bulkEmailUrl,
+        {
+            subscriber_ids: ids,
+            title: bulkEmailForm.value.title,
+            body: bulkEmailForm.value.body,
+            category: bulkEmailForm.value.category,
         },
-        onFinish: () => {
-            bulkEmailSubmitting.value = false;
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                bulkEmailOpen.value = false;
+                rowSelection.value = {};
+            },
+            onFinish: () => {
+                bulkEmailSubmitting.value = false;
+            },
         },
-    });
+    );
 }
 </script>
 
@@ -122,14 +128,11 @@ function submitBulkEmail() {
             v-if="hasSelection"
             class="flex flex-wrap items-center gap-3 rounded-md border bg-muted/50 px-4 py-2"
         >
-            <span class="text-muted-foreground text-sm">
-                {{ selectedCount }} of {{ table.getRowModel().rows.length }} row(s) selected.
+            <span class="text-sm text-muted-foreground">
+                {{ selectedCount }} of
+                {{ table.getRowModel().rows.length }} row(s) selected.
             </span>
-            <Button
-                variant="secondary"
-                size="sm"
-                @click="openBulkEmailDialog"
-            >
+            <Button variant="secondary" size="sm" @click="openBulkEmailDialog">
                 <Mail class="mr-2 h-4 w-4" />
                 Send Mailtrap email
             </Button>
@@ -146,7 +149,13 @@ function submitBulkEmail() {
                             v-for="header in headerGroup.headers"
                             :key="header.id"
                             :colspan="header.colSpan"
-                            :class="header.id === 'index' ? 'w-[80px]' : header.id === 'subscribed_at' ? 'w-[180px]' : undefined"
+                            :class="
+                                header.id === 'index'
+                                    ? 'w-[80px]'
+                                    : header.id === 'subscribed_at'
+                                      ? 'w-[180px]'
+                                      : undefined
+                            "
                         >
                             <FlexRender
                                 v-if="header.column.columnDef.header"
@@ -161,7 +170,9 @@ function submitBulkEmail() {
                         <TableRow
                             v-for="row in table.getRowModel().rows"
                             :key="row.id"
-                            :data-state="row.getIsSelected() ? 'selected' : undefined"
+                            :data-state="
+                                row.getIsSelected() ? 'selected' : undefined
+                            "
                         >
                             <TableCell
                                 v-for="cell in row.getVisibleCells()"
@@ -191,13 +202,11 @@ function submitBulkEmail() {
                 <DialogHeader>
                     <DialogTitle>Send Mailtrap email</DialogTitle>
                     <DialogDescription>
-                        Send an email to each selected subscriber. Title is used as the email body heading.
+                        Send an email to each selected subscriber. Title is used
+                        as the email body heading.
                     </DialogDescription>
                 </DialogHeader>
-                <form
-                    class="grid gap-4 py-4"
-                    @submit.prevent="submitBulkEmail"
-                >
+                <form class="grid gap-4 py-4" @submit.prevent="submitBulkEmail">
                     <div class="grid gap-2">
                         <Label for="bulk-email-selected-title">Title</Label>
                         <Input
@@ -209,17 +218,19 @@ function submitBulkEmail() {
                     </div>
                     <div class="grid gap-2">
                         <Label for="bulk-email-selected-body">Body</Label>
-                            <textarea
-                                id="bulk-email-selected-body"
-                                v-model="bulkEmailForm.body"
-                                rows="3"
-                                placeholder="Email body content"
+                        <textarea
+                            id="bulk-email-selected-body"
+                            v-model="bulkEmailForm.body"
+                            rows="3"
+                            placeholder="Email body content"
                             required
-                            class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                         />
                     </div>
                     <div class="grid gap-2">
-                        <Label for="bulk-email-selected-category">Category</Label>
+                        <Label for="bulk-email-selected-category"
+                            >Category</Label
+                        >
                         <Input
                             id="bulk-email-selected-category"
                             v-model="bulkEmailForm.category"
@@ -234,10 +245,7 @@ function submitBulkEmail() {
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type="submit"
-                            :disabled="bulkEmailSubmitting"
-                        >
+                        <Button type="submit" :disabled="bulkEmailSubmitting">
                             {{ bulkEmailSubmitting ? 'Sending…' : 'Send' }}
                         </Button>
                     </DialogFooter>

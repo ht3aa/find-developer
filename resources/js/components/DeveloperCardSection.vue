@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { refDebounced, useClipboard } from '@vueuse/core';
-import { Award, Check, Copy, FilterX, Search, SlidersHorizontal, Sparkles, Users } from 'lucide-vue-next';
+import {
+    Award,
+    Check,
+    Copy,
+    FilterX,
+    Search,
+    SlidersHorizontal,
+    Sparkles,
+    Users,
+} from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
@@ -15,7 +24,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import type { Developer } from '@/types/developer';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
@@ -24,7 +32,11 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
-import { availabilityTypeOptions, hasUrlsOptions } from '@/utils/developerEnums';
+import type { Developer } from '@/types/developer';
+import {
+    availabilityTypeOptions,
+    hasUrlsOptions,
+} from '@/utils/developerEnums';
 
 const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
@@ -33,7 +45,9 @@ const debouncedQuery = refDebounced(searchQuery, 500);
 const filterJobTitle = ref<string[]>(initialFilters.jobTitle ?? []);
 const filterSkill = ref<string[]>(initialFilters.skill ?? []);
 const filterBadge = ref<string[]>(initialFilters.badge ?? []);
-const filterAvailabilityType = ref<string[]>(initialFilters.availabilityType ?? []);
+const filterAvailabilityType = ref<string[]>(
+    initialFilters.availabilityType ?? [],
+);
 const filterHasUrls = ref<string[]>(initialFilters.hasUrls ?? []);
 const isAvailable = ref(initialFilters.isAvailable ?? 'all');
 const isRecommended = ref(initialFilters.isRecommended ?? 'all');
@@ -135,8 +149,14 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
             developers.value = [...developers.value, ...newDevelopers];
         } else {
             developers.value = newDevelopers;
-            if (data.total_developers !== undefined && data.recommended_developers !== undefined) {
-                stats.value = { total: data.total_developers, recommended: data.recommended_developers };
+            if (
+                data.total_developers !== undefined &&
+                data.recommended_developers !== undefined
+            ) {
+                stats.value = {
+                    total: data.total_developers,
+                    recommended: data.recommended_developers,
+                };
             }
             if (data.meta?.total !== undefined) {
                 paginationTotal.value = data.meta.total;
@@ -194,7 +214,9 @@ Instructions:
 Filters are already applied in the URL (e.g. job title, skills, availability). For human browsing you can also open: ${pageUrl}`;
 });
 
-const { copy: copyToClipboard, copied: aiPromptCopied } = useClipboard({ copiedDuring: 2000 });
+const { copy: copyToClipboard, copied: aiPromptCopied } = useClipboard({
+    copiedDuring: 2000,
+});
 
 function copyAiPrompt(): void {
     copyToClipboard(aiPromptText.value);
@@ -205,7 +227,8 @@ const activeFilterCount = computed(() => {
     if (filterJobTitle.value.length > 0) count += filterJobTitle.value.length;
     if (filterSkill.value.length > 0) count += filterSkill.value.length;
     if (filterBadge.value.length > 0) count += filterBadge.value.length;
-    if (filterAvailabilityType.value.length > 0) count += filterAvailabilityType.value.length;
+    if (filterAvailabilityType.value.length > 0)
+        count += filterAvailabilityType.value.length;
     if (filterHasUrls.value.length > 0) count += filterHasUrls.value.length;
     if (isAvailable.value && isAvailable.value !== 'all') count++;
     if (isRecommended.value && isRecommended.value !== 'all') count++;
@@ -214,9 +237,13 @@ const activeFilterCount = computed(() => {
     return count;
 });
 
-watch(debouncedQuery, () => {
-    fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
-}, { immediate: false });
+watch(
+    debouncedQuery,
+    () => {
+        fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
+    },
+    { immediate: false },
+);
 
 watch(advancedOpen, (isOpen: boolean) => {
     if (!isOpen) {
@@ -234,7 +261,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <section id="developers" class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <section
+        id="developers"
+        class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+    >
         <div
             v-if="stats"
             class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
@@ -248,7 +278,9 @@ onMounted(() => {
                     <Users class="size-6 sm:size-7" aria-hidden="true" />
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+                    <p
+                        class="text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl"
+                    >
                         {{ stats.total }}
                     </p>
                     <p class="mt-0.5 text-sm text-muted-foreground">
@@ -265,7 +297,9 @@ onMounted(() => {
                     <Award class="size-6 sm:size-7" aria-hidden="true" />
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-3xl">
+                    <p
+                        class="text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl"
+                    >
                         {{ stats.recommended }}
                     </p>
                     <p class="mt-0.5 text-sm text-muted-foreground">
@@ -274,10 +308,14 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="sticky w-1/2 mx-auto top-18 z-sticky-bar mb-6 flex flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center">
-            <div class="relative flex min-w-0 flex-1 border border-primary rounded-md">
+        <div
+            class="z-sticky-bar sticky top-18 mx-auto mb-6 flex w-1/2 flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center"
+        >
+            <div
+                class="relative flex min-w-0 flex-1 rounded-md border border-primary"
+            >
                 <Search
-                    class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                    class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                 />
                 <Input
@@ -290,24 +328,26 @@ onMounted(() => {
             </div>
             <p
                 v-if="paginationTotal !== null"
-                class="shrink-0 text-sm tabular-nums text-muted-foreground"
+                class="shrink-0 text-sm text-muted-foreground tabular-nums"
                 aria-live="polite"
             >
-                {{ paginationTotal }} developer{{ paginationTotal === 1 ? '' : 's' }}
+                {{ paginationTotal }} developer{{
+                    paginationTotal === 1 ? '' : 's'
+                }}
             </p>
             <Sheet v-model:open="advancedOpen">
                 <SheetTrigger as-child>
                     <Button
                         variant="outline"
                         size="default"
-                        class="relative h-9 shrink-0 gap-2 border border-primary rounded-md"
+                        class="relative h-9 shrink-0 gap-2 rounded-md border border-primary"
                     >
                         <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
                         <span class="hidden sm:inline">Advanced filters</span>
                         <Badge
                             v-if="activeFilterCount > 0"
                             variant="secondary"
-                            class="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full p-0 text-xs"
+                            class="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full p-0 text-xs"
                         >
                             {{ activeFilterCount }}
                         </Badge>
@@ -318,7 +358,9 @@ onMounted(() => {
                     class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
                 >
                     <div class="mx-auto w-full max-w-4xl py-6 pr-10">
-                        <div class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                        <div
+                            class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3"
+                        >
                             <SheetTitle class="text-lg font-semibold">
                                 Advanced filters
                             </SheetTitle>
@@ -327,17 +369,26 @@ onMounted(() => {
                                 class="inline-flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5"
                                 aria-live="polite"
                             >
-                                <Users class="size-4 shrink-0 text-primary" aria-hidden="true" />
-                                <span class="text-base font-semibold tabular-nums tracking-tight text-foreground">
+                                <Users
+                                    class="size-4 shrink-0 text-primary"
+                                    aria-hidden="true"
+                                />
+                                <span
+                                    class="text-base font-semibold tracking-tight text-foreground tabular-nums"
+                                >
                                     {{ paginationTotal }}
                                 </span>
                                 <span class="text-sm text-muted-foreground">
-                                    developer{{ paginationTotal === 1 ? '' : 's' }}
+                                    developer{{
+                                        paginationTotal === 1 ? '' : 's'
+                                    }}
                                 </span>
                             </div>
                         </div>
                         <SheetDescription class="sr-only">
-                            Filter developers by job title, skills, badges, availability type, has URLs, availability status, recommended status, and years of experience.
+                            Filter developers by job title, skills, badges,
+                            availability type, has URLs, availability status,
+                            recommended status, and years of experience.
                         </SheetDescription>
                         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             <div class="space-y-2">
@@ -350,7 +401,13 @@ onMounted(() => {
                                     placeholder="e.g. Backend Developer"
                                     multiple
                                     :max-options="50"
-                                    @update:model-value="filterJobTitle = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:model-value="
+                                        filterJobTitle = Array.isArray($event)
+                                            ? $event
+                                            : $event
+                                              ? [$event]
+                                              : []
+                                    "
                                     @update:open="onJobTitleOpenChange"
                                 />
                             </div>
@@ -364,7 +421,13 @@ onMounted(() => {
                                     placeholder="e.g. Laravel, Vue"
                                     multiple
                                     :max-options="50"
-                                    @update:model-value="filterSkill = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:model-value="
+                                        filterSkill = Array.isArray($event)
+                                            ? $event
+                                            : $event
+                                              ? [$event]
+                                              : []
+                                    "
                                     @update:open="onSkillOpenChange"
                                 />
                             </div>
@@ -378,12 +441,20 @@ onMounted(() => {
                                     placeholder="e.g. Laravel Expert"
                                     multiple
                                     :max-options="50"
-                                    @update:model-value="filterBadge = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:model-value="
+                                        filterBadge = Array.isArray($event)
+                                            ? $event
+                                            : $event
+                                              ? [$event]
+                                              : []
+                                    "
                                     @update:open="onBadgeOpenChange"
                                 />
                             </div>
                             <div class="space-y-2">
-                                <Label for="filter-availability-type">Availability type</Label>
+                                <Label for="filter-availability-type"
+                                    >Availability type</Label
+                                >
                                 <SearchableSelect
                                     id="filter-availability-type"
                                     :model-value="filterAvailabilityType"
@@ -391,7 +462,15 @@ onMounted(() => {
                                     :options="availabilityTypeOptions"
                                     placeholder="e.g. Full-time, Remote"
                                     multiple
-                                    @update:model-value="filterAvailabilityType = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:model-value="
+                                        filterAvailabilityType = Array.isArray(
+                                            $event,
+                                        )
+                                            ? $event
+                                            : $event
+                                              ? [$event]
+                                              : []
+                                    "
                                     @update:open="onAvailabilityTypeOpenChange"
                                 />
                             </div>
@@ -404,16 +483,24 @@ onMounted(() => {
                                     :options="hasUrlsOptions"
                                     placeholder="e.g. GitHub, LinkedIn"
                                     multiple
-                                    @update:model-value="filterHasUrls = Array.isArray($event) ? $event : ($event ? [$event] : [])"
+                                    @update:model-value="
+                                        filterHasUrls = Array.isArray($event)
+                                            ? $event
+                                            : $event
+                                              ? [$event]
+                                              : []
+                                    "
                                     @update:open="onHasUrlsOpenChange"
                                 />
                             </div>
                             <div class="space-y-2">
-                                <Label for="filter-is-available">Availability</Label>
+                                <Label for="filter-is-available"
+                                    >Availability</Label
+                                >
                                 <select
                                     id="filter-is-available"
                                     v-model="isAvailable"
-                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     <option value="all">All</option>
                                     <option value="1">Available</option>
@@ -421,11 +508,13 @@ onMounted(() => {
                                 </select>
                             </div>
                             <div class="space-y-2">
-                                <Label for="filter-is-recommended">Recommended</Label>
+                                <Label for="filter-is-recommended"
+                                    >Recommended</Label
+                                >
                                 <select
                                     id="filter-is-recommended"
                                     v-model="isRecommended"
-                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     <option value="all">All</option>
                                     <option value="1">Recommended</option>
@@ -433,7 +522,9 @@ onMounted(() => {
                                 </select>
                             </div>
                             <div class="space-y-2">
-                                <Label for="filter-years-min">Min. years of experience</Label>
+                                <Label for="filter-years-min"
+                                    >Min. years of experience</Label
+                                >
                                 <Input
                                     id="filter-years-min"
                                     v-model="yearsMin"
@@ -444,7 +535,9 @@ onMounted(() => {
                                 />
                             </div>
                             <div class="space-y-2">
-                                <Label for="filter-years-max">Max. years of experience</Label>
+                                <Label for="filter-years-max"
+                                    >Max. years of experience</Label
+                                >
                                 <Input
                                     id="filter-years-max"
                                     v-model="yearsMax"
@@ -471,19 +564,33 @@ onMounted(() => {
                         <div
                             class="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200"
                         >
-                            <div class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-                                <div class="flex min-w-0 flex-1 items-start gap-3">
+                            <div
+                                class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6"
+                            >
+                                <div
+                                    class="flex min-w-0 flex-1 items-start gap-3"
+                                >
                                     <div
                                         class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
                                     >
-                                        <Sparkles class="size-5" aria-hidden="true" />
+                                        <Sparkles
+                                            class="size-5"
+                                            aria-hidden="true"
+                                        />
                                     </div>
                                     <div class="min-w-0 flex-1 space-y-1">
-                                        <Label class="text-base font-semibold tracking-tight text-foreground">
+                                        <Label
+                                            class="text-base font-semibold tracking-tight text-foreground"
+                                        >
                                             AI prompt
                                         </Label>
-                                        <p class="text-sm text-muted-foreground">
-                                            Copy this text and share it with an AI assistant so it can search this site using your current filters and find the best match.
+                                        <p
+                                            class="text-sm text-muted-foreground"
+                                        >
+                                            Copy this text and share it with an
+                                            AI assistant so it can search this
+                                            site using your current filters and
+                                            find the best match.
                                         </p>
                                     </div>
                                 </div>
@@ -492,7 +599,11 @@ onMounted(() => {
                                     variant="outline"
                                     size="default"
                                     class="shrink-0 gap-2 border-primary"
-                                    :aria-label="aiPromptCopied ? 'Copied' : 'Copy AI prompt'"
+                                    :aria-label="
+                                        aiPromptCopied
+                                            ? 'Copied'
+                                            : 'Copy AI prompt'
+                                    "
                                     @click="copyAiPrompt"
                                 >
                                     <Check
@@ -500,16 +611,24 @@ onMounted(() => {
                                         class="size-4 text-green-600 dark:text-green-400"
                                         aria-hidden="true"
                                     />
-                                    <Copy v-else class="size-4" aria-hidden="true" />
-                                    <span>{{ aiPromptCopied ? 'Copied' : 'Copy' }}</span>
+                                    <Copy
+                                        v-else
+                                        class="size-4"
+                                        aria-hidden="true"
+                                    />
+                                    <span>{{
+                                        aiPromptCopied ? 'Copied' : 'Copy'
+                                    }}</span>
                                 </Button>
                             </div>
-                            <div class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3">
+                            <div
+                                class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3"
+                            >
                                 <textarea
                                     :value="aiPromptText"
                                     readonly
                                     rows="6"
-                                    class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 text-sm font-mono leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                                    class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 font-mono text-sm leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none"
                                     aria-label="AI prompt text"
                                 />
                             </div>
@@ -519,10 +638,7 @@ onMounted(() => {
             </Sheet>
         </div>
 
-        <div
-            v-if="loading"
-            class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div
                 v-for="i in 6"
                 :key="i"

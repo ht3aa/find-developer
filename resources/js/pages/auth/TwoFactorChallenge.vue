@@ -4,12 +4,12 @@ import { computed, ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
 } from '@/components/ui/input-otp';
+import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { store } from '@/routes/two-factor/login';
 import type { TwoFactorConfigContent } from '@/types';
@@ -106,7 +106,10 @@ const code = ref<string>('');
                     #default="{ errors, processing, clearErrors }"
                 >
                     <div class="grid gap-2">
-                        <Label for="recovery_code">Recovery code <span class="text-destructive">*</span></Label>
+                        <Label for="recovery_code"
+                            >Recovery code
+                            <span class="text-destructive">*</span></Label
+                        >
                         <Input
                             id="recovery_code"
                             name="recovery_code"

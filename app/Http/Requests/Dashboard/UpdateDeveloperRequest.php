@@ -14,12 +14,16 @@ use Illuminate\Support\Str;
 
 class UpdateDeveloperRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        $developer = Developer::withoutGlobalScope(ApprovedScope::class)
+            ->find($this->route('developer'));
+
+        if (! $developer instanceof Developer) {
+            return false;
+        }
+
+        return $this->user()->can('update', $developer);
     }
 
     /**

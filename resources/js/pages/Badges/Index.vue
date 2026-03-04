@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { Award, Plus } from 'lucide-vue-next';
+import { computed } from 'vue';
 import BadgeController from '@/actions/App/Http/Controllers/BadgeController';
 import BadgesDataTable from '@/components/badges/BadgesDataTable.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
-import { index as badgesIndex, create } from '@/routes/badges';
+import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import type { Badge as BadgeType } from '@/types/badge';
+import { index as badgesIndex, create } from '@/routes/badges';
 import type { BreadcrumbItem } from '@/types';
+import type { Badge as BadgeType } from '@/types/badge';
 
 type Props = {
     badges: BadgeType[];
@@ -18,7 +18,9 @@ type Props = {
 defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -38,7 +40,9 @@ function confirmDelete(badge: BadgeType) {
     <Head title="Badges" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -51,9 +55,13 @@ function confirmDelete(badge: BadgeType) {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Badges</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Badges
+                    </h1>
                     <p class="text-muted-foreground">
                         Manage badges that can be assigned to developers
                     </p>

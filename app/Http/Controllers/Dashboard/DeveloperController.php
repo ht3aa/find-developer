@@ -6,13 +6,15 @@ use App\Helpers\DeveloperMessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\BulkEmailAllDevelopersRequest;
 use App\Http\Requests\Dashboard\BulkEmailDevelopersRequest;
+use App\Http\Requests\Dashboard\DeveloperCreateRequest;
+use App\Http\Requests\Dashboard\DeveloperEditRequest;
+use App\Http\Requests\Dashboard\DeveloperIndexRequest;
+use App\Http\Requests\Dashboard\StoreDeveloperRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
-use App\Http\Requests\StoreDeveloperRequest;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -23,9 +25,8 @@ class DeveloperController extends Controller
     /**
      * Display a paginated listing of all developers (including pending/rejected).
      */
-    public function index(Request $request): Response
+    public function index(DeveloperIndexRequest $request): Response
     {
-        $this->authorize('viewAny', Developer::class);
         $search = $request->query('search');
         $status = $request->query('status');
         $searchTerm = is_string($search) ? trim($search) : '';
@@ -35,7 +36,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -47,7 +48,7 @@ class DeveloperController extends Controller
             $query->where('status', $status);
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -106,7 +107,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**
@@ -139,15 +140,14 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**
      * Show the form for creating a new developer.
      */
-    public function create(): Response
+    public function create(DeveloperCreateRequest $request): Response
     {
-        $this->authorize('create', Developer::class);
         $users = \App\Models\User::whereDoesntHave('developer')
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
@@ -163,7 +163,6 @@ class DeveloperController extends Controller
      */
     public function store(StoreDeveloperRequest $request): RedirectResponse
     {
-        $this->authorize('create', Developer::class);
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
@@ -198,13 +197,11 @@ class DeveloperController extends Controller
     /**
      * Show the form for editing the specified developer.
      */
-    public function edit(string $developer): Response
+    public function edit(DeveloperEditRequest $request, string $developer): Response
     {
         $developerModel = Developer::withoutGlobalScope(ApprovedScope::class)
             ->with(['jobTitle', 'skills', 'badges'])
             ->findOrFail($developer);
-
-        $this->authorize('update', $developerModel);
 
         $developer = (new \App\Http\Resources\DeveloperResource($developerModel))->resolve();
 
@@ -232,7 +229,6 @@ class DeveloperController extends Controller
     public function update(UpdateDeveloperRequest $request, string $developer): RedirectResponse
     {
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($developer);
-        $this->authorize('update', $developer);
 
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;

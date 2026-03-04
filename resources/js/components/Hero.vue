@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 import { ArrowDown, Loader2 } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+import DotGrid from '@/components/animations/DotGrid.vue';
+import Duck from '@/components/Duck.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Duck from '@/components/Duck.vue';
-import DotGrid from '@/components/animations/DotGrid.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -18,6 +18,8 @@ const props = withDefaults(
         successMessage?: string;
         /** When set, shows the newsletter signup field in the hero. */
         newsletterStoreUrl?: string;
+        /** YouTube video URL (e.g. https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID). */
+        youtubeUrl?: string;
     }>(),
     {
         badge: 'Find developers',
@@ -28,23 +30,51 @@ const props = withDefaults(
 );
 
 const page = usePage();
-const errors = computed(() => (page.props.errors as Record<string, string> | undefined) ?? {});
+const errors = computed(
+    () => (page.props.errors as Record<string, string> | undefined) ?? {},
+);
+
+function getYoutubeEmbedUrl(url: string | undefined): string | null {
+    if (!url?.trim()) return null;
+    const trimmed = url.trim();
+    const watchMatch = trimmed.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+    );
+    const embedMatch = trimmed.match(
+        /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+    );
+    const videoId = watchMatch?.[1] ?? embedMatch?.[1];
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+}
+
+const youtubeEmbedUrl = computed(() => getYoutubeEmbedUrl(props.youtubeUrl));
 const email = ref('');
 const submitting = ref(false);
 
 function scrollToSearch(): void {
-    document
-        .querySelector(props.primaryActionHref ?? '')
-        ?.scrollIntoView({ behavior: 'smooth' });
+    const target = props.primaryActionHref
+        ? document.querySelector(props.primaryActionHref)
+        : null;
+    if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+    }
 }
 
 function submitNewsletter(): void {
     if (!props.newsletterStoreUrl || !email.value.trim()) return;
     submitting.value = true;
-    router.post(props.newsletterStoreUrl, { email: email.value.trim() }, {
-        preserveScroll: true,
-        onFinish: () => { submitting.value = false; },
-    });
+    router.post(
+        props.newsletterStoreUrl,
+        { email: email.value.trim() },
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                submitting.value = false;
+            },
+        },
+    );
 }
 </script>
 
@@ -57,56 +87,66 @@ function submitNewsletter(): void {
             class="pointer-events-none absolute inset-0 overflow-hidden"
             aria-hidden="true"
         >
-    <DotGrid
-      :dot-size="3"
-      :gap="100"
-      base-color="#C4C2BC"
-      active-color="#F59E0B"
-      :proximity="140"
-      :speed-trigger="80"
-      :shock-radius="220"
-      :shock-strength="4"
-      :max-speed="4000"
-      :resistance="800"
-      :return-duration="1.8"
-      class-name="custom-dot-grid"
-    />
-            <div
-                class="absolute -left-40 -top-40 size-80 rounded-full bg-primary/10 blur-3xl"
+            <DotGrid
+                :dot-size="3"
+                :gap="100"
+                base-color="#C4C2BC"
+                active-color="#F59E0B"
+                :proximity="140"
+                :speed-trigger="80"
+                :shock-radius="220"
+                :shock-strength="4"
+                :max-speed="4000"
+                :resistance="800"
+                :return-duration="1.8"
+                class-name="custom-dot-grid"
             />
             <div
-                class="absolute -right-40 top-1/2 size-96 -translate-y-1/2 rounded-full bg-secondary/10 blur-3xl"
+                class="absolute -top-40 -left-40 size-80 rounded-full bg-primary/10 blur-3xl"
             />
             <div
-                class="absolute bottom-0 left-1/2 -translate-x-1/2 size-[500px] rounded-full bg-primary/5 blur-3xl"
+                class="absolute top-1/2 -right-40 size-96 -translate-y-1/2 rounded-full bg-secondary/10 blur-3xl"
+            />
+            <div
+                class="absolute bottom-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl"
             />
         </div>
 
         <!-- Decorative ducks (click to quack) -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="pointer-events-auto absolute left-[8%] top-[15%] rotate-[-15deg]">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+            <div
+                class="pointer-events-auto absolute top-[15%] left-[8%] rotate-[-15deg]"
+            >
                 <div class="hero-duck hero-duck-1">
                     <Duck size="size-14" class="opacity-90" />
                 </div>
             </div>
-            <div class="pointer-events-auto absolute right-[12%] top-[25%] rotate-[20deg]">
+            <div
+                class="pointer-events-auto absolute top-[25%] right-[12%] rotate-[20deg]"
+            >
                 <div class="hero-duck hero-duck-2">
                     <Duck size="size-10" class="opacity-85" />
                 </div>
             </div>
-            <div class="pointer-events-auto absolute left-[15%] bottom-[20%] rotate-[10deg]">
+            <div
+                class="pointer-events-auto absolute bottom-[20%] left-[15%] rotate-[10deg]"
+            >
                 <div class="hero-duck hero-duck-3">
                     <Duck size="size-12" class="opacity-80" />
                 </div>
             </div>
-            <div class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]">
+            <div
+                class="pointer-events-auto absolute right-[8%] bottom-[25%] rotate-[-20deg]"
+            >
                 <div class="hero-duck hero-duck-4">
                     <Duck size="size-11" class="opacity-85" />
                 </div>
             </div>
         </div>
 
-        <div class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
+        <div
+            class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32"
+        >
             <div class="flex flex-col items-center text-center">
                 <!-- Success message -->
                 <div
@@ -120,14 +160,14 @@ function submitNewsletter(): void {
                     v-if="props.badge != null"
                     class="mb-6 flex items-center justify-center gap-2"
                 >
-                    <Duck size="size-8" class="rotate-[-12deg] shrink-0" />
+                    <Duck size="size-8" class="shrink-0 rotate-[-12deg]" />
                     <Badge
                         variant="secondary"
                         class="rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm"
                     >
                         {{ props.badge }}
                     </Badge>
-                    <Duck size="size-8" class="rotate-[12deg] shrink-0" />
+                    <Duck size="size-8" class="shrink-0 rotate-[12deg]" />
                 </div>
 
                 <!-- Title -->
@@ -176,7 +216,11 @@ function submitNewsletter(): void {
                             class="flex-1"
                             :disabled="submitting"
                             :aria-invalid="!!errors?.email"
-                            :aria-describedby="errors?.email ? 'newsletter-email-error' : undefined"
+                            :aria-describedby="
+                                errors?.email
+                                    ? 'newsletter-email-error'
+                                    : undefined
+                            "
                         />
                         <Button
                             type="submit"
@@ -188,7 +232,9 @@ function submitNewsletter(): void {
                                 class="size-4 animate-spin"
                                 aria-hidden
                             />
-                            <span>{{ submitting ? 'Subscribing…' : 'Subscribe' }}</span>
+                            <span>{{
+                                submitting ? 'Subscribing…' : 'Subscribe'
+                            }}</span>
                         </Button>
                     </form>
                     <p
@@ -199,6 +245,38 @@ function submitNewsletter(): void {
                     >
                         {{ errors.email }}
                     </p>
+                </div>
+
+                <!-- Scroll indicator -->
+                <button
+                    type="button"
+                    class="scroll-indicator mt-12 flex flex-col items-center gap-1 text-muted-foreground/70 transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full p-2"
+                    aria-label="Scroll down to see more"
+                    @click="scrollToSearch"
+                >
+                    <span class="text-xs font-medium">Scroll</span>
+                    <ArrowDown class="size-5 scroll-arrow" aria-hidden="true" />
+                </button>
+
+                <!-- YouTube video -->
+                <div
+                    v-if="youtubeEmbedUrl"
+                    class="mt-12 w-full max-w-3xl overflow-hidden rounded-xl border border-border shadow-lg"
+                >
+                    <iframe
+                        :src="youtubeEmbedUrl + '?autoplay=1&mute=1&loop=1'"
+                        title="YouTube video"
+                        class="aspect-video w-full"
+                        allow="
+                            accelerometer;
+                            autoplay;
+                            clipboard-write;
+                            encrypted-media;
+                            gyroscope;
+                            picture-in-picture;
+                        "
+                        allowfullscreen
+                    />
                 </div>
             </div>
         </div>
@@ -243,5 +321,19 @@ function submitNewsletter(): void {
 .hero-duck-4 {
     animation-duration: 2.6s;
     animation-delay: 0.2s;
+}
+
+@keyframes scroll-bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(6px);
+    }
+}
+
+.scroll-arrow {
+    animation: scroll-bounce 2s ease-in-out infinite;
 }
 </style>

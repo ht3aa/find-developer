@@ -9,10 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import {
-    index as developerRecommendationsIndex,
-} from '@/routes/developer-recommendations';
 import { dashboard } from '@/routes';
+import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import type { BreadcrumbItem } from '@/types';
 
 type RecommendationEdit = {
@@ -43,13 +41,22 @@ const formData = ref({
 
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Recommendations', href: developerRecommendationsIndex().url },
-    { title: 'Edit recommendation', href: DeveloperRecommendationController.edit.url(props.recommendation.id) },
+    {
+        title: 'Edit recommendation',
+        href: DeveloperRecommendationController.edit.url(
+            props.recommendation.id,
+        ),
+    },
 ];
 
 watch(
@@ -73,13 +80,18 @@ function submit(): void {
         },
         {
             preserveScroll: true,
-            onFinish: () => { submitting.value = false; },
+            onFinish: () => {
+                submitting.value = false;
+            },
         },
     );
 }
 
 function formatDate(iso: string): string {
-    return new Date(iso).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
+    return new Date(iso).toLocaleString(undefined, {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    });
 }
 </script>
 
@@ -89,7 +101,9 @@ function formatDate(iso: string): string {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
                     <ThumbsUp class="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -102,22 +116,33 @@ function formatDate(iso: string): string {
 
             <Card class="lg:col-span-2">
                 <CardHeader class="pb-4">
-                    <h3 class="text-sm font-medium text-muted-foreground">Recommendation details</h3>
+                    <h3 class="text-sm font-medium text-muted-foreground">
+                        Recommendation details
+                    </h3>
                     <p class="mt-1 text-sm text-muted-foreground">
-                        From <strong>{{ recommendation.recommender_name ?? '—' }}</strong>
-                        to <strong>{{ recommendation.recommended_name ?? '—' }}</strong>
+                        From
+                        <strong>{{
+                            recommendation.recommender_name ?? '—'
+                        }}</strong>
+                        to
+                        <strong>{{
+                            recommendation.recommended_name ?? '—'
+                        }}</strong>
                         · Created {{ formatDate(recommendation.created_at) }}
                     </p>
                 </CardHeader>
                 <CardContent>
                     <form class="space-y-6" @submit.prevent="submit">
                         <div class="grid gap-2">
-                            <Label for="status">Status <span class="text-destructive">*</span></Label>
+                            <Label for="status"
+                                >Status
+                                <span class="text-destructive">*</span></Label
+                            >
                             <select
                                 id="status"
                                 v-model="formData.status"
                                 required
-                                class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                             >
                                 <option
                                     v-for="opt in statusOptions"
@@ -137,25 +162,36 @@ function formatDate(iso: string): string {
                                 rows="4"
                                 maxlength="2000"
                                 placeholder="Optional admin note"
-                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                             />
-                            <InputError :message="formErrors.recommendation_note" />
-                            <p class="text-muted-foreground text-xs">
+                            <InputError
+                                :message="formErrors.recommendation_note"
+                            />
+                            <p class="text-xs text-muted-foreground">
                                 {{ formData.recommendation_note.length }} / 2000
                             </p>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
                             <Button type="submit" :disabled="submitting">
-                                {{ submitting ? 'Updating...' : 'Update recommendation' }}
+                                {{
+                                    submitting
+                                        ? 'Updating...'
+                                        : 'Update recommendation'
+                                }}
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="developerRecommendationsIndex().url">Cancel</Link>
+                                <Link
+                                    :href="developerRecommendationsIndex().url"
+                                    >Cancel</Link
+                                >
                             </Button>
                             <span
                                 v-show="flashSuccess"
                                 class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                             >
-                                <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                <span
+                                    class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                />
                                 {{ flashSuccess }}
                             </span>
                         </div>

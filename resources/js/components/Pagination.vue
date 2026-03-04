@@ -33,8 +33,14 @@ defineProps<{
                 :aria-current="link.active ? 'page' : undefined"
                 preserve-scroll
             >
-                <ChevronLeft v-if="link.label === '&laquo; Previous'" class="size-4" />
-                <ChevronRight v-else-if="link.label === 'Next &raquo;'" class="size-4" />
+                <ChevronLeft
+                    v-if="link.label === '&laquo; Previous'"
+                    class="size-4"
+                />
+                <ChevronRight
+                    v-else-if="link.label === 'Next &raquo;'"
+                    class="size-4"
+                />
                 <span v-else v-html="link.label" />
             </Link>
             <span
@@ -44,8 +50,14 @@ defineProps<{
                 ]"
                 aria-disabled="true"
             >
-                <ChevronLeft v-if="link.label === '&laquo; Previous'" class="size-4" />
-                <ChevronRight v-else-if="link.label === 'Next &raquo;'" class="size-4" />
+                <ChevronLeft
+                    v-if="link.label === '&laquo; Previous'"
+                    class="size-4"
+                />
+                <ChevronRight
+                    v-else-if="link.label === 'Next &raquo;'"
+                    class="size-4"
+                />
                 <span v-else v-html="link.label" />
             </span>
         </template>

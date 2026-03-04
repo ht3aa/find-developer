@@ -5,19 +5,20 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\StoreUserRequest;
 use App\Http\Requests\Dashboard\UpdateUserRequest;
+use App\Http\Requests\Dashboard\UserCreateRequest;
+use App\Http\Requests\Dashboard\UserDestroyRequest;
+use App\Http\Requests\Dashboard\UserEditRequest;
+use App\Http\Requests\Dashboard\UserIndexRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(UserIndexRequest $request): Response
     {
-        $this->authorize('viewAny', User::class);
-
         $search = $request->query('search');
         $searchTerm = is_string($search) ? trim($search) : '';
 
@@ -55,10 +56,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(UserCreateRequest $request): Response
     {
-        $this->authorize('create', User::class);
-
         $roles = Role::orderBy('name')->get(['id', 'name', 'guard_name']);
 
         return Inertia::render('Users/Create', [
@@ -68,8 +67,6 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $this->authorize('create', User::class);
-
         $data = $request->validated();
         $roleIds = $data['role_ids'] ?? [];
         unset($data['role_ids'], $data['password_confirmation']);
@@ -86,10 +83,8 @@ class UserController extends Controller
             ->with('success', 'User created successfully.');
     }
 
-    public function edit(User $user): Response
+    public function edit(UserEditRequest $request, User $user): Response
     {
-        $this->authorize('update', $user);
-
         $user->load('roles');
         $roles = Role::orderBy('name')->get(['id', 'name', 'guard_name']);
 
@@ -109,8 +104,6 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $this->authorize('update', $user);
-
         $data = $request->validated();
         $roleIds = $data['role_ids'] ?? [];
         unset($data['role_ids'], $data['password_confirmation']);
@@ -131,10 +124,8 @@ class UserController extends Controller
             ->with('success', 'User updated successfully.');
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(UserDestroyRequest $request, User $user): RedirectResponse
     {
-        $this->authorize('delete', $user);
-
         if ($user->id === auth()->id()) {
             return redirect()
                 ->route('users.index')

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import AverageSalaryByExperienceChart from '@/components/charts/AverageSalaryByExperienceChart.vue';
+import DevelopersByAvailabilityTypeChart from '@/components/charts/DevelopersByAvailabilityTypeChart.vue';
+import DevelopersByJobTitleChart from '@/components/charts/DevelopersByJobTitleChart.vue';
+import DevelopersByLocationChart from '@/components/charts/DevelopersByLocationChart.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
-import DevelopersByAvailabilityTypeChart from '@/components/charts/DevelopersByAvailabilityTypeChart.vue';
-import DevelopersByJobTitleChart from '@/components/charts/DevelopersByJobTitleChart.vue';
-import DevelopersByLocationChart from '@/components/charts/DevelopersByLocationChart.vue';
-import AverageSalaryByExperienceChart from '@/components/charts/AverageSalaryByExperienceChart.vue';
 
 type LocationPoint = { label: string; count: number };
 type AvailabilityPoint = { label: string; count: number };
@@ -44,8 +44,12 @@ defineProps<{
         <section class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="grid gap-8 lg:grid-cols-2">
                 <DevelopersByLocationChart :data="developersByLocation" />
-                <DevelopersByAvailabilityTypeChart :data="developersByAvailabilityType" />
-                <AverageSalaryByExperienceChart :data="averageSalaryByExperience" />
+                <DevelopersByAvailabilityTypeChart
+                    :data="developersByAvailabilityType"
+                />
+                <AverageSalaryByExperienceChart
+                    :data="averageSalaryByExperience"
+                />
                 <DevelopersByJobTitleChart :data="developersByJobTitle" />
             </div>
         </section>

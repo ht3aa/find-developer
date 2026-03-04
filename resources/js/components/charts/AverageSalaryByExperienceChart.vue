@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
 import { Chart } from 'chart.js/auto';
+import { onMounted, ref, watch } from 'vue';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 type DataPoint = { years_of_experience: number; average_salary: number };
@@ -21,7 +21,8 @@ function initChart(): void {
     }
 
     const labels = props.data.map(
-        (d) => `${d.years_of_experience} ${d.years_of_experience === 1 ? 'year' : 'years'}`,
+        (d) =>
+            `${d.years_of_experience} ${d.years_of_experience === 1 ? 'year' : 'years'}`,
     );
 
     chartInstance = new Chart(canvasRef.value, {
@@ -55,7 +56,11 @@ function initChart(): void {
 }
 
 onMounted(() => initChart());
-watch(() => props.data, () => initChart(), { deep: true });
+watch(
+    () => props.data,
+    () => initChart(),
+    { deep: true },
+);
 </script>
 
 <template>
@@ -66,7 +71,10 @@ watch(() => props.data, () => initChart(), { deep: true });
             </h3>
         </CardHeader>
         <CardContent>
-            <div v-if="!data.length" class="flex h-64 items-center justify-center text-sm text-muted-foreground">
+            <div
+                v-if="!data.length"
+                class="flex h-64 items-center justify-center text-sm text-muted-foreground"
+            >
                 No data yet
             </div>
             <div v-else class="h-64">

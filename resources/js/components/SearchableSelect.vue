@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core';
+import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useId } from 'vue';
+import { Badge } from '@/components/ui/badge';
 import {
     Combobox,
     ComboboxAnchor,
@@ -12,11 +17,6 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from '@/components/ui/combobox';
-import { Badge } from '@/components/ui/badge';
-import { useDebounceFn } from '@vueuse/core';
-import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useId } from 'vue';
 import { cn } from '@/lib/utils';
 
 const instanceId = useId();
@@ -62,6 +62,9 @@ function handleOpenChange(open: boolean): void {
     if (props.open === undefined) {
         internalOpen.value = open;
     }
+    if (open && props.optionsUrl) {
+        fetchOptions();
+    }
     emit('update:open', open);
 }
 
@@ -73,7 +76,10 @@ const selectedValues = computed(() => {
 
 const selectedOptions = computed(() =>
     selectedValues.value.map((v) => {
-        const opt = displayOptions.value.find((o) => o.value === v || o.label === v);
+        const opt = displayOptions.value.find(
+            (o) =>
+                String(o.value) === String(v) || String(o.label) === String(v),
+        );
         return opt ?? { value: v, label: v };
     }),
 );
@@ -89,7 +95,9 @@ const displayOptions = computed(() => {
     if (props.optionsUrl) {
         const selected = selectedValues.value
             .map((v) => {
-                const opt = fetchedOptions.value.find((o) => o.value === v || o.label === v);
+                const opt = fetchedOptions.value.find(
+                    (o) => o.value === v || o.label === v,
+                );
                 return opt ?? { value: v, label: v };
             })
             .filter((o) => o.value);
@@ -106,11 +114,55 @@ async function fetchOptions(): Promise<void> {
     optionsLoading.value = true;
     try {
         const url = new URL(props.optionsUrl, window.location.origin);
-        if (searchTerm.value) url.searchParams.set('search', searchTerm.value);
+        if (searchTerm.value) {
+            url.searchParams.set('search', searchTerm.value);
+            url.searchParams.set('filter[search]', searchTerm.value);
+        }
         const res = await fetch(url.toString());
         if (!res.ok) throw new Error('Failed to fetch options');
         const json = await res.json();
-        fetchedOptions.value = Array.isArray(json.data) ? json.data : [];
+        const items = Array.isArray(json.data) ? json.data : [];
+        fetchedOptions.value = items.map((item: any) => {
+            if (item && typeof item === 'object') {
+                if ('value' in item && 'label' in item) {
+                    return {
+                        value: String((item as { value: unknown }).value),
+                        label: String((item as { label: unknown }).label),
+                    };
+                }
+
+                if ('id' in item && 'name' in item) {
+                    return {
+                        value: String((item as { id: unknown }).id),
+                        label: String((item as { name: unknown }).name),
+                    };
+                }
+            }
+
+            const anyItem = item as {
+                id?: unknown;
+                name?: unknown;
+                value?: unknown;
+                label?: unknown;
+            };
+            const fallbackValue =
+                anyItem.id ??
+                anyItem.value ??
+                anyItem.name ??
+                anyItem.label ??
+                '';
+            const fallbackLabel =
+                anyItem.name ??
+                anyItem.label ??
+                anyItem.value ??
+                anyItem.id ??
+                '';
+
+            return {
+                value: String(fallbackValue),
+                label: String(fallbackLabel),
+            };
+        });
     } catch {
         fetchedOptions.value = [];
     } finally {
@@ -143,21 +195,34 @@ function removeValue(value: string, event: Event): void {
 <template>
     <Combobox
         :name="id ?? instanceId"
-        :model-value="multiple ? selectedValues : (selectedValues[0] ?? null)"
+        :model-value="multiple ? selectedValues : (selectedValues[1] ?? null)"
         :multiple="multiple"
         :open="effectiveOpen"
         :open-on-click="true"
         :ignore-filter="!!optionsUrl"
         :reset-search-term-on-select="false"
-        @update:model-value="emit('update:modelValue', multiple ? (Array.isArray($event) ? $event : []) : (Array.isArray($event) ? $event[0] ?? null : $event ?? null))"
+        @update:model-value="
+            emit(
+                'update:modelValue',
+                multiple
+                    ? Array.isArray($event)
+                        ? $event
+                        : []
+                    : Array.isArray($event)
+                      ? ($event[0] ?? null)
+                      : ($event ?? null),
+            )
+        "
         @update:open="handleOpenChange"
     >
         <ComboboxAnchor
-            :class="cn(
-                'flex h-auto min-h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
-                'focus-within:outline-none focus-within:ring-1 focus-within:ring-ring',
-                props.class,
-            )"
+            :class="
+                cn(
+                    'flex h-auto min-h-9 w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors',
+                    'focus-within:ring-1 focus-within:ring-ring focus-within:outline-none',
+                    props.class,
+                )
+            "
         >
             <ComboboxTrigger
                 :id="id"
@@ -182,7 +247,7 @@ function removeValue(value: string, event: Event): void {
                             <button
                                 v-if="allowClear"
                                 type="button"
-                                class="rounded-full outline-none ring-offset-background hover:bg-secondary focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                class="rounded-full ring-offset-background outline-none hover:bg-secondary focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                 aria-label="Remove"
                                 @click.stop="removeValue(opt.value, $event)"
                             >
@@ -192,10 +257,12 @@ function removeValue(value: string, event: Event): void {
                     </span>
                     <span
                         v-else
-                        :class="cn(
-                            'flex-1 truncate text-left',
-                            !displayValue && 'text-muted-foreground',
-                        )"
+                        :class="
+                            cn(
+                                'flex-1 truncate text-left',
+                                !displayValue && 'text-muted-foreground',
+                            )
+                        "
                     >
                         {{ displayValue || placeholder }}
                     </span>
@@ -206,25 +273,15 @@ function removeValue(value: string, event: Event): void {
         </ComboboxAnchor>
 
         <ComboboxList
-            class="w-[var(--reka-combobox-trigger-width)] max-h-[300px] p-0"
+            class="max-h-[300px] w-[var(--reka-combobox-trigger-width)] p-0"
             align="start"
         >
             <div class="relative">
                 <ComboboxInput
                     v-model="searchTerm"
                     :placeholder="placeholder"
-                    class="flex-1 border-0 rounded-none pr-10"
+                    class="flex-1 rounded-none border-0 pr-10"
                 />
-                <button
-                    v-if="optionsUrl"
-                    type="button"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label="Search"
-                    :disabled="optionsLoading"
-                    @click="fetchOptions"
-                >
-                    <Search class="size-4" />
-                </button>
             </div>
             <ComboboxViewport>
                 <ComboboxEmpty>
@@ -239,15 +296,16 @@ function removeValue(value: string, event: Event): void {
                     >
                         <Check
                             v-if="multiple"
-                            :class="cn(
-                                'mr-2 size-4 shrink-0',
-                                selectedValues.includes(opt.value) ? 'opacity-100' : 'opacity-0',
-                            )"
+                            :class="
+                                cn(
+                                    'mr-2 size-4 shrink-0',
+                                    selectedValues.includes(opt.value)
+                                        ? 'opacity-100'
+                                        : 'opacity-0',
+                                )
+                            "
                         />
-                        <ComboboxItemIndicator
-                            v-else
-                            class="mr-2"
-                        >
+                        <ComboboxItemIndicator v-else class="mr-2">
                             <Check class="size-4" />
                         </ComboboxItemIndicator>
                         {{ opt.label }}

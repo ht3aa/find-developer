@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Bug, ChevronUp } from 'lucide-vue-next';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
@@ -9,9 +9,13 @@ import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
 
 const page = usePage();
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 const appUrl = computed(() => (page.props.appUrl as string) ?? '');
-const newsletterStoreUrl = computed(() => (page.props.newsletterStoreUrl as string) ?? '');
+const newsletterStoreUrl = computed(
+    () => (page.props.newsletterStoreUrl as string) ?? '',
+);
 const webSiteJsonLd = computed(() => ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -99,7 +103,7 @@ onUnmounted(() => {
         >
             <button
                 v-if="showBackToTop"
-                class="fixed bottom-6 right-6 z-40 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:scale-110"
+                class="fixed right-6 bottom-6 z-40 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all hover:scale-110 hover:bg-primary/90"
                 aria-label="Back to top"
                 @click="scrollToTop"
             >

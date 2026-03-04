@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateDeveloperRequest;
+use App\Http\Requests\Dashboard\DeveloperProfileIndexRequest;
+use App\Http\Requests\Dashboard\DownloadDeveloperCvRequest;
+use App\Http\Requests\Dashboard\UpdateDeveloperProfileRequest;
+use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Badge;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -21,12 +23,9 @@ class DeveloperProfileController extends Controller
     /**
      * Display the developer profile edit page for the authenticated user.
      */
-    public function index(Request $request): Response
+    public function index(DeveloperProfileIndexRequest $request): Response
     {
-
         $developer = $request->user()->developer;
-
-        $this->authorize('viewDeveloperProfile', $developer);
 
         if (! $developer) {
             return Inertia::render('Developers/Profile', [
@@ -50,7 +49,7 @@ class DeveloperProfileController extends Controller
     /**
      * Update the authenticated user's developer profile.
      */
-    public function update(UpdateDeveloperRequest $request): RedirectResponse
+    public function update(UpdateDeveloperProfileRequest $request): RedirectResponse
     {
         $developer = auth()->user()->developer;
 
@@ -58,8 +57,6 @@ class DeveloperProfileController extends Controller
             return redirect()->route('dashboard.developer-profile.index')
                 ->withErrors(['developer' => 'You do not have a developer profile.']);
         }
-
-        $this->authorize('updateDeveloperProfile', $developer);
 
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
@@ -105,7 +102,7 @@ class DeveloperProfileController extends Controller
     /**
      * Download the authenticated user's developer profile as a PDF CV.
      */
-    public function downloadCv(Request $request)
+    public function downloadCv(DownloadDeveloperCvRequest $request)
     {
         $developer = $request->user()->developer;
 
@@ -121,8 +118,6 @@ class DeveloperProfileController extends Controller
                 'projects',
             ])
             ->findOrFail($developer->id);
-
-        $this->authorize('updateDeveloperProfile', $developer);
 
         $filename = str($developer->name)->slug()->append('-cv.pdf')->toString();
 
