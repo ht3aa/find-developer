@@ -34,7 +34,7 @@ const errors = computed(
     () => (page.props.errors as Record<string, string> | undefined) ?? {},
 );
 
-function getYoutubeEmbedUrl(url: string | undefined): string | null {
+function getYoutubeVideoId(url: string | undefined): string | null {
     if (!url?.trim()) return null;
     const trimmed = url.trim();
     const watchMatch = trimmed.match(
@@ -44,10 +44,10 @@ function getYoutubeEmbedUrl(url: string | undefined): string | null {
         /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
     );
     const videoId = watchMatch?.[1] ?? embedMatch?.[1];
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    return videoId;
 }
 
-const youtubeEmbedUrl = computed(() => getYoutubeEmbedUrl(props.youtubeUrl));
+const youtubeVideoId = computed(() => getYoutubeVideoId(props.youtubeUrl));
 const email = ref('');
 const submitting = ref(false);
 
@@ -260,11 +260,11 @@ function submitNewsletter(): void {
 
                 <!-- YouTube video -->
                 <div
-                    v-if="youtubeEmbedUrl"
+                    v-if="youtubeVideoId"
                     class="mt-12 w-full max-w-3xl overflow-hidden rounded-xl border border-border shadow-lg"
                 >
                     <iframe
-                        :src="youtubeEmbedUrl + '?autoplay=1&mute=1&loop=1'"
+                        :src="`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${youtubeVideoId}`"
                         title="YouTube video"
                         class="aspect-video w-full"
                         allow="
