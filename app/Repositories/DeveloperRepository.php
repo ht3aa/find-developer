@@ -33,7 +33,7 @@ class DeveloperRepository
                     $query->whereHas('jobTitle', function ($q) use ($values) {
                         $q->where(function ($q) use ($values) {
                             foreach ($values as $val) {
-                                $term = '%' . addcslashes($val, '%_') . '%';
+                                $term = '%'.addcslashes($val, '%_').'%';
                                 $q->orWhere('name', 'like', $term);
                             }
                         });
@@ -43,7 +43,7 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->where(function ($query) use ($term) {
                         $query->where('developers.name', 'like', $term)
                             ->orWhere('developers.email', 'like', $term)
@@ -60,7 +60,7 @@ class DeveloperRepository
                     $query->whereHas('skills', function ($q) use ($values) {
                         $q->where(function ($q) use ($values) {
                             foreach ($values as $val) {
-                                $term = '%' . addcslashes($val, '%_') . '%';
+                                $term = '%'.addcslashes($val, '%_').'%';
                                 $q->orWhere('skills.name', 'like', $term);
                             }
                         });
@@ -134,6 +134,17 @@ class DeveloperRepository
                     $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     $query->where('developers.recommended_by_us', $bool);
                 }),
+                AllowedFilter::callback('ids', function ($query, $value) {
+                    $ids = $this->parseFilterValues($value);
+                    if (empty($ids)) {
+                        return;
+                    }
+                    $ids = array_map('intval', array_filter($ids, fn ($v) => is_numeric($v)));
+                    if (empty($ids)) {
+                        return;
+                    }
+                    $query->whereIn('developers.id', $ids);
+                }),
             ])
             ->allowedSorts(['name', 'years_of_experience', 'created_at'])
             ->orderBy('badges_count', 'desc')
@@ -160,7 +171,7 @@ class DeveloperRepository
                     $query->whereHas('jobTitle', function ($q) use ($values) {
                         $q->where(function ($q) use ($values) {
                             foreach ($values as $val) {
-                                $term = '%' . addcslashes($val, '%_') . '%';
+                                $term = '%'.addcslashes($val, '%_').'%';
                                 $q->orWhere('name', 'like', $term);
                             }
                         });
@@ -170,7 +181,7 @@ class DeveloperRepository
                     if (blank($value)) {
                         return;
                     }
-                    $term = '%' . addcslashes($value, '%_') . '%';
+                    $term = '%'.addcslashes($value, '%_').'%';
                     $query->where(function ($query) use ($term) {
                         $query->where('developers.name', 'like', $term)
                             ->orWhere('developers.email', 'like', $term)
@@ -187,7 +198,7 @@ class DeveloperRepository
                     $query->whereHas('skills', function ($q) use ($values) {
                         $q->where(function ($q) use ($values) {
                             foreach ($values as $val) {
-                                $term = '%' . addcslashes($val, '%_') . '%';
+                                $term = '%'.addcslashes($val, '%_').'%';
                                 $q->orWhere('skills.name', 'like', $term);
                             }
                         });

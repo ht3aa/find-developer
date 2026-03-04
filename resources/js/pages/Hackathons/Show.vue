@@ -41,6 +41,8 @@ const props = defineProps<{
     alreadySubscribed: boolean;
     subscribersCount: number;
     subscribeUrl: string;
+    /** URL to view subscribed developers (null when none confirmed). */
+    subscribersUrl?: string | null;
 }>();
 
 const page = usePage();
@@ -175,6 +177,16 @@ function scrollToRegister(): void {
                                 class="ml-2 size-4 shrink-0"
                                 aria-hidden="true"
                             />
+                        </Button>
+                        <Button
+                            v-if="subscribersUrl"
+                            as-child
+                            variant="outline"
+                            class="shrink-0"
+                        >
+                            <Link :href="subscribersUrl">
+                                View subscribers
+                            </Link>
                         </Button>
                         <Button
                             v-if="hackathon.has_teams && hackathon.teams_url"
