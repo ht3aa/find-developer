@@ -86,4 +86,21 @@ class Hackathon extends Model
             get: fn () => StorageHelper::url($this->image),
         );
     }
+
+    public function youtubeVideoId(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (! $this->youtube_url) {
+                    return null;
+                }
+
+                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
+                    return $matches[1];
+                }
+
+                return null;
+            },
+        );
+    }
 }

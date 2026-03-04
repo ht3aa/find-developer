@@ -144,17 +144,21 @@ class Developer extends Model
         );
     }
 
-    public function getYoutubeVideoId(): ?string
+    public function youtubeVideoId(): Attribute
     {
-        if (! $this->youtube_url) {
-            return null;
-        }
+        return Attribute::make(
+            get: function () {
+                if (! $this->youtube_url) {
+                    return null;
+                }
 
-        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
-            return $matches[1];
-        }
+                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
+                    return $matches[1];
+                }
 
-        return null;
+                return null;
+            },
+        );
     }
 
     public function recommendedDevelopers(): BelongsToMany

@@ -28,7 +28,7 @@ class HackathonStoreRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
-            'image' => ['nullable', 'string', 'max:500'],
+            'image' => ['nullable', 'file', 'mimes:jpeg,jpg,png,gif,webp', 'max:2048'],
             'youtube_url' => ['nullable', 'string', 'url', 'max:500'],
             'reward_badge_id' => ['nullable', 'integer', 'exists:badges,id'],
             'reward_description' => ['nullable', 'string', 'max:1000'],

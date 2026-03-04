@@ -121,7 +121,7 @@ class DeveloperResource extends JsonResource
             'cv_path_url' => $developer->cv_path_url,
             'recommendations_received_count' => (int) ($developer->recommendations_received_count ?? 0),
             'recommended_by_us' => $developer->recommended_by_us,
-            'youtube_video_id' => $developer->getYoutubeVideoId(),
+            'youtube_video_id' => $developer->youtube_video_id,
             'youtube_url' => $developer->youtube_url,
             'badges' => $badges,
             'job_title' => [

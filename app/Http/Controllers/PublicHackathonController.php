@@ -29,6 +29,7 @@ class PublicHackathonController extends Controller
                 'body' => $h->body ? Str::limit(strip_tags($h->body), 160) : null,
                 'image_url' => $h->image_url,
                 'youtube_url' => $h->youtube_url,
+                'youtube_video_id' => $h->youtube_video_id,
                 'reward_badge_id' => $h->reward_badge_id,
                 'reward_badge' => $h->rewardBadge ? [
                     'id' => $h->rewardBadge->id,
@@ -72,6 +73,7 @@ class PublicHackathonController extends Controller
                 'body' => $hackathon->body,
                 'image_url' => $hackathon->image_url,
                 'youtube_url' => $hackathon->youtube_url,
+                'youtube_video_id' => $hackathon->youtube_video_id,
                 'reward_badge_id' => $hackathon->reward_badge_id,
                 'reward_badge' => $hackathon->rewardBadge ? [
                     'id' => $hackathon->rewardBadge->id,

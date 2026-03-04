@@ -18,6 +18,7 @@ export type PublicHackathonDetail = {
     body: string | null;
     image_url: string | null;
     youtube_url: string | null;
+    youtube_video_id: string | null;
     reward_badge_id: number | null;
     reward_badge: { id: number; name: string; slug: string; icon: string | null; color: string | null } | null;
     reward_description: string | null;
@@ -48,20 +49,6 @@ function formatDate(iso: string | null): string {
 }
 
 const hackathonCanonical = computed(() => `/hackathons/${props.hackathon.slug}`);
-
-/** Extract YouTube video ID from URL for embed. */
-function youtubeEmbedUrl(url: string | null): string | null {
-    if (!url) return null;
-    try {
-        const u = new URL(url);
-        const v = u.searchParams.get('v') ?? u.pathname.split('/').filter(Boolean).pop();
-        return v ? `https://www.youtube.com/embed/${v}` : null;
-    } catch {
-        return null;
-    }
-}
-
-const embedUrl = computed(() => youtubeEmbedUrl(props.hackathon.youtube_url));
 
 function scrollToRegister(): void {
     document.getElementById('hackathon-register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -168,11 +155,11 @@ function scrollToRegister(): void {
             />
 
             <div
-                v-if="embedUrl"
+                v-if="hackathon.youtube_video_id"
                 class="mb-8 aspect-video w-full overflow-hidden rounded-xl bg-muted"
             >
                 <iframe
-                    :src="embedUrl"
+                    :src="`https://www.youtube.com/embed/${hackathon.youtube_video_id}`"
                     title="YouTube video"
                     class="size-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

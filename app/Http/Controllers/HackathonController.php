@@ -11,6 +11,7 @@ use App\Http\Requests\Dashboard\HackathonUpdateRequest;
 use App\Models\Badge;
 use App\Models\Hackathon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -65,6 +66,9 @@ class HackathonController extends Controller
     public function store(HackathonStoreRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $imageFile = $data['image'] ?? null;
+        unset($data['image']);
+
         $data['slug'] = Str::slug($data['title']);
 
         if (Hackathon::where('slug', $data['slug'])->exists()) {
@@ -73,7 +77,12 @@ class HackathonController extends Controller
             ]);
         }
 
-        Hackathon::create($data);
+        $hackathon = Hackathon::create($data);
+
+        if ($imageFile) {
+            $path = $imageFile->store("hackathons/{$hackathon->id}", ['disk' => 's3']);
+            $hackathon->update(['image' => $path]);
+        }
 
         return redirect()->route('hackathons.index')
             ->with('success', 'Hackathon created successfully.');
@@ -108,6 +117,9 @@ class HackathonController extends Controller
     public function update(HackathonUpdateRequest $request, Hackathon $hackathon): RedirectResponse
     {
         $data = $request->validated();
+        $imageFile = $data['image'] ?? null;
+        unset($data['image']);
+
         $data['slug'] = Str::slug($data['title']);
 
         if (Hackathon::where('slug', $data['slug'])->where('id', '!=', $hackathon->id)->exists()) {
@@ -117,6 +129,14 @@ class HackathonController extends Controller
         }
 
         $hackathon->update($data);
+
+        if ($imageFile) {
+            if ($hackathon->image) {
+                Storage::disk('s3')->delete($hackathon->image);
+            }
+            $path = $imageFile->store("hackathons/{$hackathon->id}", ['disk' => 's3']);
+            $hackathon->update(['image' => $path]);
+        }
 
         return redirect()->route('hackathons.index')
             ->with('success', 'Hackathon updated successfully.');

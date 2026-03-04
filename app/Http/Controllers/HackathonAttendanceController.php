@@ -63,7 +63,7 @@ class HackathonAttendanceController extends Controller
             'dates' => $dates,
             'subscribers' => $subscribers,
             'attendances' => $attendances,
-            'updateUrl' => route('attendance.update', $hackathon),
+            'updateUrl' => route('hackathons.attendance.update', $hackathon),
         ]);
     }
 
@@ -80,7 +80,7 @@ class HackathonAttendanceController extends Controller
             ['attended' => $validated['attended']]
         );
 
-        return redirect()->route('attendance.index', $hackathon)
+        return redirect()->route('hackathons.attendance.index', $hackathon)
             ->with('success', 'Attendance updated.');
     }
 }
