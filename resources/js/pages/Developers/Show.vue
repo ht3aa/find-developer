@@ -57,12 +57,22 @@ const personJsonLd = computed(() => {
         jobTitle: d.job_title?.name,
         description: d.bio ?? undefined,
     };
-    if (d.profile_url) base.url = d.profile_url.startsWith('http') ? d.profile_url : `${appUrl.value.replace(/\/$/, '')}${d.profile_url.startsWith('/') ? '' : '/'}${d.profile_url}`;
+    if (d.profile_url)
+        base.url = d.profile_url.startsWith('http')
+            ? d.profile_url
+            : `${appUrl.value.replace(/\/$/, '')}${d.profile_url.startsWith('/') ? '' : '/'}${d.profile_url}`;
     if (d.skills?.length) base.skills = d.skills.map((s) => s.name);
     return base;
 });
-const auth = computed(() => page.props.auth as { user?: { is_admin?: boolean } } | undefined);
-const flash = computed(() => page.props.flash as { success?: string; error?: string; info?: string } | undefined);
+const auth = computed(
+    () => page.props.auth as { user?: { is_admin?: boolean } } | undefined,
+);
+const flash = computed(
+    () =>
+        page.props.flash as
+            | { success?: string; error?: string; info?: string }
+            | undefined,
+);
 
 const expandedDescriptions = ref<Set<string>>(new Set());
 const DESCRIPTION_TRUNCATE_LENGTH = 200;
@@ -93,7 +103,11 @@ const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 const isGuest = computed(() => !auth.value?.user);
 
 const showSalary = computed(() => {
-    if (!props.developer.expected_salary_from && !props.developer.expected_salary_to) return false;
+    if (
+        !props.developer.expected_salary_from &&
+        !props.developer.expected_salary_to
+    )
+        return false;
     return isAdmin.value;
 });
 
@@ -246,9 +260,7 @@ function formatNum(n: number): string {
                         class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border border-border bg-card px-5 py-3.5 text-sm shadow-sm"
                     >
                         <span class="flex items-center gap-2 font-medium">
-                            <Briefcase
-                                class="size-4 text-muted-foreground"
-                            />
+                            <Briefcase class="size-4 text-muted-foreground" />
                             {{ experienceLabel }} Experience
                         </span>
                         <span
@@ -270,11 +282,16 @@ function formatNum(n: number): string {
                                 class="size-2 rounded-full"
                                 :class="
                                     developer.is_available
-                                        ? 'bg-availability-available animate-pulse'
+                                        ? 'animate-pulse bg-availability-available'
                                         : 'bg-availability-unavailable'
                                 "
                             />
-                            {{ developer.is_available ? 'Available' : 'Not Available' }} Status
+                            {{
+                                developer.is_available
+                                    ? 'Available'
+                                    : 'Not Available'
+                            }}
+                            Status
                         </span>
                         <span
                             v-if="developer.recommendations_received_count > 0"
@@ -282,11 +299,14 @@ function formatNum(n: number): string {
                         >
                             <ThumbsUp class="size-4" />
                             {{ developer.recommendations_received_count }}
-                            {{ developer.recommendations_received_count === 1 ? 'Recommendation' : 'Recommendations' }}
+                            {{
+                                developer.recommendations_received_count === 1
+                                    ? 'Recommendation'
+                                    : 'Recommendations'
+                            }}
                         </span>
                     </div>
                 </header>
-
 
                 <!-- Content grid -->
                 <div class="grid gap-8 lg:grid-cols-[1fr_300px]">
@@ -305,21 +325,26 @@ function formatNum(n: number): string {
                                         :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=1&mute=1`"
                                         title="Experience video"
                                         class="size-full"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allow="
+                                            accelerometer;
+                                            autoplay;
+                                            clipboard-write;
+                                            encrypted-media;
+                                            gyroscope;
+                                            picture-in-picture;
+                                            web-share;
+                                        "
                                         allowfullscreen
                                     />
                                 </div>
                             </div>
                         </section>
 
-
                         <!-- About -->
                         <section v-if="developer.bio">
-                            <h2 class="mb-3 text-lg font-semibold">
-                                About
-                            </h2>
+                            <h2 class="mb-3 text-lg font-semibold">About</h2>
                             <p
-                                class="whitespace-pre-wrap leading-relaxed text-muted-foreground"
+                                class="leading-relaxed whitespace-pre-wrap text-muted-foreground"
                             >
                                 {{ developer.bio }}
                             </p>
@@ -438,24 +463,39 @@ function formatNum(n: number): string {
                         </section>
 
                         <!-- Work Experience -->
-                        <section v-if="developer.work_experience && developer.work_experience.length > 0">
-                            <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
-                                <Building2 class="size-5 shrink-0 text-muted-foreground" />
+                        <section
+                            v-if="
+                                developer.work_experience &&
+                                developer.work_experience.length > 0
+                            "
+                        >
+                            <h2
+                                class="mb-4 flex items-center gap-2 text-lg font-semibold"
+                            >
+                                <Building2
+                                    class="size-5 shrink-0 text-muted-foreground"
+                                />
                                 Work Experience
                             </h2>
                             <div class="space-y-6">
                                 <div
-                                    v-for="(entry, entryIdx) in developer.work_experience"
+                                    v-for="(
+                                        entry, entryIdx
+                                    ) in developer.work_experience"
                                     :key="entryIdx"
                                     class="rounded-xl border border-border bg-card p-5 shadow-sm"
                                 >
                                     <!-- Company header -->
                                     <div class="mb-4 flex items-start gap-4">
-                                        <div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                                        <div
+                                            class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground"
+                                        >
                                             <Building2 class="size-6" />
                                         </div>
                                         <div class="min-w-0 flex-1">
-                                            <h3 class="text-base font-semibold text-foreground">
+                                            <h3
+                                                class="text-base font-semibold text-foreground"
+                                            >
                                                 {{ entry.company_name }}
                                             </h3>
                                             <span
@@ -473,55 +513,116 @@ function formatNum(n: number): string {
                                         class="space-y-0"
                                     >
                                         <div
-                                            v-for="(role, roleIdx) in entry.roles"
+                                            v-for="(
+                                                role, roleIdx
+                                            ) in entry.roles"
                                             :key="roleIdx"
                                             class="relative flex gap-4"
                                         >
-                                            <div class="flex min-w-0 flex-col items-center pt-0.5">
-                                                <span class="size-2 shrink-0 rounded-full bg-primary/70" />
+                                            <div
+                                                class="flex min-w-0 flex-col items-center pt-0.5"
+                                            >
                                                 <span
-                                                    v-if="roleIdx < entry.roles.length - 1"
+                                                    class="size-2 shrink-0 rounded-full bg-primary/70"
+                                                />
+                                                <span
+                                                    v-if="
+                                                        roleIdx <
+                                                        entry.roles.length - 1
+                                                    "
                                                     class="mt-1 min-h-6 w-px flex-1 bg-border"
                                                 />
                                             </div>
-                                            <div class="min-w-0 flex-1 pb-6 last:pb-0">
-                                                <div class="font-medium text-foreground">
+                                            <div
+                                                class="min-w-0 flex-1 pb-6 last:pb-0"
+                                            >
+                                                <div
+                                                    class="font-medium text-foreground"
+                                                >
                                                     {{ role.job_title || '—' }}
                                                 </div>
-                                                <div class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
-                                                    <span v-if="role.start_date">
+                                                <div
+                                                    class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground"
+                                                >
+                                                    <span
+                                                        v-if="role.start_date"
+                                                    >
                                                         {{ role.start_date }}
                                                         —
                                                         <span
-                                                            v-if="role.is_current"
+                                                            v-if="
+                                                                role.is_current
+                                                            "
                                                             class="font-medium text-primary"
                                                         >
                                                             Present
                                                         </span>
                                                         <template v-else>
-                                                            {{ role.end_date || '—' }}
+                                                            {{
+                                                                role.end_date ||
+                                                                '—'
+                                                            }}
                                                         </template>
                                                     </span>
-                                                    <span class="text-muted-foreground/70">·</span>
-                                                    <span>{{ role.duration || '< 1 mo' }}</span>
+                                                    <span
+                                                        class="text-muted-foreground/70"
+                                                        >·</span
+                                                    >
+                                                    <span>{{
+                                                        role.duration ||
+                                                        '< 1 mo'
+                                                    }}</span>
                                                 </div>
                                                 <div
                                                     v-if="role.description"
                                                     class="mt-2"
                                                 >
                                                     <p
-                                                        class="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                                                        class="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground"
                                                     >
-                                                        {{ isExpanded(entryIdx, roleIdx) || !shouldTruncate(role.description) ? role.description : truncatedText(role.description) }}
+                                                        {{
+                                                            isExpanded(
+                                                                entryIdx,
+                                                                roleIdx,
+                                                            ) ||
+                                                            !shouldTruncate(
+                                                                role.description,
+                                                            )
+                                                                ? role.description
+                                                                : truncatedText(
+                                                                      role.description,
+                                                                  )
+                                                        }}
                                                     </p>
                                                     <button
-                                                        v-if="shouldTruncate(role.description)"
+                                                        v-if="
+                                                            shouldTruncate(
+                                                                role.description,
+                                                            )
+                                                        "
                                                         type="button"
                                                         class="mt-1 text-sm font-medium text-primary hover:underline"
-                                                        :aria-expanded="isExpanded(entryIdx, roleIdx)"
-                                                        @click="toggleDescription(entryIdx, roleIdx)"
+                                                        :aria-expanded="
+                                                            isExpanded(
+                                                                entryIdx,
+                                                                roleIdx,
+                                                            )
+                                                        "
+                                                        @click="
+                                                            toggleDescription(
+                                                                entryIdx,
+                                                                roleIdx,
+                                                            )
+                                                        "
                                                     >
-                                                        {{ isExpanded(entryIdx, roleIdx) ? 'Read less' : 'Read more' }}
+                                                        {{
+                                                            isExpanded(
+                                                                entryIdx,
+                                                                roleIdx,
+                                                            )
+                                                                ? 'Read less'
+                                                                : 'Read more'
+                                                        }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -531,13 +632,19 @@ function formatNum(n: number): string {
                                     <!-- Single role -->
                                     <div v-else-if="entry.roles.length === 1">
                                         <div
-                                            v-for="(role, roleIdx) in entry.roles"
+                                            v-for="(
+                                                role, roleIdx
+                                            ) in entry.roles"
                                             :key="roleIdx"
                                         >
-                                            <div class="font-medium text-foreground">
+                                            <div
+                                                class="font-medium text-foreground"
+                                            >
                                                 {{ role.job_title || '—' }}
                                             </div>
-                                            <div class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+                                            <div
+                                                class="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground"
+                                            >
                                                 <span v-if="role.start_date">
                                                     {{ role.start_date }}
                                                     —
@@ -548,29 +655,69 @@ function formatNum(n: number): string {
                                                         Present
                                                     </span>
                                                     <template v-else>
-                                                        {{ role.end_date || '—' }}
+                                                        {{
+                                                            role.end_date || '—'
+                                                        }}
                                                     </template>
                                                 </span>
-                                                <span class="text-muted-foreground/70">·</span>
-                                                <span>{{ role.duration || '< 1 mo' }}</span>
+                                                <span
+                                                    class="text-muted-foreground/70"
+                                                    >·</span
+                                                >
+                                                <span>{{
+                                                    role.duration || '< 1 mo'
+                                                }}</span>
                                             </div>
                                             <div
                                                 v-if="role.description"
                                                 class="mt-2"
                                             >
                                                 <p
-                                                    class="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                                                    class="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground"
                                                 >
-                                                    {{ isExpanded(entryIdx, roleIdx) || !shouldTruncate(role.description) ? role.description : truncatedText(role.description) }}
+                                                    {{
+                                                        isExpanded(
+                                                            entryIdx,
+                                                            roleIdx,
+                                                        ) ||
+                                                        !shouldTruncate(
+                                                            role.description,
+                                                        )
+                                                            ? role.description
+                                                            : truncatedText(
+                                                                  role.description,
+                                                              )
+                                                    }}
                                                 </p>
                                                 <button
-                                                    v-if="shouldTruncate(role.description)"
+                                                    v-if="
+                                                        shouldTruncate(
+                                                            role.description,
+                                                        )
+                                                    "
                                                     type="button"
                                                     class="mt-1 text-sm font-medium text-primary hover:underline"
-                                                    :aria-expanded="isExpanded(entryIdx, roleIdx)"
-                                                    @click="toggleDescription(entryIdx, roleIdx)"
+                                                    :aria-expanded="
+                                                        isExpanded(
+                                                            entryIdx,
+                                                            roleIdx,
+                                                        )
+                                                    "
+                                                    @click="
+                                                        toggleDescription(
+                                                            entryIdx,
+                                                            roleIdx,
+                                                        )
+                                                    "
                                                 >
-                                                    {{ isExpanded(entryIdx, roleIdx) ? 'Read less' : 'Read more' }}
+                                                    {{
+                                                        isExpanded(
+                                                            entryIdx,
+                                                            roleIdx,
+                                                        )
+                                                            ? 'Read less'
+                                                            : 'Read more'
+                                                    }}
                                                 </button>
                                             </div>
                                         </div>
@@ -580,9 +727,18 @@ function formatNum(n: number): string {
                         </section>
 
                         <!-- Portfolio & Projects -->
-                        <section v-if="developer.projects && developer.projects.length > 0">
-                            <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
-                                <FolderOpen class="size-5 shrink-0 text-muted-foreground" />
+                        <section
+                            v-if="
+                                developer.projects &&
+                                developer.projects.length > 0
+                            "
+                        >
+                            <h2
+                                class="mb-4 flex items-center gap-2 text-lg font-semibold"
+                            >
+                                <FolderOpen
+                                    class="size-5 shrink-0 text-muted-foreground"
+                                />
                                 Portfolio & Projects
                             </h2>
                             <div class="grid gap-4 sm:grid-cols-2">
@@ -614,15 +770,12 @@ function formatNum(n: number): string {
                             </div>
                         </section>
 
-
-
-
-
-
                         <!-- Recommendations -->
                         <section>
                             <h2 class="mb-3 text-lg font-semibold">
-                                Recommendations ({{ developer.recommendations_received_count }})
+                                Recommendations ({{
+                                    developer.recommendations_received_count
+                                }})
                             </h2>
                             <p
                                 v-if="isGuest"
@@ -636,28 +789,44 @@ function formatNum(n: number): string {
                                 </Link>
                             </p>
                             <p
-                                v-else-if="developer.recommendations_received_count === 0"
+                                v-else-if="
+                                    developer.recommendations_received_count ===
+                                    0
+                                "
                                 class="text-sm text-muted-foreground"
                             >
                                 No recommendations yet.
                             </p>
                             <template v-else>
                                 <div
-                                    v-if="developer.recommendations && developer.recommendations.length > 0"
+                                    v-if="
+                                        developer.recommendations &&
+                                        developer.recommendations.length > 0
+                                    "
                                     class="space-y-6"
                                 >
                                     <div
-                                        v-for="(rec, index) in developer.recommendations"
+                                        v-for="(
+                                            rec, index
+                                        ) in developer.recommendations"
                                         :key="index"
                                         class="flex gap-4 rounded-xl border border-border bg-card p-5 shadow-sm"
                                     >
                                         <div
                                             class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary"
                                         >
-                                            {{ rec.recommender_name.split(' ').map(n => n[0]).join('').slice(0, 2) }}
+                                            {{
+                                                rec.recommender_name
+                                                    .split(' ')
+                                                    .map((n) => n[0])
+                                                    .join('')
+                                                    .slice(0, 2)
+                                            }}
                                         </div>
                                         <div class="min-w-0 flex-1">
-                                            <p class="font-semibold text-foreground">
+                                            <p
+                                                class="font-semibold text-foreground"
+                                            >
                                                 {{ rec.recommender_name }}
                                             </p>
                                             <p
@@ -674,19 +843,23 @@ function formatNum(n: number): string {
                                             </blockquote>
                                             <p
                                                 v-else
-                                                class="mt-3 text-sm italic text-muted-foreground"
+                                                class="mt-3 text-sm text-muted-foreground italic"
                                             >
                                                 No note provided.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <p
-                                    v-else
-                                    class="text-sm text-muted-foreground"
-                                >
-                                    {{ developer.recommendations_received_count }}
-                                    {{ developer.recommendations_received_count === 1 ? 'recommendation' : 'recommendations' }}
+                                <p v-else class="text-sm text-muted-foreground">
+                                    {{
+                                        developer.recommendations_received_count
+                                    }}
+                                    {{
+                                        developer.recommendations_received_count ===
+                                        1
+                                            ? 'recommendation'
+                                            : 'recommendations'
+                                    }}
                                     received.
                                 </p>
                             </template>
@@ -699,15 +872,13 @@ function formatNum(n: number): string {
                             class="sticky top-20 rounded-2xl border border-border bg-card p-6 shadow-sm"
                         >
                             <h2
-                                class="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+                                class="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase"
                             >
                                 Quick Info
                             </h2>
                             <dl class="space-y-4 text-sm">
                                 <div>
-                                    <dt class="text-muted-foreground">
-                                        Role
-                                    </dt>
+                                    <dt class="text-muted-foreground">Role</dt>
                                     <dd class="mt-0.5 font-semibold">
                                         {{ developer.job_title?.name }}
                                     </dd>
@@ -740,13 +911,15 @@ function formatNum(n: number): string {
                                                 : 'text-availability-unavailable'
                                         "
                                     >
-                                        {{ developer.is_available ? 'Available' : 'Not Available' }}
+                                        {{
+                                            developer.is_available
+                                                ? 'Available'
+                                                : 'Not Available'
+                                        }}
                                     </dd>
                                 </div>
                                 <div v-if="developer.phone">
-                                    <dt class="text-muted-foreground">
-                                        Phone
-                                    </dt>
+                                    <dt class="text-muted-foreground">Phone</dt>
                                     <dd class="mt-0.5">
                                         <a
                                             :href="`tel:${developer.phone}`"
@@ -757,14 +930,19 @@ function formatNum(n: number): string {
                                     </dd>
                                 </div>
                                 <div
-                                    v-if="developer.expected_salary_from || developer.expected_salary_to"
+                                    v-if="
+                                        developer.expected_salary_from ||
+                                        developer.expected_salary_to
+                                    "
                                 >
                                     <dt class="text-muted-foreground">
                                         Salary
                                     </dt>
                                     <dd class="mt-0.5">
                                         <template v-if="showSalary">
-                                            <span class="font-semibold">{{ salaryLabel }}</span>
+                                            <span class="font-semibold">{{
+                                                salaryLabel
+                                            }}</span>
                                         </template>
                                         <a
                                             v-else

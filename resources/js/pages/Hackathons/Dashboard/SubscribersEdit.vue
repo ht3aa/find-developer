@@ -17,7 +17,12 @@ const props = defineProps<{
     hackathon: { id: number; title: string };
     subscriber: {
         id: number;
-        developer: { id: number; name: string; slug: string; email: string | null } | null;
+        developer: {
+            id: number;
+            name: string;
+            slug: string;
+            email: string | null;
+        } | null;
         message: string;
         status: string;
     };
@@ -29,11 +34,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Hackathons', href: hackathonsIndex().url },
     { title: props.hackathon.title, href: '#' },
-    { title: 'Subscribers', href: `/dashboard/hackathons/${props.hackathon.id}/subscribers` },
+    {
+        title: 'Subscribers',
+        href: `/dashboard/hackathons/${props.hackathon.id}/subscribers`,
+    },
     { title: 'Edit', href: '#' },
 ];
 
-const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
+const inputClass =
+    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
 </script>
 
 <template>
@@ -42,19 +51,29 @@ const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparen
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
                     <Pencil class="h-6 w-6 text-primary" />
                 </div>
                 <div>
                     <Heading
                         title="Edit subscriber"
-                        :description="subscriber.developer ? `Update subscription for ${subscriber.developer.name}` : 'Update subscription'"
+                        :description="
+                            subscriber.developer
+                                ? `Update subscription for ${subscriber.developer.name}`
+                                : 'Update subscription'
+                        "
                     />
                 </div>
             </div>
 
             <Card>
-                <Form :action="updateUrl" method="post" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form
+                    :action="updateUrl"
+                    method="post"
+                    v-slot="{ errors, processing, recentlySuccessful }"
+                >
                     <input type="hidden" name="_method" value="PUT" />
                     <CardHeader class="pb-4">
                         <h3 class="text-sm font-medium text-muted-foreground">
@@ -72,12 +91,17 @@ const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparen
                                 >
                                     {{ subscriber.developer.name }}
                                 </Link>
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </p>
                         </div>
 
                         <div class="grid gap-2">
-                            <Label for="status">Status <span class="text-destructive">*</span></Label>
+                            <Label for="status"
+                                >Status
+                                <span class="text-destructive">*</span></Label
+                            >
                             <select
                                 id="status"
                                 name="status"
@@ -97,24 +121,32 @@ const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparen
                         </div>
 
                         <div class="grid gap-2 lg:col-span-2">
-                            <Label for="message">Message <span class="text-destructive">*</span></Label>
+                            <Label for="message"
+                                >Message
+                                <span class="text-destructive">*</span></Label
+                            >
                             <textarea
                                 id="message"
                                 name="message"
                                 required
                                 rows="4"
                                 :default-value="subscriber.message"
-                                class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            >{{ subscriber.message }}</textarea>
+                                class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                >{{ subscriber.message }}</textarea
+                            >
                             <InputError :message="errors.message" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
+                        <div
+                            class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2"
+                        >
                             <Button :disabled="processing" type="submit">
                                 Update subscriber
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="`/dashboard/hackathons/${hackathon.id}/subscribers`">
+                                <Link
+                                    :href="`/dashboard/hackathons/${hackathon.id}/subscribers`"
+                                >
                                     Cancel
                                 </Link>
                             </Button>
@@ -128,7 +160,9 @@ const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparen
                                     v-show="recentlySuccessful"
                                     class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    <span
+                                        class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                    />
                                     Subscriber updated successfully
                                 </span>
                             </Transition>

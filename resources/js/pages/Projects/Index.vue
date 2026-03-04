@@ -7,7 +7,10 @@ import DeveloperProjectDataTable from '@/components/developer-project/DeveloperP
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as developerProjectsIndex, create as developerProjectsCreate } from '@/routes/developer-projects';
+import {
+    index as developerProjectsIndex,
+    create as developerProjectsCreate,
+} from '@/routes/developer-projects';
 import type { BreadcrumbItem } from '@/types';
 import type { DeveloperProject } from '@/types/developer-project';
 
@@ -18,7 +21,9 @@ type Props = {
 defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -26,11 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 function confirmDelete(project: DeveloperProject) {
-    if (
-        window.confirm(
-            `Are you sure you want to delete "${project.title}"?`,
-        )
-    ) {
+    if (window.confirm(`Are you sure you want to delete "${project.title}"?`)) {
         router.delete(DeveloperProjectController.destroy.url(project.id), {
             preserveScroll: true,
         });
@@ -42,7 +43,9 @@ function confirmDelete(project: DeveloperProject) {
     <Head title="Projects" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -55,7 +58,9 @@ function confirmDelete(project: DeveloperProject) {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">
                         Projects
@@ -85,7 +90,8 @@ function confirmDelete(project: DeveloperProject) {
                 <FolderKanban class="mb-4 h-12 w-12 text-muted-foreground" />
                 <h3 class="mb-2 text-lg font-semibold">No projects yet</h3>
                 <p class="mb-4 text-center text-sm text-muted-foreground">
-                    Add your first project to showcase your work on your profile.
+                    Add your first project to showcase your work on your
+                    profile.
                 </p>
                 <Button as-child>
                     <Link :href="developerProjectsCreate().url">

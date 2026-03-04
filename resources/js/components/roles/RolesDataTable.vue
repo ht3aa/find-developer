@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
-import {
-    FlexRender,
-    getCoreRowModel,
-    useVueTable,
-} from '@tanstack/vue-table';
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { computed } from 'vue';
 import {
     Table,
@@ -67,7 +63,9 @@ const table = useVueTable({
                     <TableRow
                         v-for="row in table.getRowModel().rows"
                         :key="row.id"
-                        :data-state="row.getIsSelected() ? 'selected' : undefined"
+                        :data-state="
+                            row.getIsSelected() ? 'selected' : undefined
+                        "
                     >
                         <TableCell
                             v-for="cell in row.getVisibleCells()"

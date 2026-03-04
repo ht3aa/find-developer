@@ -5,7 +5,11 @@ import WorkExperienceActionsCell from '@/components/work-experience/WorkExperien
 import type { AuthCan } from '@/types/auth';
 import type { WorkExperience } from '@/types/work-experience';
 
-function formatDateRange(startDate: string, endDate: string | null, isCurrent: boolean): string {
+function formatDateRange(
+    startDate: string,
+    endDate: string | null,
+    isCurrent: boolean,
+): string {
     const start = new Date(startDate).getFullYear();
     if (isCurrent || !endDate) {
         return `${start} – Present`;
@@ -40,7 +44,8 @@ export function getColumns(
             header: 'Promotion From',
             cell: ({ row }) => {
                 const parent = row.original.parent;
-                if (!parent) return h('div', { class: 'text-muted-foreground' }, '—');
+                if (!parent)
+                    return h('div', { class: 'text-muted-foreground' }, '—');
                 return h(
                     'div',
                     { class: 'text-muted-foreground text-sm' },
@@ -69,7 +74,9 @@ export function getColumns(
                 h(
                     Badge,
                     {
-                        variant: row.original.show_company ? 'default' : 'secondary',
+                        variant: row.original.show_company
+                            ? 'default'
+                            : 'secondary',
                     },
                     () => (row.original.show_company ? 'Yes' : 'No'),
                 ),

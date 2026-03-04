@@ -11,7 +11,9 @@ import type { DeveloperTableRow } from '@/types/developer-table';
 const checkboxClass =
     'size-4 shrink-0 rounded-[4px] border border-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
 
-function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+function statusVariant(
+    status: string,
+): 'default' | 'secondary' | 'destructive' | 'outline' {
     return status === 'approved'
         ? 'default'
         : status === 'rejected'
@@ -19,7 +21,9 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
           : 'secondary';
 }
 
-export function getColumns(can: Partial<AuthCan> = {}): ColumnDef<DeveloperTableRow>[] {
+export function getColumns(
+    can: Partial<AuthCan> = {},
+): ColumnDef<DeveloperTableRow>[] {
     return [
         {
             id: 'select',
@@ -110,7 +114,9 @@ export function getColumns(can: Partial<AuthCan> = {}): ColumnDef<DeveloperTable
                 h(
                     Badge,
                     {
-                        variant: row.original.is_available ? 'default' : 'secondary',
+                        variant: row.original.is_available
+                            ? 'default'
+                            : 'secondary',
                     },
                     () => (row.original.is_available ? 'Yes' : 'No'),
                 ),
@@ -162,7 +168,8 @@ export function getColumns(can: Partial<AuthCan> = {}): ColumnDef<DeveloperTable
                                           rel: 'noopener noreferrer',
                                           'aria-label': `View ${row.original.name}`,
                                       },
-                                      () => h(ExternalLink, { class: 'h-4 w-4' }),
+                                      () =>
+                                          h(ExternalLink, { class: 'h-4 w-4' }),
                                   ),
                           )
                         : null,

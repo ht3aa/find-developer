@@ -12,7 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
+import {
+    index as hackathonsIndex,
+    create as hackathonsCreate,
+} from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 type BadgeOption = { id: number; name: string };
@@ -22,8 +25,12 @@ defineProps<{
 }>();
 
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -31,7 +38,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Create', href: hackathonsCreate().url },
 ];
 
-const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
+const inputClass =
+    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
 
 const title = ref('');
 const body = ref('');
@@ -104,7 +112,10 @@ function submitForm(): void {
                     </CardHeader>
                     <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="grid gap-2 lg:col-span-2">
-                            <Label for="title">Title <span class="text-destructive">*</span></Label>
+                            <Label for="title"
+                                >Title
+                                <span class="text-destructive">*</span></Label
+                            >
                             <Input
                                 id="title"
                                 v-model="title"
@@ -124,7 +135,7 @@ function submitForm(): void {
                                 name="body"
                                 rows="6"
                                 placeholder="Description, format with HTML if needed"
-                                class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                             <InputError :message="formErrors.body" />
                         </div>
@@ -172,16 +183,20 @@ function submitForm(): void {
                         </div>
 
                         <div class="grid gap-2">
-                            <Label for="reward_description">Reward description</Label>
+                            <Label for="reward_description"
+                                >Reward description</Label
+                            >
                             <textarea
                                 id="reward_description"
                                 v-model="rewardDescription"
                                 name="reward_description"
                                 rows="2"
                                 placeholder="e.g. Winner receives..."
-                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
-                            <InputError :message="formErrors.reward_description" />
+                            <InputError
+                                :message="formErrors.reward_description"
+                            />
                         </div>
 
                         <div class="grid gap-2">
@@ -208,12 +223,20 @@ function submitForm(): void {
                             <InputError :message="formErrors.end_date" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
+                        <div
+                            class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2"
+                        >
                             <Button :disabled="submitting" type="submit">
-                                {{ submitting ? 'Creating...' : 'Create Hackathon' }}
+                                {{
+                                    submitting
+                                        ? 'Creating...'
+                                        : 'Create Hackathon'
+                                }}
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="hackathonsIndex().url">Cancel</Link>
+                                <Link :href="hackathonsIndex().url"
+                                    >Cancel</Link
+                                >
                             </Button>
                             <Transition
                                 enter-active-class="transition ease-out duration-200"
@@ -225,7 +248,9 @@ function submitForm(): void {
                                     v-show="flashSuccess"
                                     class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    <span
+                                        class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                    />
                                     Hackathon created successfully
                                 </span>
                             </Transition>

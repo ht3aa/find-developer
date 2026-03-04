@@ -18,7 +18,9 @@ type Props = {
 defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -38,7 +40,9 @@ function confirmDelete(badge: BadgeType) {
     <Head title="Badges" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -51,9 +55,13 @@ function confirmDelete(badge: BadgeType) {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Badges</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Badges
+                    </h1>
                     <p class="text-muted-foreground">
                         Manage badges that can be assigned to developers
                     </p>

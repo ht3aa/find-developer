@@ -13,5 +13,5 @@ defineProps<Props>();
 </script>
 
 <template>
-    <img src="/light-logo.svg" alt="App Logo" class="w-10 h-10" />
+    <img src="/light-logo.svg" alt="App Logo" class="h-10 w-10" />
 </template>

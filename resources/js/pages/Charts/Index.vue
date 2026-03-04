@@ -44,8 +44,12 @@ defineProps<{
         <section class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="grid gap-8 lg:grid-cols-2">
                 <DevelopersByLocationChart :data="developersByLocation" />
-                <DevelopersByAvailabilityTypeChart :data="developersByAvailabilityType" />
-                <AverageSalaryByExperienceChart :data="averageSalaryByExperience" />
+                <DevelopersByAvailabilityTypeChart
+                    :data="developersByAvailabilityType"
+                />
+                <AverageSalaryByExperienceChart
+                    :data="averageSalaryByExperience"
+                />
                 <DevelopersByJobTitleChart :data="developersByJobTitle" />
             </div>
         </section>

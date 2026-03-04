@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { edit as developersEdit, index as developersIndex } from '@/routes/developers';
+import {
+    edit as developersEdit,
+    index as developersIndex,
+} from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 import type { Developer } from '@/types/developer';
 
@@ -47,13 +50,20 @@ const formData = ref<Record<string, unknown>>({
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Developers', href: developersIndex().url },
-    { title: props.developer.name, href: developersEdit(props.developer.id).url },
+    {
+        title: props.developer.name,
+        href: developersEdit(props.developer.id).url,
+    },
 ];
 
 watch(
@@ -100,20 +110,29 @@ function submit(): void {
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: d.youtube_url ?? null,
         is_available: d.is_available ?? false,
-        availability_type: ((d.availability_type as { value: string }[]) ?? []).map((a) => a.value),
-        skill_names: ((d.skills as { name: string }[]) ?? []).map((s) => s.name),
+        availability_type: (
+            (d.availability_type as { value: string }[]) ?? []
+        ).map((a) => a.value),
+        skill_names: ((d.skills as { name: string }[]) ?? []).map(
+            (s) => s.name,
+        ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ?? false,
     };
     const cvFile = formRef.value?.cvFile;
-    const file = typeof cvFile === 'object' && cvFile && 'value' in cvFile ? cvFile.value : cvFile;
+    const file =
+        typeof cvFile === 'object' && cvFile && 'value' in cvFile
+            ? cvFile.value
+            : cvFile;
     if (file) payload.cv = file;
     submitting.value = true;
     router.put(DeveloperController.update.url(props.developer.id), payload, {
         forceFormData: !!file,
         preserveScroll: true,
         onSuccess: () => formRef.value?.clearCv?.(),
-        onFinish: () => { submitting.value = false; },
+        onFinish: () => {
+            submitting.value = false;
+        },
     });
 }
 </script>
@@ -140,46 +159,52 @@ function submit(): void {
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Card class="lg:col-span-2">
                     <CardHeader class="pb-4">
-                    <h3 class="text-sm font-medium text-muted-foreground">
-                        Developer details
-                    </h3>
-                </CardHeader>
-                <CardContent>
-                    <form class="space-y-6" @submit.prevent="submit">
-                        <DeveloperFormFields
-                            ref="formRef"
-                            v-model="formData"
-                            :errors="formErrors"
-                            :job-titles="jobTitles"
-                            :users="users"
-                            show-user-select
-                            show-admin-fields
-                        />
+                        <h3 class="text-sm font-medium text-muted-foreground">
+                            Developer details
+                        </h3>
+                    </CardHeader>
+                    <CardContent>
+                        <form class="space-y-6" @submit.prevent="submit">
+                            <DeveloperFormFields
+                                ref="formRef"
+                                v-model="formData"
+                                :errors="formErrors"
+                                :job-titles="jobTitles"
+                                :users="users"
+                                show-user-select
+                                show-admin-fields
+                            />
 
-                        <div class="flex flex-wrap items-center gap-3 pt-4">
-                            <Button type="submit" :disabled="submitting">
-                                {{ submitting ? 'Saving...' : 'Update Developer' }}
-                            </Button>
-                            <Button variant="outline" as-child>
-                                <a :href="developersIndex().url">Cancel</a>
-                            </Button>
-                            <Transition
-                                enter-active-class="transition ease-out duration-200"
-                                enter-from-class="opacity-0 translate-y-1"
-                                leave-active-class="transition ease-in duration-150"
-                                leave-to-class="opacity-0"
-                            >
-                                <span
-                                    v-show="flashSuccess"
-                                    class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
+                            <div class="flex flex-wrap items-center gap-3 pt-4">
+                                <Button type="submit" :disabled="submitting">
+                                    {{
+                                        submitting
+                                            ? 'Saving...'
+                                            : 'Update Developer'
+                                    }}
+                                </Button>
+                                <Button variant="outline" as-child>
+                                    <a :href="developersIndex().url">Cancel</a>
+                                </Button>
+                                <Transition
+                                    enter-active-class="transition ease-out duration-200"
+                                    enter-from-class="opacity-0 translate-y-1"
+                                    leave-active-class="transition ease-in duration-150"
+                                    leave-to-class="opacity-0"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
-                                    {{ flashSuccess }}
-                                </span>
-                            </Transition>
-                        </div>
-                    </form>
-                </CardContent>
+                                    <span
+                                        v-show="flashSuccess"
+                                        class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
+                                    >
+                                        <span
+                                            class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                        />
+                                        {{ flashSuccess }}
+                                    </span>
+                                </Transition>
+                            </div>
+                        </form>
+                    </CardContent>
                 </Card>
             </div>
         </div>

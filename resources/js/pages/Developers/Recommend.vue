@@ -42,13 +42,12 @@ function submit(): void {
                     Recommend {{ developer.name }}
                 </h1>
                 <p class="mt-2 text-muted-foreground">
-                    Share your experience working with {{ developer.name }}. Your recommendation will be reviewed before it appears on their profile.
+                    Share your experience working with {{ developer.name }}.
+                    Your recommendation will be reviewed before it appears on
+                    their profile.
                 </p>
 
-                <form
-                    class="mt-8 space-y-6"
-                    @submit.prevent="submit"
-                >
+                <form class="mt-8 space-y-6" @submit.prevent="submit">
                     <div class="space-y-2">
                         <Label for="recommendation_note">
                             Your recommendation
@@ -60,13 +59,16 @@ function submit(): void {
                             rows="5"
                             maxlength="2000"
                             placeholder="Describe your experience working with this developer..."
-                            class="placeholder:text-muted-foreground border-input focus-visible:ring-ring/50 focus-visible:border-ring w-full rounded-lg border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 md:text-sm aria-invalid:border-destructive aria-invalid:ring-destructive/20"
+                            class="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm"
                             :aria-invalid="!!form.errors.recommendation_note"
                         />
                         <p class="text-xs text-muted-foreground">
-                            {{ form.recommendation_note.length }} / 2000 characters (optional)
+                            {{ form.recommendation_note.length }} / 2000
+                            characters (optional)
                         </p>
-                        <InputError :message="form.errors.recommendation_note" />
+                        <InputError
+                            :message="form.errors.recommendation_note"
+                        />
                     </div>
 
                     <div class="flex flex-wrap items-center gap-3">
@@ -76,12 +78,13 @@ function submit(): void {
                             class="gap-2"
                         >
                             <ThumbsUp class="size-4" />
-                            {{ form.processing ? 'Submitting...' : 'Submit Recommendation' }}
+                            {{
+                                form.processing
+                                    ? 'Submitting...'
+                                    : 'Submit Recommendation'
+                            }}
                         </Button>
-                        <Button
-                            variant="outline"
-                            as-child
-                        >
+                        <Button variant="outline" as-child>
                             <Link :href="developer.profile_url ?? home()">
                                 Cancel
                             </Link>

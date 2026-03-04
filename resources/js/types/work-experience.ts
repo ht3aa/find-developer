@@ -3,7 +3,11 @@ export type WorkExperience = {
     company_name: string;
     job_title: string | null;
     parent_id: number | null;
-    parent: { id: number; company_name: string; job_title: string | null } | null;
+    parent: {
+        id: number;
+        company_name: string;
+        job_title: string | null;
+    } | null;
     description: string | null;
     start_date: string;
     end_date: string | null;

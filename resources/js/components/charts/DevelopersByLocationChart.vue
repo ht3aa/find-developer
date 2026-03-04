@@ -51,18 +51,23 @@ function initChart(): void {
 }
 
 onMounted(() => initChart());
-watch(() => props.data, () => initChart(), { deep: true });
+watch(
+    () => props.data,
+    () => initChart(),
+    { deep: true },
+);
 </script>
 
 <template>
     <Card>
         <CardHeader>
-            <h3 class="text-lg font-semibold">
-                Developers by location
-            </h3>
+            <h3 class="text-lg font-semibold">Developers by location</h3>
         </CardHeader>
         <CardContent>
-            <div v-if="!data.length" class="flex h-64 items-center justify-center text-sm text-muted-foreground">
+            <div
+                v-if="!data.length"
+                class="flex h-64 items-center justify-center text-sm text-muted-foreground"
+            >
                 No data yet
             </div>
             <div v-else class="h-64">

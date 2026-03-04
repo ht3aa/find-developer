@@ -24,7 +24,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { create as developersCreate, index as developersIndex } from '@/routes/developers';
+import {
+    create as developersCreate,
+    index as developersIndex,
+} from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 import type { DeveloperTableRow } from '@/types/developer-table';
 
@@ -56,26 +59,39 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const searchQuery = ref(props.filters.search ?? '');
 const statusQuery = ref(props.filters.status ?? 'all');
 const debouncedSearch = refDebounced(searchQuery, 300);
 
 watch(debouncedSearch, (value) => {
-    router.get(developersIndex().url, { search: value || undefined, status: statusQuery.value || undefined }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    router.get(
+        developersIndex().url,
+        { search: value || undefined, status: statusQuery.value || undefined },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 });
 
 watch(statusQuery, (value) => {
-    router.get(developersIndex().url, { status: value || undefined, search: debouncedSearch.value || undefined }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    router.get(
+        developersIndex().url,
+        {
+            status: value || undefined,
+            search: debouncedSearch.value || undefined,
+        },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 });
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -103,15 +119,23 @@ function openBulkEmailDialog() {
 function submitBulkEmailAll() {
     if (!props.bulkEmailAllUrl) return;
     bulkEmailSubmitting.value = true;
-    router.post(props.bulkEmailAllUrl, {
-        title: bulkEmailForm.value.title,
-        subject: bulkEmailForm.value.subject,
-        category: bulkEmailForm.value.category,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => { bulkEmailOpen.value = false; },
-        onFinish: () => { bulkEmailSubmitting.value = false; },
-    });
+    router.post(
+        props.bulkEmailAllUrl,
+        {
+            title: bulkEmailForm.value.title,
+            subject: bulkEmailForm.value.subject,
+            category: bulkEmailForm.value.category,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                bulkEmailOpen.value = false;
+            },
+            onFinish: () => {
+                bulkEmailSubmitting.value = false;
+            },
+        },
+    );
 }
 </script>
 
@@ -119,7 +143,9 @@ function submitBulkEmailAll() {
     <Head title="Developers" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -132,9 +158,13 @@ function submitBulkEmailAll() {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Developers</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Developers
+                    </h1>
                     <p class="text-muted-foreground">
                         View and manage all developers in the platform
                     </p>
@@ -168,7 +198,8 @@ function submitBulkEmailAll() {
                     <DialogHeader>
                         <DialogTitle>Send Mailtrap email</DialogTitle>
                         <DialogDescription>
-                            Send an email to all developers in the system. Title is used as the email body heading.
+                            Send an email to all developers in the system. Title
+                            is used as the email body heading.
                         </DialogDescription>
                     </DialogHeader>
                     <form
@@ -192,7 +223,7 @@ function submitBulkEmailAll() {
                                 rows="3"
                                 placeholder="Email subject line"
                                 required
-                                class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                             />
                         </div>
                         <div class="grid gap-2">
@@ -222,10 +253,14 @@ function submitBulkEmailAll() {
                 </DialogContent>
             </Dialog>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="flex flex-1 gap-2 sm:max-w-md">
                     <div class="relative flex-1">
-                        <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Search
+                            class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                        />
                         <Input
                             v-model="searchQuery"
                             type="search"
@@ -235,7 +270,7 @@ function submitBulkEmailAll() {
                     </div>
                     <select
                         v-model="statusQuery"
-                        class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-[180px]"
+                        class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:w-[180px]"
                     >
                         <option value="" disabled>Select status</option>
                         <option
@@ -251,7 +286,8 @@ function submitBulkEmailAll() {
                     v-if="developers.total > 0"
                     class="text-sm text-muted-foreground"
                 >
-                    Showing {{ developers.from }}–{{ developers.to }} of {{ developers.total }}
+                    Showing {{ developers.from }}–{{ developers.to }} of
+                    {{ developers.total }}
                 </p>
             </div>
 
@@ -289,7 +325,10 @@ function submitBulkEmailAll() {
                 </p>
             </div>
 
-            <Pagination v-if="developers.links?.length" :links="developers.links" />
+            <Pagination
+                v-if="developers.links?.length"
+                :links="developers.links"
+            />
         </div>
     </AppLayout>
 </template>

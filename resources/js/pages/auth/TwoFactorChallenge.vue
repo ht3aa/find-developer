@@ -106,7 +106,10 @@ const code = ref<string>('');
                     #default="{ errors, processing, clearErrors }"
                 >
                     <div class="grid gap-2">
-                        <Label for="recovery_code">Recovery code <span class="text-destructive">*</span></Label>
+                        <Label for="recovery_code"
+                            >Recovery code
+                            <span class="text-destructive">*</span></Label
+                        >
                         <Input
                             id="recovery_code"
                             name="recovery_code"

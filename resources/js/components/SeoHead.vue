@@ -81,21 +81,33 @@ onBeforeUnmount(() => {
 
 <template>
     <Head :title="fullTitle">
-        <meta v-if="metaDescription" name="description" :content="metaDescription" />
+        <meta
+            v-if="metaDescription"
+            name="description"
+            :content="metaDescription"
+        />
         <meta v-if="noindex" name="robots" content="noindex, nofollow" />
 
         <!-- Open Graph -->
         <meta property="og:type" :content="ogType" />
         <meta property="og:site_name" :content="appName" />
         <meta property="og:title" :content="fullTitle" />
-        <meta v-if="metaDescription" property="og:description" :content="metaDescription" />
+        <meta
+            v-if="metaDescription"
+            property="og:description"
+            :content="metaDescription"
+        />
         <meta v-if="canonicalUrl" property="og:url" :content="canonicalUrl" />
         <meta v-if="imageUrl" property="og:image" :content="imageUrl" />
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" :content="fullTitle" />
-        <meta v-if="metaDescription" name="twitter:description" :content="metaDescription" />
+        <meta
+            v-if="metaDescription"
+            name="twitter:description"
+            :content="metaDescription"
+        />
         <meta v-if="imageUrl" name="twitter:image" :content="imageUrl" />
 
         <!-- Canonical -->

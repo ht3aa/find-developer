@@ -74,7 +74,9 @@ export function getColumns(
             cell: ({ row }) =>
                 h(
                     'span',
-                    { class: 'text-muted-foreground text-sm whitespace-nowrap' },
+                    {
+                        class: 'text-muted-foreground text-sm whitespace-nowrap',
+                    },
                     formatDate(row.original.subscribed_at),
                 ),
             enableSorting: false,

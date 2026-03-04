@@ -50,8 +50,12 @@ const formData = ref({
 
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -89,7 +93,9 @@ function submit(): void {
     submitting.value = true;
     router.put(DeveloperBlogController.update.url(props.blog.id), payload, {
         preserveScroll: true,
-        onFinish: () => { submitting.value = false; },
+        onFinish: () => {
+            submitting.value = false;
+        },
     });
 }
 </script>
@@ -100,22 +106,32 @@ function submit(): void {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
                     <FileText class="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                    <Heading :title="`Edit ${blog.title}`" description="Update your post" />
+                    <Heading
+                        :title="`Edit ${blog.title}`"
+                        description="Update your post"
+                    />
                 </div>
             </div>
 
             <Card class="lg:col-span-2">
                 <CardHeader class="pb-4">
-                    <h3 class="text-sm font-medium text-muted-foreground">Post details</h3>
+                    <h3 class="text-sm font-medium text-muted-foreground">
+                        Post details
+                    </h3>
                 </CardHeader>
                 <CardContent>
                     <form class="space-y-6" @submit.prevent="submit">
                         <div class="grid gap-2">
-                            <Label for="title">Title <span class="text-destructive">*</span></Label>
+                            <Label for="title"
+                                >Title
+                                <span class="text-destructive">*</span></Label
+                            >
                             <Input
                                 id="title"
                                 v-model="formData.title"
@@ -132,12 +148,15 @@ function submit(): void {
                                 v-model="formData.excerpt"
                                 rows="2"
                                 placeholder="Short summary"
-                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                             />
                             <InputError :message="formErrors.excerpt" />
                         </div>
                         <div class="grid gap-2">
-                            <Label for="content">Content <span class="text-destructive">*</span></Label>
+                            <Label for="content"
+                                >Content
+                                <span class="text-destructive">*</span></Label
+                            >
                             <RichTextEditor
                                 v-model="formData.content"
                                 placeholder="Write your post…"
@@ -145,7 +164,9 @@ function submit(): void {
                             <InputError :message="formErrors.content" />
                         </div>
                         <div class="grid gap-2">
-                            <Label for="featured_image">Featured image (path)</Label>
+                            <Label for="featured_image"
+                                >Featured image (path)</Label
+                            >
                             <Input
                                 id="featured_image"
                                 v-model="formData.featured_image"
@@ -162,7 +183,7 @@ function submit(): void {
                                 <select
                                     id="status"
                                     v-model="formData.status"
-                                    class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     <option
                                         v-for="opt in statusOptions"
@@ -181,7 +202,9 @@ function submit(): void {
                                     v-model="formData.published_at"
                                     type="datetime-local"
                                 />
-                                <InputError :message="formErrors.published_at" />
+                                <InputError
+                                    :message="formErrors.published_at"
+                                />
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
@@ -189,13 +212,17 @@ function submit(): void {
                                 {{ submitting ? 'Updating...' : 'Update post' }}
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="developerBlogsIndex().url">Cancel</Link>
+                                <Link :href="developerBlogsIndex().url"
+                                    >Cancel</Link
+                                >
                             </Button>
                             <span
                                 v-show="flashSuccess"
                                 class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                             >
-                                <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                <span
+                                    class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                />
                                 {{ flashSuccess }}
                             </span>
                         </div>

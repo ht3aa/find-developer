@@ -12,7 +12,10 @@ import type { Component } from 'vue';
 function kebabToPascal(kebab: string): string {
     return kebab
         .split('-')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .map(
+            (part) =>
+                part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
+        )
         .join('');
 }
 

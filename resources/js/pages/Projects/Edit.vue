@@ -41,8 +41,12 @@ const formData = ref({
 
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -75,12 +79,16 @@ function submit(): void {
         show_project: d.show_project,
     };
     submitting.value = true;
-    router.put(DeveloperProjectController.update.url(props.project.id), payload, {
-        preserveScroll: true,
-        onFinish: () => {
-            submitting.value = false;
+    router.put(
+        DeveloperProjectController.update.url(props.project.id),
+        payload,
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                submitting.value = false;
+            },
         },
-    });
+    );
 }
 </script>
 
@@ -114,7 +122,12 @@ function submit(): void {
                         <form class="contents" @submit.prevent="submit">
                             <div class="space-y-4">
                                 <div class="grid gap-2">
-                                    <Label for="title">Title <span class="text-destructive">*</span></Label>
+                                    <Label for="title"
+                                        >Title
+                                        <span class="text-destructive"
+                                            >*</span
+                                        ></Label
+                                    >
                                     <Input
                                         id="title"
                                         v-model="formData.title"
@@ -145,20 +158,30 @@ function submit(): void {
                                         v-model="formData.description"
                                         rows="4"
                                         placeholder="Describe the project, technologies used, and your role..."
-                                        class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                     />
-                                    <InputError :message="formErrors.description" />
+                                    <InputError
+                                        :message="formErrors.description"
+                                    />
                                 </div>
                             </div>
 
                             <div class="space-y-2 lg:col-span-2">
-                                <div class="flex items-center justify-between rounded-lg border p-4">
+                                <div
+                                    class="flex items-center justify-between rounded-lg border p-4"
+                                >
                                     <div class="space-y-0.5">
-                                        <Label for="show_project" class="text-base">
+                                        <Label
+                                            for="show_project"
+                                            class="text-base"
+                                        >
                                             Show on profile
                                         </Label>
-                                        <p class="text-sm text-muted-foreground">
-                                            Display this project on your public profile
+                                        <p
+                                            class="text-sm text-muted-foreground"
+                                        >
+                                            Display this project on your public
+                                            profile
                                         </p>
                                     </div>
                                     <Checkbox
@@ -167,12 +190,20 @@ function submit(): void {
                                         class="h-5 w-5"
                                     />
                                 </div>
-                                <InputError :message="formErrors.show_project" />
+                                <InputError
+                                    :message="formErrors.show_project"
+                                />
                             </div>
 
-                            <div class="flex flex-wrap items-center gap-3 pt-4 lg:col-span-2">
+                            <div
+                                class="flex flex-wrap items-center gap-3 pt-4 lg:col-span-2"
+                            >
                                 <Button type="submit" :disabled="submitting">
-                                    {{ submitting ? 'Updating...' : 'Update Project' }}
+                                    {{
+                                        submitting
+                                            ? 'Updating...'
+                                            : 'Update Project'
+                                    }}
                                 </Button>
                                 <Button variant="outline" as-child>
                                     <Link :href="developerProjectsIndex().url">

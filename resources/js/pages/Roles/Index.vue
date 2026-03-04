@@ -18,10 +18,16 @@ type Props = {
 const props = defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 function confirmDelete(role: Role) {
-    if (window.confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
+    if (
+        window.confirm(
+            `Are you sure you want to delete the role "${role.name}"?`,
+        )
+    ) {
         router.delete(RoleController.destroy.url(role.id), {
             preserveScroll: true,
         });
@@ -38,7 +44,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Roles" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -51,7 +59,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">Roles</h1>
                     <p class="text-muted-foreground">

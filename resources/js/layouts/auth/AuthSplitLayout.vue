@@ -18,18 +18,23 @@ defineProps<{
         >
             <Link
                 :href="home()"
-                class="absolute left-10 top-10 z-10 font-medium text-foreground/80 transition hover:text-foreground"
+                class="absolute top-10 left-10 z-10 font-medium text-foreground/80 transition hover:text-foreground"
             >
                 Back to home
             </Link>
-            <div
-                class="flex min-h-0 flex-1 flex-col p-8 pt-16"
-            >
+            <div class="flex min-h-0 flex-1 flex-col p-8 pt-16">
                 <iframe
                     src="https://www.youtube.com/embed/qjpk3l45hfo?autoplay=1&mute=1&loop=1&playlist=qjpk3l45hfo"
                     title="Video"
-                    class="min-h-0 flex-1 w-full rounded-lg"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    class="min-h-0 w-full flex-1 rounded-lg"
+                    allow="
+                        accelerometer;
+                        autoplay;
+                        clipboard-write;
+                        encrypted-media;
+                        gyroscope;
+                        picture-in-picture;
+                    "
                     allowfullscreen
                 />
             </div>
@@ -50,10 +55,7 @@ defineProps<{
                     >
                         {{ title }}
                     </h1>
-                    <p
-                        v-if="description"
-                        class="text-sm text-muted-foreground"
-                    >
+                    <p v-if="description" class="text-sm text-muted-foreground">
                         {{ description }}
                     </p>
                 </div>

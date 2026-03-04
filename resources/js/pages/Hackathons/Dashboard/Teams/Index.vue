@@ -37,7 +37,9 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -47,10 +49,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 function confirmDelete(team: TeamEntry): void {
-    if (window.confirm(`Delete team "${team.title}"? This will remove all team members.`)) {
-        router.delete(`/dashboard/hackathons/${props.hackathon.id}/teams/${team.id}`, {
-            preserveScroll: true,
-        });
+    if (
+        window.confirm(
+            `Delete team "${team.title}"? This will remove all team members.`,
+        )
+    ) {
+        router.delete(
+            `/dashboard/hackathons/${props.hackathon.id}/teams/${team.id}`,
+            {
+                preserveScroll: true,
+            },
+        );
     }
 }
 </script>
@@ -59,7 +68,9 @@ function confirmDelete(team: TeamEntry): void {
     <Head :title="`Teams – ${hackathon.title}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -67,7 +78,9 @@ function confirmDelete(team: TeamEntry): void {
                 {{ flash.success }}
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">Teams</h1>
                     <p class="text-muted-foreground">
@@ -76,7 +89,9 @@ function confirmDelete(team: TeamEntry): void {
                 </div>
                 <div class="flex items-center gap-2">
                     <Button as-child>
-                        <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/create`">
+                        <Link
+                            :href="`/dashboard/hackathons/${hackathon.id}/teams/create`"
+                        >
                             <Plus class="mr-2 h-4 w-4" />
                             Add team
                         </Link>
@@ -110,7 +125,9 @@ function confirmDelete(team: TeamEntry): void {
                                     :alt="t.title"
                                     class="h-10 w-10 rounded object-cover"
                                 />
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
                             <TableCell class="font-medium">
                                 {{ t.title }}
@@ -121,7 +138,9 @@ function confirmDelete(team: TeamEntry): void {
                                     class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
                                 >
                                     <Users class="size-4 shrink-0" />
-                                    {{ t.members_count }} member{{ t.members_count !== 1 ? 's' : '' }}
+                                    {{ t.members_count }} member{{
+                                        t.members_count !== 1 ? 's' : ''
+                                    }}
                                 </Link>
                             </TableCell>
                             <TableCell class="text-right tabular-nums">
@@ -130,14 +149,22 @@ function confirmDelete(team: TeamEntry): void {
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger as-child>
-                                        <Button variant="ghost" size="icon" class="h-8 w-8">
-                                            <span class="sr-only">Open menu</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            class="h-8 w-8"
+                                        >
+                                            <span class="sr-only"
+                                                >Open menu</span
+                                            >
                                             <MoreHorizontal class="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem as-child>
-                                            <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/${t.id}/edit`">
+                                            <Link
+                                                :href="`/dashboard/hackathons/${hackathon.id}/teams/${t.id}/edit`"
+                                            >
                                                 <Pencil class="mr-2 h-4 w-4" />
                                                 Edit
                                             </Link>
@@ -167,7 +194,9 @@ function confirmDelete(team: TeamEntry): void {
                     Create teams for this hackathon and add members.
                 </p>
                 <Button as-child>
-                    <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/create`">
+                    <Link
+                        :href="`/dashboard/hackathons/${hackathon.id}/teams/create`"
+                    >
                         <Plus class="mr-2 h-4 w-4" />
                         Add team
                     </Link>

@@ -41,7 +41,9 @@ const formData = ref<Record<string, unknown>>({
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
 
 function submit(): void {
     const d = formData.value;
@@ -60,22 +62,38 @@ function submit(): void {
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: d.youtube_url ?? null,
         is_available: d.is_available ?? false,
-        availability_type: ((d.availability_type as { value: string }[]) ?? []).map((a) => a.value),
-        skill_names: ((d.skills as { name: string }[]) ?? []).map((s) => s.name),
+        availability_type: (
+            (d.availability_type as { value: string }[]) ?? []
+        ).map((a) => a.value),
+        skill_names: ((d.skills as { name: string }[]) ?? []).map(
+            (s) => s.name,
+        ),
     };
     const cvFile = formRef.value?.cvFile;
-    const file = typeof cvFile === 'object' && cvFile && 'value' in cvFile ? cvFile.value : cvFile;
+    const file =
+        typeof cvFile === 'object' && cvFile && 'value' in cvFile
+            ? cvFile.value
+            : cvFile;
     if (file) payload.cv = file;
     submitting.value = true;
-    router.post(register(), payload as Record<string, string | number | boolean | null | string[] | File | Blob>, {
-        forceFormData: !!file,
-        preserveScroll: true,
-        onSuccess: () => formRef.value?.clearCv?.(),
-        onError: () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.post(
+        register(),
+        payload as Record<
+            string,
+            string | number | boolean | null | string[] | File | Blob
+        >,
+        {
+            forceFormData: !!file,
+            preserveScroll: true,
+            onSuccess: () => formRef.value?.clearCv?.(),
+            onError: () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+            onFinish: () => {
+                submitting.value = false;
+            },
         },
-        onFinish: () => { submitting.value = false; },
-    });
+    );
 }
 </script>
 
@@ -92,7 +110,9 @@ function submit(): void {
             >
                 <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <span>
-                    Only developers who are available, have at least 2 badges, work experience, projects, a CV, and skills are included in the newsletter sent to companies emails.
+                    Only developers who are available, have at least 2 badges,
+                    work experience, projects, a CV, and skills are included in
+                    the newsletter sent to companies emails.
                 </span>
             </p>
             <DeveloperFormFields
@@ -116,9 +136,7 @@ function submit(): void {
 
             <div class="text-center text-sm text-muted-foreground">
                 Already have an account?
-                <TextLink :href="login()">
-                    Log in
-                </TextLink>
+                <TextLink :href="login()"> Log in </TextLink>
             </div>
         </form>
     </AuthBase>

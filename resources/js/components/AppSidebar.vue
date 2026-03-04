@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { Award, BookOpen, Briefcase, ClipboardList, FileText, Folder, FolderKanban, Home, LayoutGrid, Mail, Shield, ThumbsUp, Trophy, User, UserCog, Users } from 'lucide-vue-next';
+import {
+    Award,
+    BookOpen,
+    Briefcase,
+    ClipboardList,
+    FileText,
+    Folder,
+    FolderKanban,
+    Home,
+    LayoutGrid,
+    Mail,
+    Shield,
+    ThumbsUp,
+    Trophy,
+    User,
+    UserCog,
+    Users,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -31,7 +48,9 @@ import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
 
 const page = usePage();
-const authCan = computed(() => (page.props.auth as { can?: Record<AuthCanKey, boolean> })?.can ?? {});
+const authCan = computed(
+    () => (page.props.auth as { can?: Record<AuthCanKey, boolean> })?.can ?? {},
+);
 
 function canSeeNavItem(item: NavItem): boolean {
     if (!item.can) return true;

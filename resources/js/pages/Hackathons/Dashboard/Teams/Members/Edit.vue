@@ -22,7 +22,12 @@ const props = defineProps<{
     member: {
         id: number;
         developer_id: number;
-        developer: { id: number; name: string; slug: string; email: string | null } | null;
+        developer: {
+            id: number;
+            name: string;
+            slug: string;
+            email: string | null;
+        } | null;
         position: string;
     };
     developers: DeveloperOption[];
@@ -34,8 +39,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Hackathons', href: hackathonsIndex().url },
     { title: props.hackathon.title, href: '#' },
-    { title: 'Teams', href: `/dashboard/hackathons/${props.hackathon.id}/teams` },
-    { title: props.team.title, href: `/dashboard/hackathons/${props.hackathon.id}/teams/${props.team.id}/members` },
+    {
+        title: 'Teams',
+        href: `/dashboard/hackathons/${props.hackathon.id}/teams`,
+    },
+    {
+        title: props.team.title,
+        href: `/dashboard/hackathons/${props.hackathon.id}/teams/${props.team.id}/members`,
+    },
     { title: 'Edit member', href: '#' },
 ];
 const developerModel = ref<string | null>(String(props.member.developer_id));
@@ -67,19 +78,29 @@ function onPositionOpenChange(open: boolean): void {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
                     <Pencil class="h-6 w-6 text-primary" />
                 </div>
                 <div>
                     <Heading
                         title="Edit team member"
-                        :description="member.developer ? `Update ${member.developer.name} in ${team.title}` : 'Update member'"
+                        :description="
+                            member.developer
+                                ? `Update ${member.developer.name} in ${team.title}`
+                                : 'Update member'
+                        "
                     />
                 </div>
             </div>
 
             <Card>
-                <Form :action="updateUrl" method="post" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form
+                    :action="updateUrl"
+                    method="post"
+                    v-slot="{ errors, processing, recentlySuccessful }"
+                >
                     <input type="hidden" name="_method" value="PUT" />
                     <CardHeader class="pb-4">
                         <h3 class="text-sm font-medium text-muted-foreground">
@@ -88,40 +109,68 @@ function onPositionOpenChange(open: boolean): void {
                     </CardHeader>
                     <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="grid gap-2">
-                            <Label for="developer_id">Developer <span class="text-destructive">*</span></Label>
+                            <Label for="developer_id"
+                                >Developer
+                                <span class="text-destructive">*</span></Label
+                            >
                             <SearchableSelect
                                 id="developer_id"
                                 v-model="developerModel"
-                                :options="developers.map((d) => ({ value: String(d.id), label: d.name }))"
+                                :options="
+                                    developers.map((d) => ({
+                                        value: String(d.id),
+                                        label: d.name,
+                                    }))
+                                "
                                 :open="developerSelectOpen"
                                 options-url="/api/developers"
                                 placeholder="Select a developer..."
                                 @update:open="onDeveloperOpenChange"
                             />
-                            <input type="hidden" name="developer_id" :value="developerModel ?? ''" />
+                            <input
+                                type="hidden"
+                                name="developer_id"
+                                :value="developerModel ?? ''"
+                            />
                             <InputError :message="errors.developer_id" />
                         </div>
 
                         <div class="grid gap-2">
-                            <Label for="position">Position <span class="text-destructive">*</span></Label>
+                            <Label for="position"
+                                >Position
+                                <span class="text-destructive">*</span></Label
+                            >
                             <SearchableSelect
                                 id="position"
                                 v-model="positionModel"
-                                :options="positionOptions.map((opt) => ({ value: opt.value, label: opt.label }))"
+                                :options="
+                                    positionOptions.map((opt) => ({
+                                        value: opt.value,
+                                        label: opt.label,
+                                    }))
+                                "
                                 placeholder="Select a position..."
                                 :open="positionSelectOpen"
                                 @update:open="onPositionOpenChange"
                             />
-                            <input type="hidden" name="position" :value="positionModel ?? ''" />
+                            <input
+                                type="hidden"
+                                name="position"
+                                :value="positionModel ?? ''"
+                            />
                             <InputError :message="errors.position" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
+                        <div
+                            class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2"
+                        >
                             <Button :disabled="processing" type="submit">
                                 Update member
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members`">
+                                <Link
+                                    :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members`"
+                                >
                                     Cancel
                                 </Link>
                             </Button>
@@ -135,7 +184,9 @@ function onPositionOpenChange(open: boolean): void {
                                     v-show="recentlySuccessful"
                                     class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    <span
+                                        class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                    />
                                     Member updated successfully
                                 </span>
                             </Transition>

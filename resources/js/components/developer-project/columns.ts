@@ -21,9 +21,17 @@ export function getColumns(
             header: 'Description',
             cell: ({ row }) => {
                 const desc = row.original.description;
-                if (!desc) return h('div', { class: 'text-muted-foreground' }, '—');
-                const truncated = desc.length > 80 ? `${desc.slice(0, 80)}…` : desc;
-                return h('div', { class: 'max-w-md truncate text-muted-foreground text-sm' }, truncated);
+                if (!desc)
+                    return h('div', { class: 'text-muted-foreground' }, '—');
+                const truncated =
+                    desc.length > 80 ? `${desc.slice(0, 80)}…` : desc;
+                return h(
+                    'div',
+                    {
+                        class: 'max-w-md truncate text-muted-foreground text-sm',
+                    },
+                    truncated,
+                );
             },
         },
         {
@@ -31,7 +39,8 @@ export function getColumns(
             header: 'Link',
             cell: ({ row }) => {
                 const link = row.original.link;
-                if (!link) return h('div', { class: 'text-muted-foreground' }, '—');
+                if (!link)
+                    return h('div', { class: 'text-muted-foreground' }, '—');
                 return h(
                     'a',
                     {
@@ -51,7 +60,9 @@ export function getColumns(
                 h(
                     Badge,
                     {
-                        variant: row.original.show_project ? 'default' : 'secondary',
+                        variant: row.original.show_project
+                            ? 'default'
+                            : 'secondary',
                     },
                     () => (row.original.show_project ? 'Yes' : 'No'),
                 ),

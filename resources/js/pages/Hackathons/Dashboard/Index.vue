@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { MoreHorizontal, Pencil, Plus, Trash2, Trophy, Users } from 'lucide-vue-next';
+import {
+    MoreHorizontal,
+    Pencil,
+    Plus,
+    Trash2,
+    Trophy,
+    Users,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
 import HackathonController from '@/actions/App/Http/Controllers/HackathonController';
 import { Button } from '@/components/ui/button';
@@ -20,7 +27,10 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as hackathonsIndex, create as hackathonsCreate } from '@/routes/hackathons';
+import {
+    index as hackathonsIndex,
+    create as hackathonsCreate,
+} from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 export type DashboardHackathonEntry = {
@@ -41,13 +51,20 @@ export type DashboardHackathonEntry = {
 
 type Props = {
     hackathons: DashboardHackathonEntry[];
-    can: { updateHackathon?: boolean; deleteHackathon?: boolean; viewHackathonSubscribers?: boolean; viewHackathonTeams?: boolean };
+    can: {
+        updateHackathon?: boolean;
+        deleteHackathon?: boolean;
+        viewHackathonSubscribers?: boolean;
+        viewHackathonTeams?: boolean;
+    };
 };
 
 defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -61,7 +78,9 @@ function formatDate(iso: string | null): string {
 
 function confirmDelete(h: DashboardHackathonEntry) {
     if (window.confirm(`Are you sure you want to delete "${h.title}"?`)) {
-        router.delete(HackathonController.destroy.url(h.id), { preserveScroll: true });
+        router.delete(HackathonController.destroy.url(h.id), {
+            preserveScroll: true,
+        });
     }
 }
 </script>
@@ -70,7 +89,9 @@ function confirmDelete(h: DashboardHackathonEntry) {
     <Head title="Hackathons" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -83,9 +104,13 @@ function confirmDelete(h: DashboardHackathonEntry) {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Hackathons</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Hackathons
+                    </h1>
                     <p class="text-muted-foreground">
                         Manage hackathons displayed on the public page
                     </p>
@@ -107,7 +132,13 @@ function confirmDelete(h: DashboardHackathonEntry) {
                             <TableHead>Dates</TableHead>
                             <TableHead>Reward</TableHead>
                             <TableHead>YouTube</TableHead>
-                            <TableHead v-if="can?.viewHackathonSubscribers || can?.viewHackathonTeams">Manage</TableHead>
+                            <TableHead
+                                v-if="
+                                    can?.viewHackathonSubscribers ||
+                                    can?.viewHackathonTeams
+                                "
+                                >Manage</TableHead
+                            >
                             <TableHead class="w-12" />
                         </TableRow>
                     </TableHeader>
@@ -123,17 +154,24 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                     :alt="h.title"
                                     class="h-10 w-16 rounded object-cover"
                                 />
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
+                            <TableCell class="text-sm text-muted-foreground">
                                 <span v-if="h.start_date || h.end_date">
-                                    {{ h.start_date ?? '…' }} – {{ h.end_date ?? '…' }}
+                                    {{ h.start_date ?? '…' }} –
+                                    {{ h.end_date ?? '…' }}
                                 </span>
                                 <span v-else>—</span>
                             </TableCell>
                             <TableCell class="text-sm">
-                                <span v-if="h.reward_badge">{{ h.reward_badge.name }}</span>
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-if="h.reward_badge">{{
+                                    h.reward_badge.name
+                                }}</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
                             <TableCell>
                                 <a
@@ -145,10 +183,19 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                 >
                                     Link
                                 </a>
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
-                            <TableCell v-if="can?.viewHackathonSubscribers || can?.viewHackathonTeams">
-                                <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <TableCell
+                                v-if="
+                                    can?.viewHackathonSubscribers ||
+                                    can?.viewHackathonTeams
+                                "
+                            >
+                                <div
+                                    class="flex flex-wrap items-center gap-x-3 gap-y-1"
+                                >
                                     <Link
                                         v-if="can?.viewHackathonSubscribers"
                                         :href="`/dashboard/hackathons/${h.id}/subscribers`"
@@ -158,7 +205,11 @@ function confirmDelete(h: DashboardHackathonEntry) {
                                         Subscribers
                                     </Link>
                                     <Link
-                                        v-if="h.start_date && h.end_date && can?.viewHackathonSubscribers"
+                                        v-if="
+                                            h.start_date &&
+                                            h.end_date &&
+                                            can?.viewHackathonSubscribers
+                                        "
                                         :href="`/dashboard/hackathons/${h.id}/attendance`"
                                         class="inline-flex items-center text-sm font-medium text-primary hover:underline"
                                     >
@@ -176,14 +227,29 @@ function confirmDelete(h: DashboardHackathonEntry) {
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger as-child>
-                                        <Button variant="ghost" size="icon" class="h-8 w-8">
-                                            <span class="sr-only">Open menu</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            class="h-8 w-8"
+                                        >
+                                            <span class="sr-only"
+                                                >Open menu</span
+                                            >
                                             <MoreHorizontal class="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem v-if="can?.updateHackathon" as-child>
-                                            <Link :href="HackathonController.edit.url(h.id)">
+                                        <DropdownMenuItem
+                                            v-if="can?.updateHackathon"
+                                            as-child
+                                        >
+                                            <Link
+                                                :href="
+                                                    HackathonController.edit.url(
+                                                        h.id,
+                                                    )
+                                                "
+                                            >
                                                 <Pencil class="mr-2 h-4 w-4" />
                                                 Edit
                                             </Link>

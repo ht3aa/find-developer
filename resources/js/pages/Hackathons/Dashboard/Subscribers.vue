@@ -20,7 +20,12 @@ import type { BreadcrumbItem } from '@/types';
 
 export type SubscriberEntry = {
     id: number;
-    developer: { id: number; name: string; slug: string; email: string | null } | null;
+    developer: {
+        id: number;
+        name: string;
+        slug: string;
+        email: string | null;
+    } | null;
     message: string;
     status: string;
     status_label: string;
@@ -28,12 +33,19 @@ export type SubscriberEntry = {
 };
 
 const props = defineProps<{
-    hackathon: { id: number; title: string; start_date?: string | null; end_date?: string | null };
+    hackathon: {
+        id: number;
+        title: string;
+        start_date?: string | null;
+        end_date?: string | null;
+    };
     subscribers: SubscriberEntry[];
 }>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -44,10 +56,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 function formatDate(iso: string | null): string {
     if (!iso) return '';
-    return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    return new Date(iso).toLocaleString(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+    });
 }
 
-function statusVariant(status: string): 'default' | 'secondary' | 'outline' | 'destructive' {
+function statusVariant(
+    status: string,
+): 'default' | 'secondary' | 'outline' | 'destructive' {
     switch (status) {
         case 'confirmed':
             return 'default';
@@ -59,7 +76,7 @@ function statusVariant(status: string): 'default' | 'secondary' | 'outline' | 'd
 }
 
 const hasAttendanceDates = computed(() =>
-    Boolean(props.hackathon.start_date && props.hackathon.end_date)
+    Boolean(props.hackathon.start_date && props.hackathon.end_date),
 );
 
 const searchQuery = ref('');
@@ -71,7 +88,12 @@ const filteredSubscribers = computed(() => {
         const email = s.developer?.email?.toLowerCase() ?? '';
         const message = s.message?.toLowerCase() ?? '';
         const status = s.status_label?.toLowerCase() ?? '';
-        return name.includes(q) || email.includes(q) || message.includes(q) || status.includes(q);
+        return (
+            name.includes(q) ||
+            email.includes(q) ||
+            message.includes(q) ||
+            status.includes(q)
+        );
     });
 });
 </script>
@@ -80,7 +102,9 @@ const filteredSubscribers = computed(() => {
     <Head :title="`Subscribers – ${hackathon.title}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -88,21 +112,29 @@ const filteredSubscribers = computed(() => {
                 {{ flash.success }}
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Subscribers</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Subscribers
+                    </h1>
                     <p class="text-muted-foreground">
                         {{ hackathon.title }}
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <Button v-if="hasAttendanceDates" as-child>
-                        <Link :href="`/dashboard/hackathons/${hackathon.id}/attendance`">
+                        <Link
+                            :href="`/dashboard/hackathons/${hackathon.id}/attendance`"
+                        >
                             Attendance
                         </Link>
                     </Button>
                     <Button as-child>
-                        <Link :href="`/dashboard/hackathons/${hackathon.id}/subscribers/create`">
+                        <Link
+                            :href="`/dashboard/hackathons/${hackathon.id}/subscribers/create`"
+                        >
                             <Plus class="mr-2 h-4 w-4" />
                             Add subscriber
                         </Link>
@@ -118,7 +150,9 @@ const filteredSubscribers = computed(() => {
 
             <div v-if="subscribers.length > 0" class="flex flex-col gap-4">
                 <div class="relative w-full sm:max-w-sm">
-                    <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search
+                        class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
                     <Input
                         v-model="searchQuery"
                         type="search"
@@ -128,62 +162,73 @@ const filteredSubscribers = computed(() => {
                     />
                 </div>
                 <div class="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Developer</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Message</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Subscribed at</TableHead>
-                            <TableHead class="w-12" />
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow v-for="s in filteredSubscribers" :key="s.id">
-                            <TableCell class="font-medium">
-                                <Link
-                                    v-if="s.developer"
-                                    :href="`/developers/${s.developer.slug}`"
-                                    class="text-primary hover:underline"
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Developer</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Message</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Subscribed at</TableHead>
+                                <TableHead class="w-12" />
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow
+                                v-for="s in filteredSubscribers"
+                                :key="s.id"
+                            >
+                                <TableCell class="font-medium">
+                                    <Link
+                                        v-if="s.developer"
+                                        :href="`/developers/${s.developer.slug}`"
+                                        class="text-primary hover:underline"
+                                    >
+                                        {{ s.developer.name }}
+                                    </Link>
+                                    <span v-else class="text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="text-sm text-muted-foreground"
                                 >
-                                    {{ s.developer.name }}
-                                </Link>
-                                <span v-else class="text-muted-foreground">—</span>
-                            </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
-                                <a
-                                    v-if="s.developer?.email"
-                                    :href="`mailto:${s.developer.email}`"
-                                    class="hover:underline"
+                                    <a
+                                        v-if="s.developer?.email"
+                                        :href="`mailto:${s.developer.email}`"
+                                        class="hover:underline"
+                                    >
+                                        {{ s.developer.email }}
+                                    </a>
+                                    <span v-else>—</span>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-xs truncate text-sm text-muted-foreground"
                                 >
-                                    {{ s.developer.email }}
-                                </a>
-                                <span v-else>—</span>
-                            </TableCell>
-                            <TableCell class="max-w-xs truncate text-sm text-muted-foreground">
-                                {{ s.message }}
-                            </TableCell>
-                            <TableCell>
-                                <Badge :variant="statusVariant(s.status)">
-                                    {{ s.status_label }}
-                                </Badge>
-                            </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
-                                {{ formatDate(s.created_at) }}
-                            </TableCell>
-                            <TableCell>
-                                <Link
-                                    :href="`/dashboard/hackathons/${hackathon.id}/subscribers/${s.id}/edit`"
-                                    class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                                    {{ s.message }}
+                                </TableCell>
+                                <TableCell>
+                                    <Badge :variant="statusVariant(s.status)">
+                                        {{ s.status_label }}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell
+                                    class="text-sm text-muted-foreground"
                                 >
-                                    <Pencil class="size-4 shrink-0" />
-                                    Edit
-                                </Link>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                                    {{ formatDate(s.created_at) }}
+                                </TableCell>
+                                <TableCell>
+                                    <Link
+                                        :href="`/dashboard/hackathons/${hackathon.id}/subscribers/${s.id}/edit`"
+                                        class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                                    >
+                                        <Pencil class="size-4 shrink-0" />
+                                        Edit
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </div>
                 <p
                     v-if="filteredSubscribers.length === 0"

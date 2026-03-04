@@ -17,7 +17,12 @@ type PublicHackathonTeamMember = {
     id: number;
     position: string;
     position_label: string;
-    developer: { id: number; name: string; slug: string; email: string | null } | null;
+    developer: {
+        id: number;
+        name: string;
+        slug: string;
+        email: string | null;
+    } | null;
 };
 
 type PublicHackathonTeam = {
@@ -38,11 +43,7 @@ const props = defineProps<{
 
 function toggleVote(team: PublicHackathonTeam): void {
     if (!props.canVote) return;
-    router.post(
-        team.vote_url,
-        {},
-        { preserveScroll: true },
-    );
+    router.post(team.vote_url, {}, { preserveScroll: true });
 }
 </script>
 
@@ -59,8 +60,12 @@ function toggleVote(team: PublicHackathonTeam): void {
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 
-        <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
-            <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <main
+            class="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8"
+        >
+            <header
+                class="mb-8 flex flex-wrap items-center justify-between gap-4"
+            >
                 <div>
                     <p class="text-sm font-medium text-muted-foreground">
                         Hackathon teams
@@ -90,20 +95,20 @@ function toggleVote(team: PublicHackathonTeam): void {
                         No teams yet
                     </h2>
                     <p class="mt-2 text-sm text-muted-foreground">
-                        Teams for this hackathon will appear here once they are created.
+                        Teams for this hackathon will appear here once they are
+                        created.
                     </p>
                 </div>
 
-                <div
-                    v-else
-                    class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-                >
+                <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <Card
                         v-for="team in teams"
                         :key="team.id"
                         class="flex h-full flex-col overflow-hidden"
                     >
-                        <CardHeader class="flex flex-row items-center gap-4 pb-3">
+                        <CardHeader
+                            class="flex flex-row items-center gap-4 pb-3"
+                        >
                             <div
                                 v-if="team.logo_url"
                                 class="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-muted"
@@ -115,23 +120,33 @@ function toggleVote(team: PublicHackathonTeam): void {
                                 />
                             </div>
                             <div class="min-w-0 flex-1">
-                                <h2 class="truncate text-base font-semibold tracking-tight">
+                                <h2
+                                    class="truncate text-base font-semibold tracking-tight"
+                                >
                                     {{ team.title }}
                                 </h2>
                                 <p class="mt-1 text-xs text-muted-foreground">
                                     {{ team.members.length }}
-                                    {{ team.members.length === 1 ? 'member' : 'members' }}
+                                    {{
+                                        team.members.length === 1
+                                            ? 'member'
+                                            : 'members'
+                                    }}
                                     <template v-if="hackathon.enable_voting">
                                         ·
                                         {{ team.votes_count }}
-                                        {{ team.votes_count === 1 ? 'vote' : 'votes' }}
+                                        {{
+                                            team.votes_count === 1
+                                                ? 'vote'
+                                                : 'votes'
+                                        }}
                                     </template>
                                 </p>
                             </div>
                             <button
                                 v-if="hackathon.enable_voting && canVote"
                                 type="button"
-                                class="shrink-0 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors"
+                                class="inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors"
                                 :class="
                                     team.has_voted
                                         ? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
@@ -149,10 +164,7 @@ function toggleVote(team: PublicHackathonTeam): void {
                             >
                                 No members yet.
                             </div>
-                            <ul
-                                v-else
-                                class="space-y-2 text-sm"
-                            >
+                            <ul v-else class="space-y-2 text-sm">
                                 <li
                                     v-for="member in team.members"
                                     :key="member.id"
@@ -180,7 +192,9 @@ function toggleVote(team: PublicHackathonTeam): void {
                                             Unknown developer
                                         </span>
                                     </div>
-                                    <span class="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                                    <span
+                                        class="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                                    >
                                         {{ member.position_label }}
                                     </span>
                                 </li>
@@ -194,4 +208,3 @@ function toggleVote(team: PublicHackathonTeam): void {
         <Footer />
     </div>
 </template>
-

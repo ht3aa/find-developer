@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced } from '@vueuse/core';
-import { Box, ClipboardList, Copy, ExternalLink, Loader2, Search } from 'lucide-vue-next';
+import {
+    Box,
+    ClipboardList,
+    Copy,
+    ExternalLink,
+    Loader2,
+    Search,
+} from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
@@ -22,7 +29,10 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as activityLogIndex, show as activityLogShow } from '@/routes/dashboard/activity-log';
+import {
+    index as activityLogIndex,
+    show as activityLogShow,
+} from '@/routes/dashboard/activity-log';
 import type { BreadcrumbItem } from '@/types';
 import type { ActivityLogEntry } from '@/types/activity-log';
 
@@ -80,7 +90,10 @@ async function openPropertiesModal(activity: ActivityLogEntry): Promise<void> {
     try {
         const res = await fetch(propertiesUrl(activity.id), {
             signal: fetchAbortController.signal,
-            headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         });
         if (!res.ok) return;
         const data = await res.json();
@@ -123,12 +136,14 @@ const modalPropertiesRows = computed<PropertyRow[]>(() => {
     return Object.entries(p)
         .filter(([k]) => k !== 'attributes' && k !== 'old')
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([key, value]) => ({ property: key, oldValue: undefined, newValue: value }));
+        .map(([key, value]) => ({
+            property: key,
+            oldValue: undefined,
+            newValue: value,
+        }));
 });
 
-const hasModalProperties = computed(
-    () => modalPropertiesRows.value.length > 0,
-);
+const hasModalProperties = computed(() => modalPropertiesRows.value.length > 0);
 
 async function copyCauserEmail(email: string): Promise<void> {
     try {
@@ -144,11 +159,18 @@ async function copyCauserEmail(email: string): Promise<void> {
 }
 
 watch(debouncedSearch, (value) => {
-    router.get(activityLogIndex().url, { search: value || undefined, log_name: props.filters.log_name || undefined }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    router.get(
+        activityLogIndex().url,
+        {
+            search: value || undefined,
+            log_name: props.filters.log_name || undefined,
+        },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 });
 
 function formatDate(iso: string): string {
@@ -159,7 +181,9 @@ function formatDate(iso: string): string {
     });
 }
 
-function eventBadgeVariant(event: string | null): 'default' | 'secondary' | 'destructive' | 'outline' {
+function eventBadgeVariant(
+    event: string | null,
+): 'default' | 'secondary' | 'destructive' | 'outline' {
     if (!event) return 'secondary';
     if (event === 'created') return 'default';
     if (event === 'updated') return 'outline';
@@ -177,8 +201,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Activity Log" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">
                         Activity Log
@@ -189,9 +217,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="relative flex-1 sm:max-w-sm">
-                    <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search
+                        class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
                     <Input
                         v-model="searchQuery"
                         type="search"
@@ -203,21 +235,21 @@ const breadcrumbs: BreadcrumbItem[] = [
                     v-if="activities.total > 0"
                     class="text-sm text-muted-foreground"
                 >
-                    Showing {{ activities.from }}–{{ activities.to }} of {{ activities.total }}
+                    Showing {{ activities.from }}–{{ activities.to }} of
+                    {{ activities.total }}
                 </p>
             </div>
 
-            <div
-                v-if="activities.data.length > 0"
-                class="rounded-md border"
-            >
+            <div v-if="activities.data.length > 0" class="rounded-md border">
                 <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead class="w-[140px]">Date</TableHead>
                             <TableHead class="w-[90px]">Event</TableHead>
                             <TableHead class="w-[120px]">Subject</TableHead>
-                            <TableHead class="w-[180px]">Causer email</TableHead>
+                            <TableHead class="w-[180px]"
+                                >Causer email</TableHead
+                            >
                             <TableHead class="w-[80px]">Log</TableHead>
                             <TableHead class="w-[160px]" />
                         </TableRow>
@@ -227,44 +259,64 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="activity in activities.data"
                             :key="activity.id"
                         >
-                            <TableCell class="text-muted-foreground text-sm whitespace-nowrap">
+                            <TableCell
+                                class="text-sm whitespace-nowrap text-muted-foreground"
+                            >
                                 {{ formatDate(activity.created_at) }}
                             </TableCell>
                             <TableCell>
                                 <span
                                     :class="[
                                         'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
-                                        eventBadgeVariant(activity.event) === 'default' && 'bg-primary text-primary-foreground',
-                                        eventBadgeVariant(activity.event) === 'outline' && 'border border-input bg-background',
-                                        eventBadgeVariant(activity.event) === 'destructive' && 'bg-destructive/10 text-destructive',
-                                        eventBadgeVariant(activity.event) === 'secondary' && 'bg-muted text-muted-foreground',
+                                        eventBadgeVariant(activity.event) ===
+                                            'default' &&
+                                            'bg-primary text-primary-foreground',
+                                        eventBadgeVariant(activity.event) ===
+                                            'outline' &&
+                                            'border border-input bg-background',
+                                        eventBadgeVariant(activity.event) ===
+                                            'destructive' &&
+                                            'bg-destructive/10 text-destructive',
+                                        eventBadgeVariant(activity.event) ===
+                                            'secondary' &&
+                                            'bg-muted text-muted-foreground',
                                     ]"
                                 >
                                     {{ activity.event ?? '—' }}
                                 </span>
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
+                            <TableCell class="text-sm text-muted-foreground">
                                 <span v-if="activity.subject_type">
-                                    {{ activity.subject_type }} #{{ activity.subject_id }}
+                                    {{ activity.subject_type }} #{{
+                                        activity.subject_id
+                                    }}
                                 </span>
                                 <span v-else>—</span>
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
+                            <TableCell class="text-sm text-muted-foreground">
                                 <span
                                     v-if="activity.causer_email"
                                     class="group flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-muted/80"
                                     :title="`Copy ${activity.causer_email}`"
-                                    @click="copyCauserEmail(activity.causer_email)"
+                                    @click="
+                                        copyCauserEmail(activity.causer_email)
+                                    "
                                 >
-                                    <span class="truncate">{{ activity.causer_email }}</span>
+                                    <span class="truncate">{{
+                                        activity.causer_email
+                                    }}</span>
                                     <Copy
                                         class="size-3.5 shrink-0 opacity-60 group-hover:opacity-100"
-                                        :class="{ 'text-green-600 dark:text-green-400': copiedEmail === activity.causer_email }"
+                                        :class="{
+                                            'text-green-600 dark:text-green-400':
+                                                copiedEmail ===
+                                                activity.causer_email,
+                                        }"
                                     />
                                 </span>
                                 <span v-else>—</span>
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-xs">
+                            <TableCell class="text-xs text-muted-foreground">
                                 {{ activity.log_name ?? 'default' }}
                             </TableCell>
                             <TableCell class="flex items-center gap-2">
@@ -297,7 +349,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <ClipboardList class="mb-4 h-12 w-12 text-muted-foreground" />
                 <h3 class="mb-2 text-lg font-semibold">No activity yet</h3>
                 <p class="text-center text-sm text-muted-foreground">
-                    {{ (filters.search ?? '') ? 'No entries match your search.' : 'Activity will appear here as models are changed.' }}
+                    {{
+                        (filters.search ?? '')
+                            ? 'No entries match your search.'
+                            : 'Activity will appear here as models are changed.'
+                    }}
                 </p>
             </div>
 
@@ -324,7 +380,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <Table v-else-if="hasModalProperties">
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead class="w-[140px]">Property</TableHead>
+                                    <TableHead class="w-[140px]"
+                                        >Property</TableHead
+                                    >
                                     <TableHead>Old value</TableHead>
                                     <TableHead>New value</TableHead>
                                 </TableRow>
@@ -337,7 +395,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <TableCell class="font-medium">
                                         {{ row.property }}
                                     </TableCell>
-                                    <TableCell class="font-mono text-muted-foreground text-xs">
+                                    <TableCell
+                                        class="font-mono text-xs text-muted-foreground"
+                                    >
                                         {{ formatPropertyValue(row.oldValue) }}
                                     </TableCell>
                                     <TableCell class="font-mono text-xs">

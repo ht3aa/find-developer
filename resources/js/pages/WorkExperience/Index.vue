@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button';
 import WorkExperienceDataTable from '@/components/work-experience/WorkExperienceDataTable.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as workExperienceIndex, create as workExperienceCreate } from '@/routes/work-experience';
+import {
+    index as workExperienceIndex,
+    create as workExperienceCreate,
+} from '@/routes/work-experience';
 import type { BreadcrumbItem } from '@/types';
 import type { WorkExperience } from '@/types/work-experience';
 
@@ -18,7 +21,9 @@ type Props = {
 defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -42,7 +47,9 @@ function confirmDelete(workExperience: WorkExperience) {
     <Head title="Work Experience" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -55,7 +62,9 @@ function confirmDelete(workExperience: WorkExperience) {
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">
                         Work Experience
@@ -83,7 +92,9 @@ function confirmDelete(workExperience: WorkExperience) {
                 class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
             >
                 <Briefcase class="mb-4 h-12 w-12 text-muted-foreground" />
-                <h3 class="mb-2 text-lg font-semibold">No work experience yet</h3>
+                <h3 class="mb-2 text-lg font-semibold">
+                    No work experience yet
+                </h3>
                 <p class="mb-4 text-center text-sm text-muted-foreground">
                     Add your first work experience to showcase your professional
                     background.

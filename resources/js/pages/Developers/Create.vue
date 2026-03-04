@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { create as developersCreate, index as developersIndex } from '@/routes/developers';
+import {
+    create as developersCreate,
+    index as developersIndex,
+} from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 
 type UserOption = { id: number; name: string; email: string };
@@ -44,7 +47,9 @@ const formData = ref<Record<string, unknown>>({
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
 const submitting = ref(false);
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -70,20 +75,29 @@ function submit(): void {
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: d.youtube_url ?? null,
         is_available: d.is_available ?? false,
-        availability_type: ((d.availability_type as { value: string }[]) ?? []).map((a) => a.value),
-        skill_names: ((d.skills as { name: string }[]) ?? []).map((s) => s.name),
+        availability_type: (
+            (d.availability_type as { value: string }[]) ?? []
+        ).map((a) => a.value),
+        skill_names: ((d.skills as { name: string }[]) ?? []).map(
+            (s) => s.name,
+        ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ?? false,
     };
     const cvFile = formRef.value?.cvFile;
-    const file = typeof cvFile === 'object' && cvFile && 'value' in cvFile ? cvFile.value : cvFile;
+    const file =
+        typeof cvFile === 'object' && cvFile && 'value' in cvFile
+            ? cvFile.value
+            : cvFile;
     if (file) payload.cv = file;
     submitting.value = true;
     router.post(DeveloperController.store.url(), payload, {
         forceFormData: !!file,
         preserveScroll: true,
         onSuccess: () => formRef.value?.clearCv?.(),
-        onFinish: () => { submitting.value = false; },
+        onFinish: () => {
+            submitting.value = false;
+        },
     });
 }
 </script>
@@ -116,35 +130,42 @@ function submit(): void {
                     </CardHeader>
                     <CardContent>
                         <form class="space-y-6" @submit.prevent="submit">
-                        <DeveloperFormFields
-                            ref="formRef"
-                            v-model="formData"
-                            :errors="formErrors"
-                            :job-titles="jobTitles"
-                            :users="users"
-                            show-user-select
-                            show-admin-fields
-                        />
+                            <DeveloperFormFields
+                                ref="formRef"
+                                v-model="formData"
+                                :errors="formErrors"
+                                :job-titles="jobTitles"
+                                :users="users"
+                                show-user-select
+                                show-admin-fields
+                            />
 
-                        <div class="flex flex-wrap items-center gap-3 pt-4">
-                            <Button type="submit" :disabled="submitting">
-                                {{ submitting ? 'Creating...' : 'Create Developer' }}
-                            </Button>
-                            <Button variant="outline" as-child>
-                                <a :href="developersIndex().url">Cancel</a>
-                            </Button>
-                        </div>
-                    </form>
+                            <div class="flex flex-wrap items-center gap-3 pt-4">
+                                <Button type="submit" :disabled="submitting">
+                                    {{
+                                        submitting
+                                            ? 'Creating...'
+                                            : 'Create Developer'
+                                    }}
+                                </Button>
+                                <Button variant="outline" as-child>
+                                    <a :href="developersIndex().url">Cancel</a>
+                                </Button>
+                            </div>
+                        </form>
                     </CardContent>
                 </Card>
 
                 <Card v-else class="lg:col-span-2">
                     <CardContent class="py-12 text-center">
                         <p class="text-muted-foreground">
-                            No users available. All registered users already have developer profiles.
+                            No users available. All registered users already
+                            have developer profiles.
                         </p>
                         <Button variant="outline" class="mt-4" as-child>
-                            <a :href="developersIndex().url">Back to Developers</a>
+                            <a :href="developersIndex().url"
+                                >Back to Developers</a
+                            >
                         </Button>
                     </CardContent>
                 </Card>

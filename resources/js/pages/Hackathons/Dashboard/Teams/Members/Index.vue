@@ -20,7 +20,12 @@ import type { BreadcrumbItem } from '@/types';
 export type MemberEntry = {
     id: number;
     developer_id: number;
-    developer: { id: number; name: string; slug: string; email: string | null } | null;
+    developer: {
+        id: number;
+        name: string;
+        slug: string;
+        email: string | null;
+    } | null;
     position: string;
     position_label: string;
 };
@@ -32,13 +37,18 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string } | undefined,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Hackathons', href: hackathonsIndex().url },
     { title: props.hackathon.title, href: '#' },
-    { title: 'Teams', href: `/dashboard/hackathons/${props.hackathon.id}/teams` },
+    {
+        title: 'Teams',
+        href: `/dashboard/hackathons/${props.hackathon.id}/teams`,
+    },
     { title: props.team.title, href: '#' },
 ];
 
@@ -47,7 +57,7 @@ function confirmDelete(member: MemberEntry): void {
     if (window.confirm(`Remove ${name} from the team?`)) {
         router.delete(
             `/dashboard/hackathons/${props.hackathon.id}/teams/${props.team.id}/members/${member.id}`,
-            { preserveScroll: true }
+            { preserveScroll: true },
         );
     }
 }
@@ -57,7 +67,9 @@ function confirmDelete(member: MemberEntry): void {
     <Head :title="`${team.title} – Members`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -65,16 +77,22 @@ function confirmDelete(member: MemberEntry): void {
                 {{ flash.success }}
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Team members</h1>
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Team members
+                    </h1>
                     <p class="text-muted-foreground">
                         {{ team.title }}
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
                     <Button as-child>
-                        <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members/create`">
+                        <Link
+                            :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members/create`"
+                        >
                             <Plus class="mr-2 h-4 w-4" />
                             Add member
                         </Link>
@@ -108,9 +126,11 @@ function confirmDelete(member: MemberEntry): void {
                                 >
                                     {{ m.developer.name }}
                                 </Link>
-                                <span v-else class="text-muted-foreground">—</span>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
+                            <TableCell class="text-sm text-muted-foreground">
                                 <a
                                     v-if="m.developer?.email"
                                     :href="`mailto:${m.developer.email}`"
@@ -121,7 +141,13 @@ function confirmDelete(member: MemberEntry): void {
                                 <span v-else>—</span>
                             </TableCell>
                             <TableCell>
-                                <Badge :variant="m.position === 'team_leader' ? 'default' : 'secondary'">
+                                <Badge
+                                    :variant="
+                                        m.position === 'team_leader'
+                                            ? 'default'
+                                            : 'secondary'
+                                    "
+                                >
                                     {{ m.position_label }}
                                 </Badge>
                             </TableCell>
@@ -159,7 +185,9 @@ function confirmDelete(member: MemberEntry): void {
                     Add developers to this team.
                 </p>
                 <Button as-child>
-                    <Link :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members/create`">
+                    <Link
+                        :href="`/dashboard/hackathons/${hackathon.id}/teams/${team.id}/members/create`"
+                    >
                         <Plus class="mr-2 h-4 w-4" />
                         Add member
                     </Link>

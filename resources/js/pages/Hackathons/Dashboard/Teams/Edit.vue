@@ -16,19 +16,31 @@ import type { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
     hackathon: { id: number; title: string };
-    team: { id: number; title: string; logo: string | null; logo_url: string | null };
+    team: {
+        id: number;
+        title: string;
+        logo: string | null;
+        logo_url: string | null;
+    };
     updateUrl: string;
 }>();
 
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Hackathons', href: hackathonsIndex().url },
     { title: props.hackathon.title, href: '#' },
-    { title: 'Teams', href: `/dashboard/hackathons/${props.hackathon.id}/teams` },
+    {
+        title: 'Teams',
+        href: `/dashboard/hackathons/${props.hackathon.id}/teams`,
+    },
     { title: 'Edit', href: '#' },
 ];
 
@@ -71,7 +83,9 @@ function submitForm(): void {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
                     <Pencil class="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -91,7 +105,10 @@ function submitForm(): void {
                     </CardHeader>
                     <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="grid gap-2 lg:col-span-2">
-                            <Label for="title">Title <span class="text-destructive">*</span></Label>
+                            <Label for="title"
+                                >Title
+                                <span class="text-destructive">*</span></Label
+                            >
                             <Input
                                 id="title"
                                 v-model="title"
@@ -114,12 +131,16 @@ function submitForm(): void {
                             :error="formErrors.logo"
                         />
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
+                        <div
+                            class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2"
+                        >
                             <Button :disabled="submitting" type="submit">
                                 {{ submitting ? 'Updating...' : 'Update team' }}
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="`/dashboard/hackathons/${hackathon.id}/teams`">
+                                <Link
+                                    :href="`/dashboard/hackathons/${hackathon.id}/teams`"
+                                >
                                     Cancel
                                 </Link>
                             </Button>
@@ -133,7 +154,9 @@ function submitForm(): void {
                                     v-show="flashSuccess"
                                     class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    <span
+                                        class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                    />
                                     {{ flashSuccess }}
                                 </span>
                             </Transition>

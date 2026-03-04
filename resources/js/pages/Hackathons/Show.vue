@@ -20,7 +20,13 @@ export type PublicHackathonDetail = {
     youtube_url: string | null;
     youtube_video_id: string | null;
     reward_badge_id: number | null;
-    reward_badge: { id: number; name: string; slug: string; icon: string | null; color: string | null } | null;
+    reward_badge: {
+        id: number;
+        name: string;
+        slug: string;
+        icon: string | null;
+        color: string | null;
+    } | null;
     reward_description: string | null;
     start_date: string | null;
     end_date: string | null;
@@ -38,7 +44,12 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string; info?: string } | undefined);
+const flash = computed(
+    () =>
+        page.props.flash as
+            | { success?: string; error?: string; info?: string }
+            | undefined,
+);
 const auth = computed(() => page.props.auth as { user: unknown } | undefined);
 const isGuest = computed(() => !auth.value?.user);
 
@@ -48,10 +59,14 @@ function formatDate(iso: string | null): string {
     return d.toLocaleDateString(undefined, { dateStyle: 'long' });
 }
 
-const hackathonCanonical = computed(() => `/hackathons/${props.hackathon.slug}`);
+const hackathonCanonical = computed(
+    () => `/hackathons/${props.hackathon.slug}`,
+);
 
 function scrollToRegister(): void {
-    document.getElementById('hackathon-register')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document
+        .getElementById('hackathon-register')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 
@@ -69,7 +84,9 @@ function scrollToRegister(): void {
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 
-        <article class="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+        <article
+            class="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 lg:px-8"
+        >
             <div
                 v-if="flash?.success"
                 class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -92,26 +109,56 @@ function scrollToRegister(): void {
             <header class="mb-8">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+                        <h1
+                            class="text-3xl font-bold tracking-tight sm:text-4xl"
+                        >
                             {{ hackathon.title }}
                         </h1>
-                        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-                            <time v-if="hackathon.start_date || hackathon.end_date" :datetime="hackathon.start_date ?? hackathon.end_date ?? undefined">
-                                <span v-if="hackathon.start_date && hackathon.end_date">
-                                    {{ formatDate(hackathon.start_date) }} – {{ formatDate(hackathon.end_date) }}
+                        <div
+                            class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
+                        >
+                            <time
+                                v-if="
+                                    hackathon.start_date || hackathon.end_date
+                                "
+                                :datetime="
+                                    hackathon.start_date ??
+                                    hackathon.end_date ??
+                                    undefined
+                                "
+                            >
+                                <span
+                                    v-if="
+                                        hackathon.start_date &&
+                                        hackathon.end_date
+                                    "
+                                >
+                                    {{ formatDate(hackathon.start_date) }} –
+                                    {{ formatDate(hackathon.end_date) }}
                                 </span>
-                                <span v-else>{{ formatDate(hackathon.start_date ?? hackathon.end_date) }}</span>
+                                <span v-else>{{
+                                    formatDate(
+                                        hackathon.start_date ??
+                                            hackathon.end_date,
+                                    )
+                                }}</span>
                             </time>
                         </div>
                         <time
-                            v-if="hackathon.created_at && !hackathon.start_date && !hackathon.end_date"
+                            v-if="
+                                hackathon.created_at &&
+                                !hackathon.start_date &&
+                                !hackathon.end_date
+                            "
                             class="mt-2 block text-sm text-muted-foreground"
                             :datetime="hackathon.created_at"
                         >
                             {{ formatDate(hackathon.created_at) }}
                         </time>
                     </div>
-                    <div class="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-3">
+                    <div
+                        class="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-3"
+                    >
                         <Button
                             v-if="canSubscribe || isGuest"
                             type="button"
@@ -119,9 +166,15 @@ function scrollToRegister(): void {
                             class="shrink-0"
                             @click="scrollToRegister"
                         >
-                            <UserPlus class="mr-2 size-4 shrink-0" aria-hidden="true" />
+                            <UserPlus
+                                class="mr-2 size-4 shrink-0"
+                                aria-hidden="true"
+                            />
                             Register
-                            <ChevronDown class="ml-2 size-4 shrink-0" aria-hidden="true" />
+                            <ChevronDown
+                                class="ml-2 size-4 shrink-0"
+                                aria-hidden="true"
+                            />
                         </Button>
                         <Button
                             v-if="hackathon.has_teams && hackathon.teams_url"
@@ -150,7 +203,7 @@ function scrollToRegister(): void {
 
             <div
                 v-if="hackathon.body"
-                class="prose prose-neutral dark:prose-invert max-w-none mb-8"
+                class="prose prose-neutral dark:prose-invert mb-8 max-w-none"
                 v-html="hackathon.body"
             />
 
@@ -162,7 +215,14 @@ function scrollToRegister(): void {
                     :src="`https://www.youtube.com/embed/${hackathon.youtube_video_id}`"
                     title="YouTube video"
                     class="size-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="
+                        accelerometer;
+                        autoplay;
+                        clipboard-write;
+                        encrypted-media;
+                        gyroscope;
+                        picture-in-picture;
+                    "
                     allowfullscreen
                 />
             </div>
@@ -171,7 +231,9 @@ function scrollToRegister(): void {
                 v-if="hackathon.reward_badge || hackathon.reward_description"
                 class="mb-8 rounded-xl border border-border bg-gradient-to-br from-primary/5 to-primary/10 p-6 dark:from-primary/10 dark:to-primary/5"
             >
-                <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold tracking-tight">
+                <h2
+                    class="mb-4 flex items-center gap-2 text-lg font-semibold tracking-tight"
+                >
                     <Award class="size-5 text-primary" aria-hidden="true" />
                     Reward
                 </h2>
@@ -179,10 +241,22 @@ function scrollToRegister(): void {
                     <Link
                         :href="`/badges`"
                         class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
-                        :class="hackathon.reward_badge.color ? '' : 'bg-primary text-primary-foreground'"
-                        :style="hackathon.reward_badge.color
-                            ? { backgroundColor: `${hackathon.reward_badge.color}25`, color: hackathon.reward_badge.color, borderWidth: '1px', borderStyle: 'solid', borderColor: `${hackathon.reward_badge.color}40` }
-                            : undefined"
+                        :class="
+                            hackathon.reward_badge.color
+                                ? ''
+                                : 'bg-primary text-primary-foreground'
+                        "
+                        :style="
+                            hackathon.reward_badge.color
+                                ? {
+                                      backgroundColor: `${hackathon.reward_badge.color}25`,
+                                      color: hackathon.reward_badge.color,
+                                      borderWidth: '1px',
+                                      borderStyle: 'solid',
+                                      borderColor: `${hackathon.reward_badge.color}40`,
+                                  }
+                                : undefined
+                        "
                     >
                         <BadgeIcon
                             v-if="hackathon.reward_badge.icon"
@@ -199,7 +273,7 @@ function scrollToRegister(): void {
                 </div>
                 <p
                     v-if="hackathon.reward_description"
-                    class="text-sm text-muted-foreground leading-relaxed"
+                    class="text-sm leading-relaxed text-muted-foreground"
                 >
                     {{ hackathon.reward_description }}
                 </p>
@@ -208,15 +282,23 @@ function scrollToRegister(): void {
             <section
                 id="hackathon-register"
                 v-if="canSubscribe || subscribersCount > 0 || isGuest"
-                class="mb-8 rounded-xl border border-border bg-muted/30 p-6 scroll-mt-8"
+                class="mb-8 scroll-mt-8 rounded-xl border border-border bg-muted/30 p-6"
             >
-                <div class="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+                <div
+                    class="mb-3 flex items-center gap-2 text-sm text-muted-foreground"
+                >
                     <UserPlus class="size-4 shrink-0" aria-hidden="true" />
-                    <span>{{ subscribersCount }} {{ subscribersCount === 1 ? 'developer' : 'developers' }} registered</span>
+                    <span
+                        >{{ subscribersCount }}
+                        {{
+                            subscribersCount === 1 ? 'developer' : 'developers'
+                        }}
+                        registered</span
+                    >
                 </div>
                 <div
                     v-if="isGuest"
-                    class="rounded-lg border border-amber-200 bg-amber-50 py-3 px-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200"
+                    class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200"
                 >
                     <p class="font-medium">
                         Please log in to register for this hackathon.
@@ -230,10 +312,11 @@ function scrollToRegister(): void {
                 </div>
                 <div
                     v-else-if="canSubscribe && alreadySubscribed"
-                    class="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 py-3 px-4 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+                    class="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
                 >
                     <CheckCircle2 class="size-5 shrink-0" aria-hidden="true" />
-                    You're registered for this hackathon. You will receive a confirmation email once it's approved.
+                    You're registered for this hackathon. You will receive a
+                    confirmation email once it's approved.
                 </div>
                 <Form
                     v-else-if="canSubscribe && !alreadySubscribed"
@@ -243,11 +326,10 @@ function scrollToRegister(): void {
                     v-slot="{ errors, processing }"
                 >
                     <div class="grid gap-2">
-                        <Label for="message">
-                            Confirm your attendance
-                        </Label>
+                        <Label for="message"> Confirm your attendance </Label>
                         <p class="text-xs text-muted-foreground">
-                            Add a short message to confirm you will attend this hackathon.
+                            Add a short message to confirm you will attend this
+                            hackathon.
                         </p>
                         <textarea
                             id="message"
@@ -255,7 +337,7 @@ function scrollToRegister(): void {
                             required
                             rows="3"
                             placeholder="e.g. I'm excited to join and looking forward to the event!"
-                            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <InputError :message="errors.message" />
                     </div>

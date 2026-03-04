@@ -16,7 +16,13 @@ export type PublicHackathonEntry = {
     image_url: string | null;
     youtube_url: string | null;
     reward_badge_id: number | null;
-    reward_badge: { id: number; name: string; slug: string; icon: string | null; color: string | null } | null;
+    reward_badge: {
+        id: number;
+        name: string;
+        slug: string;
+        icon: string | null;
+        color: string | null;
+    } | null;
     reward_description: string | null;
     start_date: string | null;
     end_date: string | null;
@@ -56,6 +62,7 @@ function dateRange(start: string | null, end: string | null): string {
         <Hero
             badge="Hackathons"
             title="Hackathons"
+            youtube-url="https://youtu.be/FAOrnxJ683E?si=2vxE-L8mWPwNypRb"
             description="Discover hackathons we've participated in or supported. Events, projects, and outcomes."
         />
 
@@ -75,17 +82,16 @@ function dateRange(start: string | null, end: string | null): string {
                     Hackathons will appear here once they are added.
                 </p>
             </div>
-            <div
-                v-else
-                class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
+            <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <Link
                     v-for="hackathon in hackathons"
                     :key="hackathon.id"
                     :href="`/hackathons/${hackathon.slug}`"
                     class="group block transition-all duration-200 hover:-translate-y-1"
                 >
-                    <Card class="h-full overflow-hidden border-border/80 transition-all duration-200 group-hover:border-primary/30 group-hover:shadow-lg">
+                    <Card
+                        class="h-full overflow-hidden border-border/80 transition-all duration-200 group-hover:border-primary/30 group-hover:shadow-lg"
+                    >
                         <div
                             v-if="hackathon.image_url"
                             class="relative aspect-video w-full shrink-0 overflow-hidden bg-muted"
@@ -101,7 +107,9 @@ function dateRange(start: string | null, end: string | null): string {
                             />
                         </div>
                         <CardContent class="flex flex-col p-5">
-                            <h3 class="font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-primary">
+                            <h3
+                                class="line-clamp-2 font-semibold tracking-tight text-foreground group-hover:text-primary"
+                            >
                                 {{ hackathon.title }}
                             </h3>
                             <p
@@ -111,24 +119,39 @@ function dateRange(start: string | null, end: string | null): string {
                                 {{ hackathon.body }}
                             </p>
                             <div
-                                v-if="hackathon.reward_badge || hackathon.reward_description"
+                                v-if="
+                                    hackathon.reward_badge ||
+                                    hackathon.reward_description
+                                "
                                 class="mt-4 rounded-lg border border-border/60 bg-muted/40 px-3 py-2.5"
                             >
-                                <div class="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                                    <Award class="size-3.5 shrink-0 text-primary" aria-hidden="true" />
+                                <div
+                                    class="mb-1.5 flex items-center gap-1.5 text-xs font-medium tracking-wider text-muted-foreground uppercase"
+                                >
+                                    <Award
+                                        class="size-3.5 shrink-0 text-primary"
+                                        aria-hidden="true"
+                                    />
                                     Reward
                                 </div>
                                 <div
                                     v-if="hackathon.reward_badge"
                                     class="inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium shadow-sm"
-                                    :class="hackathon.reward_badge.color ? '' : 'bg-primary/15 text-primary'"
-                                    :style="hackathon.reward_badge.color
-                                        ? {
-                                            backgroundColor: `${hackathon.reward_badge.color}22`,
-                                            color: hackathon.reward_badge.color,
-                                            boxShadow: `0 0 0 1px ${hackathon.reward_badge.color}40`,
-                                        }
-                                        : undefined"
+                                    :class="
+                                        hackathon.reward_badge.color
+                                            ? ''
+                                            : 'bg-primary/15 text-primary'
+                                    "
+                                    :style="
+                                        hackathon.reward_badge.color
+                                            ? {
+                                                  backgroundColor: `${hackathon.reward_badge.color}22`,
+                                                  color: hackathon.reward_badge
+                                                      .color,
+                                                  boxShadow: `0 0 0 1px ${hackathon.reward_badge.color}40`,
+                                              }
+                                            : undefined
+                                    "
                                 >
                                     <BadgeIcon
                                         v-if="hackathon.reward_badge.icon"
@@ -149,10 +172,25 @@ function dateRange(start: string | null, end: string | null): string {
                                     {{ hackathon.reward_description }}
                                 </p>
                             </div>
-                            <div class="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-                                <Calendar class="size-3.5 shrink-0" aria-hidden="true" />
-                                <template v-if="hackathon.start_date || hackathon.end_date">
-                                    {{ dateRange(hackathon.start_date, hackathon.end_date) }}
+                            <div
+                                class="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground"
+                            >
+                                <Calendar
+                                    class="size-3.5 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <template
+                                    v-if="
+                                        hackathon.start_date ||
+                                        hackathon.end_date
+                                    "
+                                >
+                                    {{
+                                        dateRange(
+                                            hackathon.start_date,
+                                            hackathon.end_date,
+                                        )
+                                    }}
                                 </template>
                                 <template v-else>
                                     {{ formatDate(hackathon.created_at) }}

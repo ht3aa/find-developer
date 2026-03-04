@@ -57,7 +57,9 @@ export function getColumns(
                 h(
                     BadgeUi,
                     {
-                        variant: row.original.is_active ? 'default' : 'secondary',
+                        variant: row.original.is_active
+                            ? 'default'
+                            : 'secondary',
                     },
                     () => (row.original.is_active ? 'Active' : 'Inactive'),
                 ),

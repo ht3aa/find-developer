@@ -30,7 +30,11 @@ defineProps<{
             {{ status }}
         </div>
 
-        <Form v-bind="email.form()" v-slot="{ errors, processing }" class="flex flex-col gap-6">
+        <Form
+            v-bind="email.form()"
+            v-slot="{ errors, processing }"
+            class="flex flex-col gap-6"
+        >
             <div class="grid gap-2">
                 <Label for="email">Email</Label>
                 <Input

@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ExternalLink, MoreHorizontal, Pencil, ThumbsUp, Trash2 } from 'lucide-vue-next';
+import {
+    ExternalLink,
+    MoreHorizontal,
+    Pencil,
+    ThumbsUp,
+    Trash2,
+} from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import DeveloperRecommendationController from '@/actions/App/Http/Controllers/Dashboard/DeveloperRecommendationController';
 import Pagination from '@/components/Pagination.vue';
@@ -22,9 +28,7 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import {
-    index as developerRecommendationsIndex,
-} from '@/routes/developer-recommendations';
+import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import type { BreadcrumbItem } from '@/types';
 
 type RecommendationRow = {
@@ -78,23 +82,35 @@ const breadcrumbs: BreadcrumbItem[] = [
 const statusFilter = ref(props.filters.status ?? '');
 
 watch(statusFilter, (value) => {
-    router.get(developerRecommendationsIndex().url, { status: value || undefined }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    router.get(
+        developerRecommendationsIndex().url,
+        { status: value || undefined },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 });
 
 const page = usePage();
-const flash = (page.props.flash as { success?: string; error?: string } | undefined) ?? {};
+const flash =
+    (page.props.flash as { success?: string; error?: string } | undefined) ??
+    {};
 
 function confirmDelete(r: RecommendationRow): void {
-    if (window.confirm('Are you sure you want to delete this recommendation?')) {
-        router.delete(DeveloperRecommendationController.destroy.url(r.id), { preserveScroll: true });
+    if (
+        window.confirm('Are you sure you want to delete this recommendation?')
+    ) {
+        router.delete(DeveloperRecommendationController.destroy.url(r.id), {
+            preserveScroll: true,
+        });
     }
 }
 
-function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+function statusVariant(
+    status: string,
+): 'default' | 'secondary' | 'destructive' | 'outline' {
     if (status === 'approved') return 'default';
     if (status === 'rejected') return 'destructive';
     if (status === 'processing') return 'secondary';
@@ -102,7 +118,10 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
 }
 
 function formatDate(iso: string): string {
-    return new Date(iso).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
+    return new Date(iso).toLocaleString(undefined, {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    });
 }
 
 function developerUrl(slug: string | null): string {
@@ -115,7 +134,9 @@ function developerUrl(slug: string | null): string {
     <Head title="Recommendations" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -129,7 +150,9 @@ function developerUrl(slug: string | null): string {
                 {{ flash.error }}
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">
                         Recommendations
@@ -140,17 +163,17 @@ function developerUrl(slug: string | null): string {
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="sm:max-w-[200px]">
                     <label for="status-filter" class="sr-only">Status</label>
                     <select
                         id="status-filter"
                         v-model="statusFilter"
-                        class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
-                        <option value="">
-                            All statuses
-                        </option>
+                        <option value="">All statuses</option>
                         <option
                             v-for="opt in statusOptions"
                             :key="opt.value"
@@ -164,7 +187,10 @@ function developerUrl(slug: string | null): string {
                     v-if="recommendations.total > 0"
                     class="text-sm text-muted-foreground"
                 >
-                    Showing {{ recommendations.from }}–{{ recommendations.to }} of {{ recommendations.total }}
+                    Showing {{ recommendations.from }}–{{
+                        recommendations.to
+                    }}
+                    of {{ recommendations.total }}
                 </p>
             </div>
 
@@ -184,10 +210,7 @@ function developerUrl(slug: string | null): string {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow
-                            v-for="r in recommendations.data"
-                            :key="r.id"
-                        >
+                        <TableRow v-for="r in recommendations.data" :key="r.id">
                             <TableCell class="text-sm">
                                 <a
                                     v-if="r.recommender_slug"
@@ -199,7 +222,9 @@ function developerUrl(slug: string | null): string {
                                     {{ r.recommender_name ?? '—' }}
                                     <ExternalLink class="size-3.5" />
                                 </a>
-                                <span v-else>{{ r.recommender_name ?? '—' }}</span>
+                                <span v-else>{{
+                                    r.recommender_name ?? '—'
+                                }}</span>
                             </TableCell>
                             <TableCell class="text-sm">
                                 <a
@@ -212,9 +237,14 @@ function developerUrl(slug: string | null): string {
                                     {{ r.recommended_name ?? '—' }}
                                     <ExternalLink class="size-3.5" />
                                 </a>
-                                <span v-else>{{ r.recommended_name ?? '—' }}</span>
+                                <span v-else>{{
+                                    r.recommended_name ?? '—'
+                                }}</span>
                             </TableCell>
-                            <TableCell class="max-w-[200px] truncate text-muted-foreground text-sm" :title="r.recommendation_note ?? ''">
+                            <TableCell
+                                class="max-w-[200px] truncate text-sm text-muted-foreground"
+                                :title="r.recommendation_note ?? ''"
+                            >
                                 {{ r.recommendation_note ?? '—' }}
                             </TableCell>
                             <TableCell>
@@ -222,20 +252,34 @@ function developerUrl(slug: string | null): string {
                                     {{ r.status_label }}
                                 </Badge>
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm whitespace-nowrap">
+                            <TableCell
+                                class="text-sm whitespace-nowrap text-muted-foreground"
+                            >
                                 {{ formatDate(r.created_at) }}
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger as-child>
-                                        <Button variant="ghost" size="icon" class="h-8 w-8">
-                                            <span class="sr-only">Open menu</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            class="h-8 w-8"
+                                        >
+                                            <span class="sr-only"
+                                                >Open menu</span
+                                            >
                                             <MoreHorizontal class="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem as-child>
-                                            <Link :href="DeveloperRecommendationController.edit.url(r.id)">
+                                            <Link
+                                                :href="
+                                                    DeveloperRecommendationController.edit.url(
+                                                        r.id,
+                                                    )
+                                                "
+                                            >
                                                 <Pencil class="mr-2 h-4 w-4" />
                                                 Edit
                                             </Link>
@@ -260,9 +304,15 @@ function developerUrl(slug: string | null): string {
                 class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
             >
                 <ThumbsUp class="mb-4 h-12 w-12 text-muted-foreground" />
-                <h3 class="mb-2 text-lg font-semibold">No recommendations yet</h3>
+                <h3 class="mb-2 text-lg font-semibold">
+                    No recommendations yet
+                </h3>
                 <p class="text-center text-sm text-muted-foreground">
-                    {{ statusFilter ? 'No recommendations match the selected status.' : 'Developer recommendations will appear here once submitted.' }}
+                    {{
+                        statusFilter
+                            ? 'No recommendations match the selected status.'
+                            : 'Developer recommendations will appear here once submitted.'
+                    }}
                 </p>
             </div>
 

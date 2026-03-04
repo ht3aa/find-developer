@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import {
-    FlexRender,
-    getCoreRowModel,
-    useVueTable,
-} from '@tanstack/vue-table';
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { Mail } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { Button } from '@/components/ui/button';
@@ -63,7 +59,9 @@ const table = useVueTable({
     },
     onRowSelectionChange: (updaterOrValue) => {
         rowSelection.value =
-            typeof updaterOrValue === 'function' ? updaterOrValue(rowSelection.value) : updaterOrValue;
+            typeof updaterOrValue === 'function'
+                ? updaterOrValue(rowSelection.value)
+                : updaterOrValue;
     },
     enableRowSelection: true,
 });
@@ -90,23 +88,29 @@ function openBulkEmailDialog() {
 
 function submitBulkEmail() {
     if (!props.bulkEmailUrl) return;
-    const ids = selectedRows.value.map((r: { original: DeveloperTableRow }) => r.original.id);
+    const ids = selectedRows.value.map(
+        (r: { original: DeveloperTableRow }) => r.original.id,
+    );
     bulkEmailSubmitting.value = true;
-    router.post(props.bulkEmailUrl, {
-        developer_ids: ids,
-        title: bulkEmailForm.value.title,
-        subject: bulkEmailForm.value.subject,
-        category: bulkEmailForm.value.category,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            bulkEmailOpen.value = false;
-            rowSelection.value = {};
+    router.post(
+        props.bulkEmailUrl,
+        {
+            developer_ids: ids,
+            title: bulkEmailForm.value.title,
+            subject: bulkEmailForm.value.subject,
+            category: bulkEmailForm.value.category,
         },
-        onFinish: () => {
-            bulkEmailSubmitting.value = false;
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                bulkEmailOpen.value = false;
+                rowSelection.value = {};
+            },
+            onFinish: () => {
+                bulkEmailSubmitting.value = false;
+            },
         },
-    });
+    );
 }
 </script>
 
@@ -116,14 +120,11 @@ function submitBulkEmail() {
             v-if="hasSelection"
             class="flex flex-wrap items-center gap-3 rounded-md border bg-muted/50 px-4 py-2"
         >
-            <span class="text-muted-foreground text-sm">
-                {{ selectedCount }} of {{ table.getRowModel().rows.length }} row(s) selected.
+            <span class="text-sm text-muted-foreground">
+                {{ selectedCount }} of
+                {{ table.getRowModel().rows.length }} row(s) selected.
             </span>
-            <Button
-                variant="secondary"
-                size="sm"
-                @click="openBulkEmailDialog"
-            >
+            <Button variant="secondary" size="sm" @click="openBulkEmailDialog">
                 <Mail class="mr-2 h-4 w-4" />
                 Send Mailtrap email
             </Button>
@@ -154,7 +155,9 @@ function submitBulkEmail() {
                         <TableRow
                             v-for="row in table.getRowModel().rows"
                             :key="row.id"
-                            :data-state="row.getIsSelected() ? 'selected' : undefined"
+                            :data-state="
+                                row.getIsSelected() ? 'selected' : undefined
+                            "
                         >
                             <TableCell
                                 v-for="cell in row.getVisibleCells()"
@@ -184,13 +187,11 @@ function submitBulkEmail() {
                 <DialogHeader>
                     <DialogTitle>Send Mailtrap email</DialogTitle>
                     <DialogDescription>
-                        Send an email to each selected developer. Title is used as the email body heading.
+                        Send an email to each selected developer. Title is used
+                        as the email body heading.
                     </DialogDescription>
                 </DialogHeader>
-                <form
-                    class="grid gap-4 py-4"
-                    @submit.prevent="submitBulkEmail"
-                >
+                <form class="grid gap-4 py-4" @submit.prevent="submitBulkEmail">
                     <div class="grid gap-2">
                         <Label for="bulk-email-title">Title</Label>
                         <Input
@@ -208,7 +209,7 @@ function submitBulkEmail() {
                             rows="3"
                             placeholder="Email subject line"
                             required
-                            class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            class="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                         />
                     </div>
                     <div class="grid gap-2">
@@ -227,10 +228,7 @@ function submitBulkEmail() {
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type="submit"
-                            :disabled="bulkEmailSubmitting"
-                        >
+                        <Button type="submit" :disabled="bulkEmailSubmitting">
                             {{ bulkEmailSubmitting ? 'Sending…' : 'Send' }}
                         </Button>
                     </DialogFooter>

@@ -42,7 +42,9 @@ defineProps<{
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email <span class="text-destructive">*</span></Label>
+                    <Label for="email"
+                        >Email <span class="text-destructive">*</span></Label
+                    >
                     <Input
                         id="email"
                         type="email"
@@ -58,7 +60,10 @@ defineProps<{
 
                 <div class="grid gap-2">
                     <div class="flex items-center justify-between">
-                        <Label for="password">Password <span class="text-destructive">*</span></Label>
+                        <Label for="password"
+                            >Password
+                            <span class="text-destructive">*</span></Label
+                        >
                         <TextLink
                             v-if="canResetPassword"
                             :href="request()"
@@ -81,7 +86,10 @@ defineProps<{
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex cursor-pointer items-center gap-3">
+                    <Label
+                        for="remember"
+                        class="flex cursor-pointer items-center gap-3"
+                    >
                         <Checkbox id="remember" name="remember" :tabindex="3" />
                         <span class="text-sm">Remember me</span>
                     </Label>
@@ -106,9 +114,7 @@ defineProps<{
                 v-if="canRegister"
             >
                 Don't have an account?
-                <TextLink :href="register()" :tabindex="6">
-                    Sign up
-                </TextLink>
+                <TextLink :href="register()" :tabindex="6"> Sign up </TextLink>
             </div>
         </Form>
     </AuthBase>

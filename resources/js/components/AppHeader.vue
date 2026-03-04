@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { Award, BookOpen, Folder, Home, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import {
+    Award,
+    BookOpen,
+    Folder,
+    Home,
+    LayoutGrid,
+    Menu,
+    Search,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -243,7 +251,9 @@ const rightNavItems: NavItem[] = [
                                                 class="group h-9 w-9 cursor-pointer"
                                             >
                                                 <a
-                                                    v-if="item.external !== false"
+                                                    v-if="
+                                                        item.external !== false
+                                                    "
                                                     :href="toUrl(item.href)"
                                                     target="_blank"
                                                     rel="noopener noreferrer"

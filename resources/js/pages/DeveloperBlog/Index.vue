@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ExternalLink, FileText, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import {
+    ExternalLink,
+    FileText,
+    MoreHorizontal,
+    Pencil,
+    Plus,
+    Trash2,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
 import DeveloperBlogController from '@/actions/App/Http/Controllers/Dashboard/DeveloperBlogController';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +28,10 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as developerBlogsIndex, create as developerBlogsCreate } from '@/routes/developer-blogs';
+import {
+    index as developerBlogsIndex,
+    create as developerBlogsCreate,
+} from '@/routes/developer-blogs';
 import type { BreadcrumbItem } from '@/types';
 import type { DeveloperBlogEntry } from '@/types/developer-blog';
 
@@ -33,7 +43,9 @@ type Props = {
 const props = defineProps<Props>();
 
 const page = usePage();
-const flash = computed(() => page.props.flash as { success?: string; error?: string } | undefined);
+const flash = computed(
+    () => page.props.flash as { success?: string; error?: string } | undefined,
+);
 const can = computed(() => ({
     ...((page.props.auth as { can?: Props['can'] })?.can ?? {}),
     ...(props.can ?? {}),
@@ -46,11 +58,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 function confirmDelete(blog: DeveloperBlogEntry) {
     if (window.confirm(`Are you sure you want to delete "${blog.title}"?`)) {
-        router.delete(DeveloperBlogController.destroy.url(blog.id), { preserveScroll: true });
+        router.delete(DeveloperBlogController.destroy.url(blog.id), {
+            preserveScroll: true,
+        });
     }
 }
 
-function statusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+function statusVariant(
+    status: string,
+): 'default' | 'secondary' | 'destructive' | 'outline' {
     if (status === 'published') return 'default';
     if (status === 'archived') return 'secondary';
     return 'outline';
@@ -61,7 +77,9 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
     <Head title="Blogs" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
             <div
                 v-if="flash?.success"
                 class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
@@ -74,7 +92,9 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
             >
                 {{ flash.error }}
             </div>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div>
                     <h1 class="text-2xl font-semibold tracking-tight">Blogs</h1>
                     <p class="text-muted-foreground">Manage your blog posts</p>
@@ -107,26 +127,52 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
                                     {{ blog.status_label }}
                                 </Badge>
                             </TableCell>
-                            <TableCell class="text-muted-foreground text-sm">
+                            <TableCell class="text-sm text-muted-foreground">
                                 {{ blog.published_at ?? '—' }}
                             </TableCell>
                             <TableCell>
-                                <DropdownMenu v-if="can.updateDeveloperBlog !== false || can.deleteDeveloperBlog !== false">
+                                <DropdownMenu
+                                    v-if="
+                                        can.updateDeveloperBlog !== false ||
+                                        can.deleteDeveloperBlog !== false
+                                    "
+                                >
                                     <DropdownMenuTrigger as-child>
-                                        <Button variant="ghost" size="icon" class="h-8 w-8">
-                                            <span class="sr-only">Open menu</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            class="h-8 w-8"
+                                        >
+                                            <span class="sr-only"
+                                                >Open menu</span
+                                            >
                                             <MoreHorizontal class="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem v-if="can.updateDeveloperBlog !== false" as-child>
-                                            <Link :href="DeveloperBlogController.edit.url(blog.id)">
+                                        <DropdownMenuItem
+                                            v-if="
+                                                can.updateDeveloperBlog !==
+                                                false
+                                            "
+                                            as-child
+                                        >
+                                            <Link
+                                                :href="
+                                                    DeveloperBlogController.edit.url(
+                                                        blog.id,
+                                                    )
+                                                "
+                                            >
                                                 <Pencil class="mr-2 h-4 w-4" />
                                                 Edit
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
-                                            v-if="can.deleteDeveloperBlog !== false"
+                                            v-if="
+                                                can.deleteDeveloperBlog !==
+                                                false
+                                            "
                                             class="text-destructive focus:text-destructive"
                                             @click="confirmDelete(blog)"
                                         >
@@ -148,7 +194,8 @@ function statusVariant(status: string): 'default' | 'secondary' | 'destructive' 
                 <FileText class="mb-4 h-12 w-12 text-muted-foreground" />
                 <h3 class="mb-2 text-lg font-semibold">No blog posts yet</h3>
                 <p class="mb-4 text-center text-sm text-muted-foreground">
-                    Add your first post to share your thoughts with the community.
+                    Add your first post to share your thoughts with the
+                    community.
                 </p>
                 <Button as-child>
                     <Link :href="developerBlogsCreate().url">

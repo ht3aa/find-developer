@@ -30,13 +30,21 @@ export function getColumns(
             accessorKey: 'email',
             header: 'Email',
             cell: ({ row }) =>
-                h('div', { class: 'text-muted-foreground' }, row.original.email),
+                h(
+                    'div',
+                    { class: 'text-muted-foreground' },
+                    row.original.email,
+                ),
         },
         {
             accessorKey: 'user_type_label',
             header: 'Type',
             cell: ({ row }) =>
-                h(Badge, { variant: 'secondary' }, () => row.original.user_type_label),
+                h(
+                    Badge,
+                    { variant: 'secondary' },
+                    () => row.original.user_type_label,
+                ),
         },
         {
             accessorKey: 'can_access_admin_panel',
@@ -45,7 +53,9 @@ export function getColumns(
                 h(
                     Badge,
                     {
-                        variant: row.original.can_access_admin_panel ? 'default' : 'secondary',
+                        variant: row.original.can_access_admin_panel
+                            ? 'default'
+                            : 'secondary',
                     },
                     () => (row.original.can_access_admin_panel ? 'Yes' : 'No'),
                 ),
@@ -62,7 +72,11 @@ export function getColumns(
                     'div',
                     { class: 'flex flex-wrap gap-1' },
                     roles.map((r) =>
-                        h(Badge, { key: r.id, variant: 'outline', class: 'text-xs' }, () => r.name),
+                        h(
+                            Badge,
+                            { key: r.id, variant: 'outline', class: 'text-xs' },
+                            () => r.name,
+                        ),
                     ),
                 );
             },
@@ -73,22 +87,24 @@ export function getColumns(
             cell: ({ row }) => {
                 const showEdit = can.updateUser !== false;
                 const showDelete =
-                    can.deleteUser !== false && row.original.id !== currentUserId;
+                    can.deleteUser !== false &&
+                    row.original.id !== currentUserId;
                 if (!showEdit && !showDelete) return null;
                 const items = [
                     showEdit
-                        ? h(
-                              DropdownMenuItem,
-                              { asChild: true },
-                              () =>
-                                  h(
-                                      Link,
-                                      { href: UserController.edit.url(row.original.id) },
-                                      () => [
-                                          h(Pencil, { class: 'mr-2 h-4 w-4' }),
-                                          'Edit',
-                                      ],
-                                  ),
+                        ? h(DropdownMenuItem, { asChild: true }, () =>
+                              h(
+                                  Link,
+                                  {
+                                      href: UserController.edit.url(
+                                          row.original.id,
+                                      ),
+                                  },
+                                  () => [
+                                      h(Pencil, { class: 'mr-2 h-4 w-4' }),
+                                      'Edit',
+                                  ],
+                              ),
                           )
                         : null,
                     showDelete
@@ -110,9 +126,17 @@ export function getColumns(
                         h(DropdownMenuTrigger, { asChild: true }, () =>
                             h(
                                 Button,
-                                { variant: 'ghost', size: 'icon', class: 'h-8 w-8' },
+                                {
+                                    variant: 'ghost',
+                                    size: 'icon',
+                                    class: 'h-8 w-8',
+                                },
                                 () => [
-                                    h('span', { class: 'sr-only' }, 'Open menu'),
+                                    h(
+                                        'span',
+                                        { class: 'sr-only' },
+                                        'Open menu',
+                                    ),
                                     h(MoreHorizontal, { class: 'h-4 w-4' }),
                                 ],
                             ),

@@ -20,14 +20,16 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-    { icon: Github, href: 'https://github.com/ht3aa/find-developer', label: 'GitHub' },
+    {
+        icon: Github,
+        href: 'https://github.com/ht3aa/find-developer',
+        label: 'GitHub',
+    },
 ];
 </script>
 
 <template>
-    <footer
-        class="border-t border-border bg-background"
-    >
+    <footer class="border-t border-border bg-background">
         <div
             class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 py-8 sm:flex-row sm:px-6 lg:px-8"
         >
@@ -35,11 +37,7 @@ const socialLinks = [
                 :href="home()"
                 class="flex items-center gap-2 font-semibold text-foreground"
             >
-                <img
-                    src="/light-logo.svg"
-                    alt=""
-                    class="h-8 w-auto shrink-0"
-                />
+                <img src="/light-logo.svg" alt="" class="h-8 w-auto shrink-0" />
                 <span>Find Developer</span>
             </Link>
 
@@ -75,7 +73,10 @@ const socialLinks = [
         >
             <p class="text-sm text-muted-foreground">
                 &copy; {{ new Date().getFullYear() }}
-                <Link :href="home()" class="font-medium text-foreground hover:underline">
+                <Link
+                    :href="home()"
+                    class="font-medium text-foreground hover:underline"
+                >
                     Find Developer
                 </Link>
                 . All rights reserved. Support:
@@ -95,7 +96,11 @@ const socialLinks = [
                     :aria-label="item.label"
                     class="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                    <component :is="item.icon" class="size-5" aria-hidden="true" />
+                    <component
+                        :is="item.icon"
+                        class="size-5"
+                        aria-hidden="true"
+                    />
                 </Link>
             </div>
         </div>

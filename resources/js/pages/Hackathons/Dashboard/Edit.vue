@@ -14,7 +14,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as hackathonsIndex, edit as hackathonsEdit } from '@/routes/hackathons';
+import {
+    index as hackathonsIndex,
+    edit as hackathonsEdit,
+} from '@/routes/hackathons';
 import type { BreadcrumbItem } from '@/types';
 
 export type DashboardHackathonEdit = {
@@ -46,16 +49,23 @@ type Props = {
 const props = defineProps<Props>();
 
 const page = usePage();
-const formErrors = computed(() => (page.props.errors as Record<string, string>) ?? {});
-const flashSuccess = computed(() => (page.props.flash as { success?: string })?.success);
+const formErrors = computed(
+    () => (page.props.errors as Record<string, string>) ?? {},
+);
+const flashSuccess = computed(
+    () => (page.props.flash as { success?: string })?.success,
+);
 
-const inputClass = 'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
+const inputClass =
+    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm';
 
 const title = ref(props.hackathon.title);
 const body = ref(props.hackathon.body ?? '');
 const youtubeUrl = ref(props.hackathon.youtube_url ?? '');
 const rewardBadgeId = ref<string | null>(
-    props.hackathon.reward_badge_id != null ? String(props.hackathon.reward_badge_id) : null,
+    props.hackathon.reward_badge_id != null
+        ? String(props.hackathon.reward_badge_id)
+        : null,
 );
 const rewardDescription = ref(props.hackathon.reward_description ?? '');
 const startDate = ref(props.hackathon.start_date ?? '');
@@ -77,12 +87,15 @@ watch(
         title.value = h.title;
         body.value = h.body ?? '';
         youtubeUrl.value = h.youtube_url ?? '';
-        rewardBadgeId.value = h.reward_badge_id != null ? String(h.reward_badge_id) : null;
+        rewardBadgeId.value =
+            h.reward_badge_id != null ? String(h.reward_badge_id) : null;
         rewardDescription.value = h.reward_description ?? '';
         startDate.value = h.start_date ?? '';
         endDate.value = h.end_date ?? '';
         currentTeamIdToVote.value =
-            h.current_team_id_to_vote != null ? String(h.current_team_id_to_vote) : null;
+            h.current_team_id_to_vote != null
+                ? String(h.current_team_id_to_vote)
+                : null;
         enableVoting.value = h.enable_voting;
     },
     { immediate: true },
@@ -112,23 +125,30 @@ function buildPayload(): Record<string, unknown> {
 
 function submitForm(): void {
     submitting.value = true;
-    router.put(HackathonController.update.url(props.hackathon.id), buildPayload(), {
-        preserveScroll: true,
-        forceFormData: !!imageFile.value,
-        onSuccess: () => {
-            imageFile.value = null;
-            imageUploadRef.value?.clear();
+    router.put(
+        HackathonController.update.url(props.hackathon.id),
+        buildPayload(),
+        {
+            preserveScroll: true,
+            forceFormData: !!imageFile.value,
+            onSuccess: () => {
+                imageFile.value = null;
+                imageUploadRef.value?.clear();
+            },
+            onFinish: () => {
+                submitting.value = false;
+            },
         },
-        onFinish: () => {
-            submitting.value = false;
-        },
-    });
+    );
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Hackathons', href: hackathonsIndex().url },
-    { title: props.hackathon.title, href: hackathonsEdit(props.hackathon.id).url },
+    {
+        title: props.hackathon.title,
+        href: hackathonsEdit(props.hackathon.id).url,
+    },
 ];
 </script>
 
@@ -160,7 +180,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </CardHeader>
                     <CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <div class="grid gap-2 lg:col-span-2">
-                            <Label for="title">Title <span class="text-destructive">*</span></Label>
+                            <Label for="title"
+                                >Title
+                                <span class="text-destructive">*</span></Label
+                            >
                             <Input
                                 id="title"
                                 v-model="title"
@@ -180,7 +203,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 name="body"
                                 rows="6"
                                 placeholder="Description, format with HTML if needed"
-                                class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                             <InputError :message="formErrors.body" />
                         </div>
@@ -230,32 +253,46 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
 
                         <div class="grid gap-2">
-                            <Label for="reward_description">Reward description</Label>
+                            <Label for="reward_description"
+                                >Reward description</Label
+                            >
                             <textarea
                                 id="reward_description"
                                 v-model="rewardDescription"
                                 name="reward_description"
                                 rows="2"
                                 placeholder="e.g. Winner receives..."
-                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
-                            <InputError :message="formErrors.reward_description" />
+                            <InputError
+                                :message="formErrors.reward_description"
+                            />
                         </div>
 
                         <div class="grid gap-2">
-                            <Label for="current_team_id_to_vote">Current team in voting</Label>
+                            <Label for="current_team_id_to_vote"
+                                >Current team in voting</Label
+                            >
                             <SearchableSelect
                                 id="current_team_id_to_vote"
                                 v-model="currentTeamIdToVote"
                                 :options="[
-                                    { value: null, label: 'No active voting team' },
-                                    ...teams.map((t) => ({ value: String(t.id), label: t.title })),
+                                    {
+                                        value: null,
+                                        label: 'No active voting team',
+                                    },
+                                    ...teams.map((t) => ({
+                                        value: String(t.id),
+                                        label: t.title,
+                                    })),
                                 ]"
                                 :open="currentTeamSelectOpen"
                                 placeholder="Select team in voting..."
                                 @update:open="onCurrentTeamOpenChange"
                             />
-                            <InputError :message="formErrors.current_team_id_to_vote" />
+                            <InputError
+                                :message="formErrors.current_team_id_to_vote"
+                            />
                         </div>
 
                         <div class="grid gap-2">
@@ -267,12 +304,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     value="1"
                                     class="h-5 w-5"
                                 />
-                                <Label for="enable_voting" class="cursor-pointer font-normal">
+                                <Label
+                                    for="enable_voting"
+                                    class="cursor-pointer font-normal"
+                                >
                                     Enable voting for subscribers
                                 </Label>
                             </div>
                             <p class="text-xs text-muted-foreground">
-                                When enabled, subscribed developers can vote for teams on the public teams page.
+                                When enabled, subscribed developers can vote for
+                                teams on the public teams page.
                             </p>
                             <InputError :message="formErrors.enable_voting" />
                         </div>
@@ -301,12 +342,20 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <InputError :message="formErrors.end_date" />
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2">
+                        <div
+                            class="flex flex-wrap items-center gap-3 pt-2 lg:col-span-2"
+                        >
                             <Button :disabled="submitting" type="submit">
-                                {{ submitting ? 'Updating...' : 'Update Hackathon' }}
+                                {{
+                                    submitting
+                                        ? 'Updating...'
+                                        : 'Update Hackathon'
+                                }}
                             </Button>
                             <Button variant="outline" as-child>
-                                <Link :href="hackathonsIndex().url">Cancel</Link>
+                                <Link :href="hackathonsIndex().url"
+                                    >Cancel</Link
+                                >
                             </Button>
                             <Transition
                                 enter-active-class="transition ease-out duration-200"
@@ -318,7 +367,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     v-show="flashSuccess"
                                     class="inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    <span
+                                        class="h-1.5 w-1.5 rounded-full bg-green-500"
+                                    />
                                     Hackathon updated successfully
                                 </span>
                             </Transition>
