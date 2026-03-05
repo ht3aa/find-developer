@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DeveloperOffer extends Model
 {
     protected $fillable = [
-        'developer_id',
+        'developer_ids',
         'user_id',
         'company_name',
         'job_title_id',
@@ -24,14 +24,28 @@ class DeveloperOffer extends Model
         'status',
     ];
 
-    protected $casts = [
-        'status' => OfferStatus::class,
-        'work_type' => AvailabilityType::class,
-    ];
-
-    public function developer(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Developer::class, 'developer_id');
+        return [
+            'developer_ids' => 'array',
+            'status' => OfferStatus::class,
+            'work_type' => AvailabilityType::class,
+        ];
+    }
+
+    /**
+     * Get developers for this offer via developer_ids.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Developer>
+     */
+    public function developers(): \Illuminate\Database\Eloquent\Collection
+    {
+        $ids = $this->developer_ids ?? [];
+        if (empty($ids)) {
+            return new \Illuminate\Database\Eloquent\Collection;
+        }
+
+        return Developer::with('jobTitle')->whereIn('id', $ids)->get();
     }
 
     public function jobTitle(): BelongsTo

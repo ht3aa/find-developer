@@ -22,12 +22,16 @@ class JobTitleController extends Controller
 
         $search = $request->input('search');
         if ($search && is_string($search)) {
-            $term = '%' . addcslashes(trim($search), '%_') . '%';
+            $term = '%'.addcslashes(trim($search), '%_').'%';
             $query->where('name', 'like', $term);
         }
 
+        $useIdAsValue = $request->boolean('for_form');
         $items = $query->get(['id', 'name'])
-            ->map(fn($j) => ['value' => $j->name, 'label' => $j->name])
+            ->map(fn ($j) => [
+                'value' => $useIdAsValue ? (string) $j->id : $j->name,
+                'label' => $j->name,
+            ])
             ->values()
             ->all();
 

@@ -16,6 +16,9 @@ const appUrl = computed(() => (page.props.appUrl as string) ?? '');
 const newsletterStoreUrl = computed(
     () => (page.props.newsletterStoreUrl as string) ?? '',
 );
+const developerOffersStoreUrl = computed(
+    () => (page.props.developerOffersStoreUrl as string) ?? null,
+);
 const webSiteJsonLd = computed(() => ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -89,7 +92,9 @@ onUnmounted(() => {
             :newsletter-store-url="newsletterStoreUrl || undefined"
         />
 
-        <DeveloperCardSection />
+        <DeveloperCardSection
+            :developer-offers-store-url="developerOffersStoreUrl ?? undefined"
+        />
 
         <Footer />
 

@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     Briefcase,
+    Check,
     ChevronRight,
     Clock,
     Globe,
@@ -16,6 +17,7 @@ import { computed, ref } from 'vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Tooltip,
@@ -31,13 +33,27 @@ const props = withDefaults(
         currentUserDeveloper?: Developer | null;
         recommendedDeveloperIds?: number[];
         contactEmail?: string;
+        selectable?: boolean;
+        modelValue?: boolean;
     }>(),
     {
         currentUserDeveloper: null,
         recommendedDeveloperIds: () => [],
         contactEmail: '',
+        selectable: false,
+        modelValue: false,
     },
 );
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: boolean): void;
+}>();
+
+function toggleSelect(): void {
+    if (props.selectable) {
+        emit('update:modelValue', !props.modelValue);
+    }
+}
 
 const page = usePage();
 const auth = computed(
@@ -107,6 +123,21 @@ function formatNum(n: number): string {
         <div
             class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary to-secondary opacity-90"
         />
+
+        <!-- Selection checkbox -->
+        <div
+            v-if="selectable"
+            class="absolute top-4 left-4 z-10"
+            @click.stop="toggleSelect"
+        >
+            <Checkbox
+                :model-value="modelValue"
+                :aria-label="`Select ${developer.name}`"
+                class="size-5 border-2 border-primary bg-background"
+                @click.stop="toggleSelect"
+                @update:model-value="emit('update:modelValue', $event)"
+            />
+        </div>
 
         <!-- Recommended pill -->
         <div
