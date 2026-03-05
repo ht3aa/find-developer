@@ -5,9 +5,11 @@ export type ActivityLogEntry = {
     subject_type: string | null;
     subject_id: number | null;
     causer_type: string | null;
+    causer_type_full: string | null;
     causer_id: number | null;
     causer_name: string | null;
     causer_email: string | null;
+    causer_already_suspended?: boolean;
     event: string | null;
     created_at: string;
 };

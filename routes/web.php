@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('newsletter/bulk-email-all', [DashboardNewsletterController::class, 'bulkEmailAll'])->name('dashboard.newsletter.bulk-email-all');
             Route::resource('developer-offers', DashboardDeveloperOfferController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
+            Route::post('activity-log/suspend-causer', [ActivityLogController::class, 'suspendCauser'])->name('dashboard.activity-log.suspend-causer');
             Route::get('activity-log/{id}/properties', [ActivityLogController::class, 'properties'])->name('dashboard.activity-log.properties')->whereNumber('id');
             Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');
         });

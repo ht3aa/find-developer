@@ -22,6 +22,7 @@ const statusOptions = [
     { value: 'pending', label: 'Pending' },
     { value: 'approved', label: 'Approved' },
     { value: 'rejected', label: 'Rejected' },
+    { value: 'suspended', label: 'Suspended' },
     { value: 'experience_changed', label: 'Experience Changed' },
 ];
 
