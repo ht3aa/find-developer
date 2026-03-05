@@ -10,7 +10,7 @@ class StoreDeveloperOfferRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user();
+        return $this->user() !== null;
     }
 
     /**
