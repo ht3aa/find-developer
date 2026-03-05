@@ -131,6 +131,11 @@ class Developer extends Model
         return $this->hasMany(HackathonSubscriber::class, 'developer_id');
     }
 
+    public function profileViews(): HasMany
+    {
+        return $this->hasMany(DeveloperProfileView::class);
+    }
+
     public function experienceTasks(): BelongsToMany
     {
         return $this->belongsToMany(ExperienceTask::class, 'experience_task_developer')
