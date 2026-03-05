@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Github, Twitter } from 'lucide-vue-next';
+import { Github, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { home, login, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
@@ -24,6 +24,21 @@ const socialLinks = [
         icon: Github,
         href: 'https://github.com/ht3aa/find-developer',
         label: 'GitHub',
+    },
+    {
+        icon: Instagram,
+        href: 'https://www.instagram.com/find.developer',
+        label: 'Instagram',
+    },
+    {
+        icon: Linkedin,
+        href: 'https://www.linkedin.com/company/111716554',
+        label: 'LinkedIn',
+    },
+    {
+        icon: Send,
+        href: 'https://t.me/finddevelopers',
+        label: 'Telegram',
     },
 ];
 </script>
@@ -89,11 +104,13 @@ const socialLinks = [
             </p>
 
             <div class="flex items-center gap-4">
-                <Link
+                <a
                     v-for="item in socialLinks"
                     :key="item.label"
                     :href="item.href"
                     :aria-label="item.label"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     class="text-muted-foreground transition-colors hover:text-foreground"
                 >
                     <component
@@ -101,7 +118,7 @@ const socialLinks = [
                         class="size-5"
                         aria-hidden="true"
                     />
-                </Link>
+                </a>
             </div>
         </div>
     </footer>
