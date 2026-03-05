@@ -9,3 +9,5 @@ use Illuminate\Support\Facades\Schedule;
 // })->purpose('Display an inspiring quote');
 
 Schedule::command('newsletter:send-developers')->weekly();
+
+Schedule::command('developers:send-weekly-profile-views')->weekly();

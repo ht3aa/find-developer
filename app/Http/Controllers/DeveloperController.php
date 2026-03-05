@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RecommendationStatus;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
+use App\Models\DeveloperProfileView;
 use App\Models\Scopes\DeveloperScope;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,6 +47,8 @@ class DeveloperController extends Controller
      */
     public function show(Developer $developer): Response
     {
+        DeveloperProfileView::create(['developer_id' => $developer->id]);
+
         $developer->load([
             'jobTitle',
             'skills',
