@@ -11,6 +11,7 @@ import {
     Home,
     LayoutGrid,
     Mail,
+    Send,
     Shield,
     ThumbsUp,
     Trophy,
@@ -38,6 +39,7 @@ import { index as developerProfileIndex } from '@/routes/dashboard/developer-pro
 import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
+import { index as developerOffersIndex } from '@/routes/developer-offers';
 import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import { index as developersIndex } from '@/routes/developers';
 import { index as hackathonsIndex } from '@/routes/hackathons';
@@ -135,6 +137,12 @@ const allMainNavItems: NavItem[] = [
         href: developerRecommendationsIndex().url,
         icon: ThumbsUp,
         can: 'viewRecommendationsDashboard',
+    },
+    {
+        title: 'Developer Offers',
+        href: developerOffersIndex().url,
+        icon: Send,
+        can: 'viewDeveloperOffers',
     },
 ];
 

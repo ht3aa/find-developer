@@ -6,12 +6,14 @@ import {
     Copy,
     FilterX,
     Search,
+    Send,
     SlidersHorizontal,
     Sparkles,
     Users,
 } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
+import DeveloperOfferForm from '@/components/DeveloperOfferForm.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,9 +44,57 @@ const props = withDefaults(
     defineProps<{
         /** When set, restricts results to these developer IDs (e.g. hackathon subscribers). */
         developerIds?: number[];
+        /** URL to submit developer offers (when set, enables selection + send offer). */
+        developerOffersStoreUrl?: string;
     }>(),
     {},
 );
+
+const selectedDeveloperIds = ref<number[]>([]);
+const offerFormOpen = ref(false);
+
+const canSelectDevelopers = computed(
+    () => !!props.developerOffersStoreUrl,
+);
+
+function setDeveloperSelected(id: number, selected: boolean): void {
+    if (selected) {
+        if (!selectedDeveloperIds.value.includes(id)) {
+            selectedDeveloperIds.value = [...selectedDeveloperIds.value, id];
+        }
+    } else {
+        selectedDeveloperIds.value = selectedDeveloperIds.value.filter(
+            (i) => i !== id,
+        );
+    }
+}
+
+function clearSelection(): void {
+    selectedDeveloperIds.value = [];
+}
+
+function openOfferForm(): void {
+    if (selectedDeveloperIds.value.length > 0) {
+        offerFormOpen.value = true;
+    }
+}
+
+function selectAllCurrent(): void {
+    selectedDeveloperIds.value = developers.value.map((d) => Number(d.id));
+}
+
+const allCurrentSelected = computed(
+    () =>
+        developers.value.length > 0 &&
+        developers.value.every((d) =>
+            selectedDeveloperIds.value.includes(d.id),
+        ),
+);
+
+function onOfferSuccess(): void {
+    offerFormOpen.value = false;
+    clearSelection();
+}
 
 const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
@@ -322,7 +372,7 @@ onMounted(() => {
             </div>
         </div>
         <div
-            class="z-sticky-bar sticky top-18 mx-auto mb-6 flex w-1/2 flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center"
+            class="z-sticky-bar sticky top-18 mx-auto mb-6 flex w-[calc(100%-5rem)] flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center"
         >
             <div
                 class="relative flex min-w-0 flex-1 rounded-md border border-primary"
@@ -348,6 +398,38 @@ onMounted(() => {
                     paginationTotal === 1 ? '' : 's'
                 }}
             </p>
+            <template v-if="canSelectDevelopers">
+                <Button
+                    variant="outline"
+                    size="default"
+                    class="shrink-0 gap-2"
+                    @click="
+                        allCurrentSelected
+                            ? clearSelection()
+                            : selectAllCurrent()
+                    "
+                >
+                    <Check
+                        v-if="allCurrentSelected"
+                        class="size-4"
+                        aria-hidden="true"
+                    />
+                    {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
+                </Button>
+                <Button
+                    :variant="selectedDeveloperIds.length > 0 ? 'default' : 'outline'"
+                    size="default"
+                    class="shrink-0 gap-2"
+                    :disabled="selectedDeveloperIds.length === 0"
+                    @click="openOfferForm"
+                >
+                    <Send class="size-4" aria-hidden="true" />
+                    Send offer
+                    <span v-if="selectedDeveloperIds.length > 0">
+                        ({{ selectedDeveloperIds.length }})
+                    </span>
+                </Button>
+            </template>
             <Sheet v-model:open="advancedOpen">
                 <SheetTrigger as-child>
                     <Button
@@ -679,6 +761,11 @@ onMounted(() => {
                     v-for="developer in developers"
                     :key="developer.id"
                     :developer="developer"
+                    :selectable="canSelectDevelopers"
+                    :model-value="selectedDeveloperIds.includes(developer.id)"
+                    @update:model-value="
+                        setDeveloperSelected(developer.id, $event)
+                    "
                 />
             </div>
             <div
@@ -696,5 +783,13 @@ onMounted(() => {
                 </Button>
             </div>
         </template>
+
+        <DeveloperOfferForm
+            :open="offerFormOpen"
+            :store-url="developerOffersStoreUrl ?? ''"
+            :selected-developer-ids="selectedDeveloperIds"
+            @update:open="offerFormOpen = $event"
+            @success="onOfferSuccess"
+        />
     </section>
 </template>

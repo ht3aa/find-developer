@@ -116,9 +116,14 @@ class Developer extends Model
         return $this->hasMany(DeveloperRecommendation::class, 'recommended_id');
     }
 
-    public function offers(): HasMany
+    /**
+     * Get offers where this developer is in developer_ids.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder<DeveloperOffer>
+     */
+    public function offers(): \Illuminate\Database\Eloquent\Builder
     {
-        return $this->hasMany(DeveloperOffer::class);
+        return DeveloperOffer::query()->whereJsonContains('developer_ids', $this->id);
     }
 
     public function blogs(): HasMany

@@ -20,9 +20,12 @@ class DeveloperController extends Controller
      */
     public function index(): Response
     {
+        $user = request()->user();
+
         return Inertia::render('Welcome', [
             'canRegister' => Features::enabled(Features::registration()),
             'newsletterStoreUrl' => route('newsletter.store'),
+            'developerOffersStoreUrl' => $user ? route('developer-offers.store') : null,
         ]);
     }
 
