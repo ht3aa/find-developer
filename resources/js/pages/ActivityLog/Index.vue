@@ -8,6 +8,7 @@ import {
     ExternalLink,
     Loader2,
     Search,
+    UserMinus,
 } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import Pagination from '@/components/Pagination.vue';
@@ -33,6 +34,7 @@ import {
     index as activityLogIndex,
     show as activityLogShow,
 } from '@/routes/dashboard/activity-log';
+import { Checkbox } from '@/components/ui/checkbox';
 import type { BreadcrumbItem } from '@/types';
 import type { ActivityLogEntry } from '@/types/activity-log';
 
@@ -52,19 +54,32 @@ type PaginatedActivities = {
     to: number | null;
 };
 
+const SUSPENDABLE_CAUSER_TYPES = [
+    'App\\Models\\User',
+    'App\\Models\\Developer',
+];
+
 type Props = {
     activities: PaginatedActivities;
-    filters?: { search?: string; log_name?: string };
+    filters?: {
+        search?: string;
+        log_name?: string;
+        group_by?: string;
+    };
+    suspendCauserUrl?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-    filters: () => ({ search: '', log_name: '' }),
+    filters: () => ({ search: '', log_name: '', group_by: '' }),
+    suspendCauserUrl: '',
 });
 
 const page = usePage();
 const searchQuery = ref(props.filters.search ?? '');
+const groupByCauser = ref(props.filters.group_by === 'causer');
 const debouncedSearch = refDebounced(searchQuery, 300);
 const copiedEmail = ref<string | null>(null);
+const suspendingCauserId = ref<string | null>(null);
 let copiedEmailTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const modalOpen = ref(false);
@@ -158,20 +173,72 @@ async function copyCauserEmail(email: string): Promise<void> {
     }
 }
 
-watch(debouncedSearch, (value) => {
-    router.get(
-        activityLogIndex().url,
-        {
-            search: value || undefined,
-            log_name: props.filters.log_name || undefined,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        },
-    );
+function buildFilters(): Record<string, string | undefined> {
+    return {
+        search: searchQuery.value || undefined,
+        log_name: props.filters.log_name || undefined,
+        group_by: groupByCauser.value ? 'causer' : undefined,
+    };
+}
+
+watch(debouncedSearch, () => {
+    router.get(activityLogIndex().url, buildFilters(), {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
 });
+
+watch(groupByCauser, () => {
+    router.get(activityLogIndex().url, buildFilters(), {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
+});
+
+const groupedActivities = computed(() => {
+    if (props.filters.group_by !== 'causer') {
+        return null;
+    }
+    const groups = new Map<string, ActivityLogEntry[]>();
+    for (const a of props.activities.data) {
+        const key = a.causer_email ?? `no-email-${a.causer_type ?? 'null'}-${a.causer_id ?? 'null'}`;
+        const list = groups.get(key) ?? [];
+        list.push(a);
+        groups.set(key, list);
+    }
+    return Array.from(groups.entries()).map(([email, activities]) => ({
+        causerEmail: email.startsWith('no-email-') ? null : email,
+        activities,
+    }));
+});
+
+function canSuspendCauser(activity: ActivityLogEntry): boolean {
+    if (!activity.causer_type_full || activity.causer_id === null) return false;
+    if (activity.causer_already_suspended) return false;
+    return SUSPENDABLE_CAUSER_TYPES.includes(activity.causer_type_full);
+}
+
+function suspendCauser(activity: ActivityLogEntry): void {
+    if (!props.suspendCauserUrl || !canSuspendCauser(activity)) return;
+    const email = activity.causer_email ?? 'this user';
+    if (!window.confirm(`Are you sure you want to suspend the developer profile for ${email}?`)) {
+        return;
+    }
+    const key = `${activity.causer_type_full}-${activity.causer_id}`;
+    suspendingCauserId.value = key;
+    router.post(props.suspendCauserUrl, {
+        causer_type: activity.causer_type_full,
+        causer_id: activity.causer_id,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => router.reload(),
+        onFinish: () => {
+            suspendingCauserId.value = null;
+        },
+    });
+}
 
 function formatDate(iso: string): string {
     const d = new Date(iso);
@@ -220,16 +287,33 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div
                 class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
             >
-                <div class="relative flex-1 sm:max-w-sm">
-                    <Search
-                        class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                    />
-                    <Input
-                        v-model="searchQuery"
-                        type="search"
-                        placeholder="Search description, subject, event..."
-                        class="pl-9"
-                    />
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative flex-1 sm:max-w-sm">
+                        <Search
+                            class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                        />
+                        <Input
+                            v-model="searchQuery"
+                            type="search"
+                            placeholder="Search description, subject, event, causer email..."
+                            class="pl-9"
+                        />
+                    </div>
+                    <div
+                        class="flex items-center gap-2 rounded-md border px-3 py-2"
+                    >
+                        <Checkbox
+                            id="group-by-causer"
+                            :checked="groupByCauser"
+                            @update:checked="groupByCauser = $event ?? false"
+                        />
+                        <label
+                            for="group-by-causer"
+                            class="cursor-pointer text-sm font-medium"
+                        >
+                            Group by causer
+                        </label>
+                    </div>
                 </div>
                 <p
                     v-if="activities.total > 0"
@@ -244,100 +328,259 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead
+                                v-if="filters.group_by === 'causer'"
+                                class="w-[180px]"
+                            >
+                                Causer
+                            </TableHead>
                             <TableHead class="w-[140px]">Date</TableHead>
                             <TableHead class="w-[90px]">Event</TableHead>
                             <TableHead class="w-[120px]">Subject</TableHead>
-                            <TableHead class="w-[180px]"
-                                >Causer email</TableHead
+                            <TableHead
+                                v-if="filters.group_by !== 'causer'"
+                                class="w-[180px]"
                             >
+                                Causer email
+                            </TableHead>
                             <TableHead class="w-[80px]">Log</TableHead>
-                            <TableHead class="w-[160px]" />
+                            <TableHead class="w-[200px]" />
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow
-                            v-for="activity in activities.data"
-                            :key="activity.id"
-                        >
-                            <TableCell
-                                class="text-sm whitespace-nowrap text-muted-foreground"
+                        <template v-if="groupedActivities">
+                            <template
+                                v-for="group in groupedActivities"
+                                :key="group.causerEmail ?? `group-${group.activities[0]?.id}`"
                             >
-                                {{ formatDate(activity.created_at) }}
-                            </TableCell>
-                            <TableCell>
-                                <span
-                                    :class="[
-                                        'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
-                                        eventBadgeVariant(activity.event) ===
-                                            'default' &&
-                                            'bg-primary text-primary-foreground',
-                                        eventBadgeVariant(activity.event) ===
-                                            'outline' &&
-                                            'border border-input bg-background',
-                                        eventBadgeVariant(activity.event) ===
-                                            'destructive' &&
-                                            'bg-destructive/10 text-destructive',
-                                        eventBadgeVariant(activity.event) ===
-                                            'secondary' &&
-                                            'bg-muted text-muted-foreground',
-                                    ]"
+                                <TableRow
+                                    class="bg-muted/50 font-medium"
                                 >
-                                    {{ activity.event ?? '—' }}
-                                </span>
-                            </TableCell>
-                            <TableCell class="text-sm text-muted-foreground">
-                                <span v-if="activity.subject_type">
-                                    {{ activity.subject_type }} #{{
-                                        activity.subject_id
-                                    }}
-                                </span>
-                                <span v-else>—</span>
-                            </TableCell>
-                            <TableCell class="text-sm text-muted-foreground">
-                                <span
-                                    v-if="activity.causer_email"
-                                    class="group flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-muted/80"
-                                    :title="`Copy ${activity.causer_email}`"
-                                    @click="
-                                        copyCauserEmail(activity.causer_email)
-                                    "
+                                    <TableCell
+                                        colspan="6"
+                                    >
+                                        {{
+                                            group.causerEmail ??
+                                            '(No causer email)'
+                                        }}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow
+                                    v-for="activity in group.activities"
+                                    :key="activity.id"
                                 >
-                                    <span class="truncate">{{
-                                        activity.causer_email
-                                    }}</span>
-                                    <Copy
-                                        class="size-3.5 shrink-0 opacity-60 group-hover:opacity-100"
-                                        :class="{
-                                            'text-green-600 dark:text-green-400':
-                                                copiedEmail ===
+                                    <TableCell class="w-[180px]" />
+                                    <TableCell
+                                        class="text-sm whitespace-nowrap text-muted-foreground"
+                                    >
+                                        {{ formatDate(activity.created_at) }}
+                                    </TableCell>
+                                    <TableCell>
+                                        <span
+                                            :class="[
+                                                'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
+                                                eventBadgeVariant(
+                                                    activity.event,
+                                                ) === 'default' &&
+                                                    'bg-primary text-primary-foreground',
+                                                eventBadgeVariant(
+                                                    activity.event,
+                                                ) === 'outline' &&
+                                                    'border border-input bg-background',
+                                                eventBadgeVariant(
+                                                    activity.event,
+                                                ) === 'destructive' &&
+                                                    'bg-destructive/10 text-destructive',
+                                                eventBadgeVariant(
+                                                    activity.event,
+                                                ) === 'secondary' &&
+                                                    'bg-muted text-muted-foreground',
+                                            ]"
+                                        >
+                                            {{ activity.event ?? '—' }}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell class="text-sm text-muted-foreground">
+                                        <span v-if="activity.subject_type">
+                                            {{ activity.subject_type }} #{{
+                                                activity.subject_id
+                                            }}
+                                        </span>
+                                        <span v-else>—</span>
+                                    </TableCell>
+                                    <TableCell class="text-xs text-muted-foreground">
+                                        {{ activity.log_name ?? 'default' }}
+                                    </TableCell>
+                                    <TableCell class="flex items-center gap-2">
+                                        <Button
+                                            v-if="canSuspendCauser(activity)"
+                                            variant="ghost"
+                                            size="sm"
+                                            class="h-8 gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                            :disabled="
+                                                suspendingCauserId ===
+                                                `${activity.causer_type_full}-${activity.causer_id}`
+                                            "
+                                            @click="
+                                                suspendCauser(activity)
+                                            "
+                                        >
+                                            <Loader2
+                                                v-if="
+                                                    suspendingCauserId ===
+                                                    `${activity.causer_type_full}-${activity.causer_id}`
+                                                "
+                                                class="size-3.5 animate-spin"
+                                            />
+                                            <UserMinus
+                                                v-else
+                                                class="size-3.5"
+                                            />
+                                            Suspend
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            class="h-8 gap-1"
+                                            @click="
+                                                openPropertiesModal(activity)
+                                            "
+                                        >
+                                            <Box class="size-3.5" />
+                                            Properties
+                                        </Button>
+                                        <Link
+                                            :href="
+                                                activityLogShow(activity.id).url
+                                            "
+                                            class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                                        >
+                                            View
+                                            <ExternalLink class="size-3.5" />
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            </template>
+                        </template>
+                        <template v-else>
+                            <TableRow
+                                v-for="activity in activities.data"
+                                :key="activity.id"
+                            >
+                                <TableCell
+                                    class="text-sm whitespace-nowrap text-muted-foreground"
+                                >
+                                    {{ formatDate(activity.created_at) }}
+                                </TableCell>
+                                <TableCell>
+                                    <span
+                                        :class="[
+                                            'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium',
+                                            eventBadgeVariant(
+                                                activity.event,
+                                            ) === 'default' &&
+                                                'bg-primary text-primary-foreground',
+                                            eventBadgeVariant(
+                                                activity.event,
+                                            ) === 'outline' &&
+                                                'border border-input bg-background',
+                                            eventBadgeVariant(
+                                                activity.event,
+                                            ) === 'destructive' &&
+                                                'bg-destructive/10 text-destructive',
+                                            eventBadgeVariant(
+                                                activity.event,
+                                            ) === 'secondary' &&
+                                                'bg-muted text-muted-foreground',
+                                        ]"
+                                    >
+                                        {{ activity.event ?? '—' }}
+                                    </span>
+                                </TableCell>
+                                <TableCell class="text-sm text-muted-foreground">
+                                    <span v-if="activity.subject_type">
+                                        {{ activity.subject_type }} #{{
+                                            activity.subject_id
+                                        }}
+                                    </span>
+                                    <span v-else>—</span>
+                                </TableCell>
+                                <TableCell class="text-sm text-muted-foreground">
+                                    <span
+                                        v-if="activity.causer_email"
+                                        class="group flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-muted/80"
+                                        :title="`Copy ${activity.causer_email}`"
+                                        @click="
+                                            copyCauserEmail(
                                                 activity.causer_email,
-                                        }"
-                                    />
-                                </span>
-                                <span v-else>—</span>
-                            </TableCell>
-                            <TableCell class="text-xs text-muted-foreground">
-                                {{ activity.log_name ?? 'default' }}
-                            </TableCell>
-                            <TableCell class="flex items-center gap-2">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    class="h-8 gap-1"
-                                    @click="openPropertiesModal(activity)"
-                                >
-                                    <Box class="size-3.5" />
-                                    Properties
-                                </Button>
-                                <Link
-                                    :href="activityLogShow(activity.id).url"
-                                    class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                                >
-                                    View
-                                    <ExternalLink class="size-3.5" />
-                                </Link>
-                            </TableCell>
-                        </TableRow>
+                                            )
+                                        "
+                                    >
+                                        <span class="truncate">{{
+                                            activity.causer_email
+                                        }}</span>
+                                        <Copy
+                                            class="size-3.5 shrink-0 opacity-60 group-hover:opacity-100"
+                                            :class="{
+                                                'text-green-600 dark:text-green-400':
+                                                    copiedEmail ===
+                                                    activity.causer_email,
+                                            }"
+                                        />
+                                    </span>
+                                    <span v-else>—</span>
+                                </TableCell>
+                                <TableCell class="text-xs text-muted-foreground">
+                                    {{ activity.log_name ?? 'default' }}
+                                </TableCell>
+                                <TableCell class="flex items-center gap-2">
+                                    <Button
+                                        v-if="canSuspendCauser(activity)"
+                                        variant="ghost"
+                                        size="sm"
+                                        class="h-8 gap-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                        :disabled="
+                                            suspendingCauserId ===
+                                            `${activity.causer_type_full}-${activity.causer_id}`
+                                        "
+                                        @click="suspendCauser(activity)"
+                                    >
+                                        <Loader2
+                                            v-if="
+                                                suspendingCauserId ===
+                                                `${activity.causer_type_full}-${activity.causer_id}`
+                                            "
+                                            class="size-3.5 animate-spin"
+                                        />
+                                        <UserMinus
+                                            v-else
+                                            class="size-3.5"
+                                        />
+                                        Suspend
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        class="h-8 gap-1"
+                                        @click="
+                                            openPropertiesModal(activity)
+                                        "
+                                    >
+                                        <Box class="size-3.5" />
+                                        Properties
+                                    </Button>
+                                    <Link
+                                        :href="
+                                            activityLogShow(activity.id).url
+                                        "
+                                        class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                                    >
+                                        View
+                                        <ExternalLink class="size-3.5" />
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        </template>
                     </TableBody>
                 </Table>
             </div>

@@ -14,11 +14,9 @@ const checkboxClass =
 function statusVariant(
     status: string,
 ): 'default' | 'secondary' | 'destructive' | 'outline' {
-    return status === 'approved'
-        ? 'default'
-        : status === 'rejected'
-          ? 'destructive'
-          : 'secondary';
+    if (status === 'approved') return 'default';
+    if (status === 'rejected' || status === 'suspended') return 'destructive';
+    return 'secondary';
 }
 
 export function getColumns(

@@ -8,6 +8,7 @@ use App\Helpers\DeveloperMessageHelper;
 use App\Models\Developer;
 use App\Models\User;
 use App\Notifications\DeveloperApprovedNotification;
+use App\Notifications\DeveloperSuspendedNotification;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -42,7 +43,7 @@ class DeveloperObserver
                     $user->assignRole($role);
                 }
 
-                Developer::withoutEvents(fn() => $developer->update(['user_id' => $user->id]));
+                Developer::withoutEvents(fn () => $developer->update(['user_id' => $user->id]));
 
                 try {
                     $developer->notify(new MailtrapNotification(
@@ -58,6 +59,12 @@ class DeveloperObserver
             // Only send email if developer has an email address
             if (! empty($developer->email)) {
                 $developer->notify(new DeveloperApprovedNotification($developer));
+            }
+        }
+
+        if ($developer->isDirty('status') && $developer->status === DeveloperStatus::SUSPENDED) {
+            if (! empty($developer->email)) {
+                $developer->notify(new DeveloperSuspendedNotification($developer));
             }
         }
     }
