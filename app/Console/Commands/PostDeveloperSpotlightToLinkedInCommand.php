@@ -17,8 +17,8 @@ class PostDeveloperSpotlightToLinkedInCommand extends Command
     {
         $developer = Developer::query()
             ->available()
-            ->whereHas('projects', fn($q) => $q->visible())
-            ->with(['projects' => fn($q) => $q->visible()])
+            ->whereHas('projects', fn ($q) => $q->visible())
+            ->with(['projects' => fn ($q) => $q->visible()])
             ->inRandomOrder()
             ->first();
 
@@ -30,21 +30,10 @@ class PostDeveloperSpotlightToLinkedInCommand extends Command
 
         $profileUrl = route('developers.show', $developer->slug, true);
         $projectsList = $developer->projects
-            ->map(fn($p) => $p->link
-                ? "• {$p->title}: {$p->link}"
-                : "• {$p->title}")
-            ->implode("\n");
+            ->map(fn ($p) => $p->link ? "{$p->title} {$p->link}" : $p->title)
+            ->implode(' ');
 
-        $message = implode("\n", [
-            'شفت مشاريع احد المبرمجين بهاي المنصة https://find-developer.com و عجبني و حبيت اشاركهن وياكم.',
-            '',
-            'اسم المبرمج: ' . $developer->name,
-            '',
-            'المشاريع:',
-            $projectsList,
-            '',
-            "شوف البروفايل الكامل: {$profileUrl}",
-        ]);
+        $message = $this->buildMessage($developer->name, $projectsList, $profileUrl);
 
         if ($this->option('dry-run')) {
             $this->info('Dry run — would post the following:');
@@ -68,5 +57,43 @@ class PostDeveloperSpotlightToLinkedInCommand extends Command
         $this->error('Failed to post to LinkedIn. See output above.');
 
         return self::FAILURE;
+    }
+
+    private function buildMessage(string $name, string $projectsList, string $profileUrl): string
+    {
+        $templates = [
+            fn () => implode("\n", [
+                'شفت مشاريع مبرمج بمنصة find-developer.com و عجبني و حبيت اشاركهن وياكم',
+                "{$name}",
+                $projectsList ?: '—',
+                "البروفايل {$profileUrl}",
+            ]),
+            fn () => implode("\n", [
+                'عجبني مشاريع مبرمج من find-developer.com و حبيت اشارككم',
+                "{$name}",
+                $projectsList ?: '—',
+                $profileUrl,
+            ]),
+            fn () => implode("\n", [
+                'صادفني مبرمج بمشاريع حلوة بمنصة find-developer.com',
+                "{$name}",
+                $projectsList ?: '—',
+                "البروفايل {$profileUrl}",
+            ]),
+            fn () => implode("\n", [
+                'لقيت مبرمج من find-developer.com و مشاريعه عجبتني',
+                "{$name}",
+                $projectsList ?: '—',
+                $profileUrl,
+            ]),
+            fn () => implode("\n", [
+                'شفت بروفايل مبرمج بمنصة find-developer.com و المشاريع حلوة',
+                "{$name}",
+                $projectsList ?: '—',
+                "البروفايل {$profileUrl}",
+            ]),
+        ];
+
+        return collect($templates)->random()();
     }
 }

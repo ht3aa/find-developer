@@ -26,8 +26,8 @@ class PostDeveloperProfileToLinkedInCommand extends Command
             ->where('cv_path', '!=', '')
             ->with([
                 'jobTitle:id,name',
-                'projects' => fn($q) => $q->visible(),
-                'companies' => fn($q) => $q->visible(),
+                'projects' => fn ($q) => $q->visible(),
+                'companies' => fn ($q) => $q->visible(),
                 'skills',
             ])
             ->inRandomOrder()
@@ -41,36 +41,17 @@ class PostDeveloperProfileToLinkedInCommand extends Command
 
         $profileUrl = route('developers.show', $developer->slug, true);
         $projectsList = $developer->projects
-            ->map(fn($p) => $p->link ? "{$p->title}: {$p->link}" : "{$p->title}")
-            ->implode("\n");
-        $skillsList = $developer->skills->pluck('name')->map(fn($s) => "{$s}")->implode("\n");
-        $companiesList = $developer->companies->pluck('company_name')->map(fn($c) => "{$c}")->implode("\n");
-        $experience = $developer->years_of_experience . ' سنوات';
+            ->map(fn ($p) => $p->link ? "{$p->title} {$p->link}" : $p->title)
+            ->implode(' ');
+        $skillsList = $developer->skills->pluck('name')->implode(' ');
+        $companiesList = $developer->companies->pluck('company_name')->implode(' ');
+        $experience = $developer->years_of_experience.' سنوات';
         if ($developer->jobTitle?->name) {
-            $experience .= ' - ' . $developer->jobTitle->name;
+            $experience .= ' '.$developer->jobTitle->name;
         }
         $cvUrl = $developer->cv_path_url ?? $profileUrl;
 
-        $message = implode("\n", [
-            'عجبني البروفايل لمبرمج بمنصة https://find-developer.com و حبيت اشيره وياكم.',
-            '',
-            'اسم المبرمج: ' . $developer->name,
-            '',
-            'مشاريع اللي اشتغل عليهن:',
-            $projectsList ?: '—',
-            '',
-            'خبرته: ' . $experience,
-            '',
-            'مهاراته:',
-            $skillsList ?: '—',
-            '',
-            'الشركات اللي اشتغل بيهن:',
-            $companiesList ?: '—',
-            '',
-            'السيفي مالته: ' . $cvUrl,
-            '',
-            "شوف البروفايل الكامل: {$profileUrl}",
-        ]);
+        $message = $this->buildMessage($developer->name, $projectsList, $skillsList, $companiesList, $experience, $cvUrl, $profileUrl);
 
         if ($this->option('dry-run')) {
             $this->info('Dry run — would post the following:');
@@ -94,5 +75,61 @@ class PostDeveloperProfileToLinkedInCommand extends Command
         $this->error('Failed to post to LinkedIn. See output above.');
 
         return self::FAILURE;
+    }
+
+    private function buildMessage(string $name, string $projectsList, string $skillsList, string $companiesList, string $experience, string $cvUrl, string $profileUrl): string
+    {
+        $templates = [
+            fn () => implode("\n", [
+                'عجبني البروفايل لمبرمج بمنصة https://find-developer.com و حبيت اشيره وياكم',
+                "اسم المبرمج {$name}",
+                'مشاريع '.($projectsList ?: '—'),
+                "خبرته {$experience}",
+                'مهاراته '.($skillsList ?: '—'),
+                'شركات '.($companiesList ?: '—'),
+                "السيفي {$cvUrl}",
+                "البروفايل {$profileUrl}",
+            ]),
+            fn () => implode("\n", [
+                'شفت بروفايل حلو لمبرمج بمنصة find-developer.com و حبيت اشارككم',
+                "{$name}",
+                "خبرة {$experience}",
+                'مشاريع '.($projectsList ?: '—'),
+                'مهارات '.($skillsList ?: '—'),
+                'شركات '.($companiesList ?: '—'),
+                "السيفي {$cvUrl}",
+                $profileUrl,
+            ]),
+            fn () => implode("\n", [
+                'صادفني بروفايل لمبرمج من find-developer.com و عجبني',
+                $name,
+                $experience,
+                $projectsList ?: '—',
+                $skillsList ?: '—',
+                $companiesList ?: '—',
+                $cvUrl,
+                $profileUrl,
+            ]),
+            fn () => implode("\n", [
+                'عجبني مبرمج من find-developer.com و حبيت اشارككم',
+                "{$name} {$experience}",
+                'مشاريع '.($projectsList ?: '—'),
+                'مهارات '.($skillsList ?: '—'),
+                'شركات '.($companiesList ?: '—'),
+                "{$cvUrl} {$profileUrl}",
+            ]),
+            fn () => implode("\n", [
+                'لقيت مبرمج من find-developer.com و حبيت اشارككم بروفايله',
+                "{$name}",
+                $experience,
+                $projectsList ?: '—',
+                $skillsList ?: '—',
+                $companiesList ?: '—',
+                $cvUrl,
+                "البروفايل {$profileUrl}",
+            ]),
+        ];
+
+        return collect($templates)->random()();
     }
 }
