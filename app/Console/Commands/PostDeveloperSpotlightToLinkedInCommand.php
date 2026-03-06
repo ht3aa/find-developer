@@ -17,8 +17,8 @@ class PostDeveloperSpotlightToLinkedInCommand extends Command
     {
         $developer = Developer::query()
             ->available()
-            ->whereHas('projects', fn ($q) => $q->visible())
-            ->with(['projects' => fn ($q) => $q->visible()])
+            ->whereHas('projects', fn($q) => $q->visible())
+            ->with(['projects' => fn($q) => $q->visible()])
             ->inRandomOrder()
             ->first();
 
@@ -30,15 +30,15 @@ class PostDeveloperSpotlightToLinkedInCommand extends Command
 
         $profileUrl = route('developers.show', $developer->slug, true);
         $projectsList = $developer->projects
-            ->map(fn ($p) => $p->link
+            ->map(fn($p) => $p->link
                 ? "• {$p->title}: {$p->link}"
                 : "• {$p->title}")
             ->implode("\n");
 
-        $message = implode("\n\n", [
+        $message = implode("\n", [
             'شفت مشاريع احد المبرمجين بهاي المنصة https://find-developer.com و عجبني و حبيت اشاركهن وياكم.',
             '',
-            'اسم المبرمج: '.$developer->name,
+            'اسم المبرمج: ' . $developer->name,
             '',
             'المشاريع:',
             $projectsList,
