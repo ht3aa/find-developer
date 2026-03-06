@@ -13,6 +13,7 @@ export type WorkExperience = {
     end_date: string | null;
     is_current: boolean;
     show_company: boolean;
+    developer?: { id: number; name: string; slug: string } | null;
 };
 
 export type WorkExperienceForm = WorkExperience & {

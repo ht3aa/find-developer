@@ -4,4 +4,5 @@ export type DeveloperProject = {
     description: string | null;
     link: string | null;
     show_project: boolean;
+    developer?: { id: number; name: string; slug: string } | null;
 };
