@@ -32,6 +32,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Personal Profile (linkedin:post-personal)
+    |--------------------------------------------------------------------------
+    |
+    | Separate credentials for posting to your personal profile. Requires
+    | w_member_social scope. Person ID can be auto-fetched from /me if
+    | r_liteprofile scope is present.
+    |
+    */
+
+    'personal' => [
+        'client_id' => env('LINKEDIN_PERSONAL_CLIENT_ID'),
+        'client_secret' => env('LINKEDIN_PERSONAL_CLIENT_SECRET'),
+        'access_token' => env('LINKEDIN_PERSONAL_ACCESS_TOKEN'),
+        'redirect_uri' => env('LINKEDIN_PERSONAL_REDIRECT_URI'),
+        'person_id' => env('LINKEDIN_PERSONAL_PERSON_ID'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | API Version
     |--------------------------------------------------------------------------
     |
