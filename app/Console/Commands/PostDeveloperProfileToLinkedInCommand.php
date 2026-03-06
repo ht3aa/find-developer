@@ -41,35 +41,25 @@ class PostDeveloperProfileToLinkedInCommand extends Command
 
         $profileUrl = route('developers.show', $developer->slug, true);
         $projectsList = $developer->projects
-            ->map(fn($p) => $p->link ? "• {$p->title}: {$p->link}" : "• {$p->title}")
-            ->implode("\n");
-        $skillsList = $developer->skills->pluck('name')->map(fn($s) => "• {$s}")->implode("\n");
-        $companiesList = $developer->companies->pluck('company_name')->map(fn($c) => "• {$c}")->implode("\n");
+            ->map(fn($p) => $p->link ? "{$p->title} {$p->link}" : $p->title)
+            ->implode(' ');
+        $skillsList = $developer->skills->pluck('name')->implode(' ');
+        $companiesList = $developer->companies->pluck('company_name')->implode(' ');
         $experience = $developer->years_of_experience . ' سنوات';
         if ($developer->jobTitle?->name) {
-            $experience .= ' - ' . $developer->jobTitle->name;
+            $experience .= ' ' . $developer->jobTitle->name;
         }
         $cvUrl = $developer->cv_path_url ?? $profileUrl;
 
         $message = implode("\n", [
-            'عجبني البروفايل لمبرمج بمنصة https://find-developer.com و حبيت اشيره وياكم.',
-            '',
-            'اسم المبرمج: ' . $developer->name,
-            '',
-            'مشاريع اللي اشتغل عليهن:',
-            $projectsList ?: '—',
-            '',
-            'خبرته: ' . $experience,
-            '',
-            'مهاراته:',
-            $skillsList ?: '—',
-            '',
-            'الشركات اللي اشتغل بيهن:',
-            $companiesList ?: '—',
-            '',
-            'السيفي مالته: ' . $cvUrl,
-            '',
-            "شوف البروفايل الكامل: {$profileUrl}",
+            'عجبني البروفايل لمبرمج بمنصة https://find-developer.com و حبيت اشيره وياكم',
+            'اسم المبرمج ' . $developer->name,
+            'مشاريع ' . ($projectsList ?: '—'),
+            'خبرته ' . $experience,
+            'مهاراته ' . ($skillsList ?: '—'),
+            'شركات ' . ($companiesList ?: '—'),
+            'السيفي ' . $cvUrl,
+            "البروفايل الكامل {$profileUrl}",
         ]);
 
         if ($this->option('dry-run')) {
