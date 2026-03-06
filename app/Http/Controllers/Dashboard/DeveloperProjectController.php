@@ -29,6 +29,7 @@ class DeveloperProjectController extends Controller
         }
 
         $projects = DeveloperProject::query()
+            ->with('developer:id,name,slug')
             ->orderByDesc('created_at')
             ->get()
             ->map(fn (DeveloperProject $p) => [
@@ -37,6 +38,11 @@ class DeveloperProjectController extends Controller
                 'description' => $p->description,
                 'link' => $p->link,
                 'show_project' => $p->show_project,
+                'developer' => $p->developer ? [
+                    'id' => $p->developer->id,
+                    'name' => $p->developer->name,
+                    'slug' => $p->developer->slug,
+                ] : null,
             ]);
 
         $user = $request->user();

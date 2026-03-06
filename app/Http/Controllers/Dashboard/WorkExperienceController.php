@@ -29,10 +29,10 @@ class WorkExperienceController extends Controller
                 ->withErrors(['developer' => 'You must have a developer profile to manage work experience.']);
         }
 
-        $experiences = DeveloperCompany::with(['jobTitle', 'parent'])
+        $experiences = DeveloperCompany::with(['jobTitle', 'parent', 'developer:id,name,slug'])
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
                 'company_name' => $e->company_name,
                 'job_title' => $e->jobTitle?->name ?? null,
@@ -47,6 +47,11 @@ class WorkExperienceController extends Controller
                 'end_date' => $e->end_date?->format('Y-m-d'),
                 'is_current' => $e->is_current,
                 'show_company' => $e->show_company,
+                'developer' => $e->developer ? [
+                    'id' => $e->developer->id,
+                    'name' => $e->developer->name,
+                    'slug' => $e->developer->slug,
+                ] : null,
             ]);
 
         $user = $request->user();
@@ -77,9 +82,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
+                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
             ]);
 
         return Inertia::render('WorkExperience/Create', [
@@ -133,9 +138,9 @@ class WorkExperienceController extends Controller
             ->with('jobTitle')
             ->orderByDesc('start_date')
             ->get()
-            ->map(fn(DeveloperCompany $e) => [
+            ->map(fn (DeveloperCompany $e) => [
                 'id' => $e->id,
-                'label' => $e->company_name . ' — ' . ($e->jobTitle?->name ?? 'N/A') . ' (' . $e->start_date->format('Y') . ')',
+                'label' => $e->company_name.' — '.($e->jobTitle?->name ?? 'N/A').' ('.$e->start_date->format('Y').')',
             ]);
 
         return Inertia::render('WorkExperience/Edit', [

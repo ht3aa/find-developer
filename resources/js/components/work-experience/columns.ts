@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import { Badge } from '@/components/ui/badge';
 import WorkExperienceActionsCell from '@/components/work-experience/WorkExperienceActionsCell.vue';
 import type { AuthCan } from '@/types/auth';
@@ -23,6 +24,23 @@ export function getColumns(
     can: Partial<AuthCan> = {},
 ): ColumnDef<WorkExperience>[] {
     return [
+        {
+            id: 'developer',
+            header: 'Developer',
+            cell: ({ row }) => {
+                const dev = row.original.developer;
+                if (!dev)
+                    return h('div', { class: 'text-muted-foreground' }, '—');
+                return h(
+                    Link,
+                    {
+                        href: `/developers/${dev.slug}`,
+                        class: 'text-primary hover:underline font-medium',
+                    },
+                    () => dev.name,
+                );
+            },
+        },
         {
             accessorKey: 'company_name',
             header: 'Company',
