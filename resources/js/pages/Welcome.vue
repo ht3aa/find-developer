@@ -13,6 +13,7 @@ const flashSuccess = computed(
     () => (page.props.flash as { success?: string })?.success,
 );
 const appUrl = computed(() => (page.props.appUrl as string) ?? '');
+const appOgImage = computed(() => (page.props.appOgImage as string) ?? undefined);
 const newsletterStoreUrl = computed(
     () => (page.props.newsletterStoreUrl as string) ?? '',
 );
@@ -52,9 +53,10 @@ onUnmounted(() => {
 
 <template>
     <SeoHead
-        title="Find Developer"
-        description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
+        title="Find the Right Developer for Your Project"
+        description="Connect with vetted developers for your project. Browse portfolios, filter by skills and experience, and hire the best match for your team."
         canonical="/"
+        :image="appOgImage"
         :json-ld="webSiteJsonLd"
     />
     <Head>

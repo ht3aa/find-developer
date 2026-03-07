@@ -68,10 +68,18 @@ class HandleInertiaRequests extends Middleware
             'viewNewsletter' => $user->isSuperAdmin(),
         ] : [];
 
+        $appUrl = rtrim(config('app.url'), '/');
+        $ogImage = config('app.og_image');
+        if ($ogImage && ! str_starts_with($ogImage, 'http')) {
+            $ogImage = $appUrl.($ogImage[0] === '/' ? '' : '/').$ogImage;
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'appUrl' => config('app.url'),
+            'appUrl' => $appUrl,
+            'appDescription' => config('app.description'),
+            'appOgImage' => $ogImage,
             'auth' => [
                 'user' => $user,
                 'permissions' => $permissions,

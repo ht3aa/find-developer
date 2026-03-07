@@ -17,6 +17,33 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Description (SEO)
+    |--------------------------------------------------------------------------
+    |
+    | Used for meta description, Open Graph, and search engine snippets.
+    | Keep under 160 characters for optimal display in search results.
+    |
+    */
+
+    'description' => env(
+        'APP_DESCRIPTION',
+        'Find Developer – Connect with vetted developers for your project. Browse portfolios, filter by skills and experience, and hire the best match for your team.',
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Open Graph Image (SEO / Social Sharing)
+    |--------------------------------------------------------------------------
+    |
+    | URL to image for social sharing (Facebook, LinkedIn, Twitter).
+    | Recommended: 1200×630px PNG/JPG. Use full URL or path like /images/og-image.png.
+    |
+    */
+
+    'og_image' => env('APP_OG_IMAGE', '/logo.svg'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

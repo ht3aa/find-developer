@@ -14,9 +14,40 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="index, follow">
-        <meta name="description" content="{{ config('app.description', 'Find the right developer for your project. Browse vetted developers, filter by skills and experience.') }}">
+        <meta name="description" content="{{ config('app.description') }}">
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
         <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+
+        @php
+            $canonicalUrl = url()->current();
+            $ogImage = config('app.og_image');
+            if ($ogImage && !str_starts_with($ogImage, 'http')) {
+                $ogImage = rtrim(config('app.url'), '/') . ($ogImage[0] === '/' ? '' : '/') . $ogImage;
+            }
+        @endphp
+        {{-- Open Graph (Facebook, LinkedIn, etc.) --}}
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:title" content="{{ config('app.name') }} – Find the Right Developer for Your Project">
+        <meta property="og:description" content="{{ config('app.description') }}">
+        <meta property="og:url" content="{{ $canonicalUrl }}">
+        @if($ogImage)
+        <meta property="og:image" content="{{ $ogImage }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        @endif
+        <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+        {{-- Twitter Card --}}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ config('app.name') }} – Find the Right Developer for Your Project">
+        <meta name="twitter:description" content="{{ config('app.description') }}">
+        @if($ogImage)
+        <meta name="twitter:image" content="{{ $ogImage }}">
+        @endif
+
+        {{-- Canonical URL --}}
+        <link rel="canonical" href="{{ $canonicalUrl }}">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
@@ -44,7 +75,7 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name') }} – Find the Right Developer for Your Project</title>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
