@@ -13,7 +13,9 @@ const flashSuccess = computed(
     () => (page.props.flash as { success?: string })?.success,
 );
 const appUrl = computed(() => (page.props.appUrl as string) ?? '');
-const appOgImage = computed(() => (page.props.appOgImage as string) ?? undefined);
+const appOgImage = computed(
+    () => (page.props.appOgImage as string) ?? undefined,
+);
 const newsletterStoreUrl = computed(
     () => (page.props.newsletterStoreUrl as string) ?? '',
 );

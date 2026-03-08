@@ -250,12 +250,12 @@ function submitNewsletter(): void {
                 <!-- Scroll indicator -->
                 <button
                     type="button"
-                    class="scroll-indicator mt-12 flex flex-col items-center gap-1 text-muted-foreground/70 transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full p-2"
+                    class="scroll-indicator mt-12 flex flex-col items-center gap-1 rounded-full p-2 text-muted-foreground/70 transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     aria-label="Scroll down to see more"
                     @click="scrollToSearch"
                 >
                     <span class="text-xs font-medium">Scroll</span>
-                    <ArrowDown class="size-5 scroll-arrow" aria-hidden="true" />
+                    <ArrowDown class="scroll-arrow size-5" aria-hidden="true" />
                 </button>
 
                 <!-- YouTube video -->

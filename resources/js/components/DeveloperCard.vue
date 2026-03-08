@@ -16,7 +16,6 @@ import { computed, ref } from 'vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Tooltip,
@@ -116,7 +115,12 @@ function formatNum(n: number): string {
 
 <template>
     <Card
-        class="group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 ring-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-primary/20"
+        :class="[
+            'group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
+            modelValue
+                ? 'ring-2 ring-primary shadow-primary/10'
+                : 'ring-border/50 hover:ring-primary/20',
+        ]"
     >
         <!-- Top accent gradient -->
         <div
@@ -124,19 +128,24 @@ function formatNum(n: number): string {
         />
 
         <!-- Selection checkbox -->
-        <div
+        <button
             v-if="selectable"
-            class="absolute top-4 left-4 z-10"
-            @click.stop="toggleSelect"
+            type="button"
+            class="absolute top-3.5 left-3.5 z-10 flex size-6 items-center justify-center rounded-md border-2 transition-all duration-200"
+            :class="
+                modelValue
+                    ? 'border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/25 scale-105'
+                    : 'border-muted-foreground/30 bg-background/90 backdrop-blur-sm hover:border-primary/60 hover:bg-primary/5'
+            "
+            :aria-label="`Select ${developer.name}`"
+            :aria-pressed="modelValue"
+            @click.stop.prevent="toggleSelect"
         >
-            <Checkbox
-                :model-value="modelValue"
-                :aria-label="`Select ${developer.name}`"
-                class="size-5 border-2 border-primary bg-background"
-                @click.stop="toggleSelect"
-                @update:model-value="emit('update:modelValue', $event)"
+            <Check
+                v-if="modelValue"
+                class="size-3.5 stroke-[3]"
             />
-        </div>
+        </button>
 
         <!-- Recommended pill -->
         <div

@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import {
-    Check,
-    Eye,
-    MoreHorizontal,
-    Send,
-    Trash2,
-    X,
-} from 'lucide-vue-next';
+import { Check, Eye, MoreHorizontal, Send, Trash2, X } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import DeveloperOfferController from '@/actions/App/Http/Controllers/Dashboard/DeveloperOfferController';
 import Pagination from '@/components/Pagination.vue';
@@ -109,9 +102,13 @@ function confirmDelete(o: OfferRow): void {
 }
 
 function setStatus(o: OfferRow, status: string): void {
-    router.put(DeveloperOfferController.update.url(o.id), { status }, {
-        preserveScroll: true,
-    });
+    router.put(
+        DeveloperOfferController.update.url(o.id),
+        { status },
+        {
+            preserveScroll: true,
+        },
+    );
 }
 
 function statusVariant(
@@ -187,15 +184,12 @@ function formatDate(iso: string): string {
                     v-if="offers.total > 0"
                     class="text-sm text-muted-foreground"
                 >
-                    Showing {{ offers.from }}–{{ offers.to }}
-                    of {{ offers.total }}
+                    Showing {{ offers.from }}–{{ offers.to }} of
+                    {{ offers.total }}
                 </p>
             </div>
 
-            <div
-                v-if="offers.data.length > 0"
-                class="rounded-md border"
-            >
+            <div v-if="offers.data.length > 0" class="rounded-md border">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -345,9 +339,7 @@ function formatDate(iso: string): string {
                 class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
             >
                 <Send class="mb-4 h-12 w-12 text-muted-foreground" />
-                <h3 class="mb-2 text-lg font-semibold">
-                    No offers yet
-                </h3>
+                <h3 class="mb-2 text-lg font-semibold">No offers yet</h3>
                 <p class="text-center text-sm text-muted-foreground">
                     {{
                         statusFilter
@@ -357,10 +349,7 @@ function formatDate(iso: string): string {
                 </p>
             </div>
 
-            <Pagination
-                v-if="offers.links?.length"
-                :links="offers.links"
-            />
+            <Pagination v-if="offers.links?.length" :links="offers.links" />
         </div>
     </AppLayout>
 </template>

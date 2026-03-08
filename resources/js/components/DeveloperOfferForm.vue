@@ -59,29 +59,33 @@ function submit(): void {
     if (!props.storeUrl || props.selectedDeveloperIds.length === 0) return;
     submitting.value = true;
     errors.value = {};
-    router.post(props.storeUrl, {
-        developer_ids: props.selectedDeveloperIds,
-        company_name: form.value.company_name,
-        job_title_id: form.value.job_title_id
-            ? parseInt(form.value.job_title_id, 10)
-            : null,
-        message: form.value.message,
-        salary_range: form.value.salary_range || null,
-        work_type: form.value.work_type || null,
-        contact_email: form.value.contact_email,
-    }, {
-        preserveScroll: true,
-        onFinish: () => {
-            submitting.value = false;
+    router.post(
+        props.storeUrl,
+        {
+            developer_ids: props.selectedDeveloperIds,
+            company_name: form.value.company_name,
+            job_title_id: form.value.job_title_id
+                ? parseInt(form.value.job_title_id, 10)
+                : null,
+            message: form.value.message,
+            salary_range: form.value.salary_range || null,
+            work_type: form.value.work_type || null,
+            contact_email: form.value.contact_email,
         },
-        onSuccess: () => {
-            close();
-            emit('success');
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                submitting.value = false;
+            },
+            onSuccess: () => {
+                close();
+                emit('success');
+            },
+            onError: (errs) => {
+                errors.value = errs as Record<string, string>;
+            },
         },
-        onError: (errs) => {
-            errors.value = errs as Record<string, string>;
-        },
-    });
+    );
 }
 </script>
 
@@ -96,11 +100,7 @@ function submit(): void {
                     }}. Fill in the details below.
                 </DialogDescription>
             </DialogHeader>
-            <form
-                class="space-y-4"
-                novalidate
-                @submit.prevent="submit"
-            >
+            <form class="space-y-4" novalidate @submit.prevent="submit">
                 <div class="space-y-2">
                     <Label for="offer-company">Company name</Label>
                     <Input
@@ -171,10 +171,7 @@ function submit(): void {
                         placeholder="e.g. Remote, Full-time"
                         @update:open="workTypeOpen = $event"
                     />
-                    <p
-                        v-if="errors.work_type"
-                        class="text-sm text-destructive"
-                    >
+                    <p v-if="errors.work_type" class="text-sm text-destructive">
                         {{ errors.work_type }}
                     </p>
                 </div>
@@ -199,7 +196,9 @@ function submit(): void {
                     </Button>
                     <Button type="submit" :disabled="submitting">
                         <Send v-if="!submitting" class="size-4" />
-                        <span>{{ submitting ? 'Sending...' : 'Send offer' }}</span>
+                        <span>{{
+                            submitting ? 'Sending...' : 'Send offer'
+                        }}</span>
                     </Button>
                 </DialogFooter>
             </form>

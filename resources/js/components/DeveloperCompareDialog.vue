@@ -132,8 +132,7 @@ const comparisonRows = computed(() => {
             icon: MapPin,
             a: a.location?.label ?? '—',
             b: b.location?.label ?? '—',
-            highlight:
-                (a.location?.label ?? '') !== (b.location?.label ?? ''),
+            highlight: (a.location?.label ?? '') !== (b.location?.label ?? ''),
         },
         {
             label: 'Recommendations',
@@ -192,7 +191,9 @@ function close(): void {
             :style="{ width: 'min(95vw, 1600px)', maxWidth: '95vw' }"
             :show-close-button="false"
         >
-            <div class="sticky top-0 z-10 flex flex-col gap-4 border-b border-border bg-background/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+            <div
+                class="sticky top-0 z-10 flex flex-col gap-4 border-b border-border bg-background/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+            >
                 <div class="flex items-center justify-between">
                     <DialogHeader>
                         <DialogTitle class="text-lg font-semibold">
@@ -213,13 +214,19 @@ function close(): void {
                     </Button>
                 </div>
                 <div
-                    v-if="developers && developers.length === 2 && summaryPoints.length > 0"
+                    v-if="
+                        developers &&
+                        developers.length === 2 &&
+                        summaryPoints.length > 0
+                    "
                     class="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3"
                 >
                     <p class="mb-2 text-sm font-semibold text-foreground">
                         Key differences
                     </p>
-                    <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                    <ul
+                        class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground"
+                    >
                         <li
                             v-for="(point, i) in summaryPoints"
                             :key="i"
@@ -240,10 +247,12 @@ function close(): void {
             >
                 <!-- Column headers -->
                 <div
-                    class="flex flex-col gap-4 border-b border-border p-6 md:border-b-0 md:border-r md:pb-6"
+                    class="flex flex-col gap-4 border-b border-border p-6 md:border-r md:border-b-0 md:pb-6"
                 >
                     <div class="flex flex-col items-start gap-3">
-                        <div class="flex w-full items-start justify-between gap-2">
+                        <div
+                            class="flex w-full items-start justify-between gap-2"
+                        >
                             <div class="min-w-0 flex-1">
                                 <h3
                                     class="truncate text-xl font-bold tracking-tight text-foreground"
@@ -323,7 +332,9 @@ function close(): void {
                     class="flex flex-col gap-4 border-b border-border p-6 md:border-b-0 md:pb-6"
                 >
                     <div class="flex flex-col items-start gap-3">
-                        <div class="flex w-full items-start justify-between gap-2">
+                        <div
+                            class="flex w-full items-start justify-between gap-2"
+                        >
                             <div class="min-w-0 flex-1">
                                 <h3
                                     class="truncate text-xl font-bold tracking-tight text-foreground"
@@ -405,7 +416,7 @@ function close(): void {
                     class="col-span-full overflow-hidden rounded-lg border border-border md:mx-4 md:mb-4"
                 >
                     <p
-                        class="border-b border-border bg-muted/30 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                        class="border-b border-border bg-muted/30 px-5 py-2.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase"
                     >
                         Overview
                     </p>
@@ -415,7 +426,7 @@ function close(): void {
                             :key="idx"
                         >
                             <div
-                                class="flex items-center gap-4 border-b border-border px-5 py-4 transition-colors last:border-b-0 md:border-b-0 md:border-r md:py-4"
+                                class="flex items-center gap-4 border-b border-border px-5 py-4 transition-colors last:border-b-0 md:border-r md:border-b-0 md:py-4"
                                 :class="[
                                     idx % 2 === 0 ? 'md:bg-muted/20' : '',
                                     row.highlight
@@ -431,16 +442,17 @@ function close(): void {
                                             : 'bg-muted/60 text-muted-foreground'
                                     "
                                 >
-                                    <component
-                                        :is="row.icon"
-                                        class="size-5"
-                                    />
+                                    <component :is="row.icon" class="size-5" />
                                 </span>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    <p
+                                        class="text-xs font-medium tracking-wider text-muted-foreground uppercase"
+                                    >
                                         {{ row.label }}
                                     </p>
-                                    <p class="mt-1 text-base font-semibold text-foreground">
+                                    <p
+                                        class="mt-1 text-base font-semibold text-foreground"
+                                    >
                                         {{ row.a }}
                                     </p>
                                 </div>
@@ -462,16 +474,17 @@ function close(): void {
                                             : 'bg-muted/60 text-muted-foreground'
                                     "
                                 >
-                                    <component
-                                        :is="row.icon"
-                                        class="size-5"
-                                    />
+                                    <component :is="row.icon" class="size-5" />
                                 </span>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                    <p
+                                        class="text-xs font-medium tracking-wider text-muted-foreground uppercase"
+                                    >
                                         {{ row.label }}
                                     </p>
-                                    <p class="mt-1 text-base font-semibold text-foreground">
+                                    <p
+                                        class="mt-1 text-base font-semibold text-foreground"
+                                    >
                                         {{ row.b }}
                                     </p>
                                 </div>
@@ -485,9 +498,11 @@ function close(): void {
                     class="col-span-full grid gap-0 border-t border-border md:grid-cols-2"
                 >
                     <div
-                        class="border-b border-border px-6 py-4 md:border-b-0 md:border-r"
+                        class="border-b border-border px-6 py-4 md:border-r md:border-b-0"
                     >
-                        <p class="mb-2 text-xs font-medium text-muted-foreground">
+                        <p
+                            class="mb-2 text-xs font-medium text-muted-foreground"
+                        >
                             Skills
                         </p>
                         <div class="flex flex-wrap gap-1.5">
@@ -508,7 +523,9 @@ function close(): void {
                         </div>
                     </div>
                     <div class="border-b border-border px-6 py-4">
-                        <p class="mb-2 text-xs font-medium text-muted-foreground">
+                        <p
+                            class="mb-2 text-xs font-medium text-muted-foreground"
+                        >
                             Skills
                         </p>
                         <div class="flex flex-wrap gap-1.5">
@@ -535,9 +552,11 @@ function close(): void {
                     class="col-span-full grid gap-0 border-t border-border md:grid-cols-2"
                 >
                     <div
-                        class="border-b border-border px-6 py-4 md:border-b-0 md:border-r"
+                        class="border-b border-border px-6 py-4 md:border-r md:border-b-0"
                     >
-                        <p class="mb-2 text-xs font-medium text-muted-foreground">
+                        <p
+                            class="mb-2 text-xs font-medium text-muted-foreground"
+                        >
                             Availability type
                         </p>
                         <div class="flex flex-wrap gap-1.5">
@@ -560,7 +579,9 @@ function close(): void {
                         </div>
                     </div>
                     <div class="border-b border-border px-6 py-4">
-                        <p class="mb-2 text-xs font-medium text-muted-foreground">
+                        <p
+                            class="mb-2 text-xs font-medium text-muted-foreground"
+                        >
                             Availability type
                         </p>
                         <div class="flex flex-wrap gap-1.5">

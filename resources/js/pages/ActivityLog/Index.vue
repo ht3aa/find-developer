@@ -203,7 +203,9 @@ const groupedActivities = computed(() => {
     }
     const groups = new Map<string, ActivityLogEntry[]>();
     for (const a of props.activities.data) {
-        const key = a.causer_email ?? `no-email-${a.causer_type ?? 'null'}-${a.causer_id ?? 'null'}`;
+        const key =
+            a.causer_email ??
+            `no-email-${a.causer_type ?? 'null'}-${a.causer_id ?? 'null'}`;
         const list = groups.get(key) ?? [];
         list.push(a);
         groups.set(key, list);
@@ -223,21 +225,29 @@ function canSuspendCauser(activity: ActivityLogEntry): boolean {
 function suspendCauser(activity: ActivityLogEntry): void {
     if (!props.suspendCauserUrl || !canSuspendCauser(activity)) return;
     const email = activity.causer_email ?? 'this user';
-    if (!window.confirm(`Are you sure you want to suspend the developer profile for ${email}?`)) {
+    if (
+        !window.confirm(
+            `Are you sure you want to suspend the developer profile for ${email}?`,
+        )
+    ) {
         return;
     }
     const key = `${activity.causer_type_full}-${activity.causer_id}`;
     suspendingCauserId.value = key;
-    router.post(props.suspendCauserUrl, {
-        causer_type: activity.causer_type_full,
-        causer_id: activity.causer_id,
-    }, {
-        preserveScroll: true,
-        onSuccess: () => router.reload(),
-        onFinish: () => {
-            suspendingCauserId.value = null;
+    router.post(
+        props.suspendCauserUrl,
+        {
+            causer_type: activity.causer_type_full,
+            causer_id: activity.causer_id,
         },
-    });
+        {
+            preserveScroll: true,
+            onSuccess: () => router.reload(),
+            onFinish: () => {
+                suspendingCauserId.value = null;
+            },
+        },
+    );
 }
 
 function formatDate(iso: string): string {
@@ -351,14 +361,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <template v-if="groupedActivities">
                             <template
                                 v-for="group in groupedActivities"
-                                :key="group.causerEmail ?? `group-${group.activities[0]?.id}`"
+                                :key="
+                                    group.causerEmail ??
+                                    `group-${group.activities[0]?.id}`
+                                "
                             >
-                                <TableRow
-                                    class="bg-muted/50 font-medium"
-                                >
-                                    <TableCell
-                                        colspan="6"
-                                    >
+                                <TableRow class="bg-muted/50 font-medium">
+                                    <TableCell colspan="6">
                                         {{
                                             group.causerEmail ??
                                             '(No causer email)'
@@ -400,7 +409,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                             {{ activity.event ?? '—' }}
                                         </span>
                                     </TableCell>
-                                    <TableCell class="text-sm text-muted-foreground">
+                                    <TableCell
+                                        class="text-sm text-muted-foreground"
+                                    >
                                         <span v-if="activity.subject_type">
                                             {{ activity.subject_type }} #{{
                                                 activity.subject_id
@@ -408,7 +419,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         </span>
                                         <span v-else>—</span>
                                     </TableCell>
-                                    <TableCell class="text-xs text-muted-foreground">
+                                    <TableCell
+                                        class="text-xs text-muted-foreground"
+                                    >
                                         {{ activity.log_name ?? 'default' }}
                                     </TableCell>
                                     <TableCell class="flex items-center gap-2">
@@ -421,9 +434,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                                 suspendingCauserId ===
                                                 `${activity.causer_type_full}-${activity.causer_id}`
                                             "
-                                            @click="
-                                                suspendCauser(activity)
-                                            "
+                                            @click="suspendCauser(activity)"
                                         >
                                             <Loader2
                                                 v-if="
@@ -497,7 +508,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         {{ activity.event ?? '—' }}
                                     </span>
                                 </TableCell>
-                                <TableCell class="text-sm text-muted-foreground">
+                                <TableCell
+                                    class="text-sm text-muted-foreground"
+                                >
                                     <span v-if="activity.subject_type">
                                         {{ activity.subject_type }} #{{
                                             activity.subject_id
@@ -505,7 +518,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </span>
                                     <span v-else>—</span>
                                 </TableCell>
-                                <TableCell class="text-sm text-muted-foreground">
+                                <TableCell
+                                    class="text-sm text-muted-foreground"
+                                >
                                     <span
                                         v-if="activity.causer_email"
                                         class="group flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-muted/80"
@@ -530,7 +545,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </span>
                                     <span v-else>—</span>
                                 </TableCell>
-                                <TableCell class="text-xs text-muted-foreground">
+                                <TableCell
+                                    class="text-xs text-muted-foreground"
+                                >
                                     {{ activity.log_name ?? 'default' }}
                                 </TableCell>
                                 <TableCell class="flex items-center gap-2">
@@ -552,27 +569,20 @@ const breadcrumbs: BreadcrumbItem[] = [
                                             "
                                             class="size-3.5 animate-spin"
                                         />
-                                        <UserMinus
-                                            v-else
-                                            class="size-3.5"
-                                        />
+                                        <UserMinus v-else class="size-3.5" />
                                         Suspend
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         class="h-8 gap-1"
-                                        @click="
-                                            openPropertiesModal(activity)
-                                        "
+                                        @click="openPropertiesModal(activity)"
                                     >
                                         <Box class="size-3.5" />
                                         Properties
                                     </Button>
                                     <Link
-                                        :href="
-                                            activityLogShow(activity.id).url
-                                        "
+                                        :href="activityLogShow(activity.id).url"
                                         class="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                                     >
                                         View

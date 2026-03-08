@@ -64,9 +64,7 @@ const compareIds = ref<number[]>([]);
 const compareDevelopersData = ref<Developer[]>([]);
 const compareDialogOpen = ref(false);
 
-const canSelectDevelopers = computed(
-    () => !!props.developerOffersStoreUrl,
-);
+const canSelectDevelopers = computed(() => !!props.developerOffersStoreUrl);
 
 function onCardSelectionChange(id: number, selected: boolean): void {
     if (selected) {
@@ -82,8 +80,9 @@ function onCardSelectionChange(id: number, selected: boolean): void {
         }
     } else {
         compareIds.value = compareIds.value.filter((i) => i !== id);
-        compareDevelopersData.value =
-            compareDevelopersData.value.filter((d) => d.id !== id);
+        compareDevelopersData.value = compareDevelopersData.value.filter(
+            (d) => d.id !== id,
+        );
     }
 }
 
@@ -121,10 +120,10 @@ const compareSelectionCount = computed(() => compareIds.value.length);
 
 const compareDevelopers = computed((): [Developer, Developer] | null => {
     if (compareDevelopersData.value.length !== 2) return null;
-    return [
-        compareDevelopersData.value[0],
-        compareDevelopersData.value[1],
-    ] as [Developer, Developer];
+    return [compareDevelopersData.value[0], compareDevelopersData.value[1]] as [
+        Developer,
+        Developer,
+    ];
 });
 
 function openCompareDialog(): void {

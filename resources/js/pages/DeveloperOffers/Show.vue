@@ -96,7 +96,9 @@ function developerUrl(slug: string | null): string {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="w-full space-y-6 rounded-xl p-4">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
                 <div class="flex items-center gap-3">
                     <Button variant="ghost" size="icon" as-child>
                         <Link :href="developerOffersIndex().url">
@@ -184,7 +186,9 @@ function developerUrl(slug: string | null): string {
                     </CardHeader>
                     <CardContent class="space-y-4">
                         <div>
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Company
                             </p>
                             <p class="mt-0.5 font-medium">
@@ -192,7 +196,9 @@ function developerUrl(slug: string | null): string {
                             </p>
                         </div>
                         <div>
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Position
                             </p>
                             <p class="mt-0.5 font-medium">
@@ -200,7 +206,9 @@ function developerUrl(slug: string | null): string {
                             </p>
                         </div>
                         <div v-if="offer.salary_range">
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Salary range
                             </p>
                             <p class="mt-0.5 font-medium">
@@ -208,7 +216,9 @@ function developerUrl(slug: string | null): string {
                             </p>
                         </div>
                         <div v-if="offer.work_type">
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Work type
                             </p>
                             <p class="mt-0.5 font-medium">
@@ -216,7 +226,9 @@ function developerUrl(slug: string | null): string {
                             </p>
                         </div>
                         <div>
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Contact email
                             </p>
                             <a
@@ -228,7 +240,9 @@ function developerUrl(slug: string | null): string {
                             </a>
                         </div>
                         <div v-if="offer.submitted_by">
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Submitted by
                             </p>
                             <p class="mt-0.5 font-medium">
@@ -242,7 +256,9 @@ function developerUrl(slug: string | null): string {
                             </p>
                         </div>
                         <div>
-                            <p class="text-xs font-medium text-muted-foreground">
+                            <p
+                                class="text-xs font-medium text-muted-foreground"
+                            >
                                 Created
                             </p>
                             <p class="mt-0.5 text-sm text-muted-foreground">
@@ -260,7 +276,7 @@ function developerUrl(slug: string | null): string {
                     </CardHeader>
                     <CardContent>
                         <p
-                            class="whitespace-pre-wrap text-sm text-muted-foreground"
+                            class="text-sm whitespace-pre-wrap text-muted-foreground"
                         >
                             {{ offer.message || '—' }}
                         </p>

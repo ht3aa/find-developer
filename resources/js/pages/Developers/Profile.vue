@@ -338,7 +338,9 @@ function confirmExperienceChangeAndSubmit(): void {
                     class="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4"
                 >
                     <p class="flex gap-2 text-sm text-muted-foreground">
-                        <Info class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                        <Info
+                            class="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400"
+                        />
                         <span>
                             We will be marketing your profile to companies and
                             clients. Please fill in your profile correctly with
