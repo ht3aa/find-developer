@@ -58,7 +58,6 @@ const props = withDefaults(
     {},
 );
 
-const selectedDeveloperIds = ref<number[]>([]);
 const offerFormOpen = ref(false);
 
 const compareIds = ref<number[]>([]);
@@ -69,61 +68,48 @@ const canSelectDevelopers = computed(
     () => !!props.developerOffersStoreUrl,
 );
 
-function setDeveloperSelected(id: number, selected: boolean): void {
-    if (selected) {
-        if (!selectedDeveloperIds.value.includes(id)) {
-            selectedDeveloperIds.value = [...selectedDeveloperIds.value, id];
-        }
-    } else {
-        selectedDeveloperIds.value = selectedDeveloperIds.value.filter(
-            (i) => i !== id,
-        );
-    }
-}
-
 function onCardSelectionChange(id: number, selected: boolean): void {
-    if (canSelectDevelopers.value) {
-        setDeveloperSelected(id, selected);
-    } else {
-        if (selected) {
-            if (!compareIds.value.includes(id)) {
-                const dev = developers.value.find((d) => d.id === id);
-                if (dev) {
-                    compareIds.value = [...compareIds.value, id];
-                    compareDevelopersData.value = [
-                        ...compareDevelopersData.value,
-                        dev,
-                    ];
-                }
+    if (selected) {
+        if (!compareIds.value.includes(id)) {
+            const dev = developers.value.find((d) => d.id === id);
+            if (dev) {
+                compareIds.value = [...compareIds.value, id];
+                compareDevelopersData.value = [
+                    ...compareDevelopersData.value,
+                    dev,
+                ];
             }
-        } else {
-            compareIds.value = compareIds.value.filter((i) => i !== id);
-            compareDevelopersData.value =
-                compareDevelopersData.value.filter((d) => d.id !== id);
         }
+    } else {
+        compareIds.value = compareIds.value.filter((i) => i !== id);
+        compareDevelopersData.value =
+            compareDevelopersData.value.filter((d) => d.id !== id);
     }
 }
 
 function clearSelection(): void {
-    selectedDeveloperIds.value = [];
+    compareIds.value = [];
+    compareDevelopersData.value = [];
 }
 
 function openOfferForm(): void {
-    if (selectedDeveloperIds.value.length > 0) {
+    if (compareIds.value.length > 0 && canSelectDevelopers.value) {
         offerFormOpen.value = true;
     }
 }
 
 function selectAllCurrent(): void {
-    selectedDeveloperIds.value = developers.value.map((d) => Number(d.id));
+    const ids = developers.value.map((d) => Number(d.id));
+    compareIds.value = ids;
+    compareDevelopersData.value = developers.value.filter((d) =>
+        ids.includes(d.id),
+    );
 }
 
 const allCurrentSelected = computed(
     () =>
         developers.value.length > 0 &&
-        developers.value.every((d) =>
-            selectedDeveloperIds.value.includes(d.id),
-        ),
+        developers.value.every((d) => compareIds.value.includes(d.id)),
 );
 
 function onOfferSuccess(): void {
@@ -131,23 +117,9 @@ function onOfferSuccess(): void {
     clearSelection();
 }
 
-const compareSelectionIds = computed(() =>
-    canSelectDevelopers.value ? selectedDeveloperIds.value : compareIds.value,
-);
-
-const compareSelectionCount = computed(
-    () => compareSelectionIds.value.length,
-);
+const compareSelectionCount = computed(() => compareIds.value.length);
 
 const compareDevelopers = computed((): [Developer, Developer] | null => {
-    if (compareSelectionCount.value !== 2) return null;
-    const ids = compareSelectionIds.value;
-    if (canSelectDevelopers.value) {
-        const a = developers.value.find((d) => d.id === ids[0]);
-        const b = developers.value.find((d) => d.id === ids[1]);
-        if (!a || !b) return null;
-        return [a, b];
-    }
     if (compareDevelopersData.value.length !== 2) return null;
     return [
         compareDevelopersData.value[0],
@@ -162,12 +134,8 @@ function openCompareDialog(): void {
 }
 
 function clearCompare(): void {
-    if (canSelectDevelopers.value) {
-        selectedDeveloperIds.value = [];
-    } else {
-        compareIds.value = [];
-        compareDevelopersData.value = [];
-    }
+    compareIds.value = [];
+    compareDevelopersData.value = [];
     compareDialogOpen.value = false;
 }
 
@@ -473,16 +441,16 @@ onMounted(() => {
                     paginationTotal === 1 ? '' : 's'
                 }}
             </p>
-            <!-- Compare -->
+            <!-- Compare (always visible) -->
             <div class="flex shrink-0 items-center gap-2">
                 <Button
-                    v-if="compareSelectionCount > 0"
+                    v-if="compareIds.length > 0"
                     variant="ghost"
                     size="sm"
                     class="h-8 gap-1 text-muted-foreground hover:text-foreground"
                     @click="clearCompare"
                 >
-                    <span class="tabular-nums">{{ compareSelectionCount }}/2</span>
+                    <span class="tabular-nums">{{ compareIds.length }}/2</span>
                     Clear
                 </Button>
                 <TooltipProvider>
@@ -491,13 +459,13 @@ onMounted(() => {
                             <span class="inline-flex">
                                 <Button
                                     :variant="
-                                        compareSelectionCount === 2
+                                        compareIds.length === 2
                                             ? 'default'
                                             : 'outline'
                                     "
                                     size="default"
                                     class="shrink-0 gap-2"
-                                    :disabled="compareSelectionCount !== 2"
+                                    :disabled="compareIds.length !== 2"
                                     @click="openCompareDialog"
                                 >
                                     <Scale class="size-4" aria-hidden="true" />
@@ -507,9 +475,9 @@ onMounted(() => {
                         </TooltipTrigger>
                         <TooltipContent>
                             {{
-                                compareSelectionCount > 2
+                                compareIds.length > 2
                                     ? 'Compare only works for 2 selections'
-                                    : compareSelectionCount === 2
+                                    : compareIds.length === 2
                                       ? 'Compare selected developers'
                                       : 'Select 2 developers to compare'
                             }}
@@ -536,16 +504,16 @@ onMounted(() => {
                     {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
                 </Button>
                 <Button
-                    :variant="selectedDeveloperIds.length > 0 ? 'default' : 'outline'"
+                    :variant="compareIds.length > 0 ? 'default' : 'outline'"
                     size="default"
                     class="shrink-0 gap-2"
-                    :disabled="selectedDeveloperIds.length === 0"
+                    :disabled="compareIds.length === 0"
                     @click="openOfferForm"
                 >
                     <Send class="size-4" aria-hidden="true" />
                     Send offer
-                    <span v-if="selectedDeveloperIds.length > 0">
-                        ({{ selectedDeveloperIds.length }})
+                    <span v-if="compareIds.length > 0">
+                        ({{ compareIds.length }})
                     </span>
                 </Button>
             </template>
@@ -881,11 +849,7 @@ onMounted(() => {
                     :key="developer.id"
                     :developer="developer"
                     :selectable="true"
-                    :model-value="
-                        canSelectDevelopers
-                            ? selectedDeveloperIds.includes(developer.id)
-                            : compareIds.includes(developer.id)
-                    "
+                    :model-value="compareIds.includes(developer.id)"
                     @update:model-value="
                         onCardSelectionChange(developer.id, $event)
                     "
@@ -910,7 +874,7 @@ onMounted(() => {
         <DeveloperOfferForm
             :open="offerFormOpen"
             :store-url="developerOffersStoreUrl ?? ''"
-            :selected-developer-ids="selectedDeveloperIds"
+            :selected-developer-ids="compareIds"
             @update:open="offerFormOpen = $event"
             @success="onOfferSuccess"
         />
