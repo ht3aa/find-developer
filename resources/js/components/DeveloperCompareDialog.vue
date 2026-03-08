@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import {
+    Award,
     Briefcase,
     Check,
     ChevronRight,
@@ -22,6 +23,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { Developer } from '@/types/developer';
 
 const props = defineProps<{
@@ -72,6 +79,13 @@ const summaryPoints = computed(() => {
     if (!!a.portfolio_url !== !!b.portfolio_url) {
         const has = a.portfolio_url ? a : b;
         points.push(`${has.name} has a portfolio link`);
+    }
+    if (a.badges.length !== b.badges.length) {
+        const more = a.badges.length > b.badges.length ? a : b;
+        const less = a.badges.length < b.badges.length ? a : b;
+        points.push(
+            `${more.name} has ${more.badges.length - less.badges.length} more badge(s)`,
+        );
     }
 
     const aSkillNames = new Set(a.skills.map((s) => s.name));
@@ -143,6 +157,19 @@ const comparisonRows = computed(() => {
             a: a.portfolio_url ? 'Yes' : 'No',
             b: b.portfolio_url ? 'Yes' : 'No',
             highlight: !!a.portfolio_url !== !!b.portfolio_url,
+        },
+        {
+            label: 'Badges',
+            icon: Award,
+            a:
+                a.badges.length > 0
+                    ? `${a.badges.length} badge${a.badges.length === 1 ? '' : 's'}`
+                    : '—',
+            b:
+                b.badges.length > 0
+                    ? `${b.badges.length} badge${b.badges.length === 1 ? '' : 's'}`
+                    : '—',
+            highlight: a.badges.length !== b.badges.length,
         },
     ];
 });
@@ -250,29 +277,45 @@ function close(): void {
                             v-if="developers[0].badges.length > 0"
                             class="flex flex-wrap gap-1.5"
                         >
-                            <div
+                            <TooltipProvider
                                 v-for="badge in developers[0].badges"
                                 :key="badge.name"
-                                class="inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
-                                :class="
-                                    badge.color ? '' : 'border-border bg-muted'
-                                "
-                                :style="
-                                    badge.color
-                                        ? {
-                                              background: `${badge.color}18`,
-                                              borderColor: `${badge.color}50`,
-                                              color: badge.color,
-                                          }
-                                        : {}
-                                "
                             >
-                                <BadgeIcon
-                                    v-if="badge.icon"
-                                    :icon="badge.icon"
-                                    icon-class="size-4"
-                                />
-                            </div>
+                                <Tooltip>
+                                    <TooltipTrigger as-child>
+                                        <Link
+                                            :href="
+                                                developers[0].badges_page_url ??
+                                                '/badges'
+                                            "
+                                            class="inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:scale-110 hover:opacity-100"
+                                            :class="
+                                                badge.color
+                                                    ? ''
+                                                    : 'border-border bg-muted'
+                                            "
+                                            :style="
+                                                badge.color
+                                                    ? {
+                                                          background: `${badge.color}18`,
+                                                          borderColor: `${badge.color}50`,
+                                                          color: badge.color,
+                                                      }
+                                                    : {}
+                                            "
+                                        >
+                                            <BadgeIcon
+                                                v-if="badge.icon"
+                                                :icon="badge.icon"
+                                                icon-class="size-4"
+                                            />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{{ badge.name }}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
                 </div>
@@ -314,29 +357,45 @@ function close(): void {
                             v-if="developers[1].badges.length > 0"
                             class="flex flex-wrap gap-1.5"
                         >
-                            <div
+                            <TooltipProvider
                                 v-for="badge in developers[1].badges"
                                 :key="badge.name"
-                                class="inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
-                                :class="
-                                    badge.color ? '' : 'border-border bg-muted'
-                                "
-                                :style="
-                                    badge.color
-                                        ? {
-                                              background: `${badge.color}18`,
-                                              borderColor: `${badge.color}50`,
-                                              color: badge.color,
-                                          }
-                                        : {}
-                                "
                             >
-                                <BadgeIcon
-                                    v-if="badge.icon"
-                                    :icon="badge.icon"
-                                    icon-class="size-4"
-                                />
-                            </div>
+                                <Tooltip>
+                                    <TooltipTrigger as-child>
+                                        <Link
+                                            :href="
+                                                developers[1].badges_page_url ??
+                                                '/badges'
+                                            "
+                                            class="inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:scale-110 hover:opacity-100"
+                                            :class="
+                                                badge.color
+                                                    ? ''
+                                                    : 'border-border bg-muted'
+                                            "
+                                            :style="
+                                                badge.color
+                                                    ? {
+                                                          background: `${badge.color}18`,
+                                                          borderColor: `${badge.color}50`,
+                                                          color: badge.color,
+                                                      }
+                                                    : {}
+                                            "
+                                        >
+                                            <BadgeIcon
+                                                v-if="badge.icon"
+                                                :icon="badge.icon"
+                                                icon-class="size-4"
+                                            />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{{ badge.name }}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
                 </div>
