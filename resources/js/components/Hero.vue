@@ -1,12 +1,30 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
 import { ArrowDown, Loader2 } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import DotGrid from '@/components/animations/DotGrid.vue';
 import Duck from '@/components/Duck.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+const QURAN_API_BASE = 'https://quranapi.pages.dev/api';
+const VERSE_REFRESH_INTERVAL_MS = 60_000;
+
+const ARABIC_NUMERALS = '٠١٢٣٤٥٦٧٨٩';
+
+function toArabicNumerals(n: number): string {
+    return String(n).replace(/[0-9]/g, (d) => ARABIC_NUMERALS[Number(d)] ?? d);
+}
+
+interface QuranVerse {
+    surahNo: number;
+    ayahNo: number;
+    surahNameArabicLong: string;
+    surahNameTranslation: string;
+    arabic1: string;
+    english: string;
+}
 
 const props = withDefaults(
     defineProps<{
@@ -50,6 +68,59 @@ function getYoutubeVideoId(url: string | undefined): string | null {
 const youtubeVideoId = computed(() => getYoutubeVideoId(props.youtubeUrl));
 const email = ref('');
 const submitting = ref(false);
+const verse = ref<QuranVerse | null>(null);
+let verseRefreshTimerId: ReturnType<typeof setInterval> | null = null;
+
+async function fetchRandomVerse(): Promise<QuranVerse | null> {
+    const maxSurah = 114;
+    const maxAyah = 25;
+    const maxAttempts = 20;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const surah = Math.floor(Math.random() * maxSurah) + 1;
+        const ayah = Math.floor(Math.random() * maxAyah) + 1;
+        const url = `${QURAN_API_BASE}/${surah}/${ayah}.json`;
+
+        try {
+            const res = await fetch(url);
+            if (!res.ok) continue;
+
+            const data = (await res.json()) as QuranVerse & Record<string, unknown>;
+            if (
+                data.surahNo != null &&
+                data.ayahNo != null &&
+                data.surahNameArabicLong &&
+                data.surahNameTranslation &&
+                data.arabic1 &&
+                data.english
+            ) {
+                return {
+                    surahNo: data.surahNo,
+                    ayahNo: data.ayahNo,
+                    surahNameArabicLong: data.surahNameArabicLong,
+                    surahNameTranslation: data.surahNameTranslation,
+                    arabic1: data.arabic1,
+                    english: data.english,
+                };
+            }
+        } catch {
+            // Retry with different numbers
+        }
+    }
+
+    return null;
+}
+
+async function loadVerse(): Promise<void> {
+    const result = await fetchRandomVerse();
+    if (result) {
+        verse.value = result;
+    }
+}
+
+function startVerseRefreshInterval(): void {
+    verseRefreshTimerId = setInterval(loadVerse, VERSE_REFRESH_INTERVAL_MS);
+}
 
 function scrollToSearch(): void {
     const target = props.primaryActionHref
@@ -76,6 +147,18 @@ function submitNewsletter(): void {
         },
     );
 }
+
+onMounted(() => {
+    loadVerse().then(() => {
+        startVerseRefreshInterval();
+    });
+});
+
+onUnmounted(() => {
+    if (verseRefreshTimerId) {
+        clearInterval(verseRefreshTimerId);
+    }
+});
 </script>
 
 <template>
@@ -277,6 +360,29 @@ function submitNewsletter(): void {
                         "
                         allowfullscreen
                     />
+                </div>
+
+                <!-- Quran verse -->
+                <div
+                    v-if="verse"
+                    class="mt-12 w-full max-w-2xl rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-center"
+                >
+                    <p class="text-xs font-medium text-muted-foreground">
+                        <span dir="rtl">
+                            {{ verse.surahNameArabicLong }}
+                            (سورة {{ toArabicNumerals(verse.surahNo) }}، آية {{ toArabicNumerals(verse.ayahNo) }})
+                        </span>
+                        — ({{ verse.surahNameTranslation }}) Surah {{ verse.surahNo }}, Ayah {{ verse.ayahNo }}
+                    </p>
+                    <p
+                        class="mt-2 text-lg font-medium leading-relaxed text-foreground"
+                        dir="rtl"
+                    >
+                        {{ verse.arabic1 }}
+                    </p>
+                    <p class="mt-1 text-sm italic text-muted-foreground">
+                        {{ verse.english }}
+                    </p>
                 </div>
             </div>
         </div>
