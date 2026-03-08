@@ -5,6 +5,7 @@ import {
     Check,
     Copy,
     FilterX,
+    Scale,
     Search,
     Send,
     SlidersHorizontal,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
+import DeveloperCompareDialog from '@/components/DeveloperCompareDialog.vue';
 import DeveloperOfferForm from '@/components/DeveloperOfferForm.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +28,12 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
@@ -50,50 +58,85 @@ const props = withDefaults(
     {},
 );
 
-const selectedDeveloperIds = ref<number[]>([]);
 const offerFormOpen = ref(false);
+
+const compareIds = ref<number[]>([]);
+const compareDevelopersData = ref<Developer[]>([]);
+const compareDialogOpen = ref(false);
 
 const canSelectDevelopers = computed(
     () => !!props.developerOffersStoreUrl,
 );
 
-function setDeveloperSelected(id: number, selected: boolean): void {
+function onCardSelectionChange(id: number, selected: boolean): void {
     if (selected) {
-        if (!selectedDeveloperIds.value.includes(id)) {
-            selectedDeveloperIds.value = [...selectedDeveloperIds.value, id];
+        if (!compareIds.value.includes(id)) {
+            const dev = developers.value.find((d) => d.id === id);
+            if (dev) {
+                compareIds.value = [...compareIds.value, id];
+                compareDevelopersData.value = [
+                    ...compareDevelopersData.value,
+                    dev,
+                ];
+            }
         }
     } else {
-        selectedDeveloperIds.value = selectedDeveloperIds.value.filter(
-            (i) => i !== id,
-        );
+        compareIds.value = compareIds.value.filter((i) => i !== id);
+        compareDevelopersData.value =
+            compareDevelopersData.value.filter((d) => d.id !== id);
     }
 }
 
 function clearSelection(): void {
-    selectedDeveloperIds.value = [];
+    compareIds.value = [];
+    compareDevelopersData.value = [];
 }
 
 function openOfferForm(): void {
-    if (selectedDeveloperIds.value.length > 0) {
+    if (compareIds.value.length > 0 && canSelectDevelopers.value) {
         offerFormOpen.value = true;
     }
 }
 
 function selectAllCurrent(): void {
-    selectedDeveloperIds.value = developers.value.map((d) => Number(d.id));
+    const ids = developers.value.map((d) => Number(d.id));
+    compareIds.value = ids;
+    compareDevelopersData.value = developers.value.filter((d) =>
+        ids.includes(d.id),
+    );
 }
 
 const allCurrentSelected = computed(
     () =>
         developers.value.length > 0 &&
-        developers.value.every((d) =>
-            selectedDeveloperIds.value.includes(d.id),
-        ),
+        developers.value.every((d) => compareIds.value.includes(d.id)),
 );
 
 function onOfferSuccess(): void {
     offerFormOpen.value = false;
     clearSelection();
+}
+
+const compareSelectionCount = computed(() => compareIds.value.length);
+
+const compareDevelopers = computed((): [Developer, Developer] | null => {
+    if (compareDevelopersData.value.length !== 2) return null;
+    return [
+        compareDevelopersData.value[0],
+        compareDevelopersData.value[1],
+    ] as [Developer, Developer];
+});
+
+function openCompareDialog(): void {
+    if (compareDevelopers.value) {
+        compareDialogOpen.value = true;
+    }
+}
+
+function clearCompare(): void {
+    compareIds.value = [];
+    compareDevelopersData.value = [];
+    compareDialogOpen.value = false;
 }
 
 const API_BASE = '/api/developers';
@@ -398,6 +441,50 @@ onMounted(() => {
                     paginationTotal === 1 ? '' : 's'
                 }}
             </p>
+            <!-- Compare (always visible) -->
+            <div class="flex shrink-0 items-center gap-2">
+                <Button
+                    v-if="compareIds.length > 0"
+                    variant="ghost"
+                    size="sm"
+                    class="h-8 gap-1 text-muted-foreground hover:text-foreground"
+                    @click="clearCompare"
+                >
+                    <span class="tabular-nums">{{ compareIds.length }}/2</span>
+                    Clear
+                </Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger as-child>
+                            <span class="inline-flex">
+                                <Button
+                                    :variant="
+                                        compareIds.length === 2
+                                            ? 'default'
+                                            : 'outline'
+                                    "
+                                    size="default"
+                                    class="shrink-0 gap-2"
+                                    :disabled="compareIds.length !== 2"
+                                    @click="openCompareDialog"
+                                >
+                                    <Scale class="size-4" aria-hidden="true" />
+                                    Compare
+                                </Button>
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {{
+                                compareIds.length > 2
+                                    ? 'Compare only works for 2 selections'
+                                    : compareIds.length === 2
+                                      ? 'Compare selected developers'
+                                      : 'Select 2 developers to compare'
+                            }}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
             <template v-if="canSelectDevelopers">
                 <Button
                     variant="outline"
@@ -417,16 +504,16 @@ onMounted(() => {
                     {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
                 </Button>
                 <Button
-                    :variant="selectedDeveloperIds.length > 0 ? 'default' : 'outline'"
+                    :variant="compareIds.length > 0 ? 'default' : 'outline'"
                     size="default"
                     class="shrink-0 gap-2"
-                    :disabled="selectedDeveloperIds.length === 0"
+                    :disabled="compareIds.length === 0"
                     @click="openOfferForm"
                 >
                     <Send class="size-4" aria-hidden="true" />
                     Send offer
-                    <span v-if="selectedDeveloperIds.length > 0">
-                        ({{ selectedDeveloperIds.length }})
+                    <span v-if="compareIds.length > 0">
+                        ({{ compareIds.length }})
                     </span>
                 </Button>
             </template>
@@ -761,10 +848,10 @@ onMounted(() => {
                     v-for="developer in developers"
                     :key="developer.id"
                     :developer="developer"
-                    :selectable="canSelectDevelopers"
-                    :model-value="selectedDeveloperIds.includes(developer.id)"
+                    :selectable="true"
+                    :model-value="compareIds.includes(developer.id)"
                     @update:model-value="
-                        setDeveloperSelected(developer.id, $event)
+                        onCardSelectionChange(developer.id, $event)
                     "
                 />
             </div>
@@ -787,9 +874,15 @@ onMounted(() => {
         <DeveloperOfferForm
             :open="offerFormOpen"
             :store-url="developerOffersStoreUrl ?? ''"
-            :selected-developer-ids="selectedDeveloperIds"
+            :selected-developer-ids="compareIds"
             @update:open="offerFormOpen = $event"
             @success="onOfferSuccess"
+        />
+
+        <DeveloperCompareDialog
+            :open="compareDialogOpen"
+            :developers="compareDevelopers"
+            @update:open="compareDialogOpen = $event"
         />
     </section>
 </template>

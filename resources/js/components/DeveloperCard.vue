@@ -4,7 +4,6 @@ import {
     Briefcase,
     Check,
     ChevronRight,
-    Clock,
     Globe,
     Mail,
     MapPin,

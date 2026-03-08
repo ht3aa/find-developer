@@ -64,10 +64,7 @@ const props = defineProps<{
                     View hackathon details
                 </Link>
             </div>
-            <DeveloperCardSection
-                v-else
-                :developer-ids="developerIds"
-            />
+            <DeveloperCardSection v-else :developer-ids="developerIds" />
         </main>
 
         <Footer />
