@@ -109,7 +109,7 @@ function submit(): void {
         github_url: d.github_url ?? null,
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: d.youtube_url ?? null,
-        is_available: d.is_available ?? false,
+        is_available: d.is_available ? 1 : 0,
         availability_type: (
             (d.availability_type as { value: string }[]) ?? []
         ).map((a) => a.value),
@@ -117,7 +117,7 @@ function submit(): void {
             (s) => s.name,
         ),
         status: d.status ?? 'pending',
-        recommended_by_us: d.recommended_by_us ?? false,
+        recommended_by_us: d.recommended_by_us ? 1 : 0,
     };
     const cvFile = formRef.value?.cvFile;
     const file =

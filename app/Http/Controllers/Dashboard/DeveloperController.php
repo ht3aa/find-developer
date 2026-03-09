@@ -36,7 +36,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
+            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -48,7 +48,7 @@ class DeveloperController extends Controller
             $query->where('status', $status);
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -107,7 +107,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
     }
 
     /**
@@ -140,7 +140,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
     }
 
     /**
