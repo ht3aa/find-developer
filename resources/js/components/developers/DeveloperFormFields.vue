@@ -156,6 +156,18 @@ function onUserSelect(userId: string | null): void {
     emit('update:modelValue', next);
 }
 
+function setIsAvailable(checked: boolean | string | undefined): void {
+    const next = { ...formData.value };
+    next.is_available = !!checked;
+    emit('update:modelValue', next);
+}
+
+function setRecommendedByUs(checked: boolean | string | undefined): void {
+    const next = { ...formData.value };
+    next.recommended_by_us = !!checked;
+    emit('update:modelValue', next);
+}
+
 defineExpose({
     cvFile,
     cvUploadRef,
@@ -397,32 +409,22 @@ defineExpose({
 
         <div class="flex flex-wrap items-center gap-4">
             <div class="flex items-center space-x-2">
-                <input
-                    type="hidden"
-                    name="is_available"
-                    :value="formData.is_available ? '1' : '0'"
-                />
                 <Checkbox
                     id="is_available"
-                    v-model:checked="formData.is_available"
+                    :model-value="!!formData.is_available"
                     name="is_available"
-                    value="1"
+                    @update:model-value="setIsAvailable"
                 />
                 <Label for="is_available">Available</Label>
             </div>
 
             <template v-if="showAdminFields">
                 <div class="flex items-center space-x-2">
-                    <input
-                        type="hidden"
-                        name="recommended_by_us"
-                        :value="formData.recommended_by_us ? '1' : '0'"
-                    />
                     <Checkbox
                         id="recommended_by_us"
-                        v-model:checked="formData.recommended_by_us"
+                        :model-value="!!formData.recommended_by_us"
                         name="recommended_by_us"
-                        value="1"
+                        @update:model-value="setRecommendedByUs"
                     />
                     <Label for="recommended_by_us">Recommended by us</Label>
                 </div>
