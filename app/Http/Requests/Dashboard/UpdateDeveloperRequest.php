@@ -10,7 +10,6 @@ use App\Models\Scopes\ApprovedScope;
 use App\Rules\UniqueDeveloperSlug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 class UpdateDeveloperRequest extends FormRequest
 {
@@ -34,6 +33,7 @@ class UpdateDeveloperRequest extends FormRequest
     public function rules(): array
     {
         $developer = $this->route('developer');
+
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'name' => [
@@ -66,6 +66,8 @@ class UpdateDeveloperRequest extends FormRequest
             'skill_ids.*' => ['integer', 'exists:skills,id'],
             'skill_names' => ['nullable', 'array'],
             'skill_names.*' => ['string', 'max:255'],
+            'badge_names' => ['nullable', 'array'],
+            'badge_names.*' => ['string', 'max:255'],
             'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],

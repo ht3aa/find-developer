@@ -55,6 +55,7 @@ const formData = computed({
 const jobTitleSelectOpen = ref(false);
 const userSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
+const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const statusSelectOpen = ref(false);
 const cvFile = ref<File | null>(null);
@@ -93,11 +94,26 @@ const skillsModel = computed({
     },
 });
 
+const badgesModel = computed({
+    get: () =>
+        ((formData.value.badges as { name: string }[]) ?? []).map(
+            (b) => b.name,
+        ),
+    set: (v: string[] | string | null) => {
+        const arr = Array.isArray(v) ? v : v ? [v] : [];
+        emit('update:modelValue', {
+            ...formData.value,
+            badges: arr.map((name) => ({ name: String(name) })),
+        });
+    },
+});
+
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
@@ -108,6 +124,7 @@ function onUserSelectOpenChange(open: boolean): void {
     if (open) {
         jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
@@ -118,6 +135,18 @@ function onSkillOpenChange(open: boolean): void {
     if (open) {
         jobTitleSelectOpen.value = false;
         userSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        statusSelectOpen.value = false;
+    }
+}
+
+function onBadgeOpenChange(open: boolean): void {
+    badgeSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        userSelectOpen.value = false;
+        skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
@@ -129,6 +158,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
         jobTitleSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
         statusSelectOpen.value = false;
     }
 }
@@ -139,6 +169,7 @@ function onStatusOpenChange(open: boolean): void {
         jobTitleSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
 }
@@ -393,6 +424,20 @@ defineExpose({
                 multiple
                 :max-options="50"
                 @update:open="onSkillOpenChange"
+            />
+        </div>
+
+        <div class="grid gap-2">
+            <Label for="badge_ids">Badges</Label>
+            <SearchableSelect
+                id="badge_ids"
+                v-model="badgesModel"
+                :open="badgeSelectOpen"
+                options-url="/api/badges"
+                placeholder="Search badges..."
+                multiple
+                :max-options="50"
+                @update:open="onBadgeOpenChange"
             />
         </div>
 

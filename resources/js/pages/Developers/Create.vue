@@ -40,6 +40,7 @@ const formData = ref<Record<string, unknown>>({
     is_available: false,
     availability_type: [],
     skills: [],
+    badges: [],
     status: 'pending',
     recommended_by_us: false,
 });
@@ -80,6 +81,9 @@ function submit(): void {
         ).map((a) => a.value),
         skill_names: ((d.skills as { name: string }[]) ?? []).map(
             (s) => s.name,
+        ),
+        badge_names: ((d.badges as { name: string }[]) ?? []).map(
+            (b) => b.name,
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,

@@ -42,6 +42,7 @@ const formData = ref<Record<string, unknown>>({
     is_available: false,
     availability_type: [],
     skills: [],
+    badges: [],
     status: 'pending',
     recommended_by_us: false,
     cv_path_url: null,
@@ -84,6 +85,7 @@ watch(
             is_available: dev.is_available ?? false,
             availability_type: [...(dev.availability_type ?? [])],
             skills: [...(dev.skills ?? [])],
+            badges: [...((dev as Record<string, unknown>).badges as { name: string }[] ?? [])],
             status: (dev as Record<string, unknown>).status ?? 'pending',
             recommended_by_us: dev.recommended_by_us ?? false,
             cv_path_url: dev.cv_path_url ?? null,
@@ -115,6 +117,9 @@ function submit(): void {
         ).map((a) => a.value),
         skill_names: ((d.skills as { name: string }[]) ?? []).map(
             (s) => s.name,
+        ),
+        badge_names: ((d.badges as { name: string }[]) ?? []).map(
+            (b) => b.name,
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,
