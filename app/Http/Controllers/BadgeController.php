@@ -84,7 +84,7 @@ class BadgeController extends Controller
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
 
-        if (Badge::where('slug', $data['slug'])->exists()) {
+        if (Badge::where('slug', $data['slug'])->where('id', '!=', $badge->id)->exists()) {
             throw ValidationException::withMessages([
                 'name' => 'Badge with this name already exists.',
             ]);
