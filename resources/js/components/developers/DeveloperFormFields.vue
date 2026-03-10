@@ -168,6 +168,16 @@ function setRecommendedByUs(checked: boolean | string | undefined): void {
     emit('update:modelValue', next);
 }
 
+const YOUTUBE_ID_REGEX =
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+
+const youtubeVideoId = computed(() => {
+    const url = formData.value.youtube_url;
+    if (!url || typeof url !== 'string') return null;
+    const match = url.match(YOUTUBE_ID_REGEX);
+    return match ? match[1] : null;
+});
+
 defineExpose({
     cvFile,
     cvUploadRef,
@@ -332,7 +342,7 @@ defineExpose({
                     class="transition-colors focus-visible:ring-2"
                 />
             </div>
-            <div class="grid gap-2">
+            <div class="grid gap-2 sm:col-span-2">
                 <Label for="youtube_url">YouTube</Label>
                 <Input
                     id="youtube_url"
@@ -342,6 +352,20 @@ defineExpose({
                     placeholder="https://youtube.com/..."
                     class="transition-colors focus-visible:ring-2"
                 />
+                <div
+                    v-if="youtubeVideoId"
+                    class="mt-2 overflow-hidden rounded-lg border border-border"
+                >
+                    <div class="aspect-video w-full">
+                        <iframe
+                            :src="`https://www.youtube.com/embed/${youtubeVideoId}`"
+                            title="YouTube preview"
+                            class="size-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
