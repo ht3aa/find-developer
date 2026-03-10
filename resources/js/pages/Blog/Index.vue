@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar.vue';
 import Pagination from '@/components/Pagination.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Card, CardContent } from '@/components/ui/card';
+import blogRoutes from '@/routes/blogs';
 import type { PublicBlogEntry } from '@/types/developer-blog';
 
 type PaginationLink = { url: string | null; label: string; active: boolean };
@@ -36,7 +37,7 @@ function formatDate(iso: string | null): string {
     <SeoHead
         title="Blog"
         description="Articles and posts from our developers. Read about their experience, tips, and insights."
-        canonical="/blogs"
+        :canonical="blogRoutes.public.index.url()"
     />
     <Head>
         <link rel="preconnect" href="https://rsms.me/" />
@@ -72,7 +73,7 @@ function formatDate(iso: string | null): string {
                     <Link
                         v-for="blog in blogs.data"
                         :key="blog.id"
-                        :href="`/blogs/${blog.slug}`"
+                        :href="blogRoutes.public.show.url(blog.slug)"
                         class="block transition-opacity hover:opacity-90"
                     >
                         <Card
