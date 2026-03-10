@@ -19,6 +19,7 @@ import {
 import { useAppearance } from '@/composables/useAppearance';
 import { dashboard, home, login, logout, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
+import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 
 const page = usePage();
@@ -33,6 +34,7 @@ const authCan = computed(
 );
 const navItems = [
     { label: 'Home', href: home() },
+    { label: 'Blog', href: blogs.public.index.url() },
     { label: 'Badges', href: badgesPublic() },
     { label: 'Hackathons', href: hackathonsPublic() },
     { label: 'Charts', href: '/charts' },

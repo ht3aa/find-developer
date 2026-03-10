@@ -24,7 +24,7 @@ class DeveloperBlogObserver
             return;
         }
 
-        $blogUrl = route('blog.show', $blog->slug);
+        $blogUrl = route('blogs.public.show', $blog->slug);
         $message = "Hello {$blog->developer->name},\n\n";
         $message .= "Great news! Your blog post \"{$blog->title}\" has been published.\n\n";
         $message .= "It is now live and visible to visitors. You can view it here:\n";

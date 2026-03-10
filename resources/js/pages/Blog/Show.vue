@@ -5,6 +5,7 @@ import { computed } from 'vue';
 import Footer from '@/components/Footer.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+import blogRoutes from '@/routes/blogs';
 import type { PublicBlogDetail } from '@/types/developer-blog';
 
 const props = defineProps<{
@@ -20,7 +21,7 @@ function formatDate(iso: string | null): string {
     return d.toLocaleDateString(undefined, { dateStyle: 'long' });
 }
 
-const blogCanonical = computed(() => `/blogs/${props.blog.slug}`);
+const blogCanonical = computed(() => blogRoutes.public.show.url(props.blog.slug));
 
 const articleJsonLd = computed(() => {
     const b = props.blog;
@@ -111,7 +112,7 @@ const articleJsonLd = computed(() => {
 
             <footer class="mt-12 border-t pt-8">
                 <Link
-                    href="/blogs"
+                    :href="blogRoutes.public.index.url()"
                     class="text-sm font-medium text-primary hover:underline"
                 >
                     ← Back to blog

@@ -4,6 +4,7 @@ import { Github, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { home, login, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
+import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 
 const supportEmail = 'ht3aa2001@gmail.com';
@@ -12,6 +13,7 @@ const supportMailto = `mailto:${supportEmail}`;
 
 const footerLinks = [
     { title: 'Home', href: home(), isMailto: false },
+    { title: 'Blog', href: blogs.public.index.url(), isMailto: false },
     { title: 'Badges', href: badgesPublic(), isMailto: false },
     { title: 'Hackathons', href: hackathonsPublic(), isMailto: false },
     { title: 'Support', href: supportMailto, isMailto: true },
