@@ -47,6 +47,8 @@ class StoreDeveloperRequest extends FormRequest
             'skill_ids.*' => ['integer', 'exists:skills,id'],
             'skill_names' => ['nullable', 'array'],
             'skill_names.*' => ['string', 'max:255'],
+            'badge_names' => ['nullable', 'array'],
+            'badge_names.*' => ['string', 'max:255'],
             'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],

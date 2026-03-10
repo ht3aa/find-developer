@@ -36,7 +36,7 @@ class DeveloperController extends Controller
             ->orderBy('name');
 
         if ($searchTerm !== '') {
-            $term = '%' . addcslashes($searchTerm, '%_\\') . '%';
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
                     ->orWhere('email', 'like', $term)
@@ -48,7 +48,7 @@ class DeveloperController extends Controller
             $query->where('status', $status);
         }
 
-        $developers = $query->paginate(15)->withQueryString()->through(fn(Developer $d) => [
+        $developers = $query->paginate(15)->withQueryString()->through(fn (Developer $d) => [
             'id' => $d->id,
             'name' => $d->name,
             'slug' => $d->slug,
@@ -107,7 +107,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**
@@ -140,7 +140,7 @@ class DeveloperController extends Controller
 
         return redirect()
             ->route('developers.index')
-            ->with('success', 'Bulk email sent to ' . $developers->count() . ' developer(s) via Mailtrap.');
+            ->with('success', 'Bulk email sent to '.$developers->count().' developer(s) via Mailtrap.');
     }
 
     /**
@@ -166,8 +166,9 @@ class DeveloperController extends Controller
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
+        $badgeNames = $data['badge_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
-        unset($data['skill_ids'], $data['skill_names'], $data['cv']);
+        unset($data['skill_ids'], $data['skill_names'], $data['badge_names'], $data['cv']);
 
         $data['slug'] = Str::slug($data['name']);
         $data['status'] = $data['status'] ?? \App\Enums\DeveloperStatus::PENDING;
@@ -181,6 +182,11 @@ class DeveloperController extends Controller
         } elseif ($skillNames !== null) {
             $ids = \App\Models\Skill::whereIn('name', $skillNames)->pluck('id')->all();
             $developer->skills()->sync($ids);
+        }
+
+        if ($badgeNames !== null) {
+            $badgeIds = \App\Models\Badge::whereIn('name', $badgeNames)->pluck('id')->all();
+            $developer->badges()->sync($badgeIds);
         }
 
         if ($cvFile) {
@@ -233,8 +239,9 @@ class DeveloperController extends Controller
         $data = $request->validated();
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
+        $badgeNames = $data['badge_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
-        unset($data['skill_ids'], $data['skill_names'], $data['cv']);
+        unset($data['skill_ids'], $data['skill_names'], $data['badge_names'], $data['cv']);
         $data['slug'] = Str::slug($data['name']);
 
         $developer->update($data);
@@ -244,6 +251,11 @@ class DeveloperController extends Controller
         } elseif ($skillNames !== null) {
             $ids = \App\Models\Skill::whereIn('name', $skillNames)->pluck('id')->all();
             $developer->skills()->sync($ids);
+        }
+
+        if ($badgeNames !== null) {
+            $badgeIds = \App\Models\Badge::whereIn('name', $badgeNames)->pluck('id')->all();
+            $developer->badges()->sync($badgeIds);
         }
 
         if ($cvFile) {
