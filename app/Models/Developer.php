@@ -162,7 +162,7 @@ class Developer extends Model
                     return null;
                 }
 
-                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
+                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/', $this->youtube_url, $matches)) {
                     return $matches[1];
                 }
 

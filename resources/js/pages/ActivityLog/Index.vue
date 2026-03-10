@@ -13,6 +13,7 @@ import {
 import { computed, ref, watch } from 'vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Dialog,
     DialogContent,
@@ -34,7 +35,6 @@ import {
     index as activityLogIndex,
     show as activityLogShow,
 } from '@/routes/dashboard/activity-log';
-import { Checkbox } from '@/components/ui/checkbox';
 import type { BreadcrumbItem } from '@/types';
 import type { ActivityLogEntry } from '@/types/activity-log';
 

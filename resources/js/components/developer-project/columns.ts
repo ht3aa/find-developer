@@ -1,6 +1,6 @@
+import { Link } from '@inertiajs/vue3';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
-import { Link } from '@inertiajs/vue3';
 import DeveloperProjectActionsCell from '@/components/developer-project/DeveloperProjectActionsCell.vue';
 import { Badge } from '@/components/ui/badge';
 import type { AuthCan } from '@/types/auth';
