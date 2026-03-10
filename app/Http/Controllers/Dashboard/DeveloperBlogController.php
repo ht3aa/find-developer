@@ -11,6 +11,7 @@ use App\Http\Requests\Dashboard\StoreDeveloperBlogRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperBlogRequest;
 use App\Models\DeveloperBlog;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -90,6 +91,8 @@ class DeveloperBlogController extends Controller
         }
 
         $data = $request->validated();
+        $featuredImageFile = $data['featured_image'] ?? null;
+        unset($data['featured_image']);
         $data['developer_id'] = $developer->id;
 
         if (! $request->user()->isSuperAdmin()) {
@@ -99,7 +102,12 @@ class DeveloperBlogController extends Controller
             $data['published_at'] = now();
         }
 
-        DeveloperBlog::create($data);
+        $blog = DeveloperBlog::create($data);
+
+        if ($featuredImageFile) {
+            $path = $featuredImageFile->store("developer-blogs/{$blog->id}", ['disk' => 's3']);
+            $blog->update(['featured_image' => $path]);
+        }
 
         return redirect()
             ->route('developer-blogs.index')
@@ -122,6 +130,7 @@ class DeveloperBlogController extends Controller
                 'excerpt' => $developer_blog->excerpt,
                 'content' => $developer_blog->content,
                 'featured_image' => $developer_blog->featured_image,
+                'featured_image_url' => $developer_blog->feature_image_url,
                 'status' => $developer_blog->status->value,
                 'published_at' => $developer_blog->published_at?->format('Y-m-d\TH:i'),
             ],
@@ -139,6 +148,8 @@ class DeveloperBlogController extends Controller
     public function update(UpdateDeveloperBlogRequest $request, DeveloperBlog $developer_blog): RedirectResponse
     {
         $data = $request->validated();
+        $featuredImageFile = $data['featured_image'] ?? null;
+        unset($data['featured_image']);
 
         if (! $request->user()->isSuperAdmin()) {
             unset($data['status'], $data['published_at']);
@@ -152,6 +163,14 @@ class DeveloperBlogController extends Controller
         }
 
         $developer_blog->update($data);
+
+        if ($featuredImageFile) {
+            if ($developer_blog->featured_image) {
+                Storage::disk('s3')->delete($developer_blog->featured_image);
+            }
+            $path = $featuredImageFile->store("developer-blogs/{$developer_blog->id}", ['disk' => 's3']);
+            $developer_blog->update(['featured_image' => $path]);
+        }
 
         return redirect()
             ->route('developer-blogs.index')

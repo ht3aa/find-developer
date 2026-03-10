@@ -25,7 +25,7 @@ class StoreDeveloperBlogRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string', 'max:1000'],
             'content' => ['required', 'string', 'max:100000'],
-            'featured_image' => ['nullable', 'string', 'max:500'],
+            'featured_image' => ['nullable', 'file', 'mimes:jpeg,jpg,png,gif,webp', 'max:2048'],
         ];
 
         if ($this->user()->isSuperAdmin()) {

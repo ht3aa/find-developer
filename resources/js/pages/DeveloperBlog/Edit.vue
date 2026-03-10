@@ -3,6 +3,7 @@ import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { FileText } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import DeveloperBlogController from '@/actions/App/Http/Controllers/Dashboard/DeveloperBlogController';
+import FileUpload from '@/components/FileUpload.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
@@ -25,6 +26,7 @@ type BlogEdit = {
     excerpt: string | null;
     content: string;
     featured_image: string | null;
+    featured_image_url: string | null;
     status: string;
     published_at: string | null;
 };
@@ -43,10 +45,11 @@ const formData = ref({
     title: '',
     excerpt: '',
     content: '',
-    featured_image: '',
     status: 'draft',
     published_at: '',
 });
+const featuredImageFile = ref<File | null>(null);
+const featuredImageUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
 
 const submitting = ref(false);
 const page = usePage();
@@ -70,7 +73,6 @@ watch(
             title: b.title,
             excerpt: b.excerpt ?? '',
             content: b.content,
-            featured_image: b.featured_image ?? '',
             status: b.status,
             published_at: b.published_at ?? '',
         };
@@ -84,8 +86,10 @@ function submit(): void {
         title: d.title,
         excerpt: d.excerpt || null,
         content: d.content,
-        featured_image: d.featured_image || null,
     };
+    if (featuredImageFile.value) {
+        payload.featured_image = featuredImageFile.value;
+    }
     if (props.canChangeStatus) {
         payload.status = d.status;
         payload.published_at = d.published_at || null;
@@ -93,6 +97,11 @@ function submit(): void {
     submitting.value = true;
     router.put(DeveloperBlogController.update.url(props.blog.id), payload, {
         preserveScroll: true,
+        forceFormData: !!featuredImageFile.value,
+        onSuccess: () => {
+            featuredImageFile.value = null;
+            featuredImageUploadRef.value?.clear();
+        },
         onFinish: () => {
             submitting.value = false;
         },
@@ -163,17 +172,16 @@ function submit(): void {
                             />
                             <InputError :message="formErrors.content" />
                         </div>
-                        <div class="grid gap-2">
-                            <Label for="featured_image"
-                                >Featured image (path)</Label
-                            >
-                            <Input
-                                id="featured_image"
-                                v-model="formData.featured_image"
-                                placeholder="Optional path or URL"
-                            />
-                            <InputError :message="formErrors.featured_image" />
-                        </div>
+                        <FileUpload
+                            id="featured_image"
+                            ref="featuredImageUploadRef"
+                            v-model="featuredImageFile"
+                            label="Featured image (JPEG, PNG, GIF, WebP, max 2MB)"
+                            accept=".jpeg,.jpg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp"
+                            :existing-url="blog.featured_image_url ?? null"
+                            existing-label="View current image"
+                            :error="formErrors.featured_image"
+                        />
                         <div
                             v-if="canChangeStatus"
                             class="grid gap-2 sm:grid-cols-2"
