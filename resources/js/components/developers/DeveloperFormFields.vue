@@ -500,24 +500,27 @@ defineExpose({
             </template>
         </div>
 
-        <div v-if="showAdminFields" class="grid gap-2">
-            <Label for="status">Status</Label>
-            <SearchableSelect
-                id="status"
-                :model-value="(formData.status as string) ?? 'pending'"
-                :open="statusSelectOpen"
-                :options="statusOptions"
-                placeholder="Select status"
-                @update:model-value="
-                    (v) =>
-                        emit('update:modelValue', {
-                            ...formData,
-                            status: v ?? 'pending',
-                        })
-                "
-                @update:open="onStatusOpenChange"
-            />
-            <InputError :message="errors?.status" />
+        <div v-if="showAdminFields" class="space-y-4">
+            <div class="grid gap-2">
+                <Label for="status">Status</Label>
+                <SearchableSelect
+                    id="status"
+                    :model-value="(formData.status as string) ?? 'pending'"
+                    :open="statusSelectOpen"
+                    :options="statusOptions"
+                    placeholder="Select status"
+                    @update:model-value="
+                        (v) =>
+                            emit('update:modelValue', {
+                                ...formData,
+                                status: v ?? 'pending',
+                            })
+                    "
+                    @update:open="onStatusOpenChange"
+                />
+                <InputError :message="errors?.status" />
+            </div>
+
         </div>
     </div>
 </template>
