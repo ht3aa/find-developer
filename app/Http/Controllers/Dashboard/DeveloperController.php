@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\DeveloperStatus;
 use App\Helpers\DeveloperMessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\BulkEmailAllDevelopersRequest;
@@ -13,6 +14,7 @@ use App\Http\Requests\Dashboard\StoreDeveloperRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
+use App\Notifications\DeveloperRejectedNotification;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -237,6 +239,10 @@ class DeveloperController extends Controller
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->findOrFail($developer);
 
         $data = $request->validated();
+        $rejectionReason = $data['rejection_reason'] ?? null;
+        $previousStatus = $developer->status;
+        unset($data['rejection_reason']);
+
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
         $badgeNames = $data['badge_names'] ?? null;
@@ -245,6 +251,13 @@ class DeveloperController extends Controller
         $data['slug'] = Str::slug($data['name']);
 
         $developer->update($data);
+
+        if ($previousStatus !== DeveloperStatus::REJECTED
+            && $developer->status === DeveloperStatus::REJECTED
+            && ! empty($developer->email)
+            && ! empty($rejectionReason)) {
+            $developer->notify(new DeveloperRejectedNotification($developer, $rejectionReason));
+        }
 
         if ($skillIds !== null) {
             $developer->skills()->sync($skillIds);

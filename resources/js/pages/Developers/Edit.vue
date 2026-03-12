@@ -7,7 +7,17 @@ import DeveloperFormFields from '@/components/developers/DeveloperFormFields.vue
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
+import InputError from '@/components/InputError.vue';
 import { dashboard } from '@/routes';
 import {
     edit as developersEdit,
@@ -46,10 +56,12 @@ const formData = ref<Record<string, unknown>>({
     status: 'pending',
     recommended_by_us: false,
     cv_path_url: null,
+    rejection_reason: '',
 });
 
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
 const submitting = ref(false);
+const rejectionReasonDialogOpen = ref(false);
 const page = usePage();
 const formErrors = computed(
     () => (page.props.errors as Record<string, string>) ?? {},
@@ -66,6 +78,15 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: developersEdit(props.developer.id).url,
     },
 ];
+
+watch(
+    () => formErrors.value.rejection_reason,
+    (err) => {
+        if (err && needsRejectionReason.value) {
+            rejectionReasonDialogOpen.value = true;
+        }
+    },
+);
 
 watch(
     () => props.developer,
@@ -89,17 +110,24 @@ watch(
             status: (dev as Record<string, unknown>).status ?? 'pending',
             recommended_by_us: dev.recommended_by_us ?? false,
             cv_path_url: dev.cv_path_url ?? null,
+            rejection_reason: '',
         });
     },
     { immediate: true },
 );
 
-function submit(): void {
+const needsRejectionReason = computed(() => {
+    const status = formData.value.status as string;
+    const currentStatus = (props.developer as Record<string, unknown>).status as string;
+    return status === 'rejected' && currentStatus !== 'rejected';
+});
+
+function buildPayload(): Record<string, unknown> {
     const d = formData.value;
     const jobTitle = props.jobTitles.find(
         (j) => j.name === (d.job_title as { name?: string })?.name,
     );
-    const payload: Record<string, unknown> = {
+    return {
         user_id: d.user_id ?? null,
         name: d.name ?? '',
         email: d.email ?? '',
@@ -123,7 +151,12 @@ function submit(): void {
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,
+        rejection_reason: d.status === 'rejected' ? (d.rejection_reason ?? '') : null,
     };
+}
+
+function performSubmit(): void {
+    const payload = buildPayload();
     const cvFile = formRef.value?.cvFile;
     const file =
         typeof cvFile === 'object' && cvFile && 'value' in cvFile
@@ -134,11 +167,26 @@ function submit(): void {
     router.put(DeveloperController.update.url(props.developer.id), payload, {
         forceFormData: !!file,
         preserveScroll: true,
-        onSuccess: () => formRef.value?.clearCv?.(),
+        onSuccess: () => {
+            formRef.value?.clearCv?.();
+            rejectionReasonDialogOpen.value = false;
+        },
         onFinish: () => {
             submitting.value = false;
         },
     });
+}
+
+function submit(): void {
+    if (needsRejectionReason.value) {
+        rejectionReasonDialogOpen.value = true;
+    } else {
+        performSubmit();
+    }
+}
+
+function confirmRejectionSubmit(): void {
+    performSubmit();
 }
 </script>
 
@@ -213,5 +261,56 @@ function submit(): void {
                 </Card>
             </div>
         </div>
+
+        <Dialog v-model:open="rejectionReasonDialogOpen">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Rejection reason required</DialogTitle>
+                    <DialogDescription>
+                        Please provide a reason for rejecting this developer
+                        profile. The developer will receive this reason via
+                        email.
+                    </DialogDescription>
+                </DialogHeader>
+                <form
+                    class="space-y-4"
+                    @submit.prevent="confirmRejectionSubmit"
+                >
+                    <div class="grid gap-2">
+                        <Label for="rejection_reason"
+                            >Rejection reason
+                            <span class="text-destructive">*</span></Label
+                        >
+                        <textarea
+                            id="rejection_reason"
+                            v-model="formData.rejection_reason"
+                            name="rejection_reason"
+                            rows="4"
+                            required
+                            class="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                            placeholder="Explain why the developer profile was rejected..."
+                        />
+                        <InputError
+                            :message="formErrors.rejection_reason"
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            @click="rejectionReasonDialogOpen = false"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            :disabled="submitting"
+                        >
+                            {{ submitting ? 'Saving...' : 'Confirm & Update' }}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     </AppLayout>
 </template>

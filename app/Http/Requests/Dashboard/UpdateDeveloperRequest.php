@@ -32,7 +32,15 @@ class UpdateDeveloperRequest extends FormRequest
      */
     public function rules(): array
     {
-        $developer = $this->route('developer');
+        $routeDeveloper = $this->route('developer');
+        $developerModel = $routeDeveloper instanceof Developer
+            ? $routeDeveloper
+            : Developer::withoutGlobalScope(ApprovedScope::class)->find($routeDeveloper);
+        $developerId = $developerModel instanceof Developer ? $developerModel->id : null;
+        $statusRejected = $this->input('status') === \App\Enums\DeveloperStatus::REJECTED->value;
+        $statusChangedToRejected = $statusRejected
+            && $developerModel instanceof Developer
+            && $developerModel->status !== \App\Enums\DeveloperStatus::REJECTED;
 
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
@@ -40,12 +48,12 @@ class UpdateDeveloperRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                new UniqueDeveloperSlug($developer),
+                new UniqueDeveloperSlug($developerId),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('developers', 'email')->ignore($developer),
+                Rule::unique('developers', 'email')->ignore($developerId),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
             'job_title_id' => ['nullable', 'integer', 'exists:job_titles,id'],
@@ -69,6 +77,11 @@ class UpdateDeveloperRequest extends FormRequest
             'badge_names' => ['nullable', 'array'],
             'badge_names.*' => ['string', 'max:255'],
             'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
+            'rejection_reason' => [
+                $statusChangedToRejected ? 'required' : 'nullable',
+                'string',
+                'max:2000',
+            ],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ];
