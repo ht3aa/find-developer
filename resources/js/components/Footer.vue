@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Github, Instagram, Linkedin, Send } from 'lucide-vue-next';
+import { Github, Heart, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { home, login, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
@@ -81,6 +81,32 @@ const socialLinks = [
                     </Link>
                 </template>
             </nav>
+        </div>
+
+        <Separator class="w-full" />
+
+        <div
+            class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8"
+        >
+            <div
+                class="flex flex-col items-center gap-3 rounded-xl border border-border bg-muted/50 px-6 py-5 text-center sm:flex-row sm:justify-center sm:gap-4 sm:text-left"
+            >
+                <div class="flex items-center gap-2 text-primary">
+                    <Heart class="size-5 shrink-0" aria-hidden="true" />
+                    <span class="font-medium">Support us</span>
+                </div>
+                <p class="max-w-xl text-sm text-muted-foreground">
+                    Love what we're building? Help us keep Find Developer free and growing.
+                    Every sponsorship or donation makes a real difference — thank you for
+                    believing in our mission.
+                </p>
+                <div
+                    class="flex shrink-0 items-center gap-2 rounded-lg bg-background px-4 py-2 font-mono text-sm font-medium text-foreground ring-1 ring-border"
+                >
+                    <span class="text-muted-foreground">Qi card:</span>
+                    <span>5862997060</span>
+                </div>
+            </div>
         </div>
 
         <Separator class="w-full" />
