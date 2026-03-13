@@ -414,126 +414,146 @@ onMounted(() => {
             </div>
         </div>
         <div
-            class="z-sticky-bar sticky top-18 mx-auto mb-6 flex w-[calc(100%-5rem)] flex-col gap-3 rounded-lg border border-border bg-background/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:flex-row sm:items-center"
+            class="z-sticky-bar sticky top-18 mb-6 rounded-xl border border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/80"
         >
+            <!-- Search row: primary focus -->
             <div
-                class="relative flex min-w-0 flex-1 rounded-md border border-primary"
+                class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-3.5"
             >
-                <Search
-                    class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                    aria-hidden="true"
-                />
-                <Input
-                    v-model="searchQuery"
-                    type="search"
-                    placeholder="Search by name, email, or skills..."
-                    class="h-9 flex-1 border border-input pl-9"
-                    autocomplete="off"
-                />
-            </div>
-            <p
-                v-if="paginationTotal !== null"
-                class="shrink-0 text-sm text-muted-foreground tabular-nums"
-                aria-live="polite"
-            >
-                {{ paginationTotal }} developer{{
-                    paginationTotal === 1 ? '' : 's'
-                }}
-            </p>
-            <!-- Compare (always visible) -->
-            <div class="flex shrink-0 items-center gap-2">
-                <Button
-                    v-if="compareIds.length > 0"
-                    variant="ghost"
-                    size="sm"
-                    class="h-8 gap-1 text-muted-foreground hover:text-foreground"
-                    @click="clearCompare"
+                <div
+                    class="relative flex min-w-0 flex-1 items-center rounded-lg border border-input bg-muted/30 transition-colors focus-within:border-primary focus-within:bg-background focus-within:ring-2 focus-within:ring-primary/20"
                 >
-                    <span class="tabular-nums">{{ compareIds.length }}/2</span>
-                    Clear
-                </Button>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger as-child>
-                            <span class="inline-flex">
-                                <Button
-                                    :variant="
-                                        compareIds.length === 2
-                                            ? 'default'
-                                            : 'outline'
-                                    "
-                                    size="default"
-                                    class="shrink-0 gap-2"
-                                    :disabled="compareIds.length !== 2"
-                                    @click="openCompareDialog"
-                                >
-                                    <Scale class="size-4" aria-hidden="true" />
-                                    Compare
-                                </Button>
-                            </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            {{
-                                compareIds.length > 2
-                                    ? 'Compare only works for 2 selections'
-                                    : compareIds.length === 2
-                                      ? 'Compare selected developers'
-                                      : 'Select 2 developers to compare'
-                            }}
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
-            <template v-if="canSelectDevelopers">
-                <Button
-                    variant="outline"
-                    size="default"
-                    class="shrink-0 gap-2"
-                    @click="
-                        allCurrentSelected
-                            ? clearSelection()
-                            : selectAllCurrent()
-                    "
-                >
-                    <Check
-                        v-if="allCurrentSelected"
-                        class="size-4"
+                    <Search
+                        class="pointer-events-none absolute left-3.5 h-4 w-4 shrink-0 text-muted-foreground"
                         aria-hidden="true"
                     />
-                    {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
-                </Button>
-                <Button
-                    :variant="compareIds.length > 0 ? 'default' : 'outline'"
-                    size="default"
-                    class="shrink-0 gap-2"
-                    :disabled="compareIds.length === 0"
-                    @click="openOfferForm"
+                    <Input
+                        v-model="searchQuery"
+                        type="search"
+                        placeholder="Search by name, email, or skills..."
+                        class="h-10 min-w-0 flex-1 border-0 bg-transparent pl-10 pr-4 shadow-none focus-visible:ring-0"
+                        autocomplete="off"
+                    />
+                </div>
+
+                <!-- Results count + actions group -->
+                <div
+                    class="flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:border-border sm:pl-4"
                 >
-                    <Send class="size-4" aria-hidden="true" />
-                    Send offer
-                    <span v-if="compareIds.length > 0">
-                        ({{ compareIds.length }})
-                    </span>
-                </Button>
-            </template>
-            <Sheet v-model:open="advancedOpen">
-                <SheetTrigger as-child>
-                    <Button
-                        variant="outline"
-                        size="default"
-                        class="relative h-9 shrink-0 gap-2 rounded-md border border-primary"
+                    <p
+                        v-if="paginationTotal !== null"
+                        class="order-first shrink-0 text-sm font-medium tabular-nums text-muted-foreground sm:order-none"
+                        aria-live="polite"
                     >
-                        <SlidersHorizontal class="h-4 w-4" aria-hidden="true" />
-                        <span class="hidden sm:inline">Advanced filters</span>
-                        <Badge
-                            v-if="activeFilterCount > 0"
-                            variant="secondary"
-                            class="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full p-0 text-xs"
+                        <span class="text-foreground">{{ paginationTotal }}</span>
+                        {{ paginationTotal === 1 ? 'developer' : 'developers' }}
+                    </p>
+
+                    <!-- Compare (always visible) -->
+                    <div class="flex items-center gap-1.5">
+                        <Button
+                            v-if="compareIds.length > 0"
+                            variant="ghost"
+                            size="sm"
+                            class="h-8 gap-1.5 px-2.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                            @click="clearCompare"
                         >
-                            {{ activeFilterCount }}
-                        </Badge>
-                    </Button>
-                </SheetTrigger>
+                            <span class="tabular-nums">{{ compareIds.length }}/2</span>
+                            Clear
+                        </Button>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger as-child>
+                                    <span class="inline-flex">
+                                        <Button
+                                            :variant="
+                                                compareIds.length === 2
+                                                    ? 'default'
+                                                    : 'outline'
+                                            "
+                                            size="sm"
+                                            class="h-8 shrink-0 gap-1.5"
+                                            :disabled="compareIds.length !== 2"
+                                            @click="openCompareDialog"
+                                        >
+                                            <Scale class="size-4" aria-hidden="true" />
+                                            Compare
+                                        </Button>
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    {{
+                                        compareIds.length > 2
+                                            ? 'Compare only works for 2 selections'
+                                            : compareIds.length === 2
+                                              ? 'Compare selected developers'
+                                              : 'Select 2 developers to compare'
+                                    }}
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+
+                    <template v-if="canSelectDevelopers">
+                        <div
+                            class="hidden h-4 w-px shrink-0 bg-border sm:block"
+                            aria-hidden="true"
+                        />
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            class="h-8 shrink-0 gap-1.5"
+                            @click="
+                                allCurrentSelected
+                                    ? clearSelection()
+                                    : selectAllCurrent()
+                            "
+                        >
+                            <Check
+                                v-if="allCurrentSelected"
+                                class="size-4"
+                                aria-hidden="true"
+                            />
+                            {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
+                        </Button>
+                        <Button
+                            :variant="compareIds.length > 0 ? 'default' : 'outline'"
+                            size="sm"
+                            class="h-8 shrink-0 gap-1.5"
+                            :disabled="compareIds.length === 0"
+                            @click="openOfferForm"
+                        >
+                            <Send class="size-4" aria-hidden="true" />
+                            Send offer
+                            <span v-if="compareIds.length > 0">
+                                ({{ compareIds.length }})
+                            </span>
+                        </Button>
+                    </template>
+
+                    <!-- Advanced filters -->
+                    <div
+                        class="hidden h-4 w-px shrink-0 bg-border sm:block"
+                        aria-hidden="true"
+                    />
+                    <Sheet v-model:open="advancedOpen">
+                        <SheetTrigger as-child>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                class="relative h-8 shrink-0 gap-1.5 border-primary/50 bg-primary/5 hover:bg-primary/10 hover:border-primary"
+                            >
+                                <SlidersHorizontal class="size-4" aria-hidden="true" />
+                                <span class="hidden sm:inline">Filters</span>
+                                <Badge
+                                    v-if="activeFilterCount > 0"
+                                    variant="secondary"
+                                    class="absolute -right-1 -top-1 flex size-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold"
+                                >
+                                    {{ activeFilterCount }}
+                                </Badge>
+                            </Button>
+                        </SheetTrigger>
                 <SheetContent
                     side="top"
                     class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
@@ -817,6 +837,8 @@ onMounted(() => {
                     </div>
                 </SheetContent>
             </Sheet>
+                </div>
+            </div>
         </div>
 
         <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
