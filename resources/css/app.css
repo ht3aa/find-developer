@@ -211,12 +211,18 @@
 .prose p:last-child {
     margin-bottom: 0;
 }
-.prose h1, .prose h2, .prose h3, .prose h4 {
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
     margin-top: 1.5em;
     margin-bottom: 0.5em;
     font-weight: 600;
 }
-.prose h1:first-child, .prose h2:first-child, .prose h3:first-child, .prose h4:first-child {
+.prose h1:first-child,
+.prose h2:first-child,
+.prose h3:first-child,
+.prose h4:first-child {
     margin-top: 0;
 }
 .prose blockquote {
@@ -226,7 +232,8 @@
     border-left: 4px solid var(--color-border);
     font-style: italic;
 }
-.prose pre, .prose code {
+.prose pre,
+.prose code {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }

@@ -85,7 +85,8 @@ async function fetchRandomVerse(): Promise<QuranVerse | null> {
             const res = await fetch(url);
             if (!res.ok) continue;
 
-            const data = (await res.json()) as QuranVerse & Record<string, unknown>;
+            const data = (await res.json()) as QuranVerse &
+                Record<string, unknown>;
             if (
                 data.surahNo != null &&
                 data.ayahNo != null &&
@@ -370,17 +371,19 @@ onUnmounted(() => {
                     <p class="text-xs font-medium text-muted-foreground">
                         <span dir="rtl">
                             {{ verse.surahNameArabicLong }}
-                            (سورة {{ toArabicNumerals(verse.surahNo) }}، آية {{ toArabicNumerals(verse.ayahNo) }})
+                            (سورة {{ toArabicNumerals(verse.surahNo) }}، آية
+                            {{ toArabicNumerals(verse.ayahNo) }})
                         </span>
-                        — ({{ verse.surahNameTranslation }}) Surah {{ verse.surahNo }}, Ayah {{ verse.ayahNo }}
+                        — ({{ verse.surahNameTranslation }}) Surah
+                        {{ verse.surahNo }}, Ayah {{ verse.ayahNo }}
                     </p>
                     <p
-                        class="mt-2 text-lg font-medium leading-relaxed text-foreground"
+                        class="mt-2 text-lg leading-relaxed font-medium text-foreground"
                         dir="rtl"
                     >
                         {{ verse.arabic1 }}
                     </p>
-                    <p class="mt-1 text-sm italic text-muted-foreground">
+                    <p class="mt-1 text-sm text-muted-foreground italic">
                         {{ verse.english }}
                     </p>
                 </div>

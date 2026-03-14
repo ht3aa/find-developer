@@ -92,7 +92,9 @@ function startConversation(user: ChatUserSummary) {
 
             <div class="space-y-4">
                 <div class="relative">
-                    <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Search
+                        class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
                     <Input
                         v-model="searchQuery"
                         placeholder="Search by name or email..."
@@ -106,18 +108,24 @@ function startConversation(user: ChatUserSummary) {
                         v-if="isSearching"
                         class="flex items-center justify-center py-8"
                     >
-                        <Loader2 class="size-5 animate-spin text-muted-foreground" />
+                        <Loader2
+                            class="size-5 animate-spin text-muted-foreground"
+                        />
                     </div>
 
                     <div
-                        v-else-if="searchQuery.length >= 2 && results.length === 0"
+                        v-else-if="
+                            searchQuery.length >= 2 && results.length === 0
+                        "
                         class="py-8 text-center text-sm text-muted-foreground"
                     >
                         No users found
                     </div>
 
                     <div
-                        v-else-if="searchQuery.length < 2 && results.length === 0"
+                        v-else-if="
+                            searchQuery.length < 2 && results.length === 0
+                        "
                         class="py-8 text-center text-sm text-muted-foreground"
                     >
                         Type at least 2 characters to search
@@ -131,13 +139,19 @@ function startConversation(user: ChatUserSummary) {
                         @click="startConversation(user)"
                     >
                         <Avatar class="size-9">
-                            <AvatarFallback class="bg-primary/10 text-xs font-medium text-primary">
+                            <AvatarFallback
+                                class="bg-primary/10 text-xs font-medium text-primary"
+                            >
                                 {{ getInitials(user.name) }}
                             </AvatarFallback>
                         </Avatar>
                         <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm font-medium">{{ user.name }}</p>
-                            <p class="truncate text-xs text-muted-foreground">{{ user.email }}</p>
+                            <p class="truncate text-sm font-medium">
+                                {{ user.name }}
+                            </p>
+                            <p class="truncate text-xs text-muted-foreground">
+                                {{ user.email }}
+                            </p>
                         </div>
                     </button>
                 </div>

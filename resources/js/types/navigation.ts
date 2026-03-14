@@ -20,7 +20,8 @@ export type AuthCanKey =
     | 'viewActivityLog'
     | 'viewRecommendationsDashboard'
     | 'viewDeveloperOffers'
-    | 'viewNewsletter';
+    | 'viewNewsletter'
+    | 'viewConversations';
 
 export type NavItem = {
     title: string;

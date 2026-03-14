@@ -67,6 +67,7 @@ class HandleInertiaRequests extends Middleware
             'viewRecommendationsDashboard' => $user->isSuperAdmin(),
             'viewDeveloperOffers' => $user->isSuperAdmin(),
             'viewNewsletter' => $user->isSuperAdmin(),
+            'viewConversations' => $user->isSuperAdmin(),
         ] : [];
 
         $appUrl = rtrim(config('app.url'), '/');

@@ -392,7 +392,15 @@ defineExpose({
                             :src="`https://www.youtube.com/embed/${youtubeVideoId}`"
                             title="YouTube preview"
                             class="size-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allow="
+                                accelerometer;
+                                autoplay;
+                                clipboard-write;
+                                encrypted-media;
+                                gyroscope;
+                                picture-in-picture;
+                                web-share;
+                            "
                             allowfullscreen
                         />
                     </div>
@@ -520,7 +528,6 @@ defineExpose({
                 />
                 <InputError :message="errors?.status" />
             </div>
-
         </div>
     </div>
 </template>

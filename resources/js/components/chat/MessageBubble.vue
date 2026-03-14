@@ -17,7 +17,11 @@ defineProps<{
         <Avatar class="mt-1 size-8 shrink-0">
             <AvatarFallback
                 class="text-xs font-medium"
-                :class="message.is_own ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'"
+                :class="
+                    message.is_own
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-muted-foreground'
+                "
             >
                 {{ getInitials(message.user.name) }}
             </AvatarFallback>
@@ -27,7 +31,10 @@ defineProps<{
             class="max-w-[75%] space-y-1"
             :class="message.is_own ? 'items-end' : 'items-start'"
         >
-            <div class="flex items-center gap-2" :class="message.is_own ? 'flex-row-reverse' : 'flex-row'">
+            <div
+                class="flex items-center gap-2"
+                :class="message.is_own ? 'flex-row-reverse' : 'flex-row'"
+            >
                 <span class="text-xs font-medium text-muted-foreground">
                     {{ message.is_own ? 'You' : message.user.name }}
                 </span>

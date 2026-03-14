@@ -181,7 +181,9 @@ function removeAttachment(index: number) {
                 <Paperclip class="size-4" />
             </Button>
 
-            <div class="min-w-0 flex-1 rounded-lg border bg-muted/30 focus-within:ring-2 focus-within:ring-ring">
+            <div
+                class="min-w-0 flex-1 rounded-lg border bg-muted/30 focus-within:ring-2 focus-within:ring-ring"
+            >
                 <EditorContent
                     :editor="editor"
                     class="prose prose-sm dark:prose-invert max-w-none [&_.tiptap]:outline-none [&_.tiptap_p.is-editor-empty:first-child::before]:pointer-events-none [&_.tiptap_p.is-editor-empty:first-child::before]:float-left [&_.tiptap_p.is-editor-empty:first-child::before]:h-0 [&_.tiptap_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.tiptap_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]"

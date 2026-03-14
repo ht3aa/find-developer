@@ -21,7 +21,9 @@ function formatDate(iso: string | null): string {
     return d.toLocaleDateString(undefined, { dateStyle: 'long' });
 }
 
-const blogCanonical = computed(() => blogRoutes.public.show.url(props.blog.slug));
+const blogCanonical = computed(() =>
+    blogRoutes.public.show.url(props.blog.slug),
+);
 
 const articleJsonLd = computed(() => {
     const b = props.blog;
