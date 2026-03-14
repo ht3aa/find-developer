@@ -21,7 +21,7 @@ class ChatController extends Controller
         $user = $request->user();
 
         $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email')])
+            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
             ->whereNotNull('last_message_id')
             ->orderByDesc('updated_at')
             ->get()
@@ -31,6 +31,7 @@ class ChatController extends Controller
                     'id' => $c->participants->first()->id,
                     'name' => $c->participants->first()->name,
                     'email' => $c->participants->first()->email,
+                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
                 ] : null,
                 'last_message' => $c->lastMessage ? [
                     'id' => $c->lastMessage->id,
@@ -38,6 +39,7 @@ class ChatController extends Controller
                     'user' => [
                         'id' => $c->lastMessage->user->id,
                         'name' => $c->lastMessage->user->name,
+                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
                     ],
                     'is_own' => $c->lastMessage->user_id === $user->id,
                     'created_at' => $c->lastMessage->created_at->toISOString(),
@@ -65,7 +67,7 @@ class ChatController extends Controller
             ->updateExistingPivot($user->id, ['last_read_at' => now()]);
 
         $messages = $conversation->messages()
-            ->with(['user:id,name,email', 'attachments'])
+            ->with(['user:id,name,email,user_type', 'attachments'])
             ->orderBy('created_at')
             ->get()
             ->map(fn (Message $m) => [
@@ -75,6 +77,7 @@ class ChatController extends Controller
                     'id' => $m->user->id,
                     'name' => $m->user->name,
                     'email' => $m->user->email,
+                    'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
                 ],
                 'body' => $m->body,
                 'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
@@ -90,11 +93,11 @@ class ChatController extends Controller
 
         $participant = $conversation->participants()
             ->where('user_id', '!=', $user->id)
-            ->select('users.id', 'users.name', 'users.email')
+            ->select('users.id', 'users.name', 'users.email', 'users.user_type')
             ->first();
 
         $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email')])
+            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
             ->whereNotNull('last_message_id')
             ->orderByDesc('updated_at')
             ->get()
@@ -104,6 +107,7 @@ class ChatController extends Controller
                     'id' => $c->participants->first()->id,
                     'name' => $c->participants->first()->name,
                     'email' => $c->participants->first()->email,
+                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
                 ] : null,
                 'last_message' => $c->lastMessage ? [
                     'id' => $c->lastMessage->id,
@@ -111,6 +115,7 @@ class ChatController extends Controller
                     'user' => [
                         'id' => $c->lastMessage->user->id,
                         'name' => $c->lastMessage->user->name,
+                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
                     ],
                     'is_own' => $c->lastMessage->user_id === $user->id,
                     'created_at' => $c->lastMessage->created_at->toISOString(),
@@ -127,6 +132,7 @@ class ChatController extends Controller
                 'id' => $participant->id,
                 'name' => $participant->name,
                 'email' => $participant->email,
+                'user_type_label' => $participant->user_type?->getLabel() ?? '—',
             ] : null,
             'sharingLinks' => $this->getSharingLinks($user),
         ]);

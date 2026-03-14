@@ -17,7 +17,7 @@ class MessageController extends Controller
         $searchTerm = is_string($search) ? trim($search) : '';
 
         $query = Message::query()
-            ->with(['user:id,name,email', 'conversation.participants:id,name'])
+            ->with(['user:id,name,email,user_type', 'conversation.participants:id,name'])
             ->withCount('attachments')
             ->orderByDesc('created_at');
 
@@ -36,6 +36,7 @@ class MessageController extends Controller
                 'id' => $m->user->id,
                 'name' => $m->user->name,
                 'email' => $m->user->email,
+                'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
             ] : null,
             'body' => $m->body,
             'body_preview' => $m->body ? \Illuminate\Support\Str::limit(strip_tags($m->body), 100) : null,
@@ -51,7 +52,7 @@ class MessageController extends Controller
 
     public function show(Message $message): Response
     {
-        $message->load(['user:id,name,email', 'conversation.participants:id,name,email', 'attachments']);
+        $message->load(['user:id,name,email,user_type', 'conversation.participants:id,name,email', 'attachments']);
 
         return Inertia::render('Messages/DashboardShow', [
             'message' => [
@@ -61,6 +62,7 @@ class MessageController extends Controller
                     'id' => $message->user->id,
                     'name' => $message->user->name,
                     'email' => $message->user->email,
+                    'user_type_label' => $message->user->user_type?->getLabel() ?? '—',
                 ] : null,
                 'body' => $message->body,
                 'conversation_participants' => $message->conversation?->participants->map(fn ($p) => [

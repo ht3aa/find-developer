@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { formatMessageTime, getInitials } from '@/composables/useChat';
 import type { ChatMessage } from '@/types';
 
@@ -32,12 +33,19 @@ defineProps<{
             :class="message.is_own ? 'items-end' : 'items-start'"
         >
             <div
-                class="flex items-center gap-2"
+                class="flex flex-wrap items-center gap-2"
                 :class="message.is_own ? 'flex-row-reverse' : 'flex-row'"
             >
                 <span class="text-xs font-medium text-muted-foreground">
                     {{ message.is_own ? 'You' : message.user.name }}
                 </span>
+                <Badge
+                    v-if="!message.is_own && message.user.user_type_label"
+                    variant="secondary"
+                    class="text-[10px] font-normal"
+                >
+                    {{ message.user.user_type_label }}
+                </Badge>
                 <span class="text-[10px] text-muted-foreground/70">
                     {{ formatMessageTime(message.created_at) }}
                 </span>

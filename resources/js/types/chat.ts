@@ -2,6 +2,7 @@ export interface ChatUserSummary {
     id: number;
     name: string;
     email: string;
+    user_type_label?: string;
 }
 
 export interface MessageAttachment {
@@ -25,7 +26,7 @@ export interface ChatMessage {
 export interface ChatLastMessage {
     id: number;
     body: string | null;
-    user: { id: number; name: string };
+    user: { id: number; name: string; user_type_label?: string };
     is_own: boolean;
     created_at: string;
 }

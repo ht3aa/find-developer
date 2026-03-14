@@ -19,7 +19,12 @@ import type { BreadcrumbItem } from '@/types';
 type MessageDetail = {
     id: number;
     conversation_id: number;
-    user: { id: number; name: string; email: string } | null;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        user_type_label?: string;
+    } | null;
     body: string | null;
     conversation_participants: { id: number; name: string; email: string }[];
     attachments: {
@@ -114,6 +119,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <p v-if="message.user">
                             <span class="text-muted-foreground">Email:</span>
                             {{ message.user.email }}
+                        </p>
+                        <p v-if="message.user?.user_type_label">
+                            <span class="text-muted-foreground">Type:</span>
+                            <Badge variant="secondary" class="ml-1">
+                                {{ message.user.user_type_label }}
+                            </Badge>
                         </p>
                         <p v-if="!message.user" class="text-muted-foreground">
                             —
