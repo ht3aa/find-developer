@@ -25,6 +25,26 @@ class StartConversationRequest extends FormRequest
             'body' => ['nullable', 'string', 'max:10000'],
             'attachments' => ['nullable', 'array', 'max:5'],
             'attachments.*' => ['file', 'max:10240', 'mimes:jpg,jpeg,png,gif,webp,pdf,doc,docx,txt,zip'],
+            'reply_to_id' => [
+                'nullable',
+                'integer',
+                'exists:messages,id',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if (! $value) {
+                        return;
+                    }
+                    $userId = $this->user()->id;
+                    $recipientId = (int) $this->input('recipient_id');
+                    $message = \App\Models\Message::with('conversation.participants')->find($value);
+                    if (! $message) {
+                        return;
+                    }
+                    $participantIds = $message->conversation->participants->pluck('id')->all();
+                    if (! in_array($userId, $participantIds) || ! in_array($recipientId, $participantIds)) {
+                        $fail('The reply must be to a message in a conversation with this user.');
+                    }
+                },
+            ],
         ];
     }
 

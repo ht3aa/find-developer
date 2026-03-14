@@ -39,7 +39,7 @@ class ChatController extends Controller
 
         $limit = 15;
         $messagesQuery = $conversation->messages()
-            ->with(['user:id,name,email,user_type', 'attachments'])
+            ->with(['user:id,name,email,user_type', 'attachments', 'parentMessage.user:id,name'])
             ->orderByDesc('created_at')
             ->limit($limit + 1);
 
@@ -48,26 +48,7 @@ class ChatController extends Controller
         $messagesCollection = $hasMore ? $messagesCollection->take($limit) : $messagesCollection;
 
         $messages = [
-            'data' => $messagesCollection->map(fn (Message $m) => [
-                'id' => $m->id,
-                'conversation_id' => $m->conversation_id,
-                'user' => [
-                    'id' => $m->user->id,
-                    'name' => $m->user->name,
-                    'email' => $m->user->email,
-                    'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
-                ],
-                'body' => $m->body,
-                'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
-                    'id' => $a->id,
-                    'file_name' => $a->file_name,
-                    'file_url' => $a->file_url,
-                    'file_type' => $a->file_type,
-                    'file_size' => $a->file_size,
-                ]),
-                'is_own' => $m->user_id === $user->id,
-                'created_at' => $m->created_at->toISOString(),
-            ])->values()->all(),
+            'data' => $messagesCollection->map(fn (Message $m) => $this->messageToArray($m, $user->id))->values()->all(),
             'has_more' => $hasMore,
         ];
 
@@ -102,6 +83,7 @@ class ChatController extends Controller
             $message = $conversation->messages()->create([
                 'user_id' => $user->id,
                 'body' => $request->validated('body'),
+                'parent_message_id' => $request->validated('reply_to_id'),
             ]);
 
             $this->storeAttachments($message, $request);
@@ -134,6 +116,7 @@ class ChatController extends Controller
         $message = $conversation->messages()->create([
             'user_id' => $user->id,
             'body' => $request->validated('body'),
+            'parent_message_id' => $request->validated('reply_to_id'),
         ]);
 
         $this->storeAttachments($message, $request);
@@ -188,6 +171,44 @@ class ChatController extends Controller
             'profileUrl' => $developer?->slug ? route('developers.show', $developer->slug) : null,
             'cvUrl' => $developer?->cv_path_url,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function messageToArray(Message $m, int $currentUserId): array
+    {
+        $arr = [
+            'id' => $m->id,
+            'conversation_id' => $m->conversation_id,
+            'user' => [
+                'id' => $m->user->id,
+                'name' => $m->user->name,
+                'email' => $m->user->email,
+                'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
+            ],
+            'body' => $m->body,
+            'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
+                'id' => $a->id,
+                'file_name' => $a->file_name,
+                'file_url' => $a->file_url,
+                'file_type' => $a->file_type,
+                'file_size' => $a->file_size,
+            ])->values()->all(),
+            'is_own' => $m->user_id === $currentUserId,
+            'created_at' => $m->created_at->toISOString(),
+        ];
+
+        if ($m->relationLoaded('parentMessage') && $m->parentMessage) {
+            $p = $m->parentMessage;
+            $arr['reply_to'] = [
+                'id' => $p->id,
+                'body' => $p->body,
+                'user' => ['name' => $p->user->name ?? '—'],
+            ];
+        }
+
+        return $arr;
     }
 
     private function storeAttachments(Message $message, Request $request): void

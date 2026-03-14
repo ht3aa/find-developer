@@ -29,6 +29,7 @@ const localConversations = ref<ChatConversation[]>([]);
 const loadingOlder = ref(false);
 const localMessages = ref<ChatMessage[]>([]);
 const hasMoreOlder = ref(false);
+const replyToMessage = ref<ChatMessage | null>(null);
 
 function syncMessagesFromProps() {
     localMessages.value = [...(props.messages?.data ?? [])];
@@ -145,14 +146,22 @@ function handleScroll() {
     }
 }
 
-function handleSend(payload: { body: string; attachments: File[] }) {
+function handleSend(payload: {
+    body: string;
+    attachments: File[];
+    reply_to_id?: number;
+}) {
     if (!props.selectedConversationId) return;
 
     isSending.value = true;
+    replyToMessage.value = null;
 
     const formData = new FormData();
     if (payload.body) {
         formData.append('body', payload.body);
+    }
+    if (payload.reply_to_id) {
+        formData.append('reply_to_id', String(payload.reply_to_id));
     }
     payload.attachments.forEach((file, i) => {
         formData.append(`attachments[${i}]`, file);
@@ -354,6 +363,7 @@ const unreadTotal = computed(() =>
                                 v-for="message in messagesList"
                                 :key="message.id"
                                 :message="message"
+                                @reply="replyToMessage = $event"
                             />
                         </div>
                     </div>
@@ -363,7 +373,9 @@ const unreadTotal = computed(() =>
                         :disabled="isSending"
                         :profile-url="sharingLinks?.profileUrl ?? null"
                         :cv-url="sharingLinks?.cvUrl ?? null"
+                        :reply-to="replyToMessage"
                         @send="handleSend"
+                        @clear-reply="replyToMessage = null"
                     />
                 </template>
 

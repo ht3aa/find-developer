@@ -13,6 +13,12 @@ export interface MessageAttachment {
     file_size: number;
 }
 
+export interface MessageReplyTo {
+    id: number;
+    body: string | null;
+    user: { name: string };
+}
+
 export interface ChatMessage {
     id: number;
     conversation_id: number;
@@ -21,6 +27,7 @@ export interface ChatMessage {
     attachments: MessageAttachment[];
     is_own: boolean;
     created_at: string;
+    reply_to?: MessageReplyTo;
 }
 
 export interface ChatLastMessage {

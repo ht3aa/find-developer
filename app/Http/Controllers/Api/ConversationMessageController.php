@@ -27,7 +27,7 @@ class ConversationMessageController extends Controller
 
         $limit = 15;
         $messages = $conversation->messages()
-            ->with(['user:id,name,email,user_type', 'attachments'])
+            ->with(['user:id,name,email,user_type', 'attachments', 'parentMessage.user:id,name'])
             ->where('id', '<', $beforeId)
             ->orderByDesc('created_at')
             ->limit($limit + 1)
@@ -39,26 +39,38 @@ class ConversationMessageController extends Controller
         }
 
         $user = $request->user();
-        $data = $messages->map(fn (Message $m) => [
-            'id' => $m->id,
-            'conversation_id' => $m->conversation_id,
-            'user' => [
-                'id' => $m->user->id,
-                'name' => $m->user->name,
-                'email' => $m->user->email,
-                'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
-            ],
-            'body' => $m->body,
-            'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
-                'id' => $a->id,
-                'file_name' => $a->file_name,
-                'file_url' => $a->file_url,
-                'file_type' => $a->file_type,
-                'file_size' => $a->file_size,
-            ]),
-            'is_own' => $m->user_id === $user->id,
-            'created_at' => $m->created_at->toISOString(),
-        ])->values()->all();
+        $data = $messages->map(function (Message $m) use ($user) {
+            $arr = [
+                'id' => $m->id,
+                'conversation_id' => $m->conversation_id,
+                'user' => [
+                    'id' => $m->user->id,
+                    'name' => $m->user->name,
+                    'email' => $m->user->email,
+                    'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
+                ],
+                'body' => $m->body,
+                'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
+                    'id' => $a->id,
+                    'file_name' => $a->file_name,
+                    'file_url' => $a->file_url,
+                    'file_type' => $a->file_type,
+                    'file_size' => $a->file_size,
+                ])->values()->all(),
+                'is_own' => $m->user_id === $user->id,
+                'created_at' => $m->created_at->toISOString(),
+            ];
+            if ($m->relationLoaded('parentMessage') && $m->parentMessage) {
+                $p = $m->parentMessage;
+                $arr['reply_to'] = [
+                    'id' => $p->id,
+                    'body' => $p->body,
+                    'user' => ['name' => $p->user->name ?? '—'],
+                ];
+            }
+
+            return $arr;
+        })->values()->all();
 
         return response()->json([
             'data' => $data,

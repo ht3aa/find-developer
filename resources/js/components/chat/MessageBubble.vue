@@ -3,10 +3,15 @@ import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { formatMessageTime, getInitials } from '@/composables/useChat';
+import { Reply } from 'lucide-vue-next';
 import type { ChatMessage } from '@/types';
 
-defineProps<{
+const props = defineProps<{
     message: ChatMessage;
+}>();
+
+const emit = defineEmits<{
+    reply: [message: ChatMessage];
 }>();
 </script>
 
@@ -52,6 +57,17 @@ defineProps<{
             </div>
 
             <div
+                v-if="message.reply_to"
+                class="mb-2 border-l-2 border-muted-foreground/30 pl-3 text-xs text-muted-foreground [&_a]:text-primary [&_a]:underline"
+            >
+                <span class="font-medium">{{ message.reply_to.user.name }}</span>
+                <div
+                    v-if="message.reply_to.body"
+                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1"
+                    v-html="message.reply_to.body"
+                />
+            </div>
+            <div
                 v-if="message.body"
                 class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2"
                 :class="
@@ -73,6 +89,15 @@ defineProps<{
                     :attachment="attachment"
                 />
             </div>
+
+            <button
+                type="button"
+                class="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                @click="emit('reply', message)"
+            >
+                <Reply class="size-3" />
+                Reply
+            </button>
         </div>
     </div>
 </template>
