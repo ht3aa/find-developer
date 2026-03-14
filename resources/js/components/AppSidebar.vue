@@ -11,6 +11,7 @@ import {
     Home,
     LayoutGrid,
     Mail,
+    MessageCircle,
     Send,
     Shield,
     ThumbsUp,
@@ -65,6 +66,11 @@ const allMainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
         can: 'viewDeveloperProfile',
+    },
+    {
+        title: 'Messages',
+        href: '/messages',
+        icon: MessageCircle,
     },
     {
         title: 'Developer Profile',

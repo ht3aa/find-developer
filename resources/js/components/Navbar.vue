@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { Menu, Moon, Sun } from 'lucide-vue-next';
+import { Menu, MessageCircle, Moon, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +27,9 @@ const auth = computed(
     () => page.props.auth as { user?: { name: string } | null },
 );
 const canRegister = computed(() => (page.props.canRegister as boolean) ?? true);
+const unreadMessagesCount = computed(
+    () => (page.props.unreadMessagesCount as number) ?? 0,
+);
 const authCan = computed(
     () =>
         (page.props.auth as { can?: { viewDeveloperProfile: boolean } })?.can ??
@@ -101,6 +104,17 @@ const toggleTheme = () => {
                     <component :is="themeIcon" class="size-5" />
                 </Button>
                 <template v-if="auth.user">
+                    <Button variant="ghost" size="icon" as-child class="relative">
+                        <Link href="/messages">
+                            <MessageCircle class="size-5" />
+                            <span
+                                v-if="unreadMessagesCount > 0"
+                                class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
+                            >
+                                {{ unreadMessagesCount > 9 ? '9+' : unreadMessagesCount }}
+                            </span>
+                        </Link>
+                    </Button>
                     <Button
                         v-if="authCan.viewDeveloperProfile"
                         variant="default"
@@ -172,6 +186,18 @@ const toggleTheme = () => {
                             <component :is="themeIcon" class="size-5" />
                         </Button>
                         <template v-if="auth.user">
+                            <Button variant="outline" as-child class="w-full">
+                                <Link href="/messages" class="relative inline-flex items-center gap-2">
+                                    <MessageCircle class="size-4" />
+                                    Messages
+                                    <span
+                                        v-if="unreadMessagesCount > 0"
+                                        class="ml-auto flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
+                                    >
+                                        {{ unreadMessagesCount > 9 ? '9+' : unreadMessagesCount }}
+                                    </span>
+                                </Link>
+                            </Button>
                             <Button
                                 v-if="authCan.viewDeveloperProfile"
                                 variant="default"

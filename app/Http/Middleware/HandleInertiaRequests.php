@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Badge;
+use App\Models\Conversation;
 use App\Models\Developer;
 use App\Models\DeveloperBlog;
 use App\Models\DeveloperCompany;
@@ -86,11 +87,20 @@ class HandleInertiaRequests extends Middleware
                 'can' => $can,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'unreadMessagesCount' => fn () => $user ? $this->getUnreadMessagesCount($user) : 0,
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
                 'info' => fn () => $request->session()->get('info'),
             ],
         ];
+    }
+
+    private function getUnreadMessagesCount(User $user): int
+    {
+        return $user->conversations()
+            ->whereNotNull('last_message_id')
+            ->get()
+            ->sum(fn (Conversation $c) => $c->unreadCountFor($user->id));
     }
 }
