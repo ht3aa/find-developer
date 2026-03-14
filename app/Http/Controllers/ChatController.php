@@ -20,38 +20,9 @@ class ChatController extends Controller
     {
         $user = $request->user();
 
-        $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
-            ->whereNotNull('last_message_id')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(fn (Conversation $c) => [
-                'id' => $c->id,
-                'participant' => $c->participants->first() ? [
-                    'id' => $c->participants->first()->id,
-                    'name' => $c->participants->first()->name,
-                    'email' => $c->participants->first()->email,
-                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
-                ] : null,
-                'last_message' => $c->lastMessage ? [
-                    'id' => $c->lastMessage->id,
-                    'body' => $c->lastMessage->body,
-                    'user' => [
-                        'id' => $c->lastMessage->user->id,
-                        'name' => $c->lastMessage->user->name,
-                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
-                    ],
-                    'is_own' => $c->lastMessage->user_id === $user->id,
-                    'created_at' => $c->lastMessage->created_at->toISOString(),
-                ] : null,
-                'unread_count' => $c->unreadCountFor($user->id),
-                'updated_at' => $c->updated_at->toISOString(),
-            ]);
-
         return Inertia::render('Messages/Index', [
-            'conversations' => $conversations,
             'selectedConversationId' => null,
-            'messages' => [],
+            'messages' => ['data' => [], 'has_more' => false],
             'selectedParticipant' => null,
             'sharingLinks' => $this->getSharingLinks($user),
         ]);
@@ -66,11 +37,18 @@ class ChatController extends Controller
         $conversation->participants()
             ->updateExistingPivot($user->id, ['last_read_at' => now()]);
 
-        $messages = $conversation->messages()
+        $limit = 15;
+        $messagesQuery = $conversation->messages()
             ->with(['user:id,name,email,user_type', 'attachments'])
-            ->orderBy('created_at')
-            ->get()
-            ->map(fn (Message $m) => [
+            ->orderByDesc('created_at')
+            ->limit($limit + 1);
+
+        $messagesCollection = $messagesQuery->get();
+        $hasMore = $messagesCollection->count() > $limit;
+        $messagesCollection = $hasMore ? $messagesCollection->take($limit) : $messagesCollection;
+
+        $messages = [
+            'data' => $messagesCollection->map(fn (Message $m) => [
                 'id' => $m->id,
                 'conversation_id' => $m->conversation_id,
                 'user' => [
@@ -89,43 +67,16 @@ class ChatController extends Controller
                 ]),
                 'is_own' => $m->user_id === $user->id,
                 'created_at' => $m->created_at->toISOString(),
-            ]);
+            ])->values()->all(),
+            'has_more' => $hasMore,
+        ];
 
         $participant = $conversation->participants()
             ->where('user_id', '!=', $user->id)
             ->select('users.id', 'users.name', 'users.email', 'users.user_type')
             ->first();
 
-        $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
-            ->whereNotNull('last_message_id')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(fn (Conversation $c) => [
-                'id' => $c->id,
-                'participant' => $c->participants->first() ? [
-                    'id' => $c->participants->first()->id,
-                    'name' => $c->participants->first()->name,
-                    'email' => $c->participants->first()->email,
-                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
-                ] : null,
-                'last_message' => $c->lastMessage ? [
-                    'id' => $c->lastMessage->id,
-                    'body' => $c->lastMessage->body,
-                    'user' => [
-                        'id' => $c->lastMessage->user->id,
-                        'name' => $c->lastMessage->user->name,
-                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
-                    ],
-                    'is_own' => $c->lastMessage->user_id === $user->id,
-                    'created_at' => $c->lastMessage->created_at->toISOString(),
-                ] : null,
-                'unread_count' => $c->unreadCountFor($user->id),
-                'updated_at' => $c->updated_at->toISOString(),
-            ]);
-
         return Inertia::render('Messages/Index', [
-            'conversations' => $conversations,
             'selectedConversationId' => $conversation->id,
             'messages' => $messages,
             'selectedParticipant' => $participant ? [

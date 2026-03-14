@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ArrowLeft, MessageCircle } from 'lucide-vue-next';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import ConversationList from '@/components/chat/ConversationList.vue';
 import MessageBubble from '@/components/chat/MessageBubble.vue';
 import MessageComposer from '@/components/chat/MessageComposer.vue';
@@ -12,22 +12,67 @@ import { Button } from '@/components/ui/button';
 import { getInitials } from '@/composables/useChat';
 import type { ChatConversation, ChatMessage, ChatUserSummary } from '@/types';
 
+interface MessagesPayload {
+    data: ChatMessage[];
+    has_more: boolean;
+}
+
 const props = defineProps<{
-    conversations: ChatConversation[];
     selectedConversationId: number | null;
-    messages: ChatMessage[];
+    messages: MessagesPayload;
     selectedParticipant: ChatUserSummary | null;
     sharingLinks?: { profileUrl: string | null; cvUrl: string | null };
 }>();
 
-const page = usePage();
 const messagesContainer = ref<HTMLElement | null>(null);
+const localConversations = ref<ChatConversation[]>([]);
+const loadingOlder = ref(false);
+const localMessages = ref<ChatMessage[]>([]);
+const hasMoreOlder = ref(false);
+
+function syncMessagesFromProps() {
+    localMessages.value = [...(props.messages?.data ?? [])];
+    hasMoreOlder.value = props.messages?.has_more ?? false;
+}
+
+watch(
+    () => [props.selectedConversationId, props.messages],
+    () => {
+        if (props.selectedConversationId) {
+            syncMessagesFromProps();
+        } else {
+            localMessages.value = [];
+            hasMoreOlder.value = false;
+        }
+    },
+    { immediate: true },
+);
+
+const messagesList = computed(() =>
+    [...localMessages.value].sort(
+        (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    ),
+);
 const isSending = ref(false);
 const mobileShowChat = ref(!!props.selectedConversationId);
 
 const activeConversation = computed(() =>
-    props.conversations.find((c) => c.id === props.selectedConversationId),
+    localConversations.value.find((c) => c.id === props.selectedConversationId),
 );
+
+async function fetchConversations() {
+    try {
+        const res = await fetch('/api/conversations', {
+            credentials: 'same-origin',
+        });
+        if (!res.ok) return;
+        const json = (await res.json()) as { data: ChatConversation[] };
+        localConversations.value = json.data ?? [];
+    } catch {
+        // ignore
+    }
+}
 
 function selectConversation(conversationId: number) {
     mobileShowChat.value = true;
@@ -47,6 +92,57 @@ function scrollToBottom() {
             behavior: 'instant',
         });
     });
+}
+
+async function loadOlderMessages() {
+    if (
+        !props.selectedConversationId ||
+        loadingOlder.value ||
+        !hasMoreOlder.value
+    ) {
+        return;
+    }
+    const oldestId = localMessages.value.reduce(
+        (min, m) => (m.id < min ? m.id : min),
+        Number.POSITIVE_INFINITY,
+    );
+    if (oldestId === Number.POSITIVE_INFINITY) {
+        return;
+    }
+
+    const container = messagesContainer.value;
+    const oldScrollHeight = container?.scrollHeight ?? 0;
+    const oldScrollTop = container?.scrollTop ?? 0;
+
+    loadingOlder.value = true;
+    try {
+        const url = `/api/conversations/${props.selectedConversationId}/messages?before_id=${oldestId}`;
+        const res = await fetch(url, { credentials: 'same-origin' });
+        if (!res.ok) {
+            throw new Error('Failed to load messages');
+        }
+        const json = (await res.json()) as { data: ChatMessage[]; has_more: boolean };
+        localMessages.value = [...(json.data ?? []), ...localMessages.value];
+        hasMoreOlder.value = json.has_more ?? false;
+
+        nextTick(() => {
+            if (container) {
+                const newScrollHeight = container.scrollHeight;
+                container.scrollTop =
+                    oldScrollTop + (newScrollHeight - oldScrollHeight);
+            }
+        });
+    } finally {
+        loadingOlder.value = false;
+    }
+}
+
+function handleScroll() {
+    const container = messagesContainer.value;
+    if (!container || !hasMoreOlder.value || loadingOlder.value) return;
+    if (container.scrollTop < 150) {
+        loadOlderMessages();
+    }
 }
 
 function handleSend(payload: { body: string; attachments: File[] }) {
@@ -72,12 +168,35 @@ function handleSend(payload: { body: string; attachments: File[] }) {
     });
 }
 
+function setupScrollListener() {
+    const container = messagesContainer.value;
+    if (container && props.selectedConversationId) {
+        container.removeEventListener('scroll', handleScroll);
+        container.addEventListener('scroll', handleScroll, { passive: true });
+    }
+}
+
 onMounted(() => {
+    fetchConversations();
     scrollToBottom();
+    nextTick(setupScrollListener);
 
     if (props.selectedConversationId) {
         startPolling();
     }
+});
+
+watch(
+    () => props.selectedConversationId,
+    (id) => {
+        if (id) {
+            nextTick(setupScrollListener);
+        }
+    },
+);
+
+onBeforeUnmount(() => {
+    messagesContainer.value?.removeEventListener('scroll', handleScroll);
 });
 
 watch(
@@ -98,19 +217,15 @@ function startPolling() {
     stopPolling();
     pollInterval = setInterval(() => {
         if (props.selectedConversationId) {
-            router.reload({
-                only: ['conversations', 'messages'],
-                preserveScroll: true,
-                onSuccess: () => {
-                    const container = messagesContainer.value;
-                    if (!container) return;
-                    const { scrollTop, scrollHeight, clientHeight } = container;
-                    const isNearBottom =
-                        scrollHeight - scrollTop - clientHeight < 100;
-                    if (isNearBottom) {
-                        scrollToBottom();
-                    }
-                },
+            fetchConversations().then(() => {
+                const container = messagesContainer.value;
+                if (!container) return;
+                const { scrollTop, scrollHeight, clientHeight } = container;
+                const isNearBottom =
+                    scrollHeight - scrollTop - clientHeight < 100;
+                if (isNearBottom) {
+                    scrollToBottom();
+                }
             });
         }
     }, 5000);
@@ -124,7 +239,7 @@ function stopPolling() {
 }
 
 const unreadTotal = computed(() =>
-    props.conversations.reduce((sum, c) => sum + c.unread_count, 0),
+    localConversations.value.reduce((sum, c) => sum + c.unread_count, 0),
 );
 </script>
 
@@ -151,7 +266,7 @@ const unreadTotal = computed(() =>
                     <NewConversationDialog />
                 </div>
                 <ConversationList
-                    :conversations="conversations"
+                    :conversations="localConversations"
                     :active-conversation-id="selectedConversationId"
                     @select="selectConversation"
                 />
@@ -205,21 +320,42 @@ const unreadTotal = computed(() =>
                     <!-- Messages -->
                     <div
                         ref="messagesContainer"
-                        class="flex-1 space-y-4 overflow-y-auto px-4 py-4"
+                        class="flex-1 overflow-y-auto px-4 py-4"
                     >
-                        <div
-                            v-if="messages.length === 0"
-                            class="flex h-full items-center justify-center"
-                        >
-                            <p class="text-sm text-muted-foreground">
-                                No messages yet. Start the conversation!
-                            </p>
+                        <div class="flex flex-col space-y-4">
+                            <div
+                                v-if="hasMoreOlder"
+                                class="flex min-h-[48px] flex-col items-center justify-center py-3"
+                            >
+                                <button
+                                    v-if="!loadingOlder"
+                                    type="button"
+                                    class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                    @click="loadOlderMessages"
+                                >
+                                    Load older messages
+                                </button>
+                                <span
+                                    v-else
+                                    class="text-sm text-muted-foreground"
+                                >
+                                    Loading older messages...
+                                </span>
+                            </div>
+                            <div
+                                v-if="messagesList.length === 0"
+                                class="flex h-full min-h-[200px] items-center justify-center"
+                            >
+                                <p class="text-sm text-muted-foreground">
+                                    No messages yet. Start the conversation!
+                                </p>
+                            </div>
+                            <MessageBubble
+                                v-for="message in messagesList"
+                                :key="message.id"
+                                :message="message"
+                            />
                         </div>
-                        <MessageBubble
-                            v-for="message in messages"
-                            :key="message.id"
-                            :message="message"
-                        />
                     </div>
 
                     <!-- Composer -->
