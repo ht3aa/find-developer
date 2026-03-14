@@ -1,22 +1,33 @@
 <script setup lang="ts">
+import Link from '@tiptap/extension-link';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
 import { EditorContent, useEditor } from '@tiptap/vue-3';
 import {
     Bold,
     Code,
+    FileText,
     Italic,
     List,
     ListOrdered,
     Paperclip,
     SendHorizontal,
+    UserCircle,
     X,
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const props = defineProps<{
     disabled?: boolean;
+    profileUrl?: string | null;
+    cvUrl?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -30,6 +41,7 @@ const editor = useEditor({
     content: '',
     extensions: [
         StarterKit,
+        Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-primary underline' } }),
         Placeholder.configure({ placeholder: 'Type a message...' }),
     ],
     editorProps: {
@@ -77,6 +89,15 @@ function onFileSelect(event: Event) {
 
 function removeAttachment(index: number) {
     attachments.value.splice(index, 1);
+}
+
+function insertLink(url: string, label: string) {
+    if (!editor.value) return;
+    editor.value
+        .chain()
+        .focus()
+        .insertContent(`<a href="${url}" target="_blank">${label}</a>`)
+        .run();
 }
 </script>
 
@@ -159,6 +180,42 @@ function removeAttachment(index: number) {
             >
                 <Code class="size-3.5" />
             </Button>
+
+            <template v-if="profileUrl || cvUrl">
+                <div class="mx-1 h-4 w-px bg-border" />
+                <TooltipProvider>
+                    <Tooltip v-if="profileUrl">
+                        <TooltipTrigger as-child>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7"
+                                :disabled="disabled"
+                                @click="insertLink(profileUrl!, 'My Profile')"
+                            >
+                                <UserCircle class="size-3.5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Share my profile link</TooltipContent>
+                    </Tooltip>
+                    <Tooltip v-if="cvUrl">
+                        <TooltipTrigger as-child>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7"
+                                :disabled="disabled"
+                                @click="insertLink(cvUrl!, 'My CV')"
+                            >
+                                <FileText class="size-3.5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Share my CV link</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </template>
         </div>
 
         <div class="flex items-end gap-2 px-3 py-2">

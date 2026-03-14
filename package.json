@@ -34,6 +34,7 @@
         "@heroicons/vue": "^2.2.0",
         "@inertiajs/vue3": "^2.3.7",
         "@tanstack/vue-table": "^8.21.3",
+        "@tiptap/extension-link": "^3.20.1",
         "@tiptap/extension-placeholder": "^3.20.0",
         "@tiptap/pm": "^3.20.0",
         "@tiptap/starter-kit": "^3.20.0",

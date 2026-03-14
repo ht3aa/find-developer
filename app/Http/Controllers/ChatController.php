@@ -51,6 +51,7 @@ class ChatController extends Controller
             'selectedConversationId' => null,
             'messages' => [],
             'selectedParticipant' => null,
+            'sharingLinks' => $this->getSharingLinks($user),
         ]);
     }
 
@@ -127,6 +128,7 @@ class ChatController extends Controller
                 'name' => $participant->name,
                 'email' => $participant->email,
             ] : null,
+            'sharingLinks' => $this->getSharingLinks($user),
         ]);
     }
 
@@ -216,6 +218,19 @@ class ChatController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    /**
+     * @return array{profileUrl: string|null, cvUrl: string|null}
+     */
+    private function getSharingLinks(User $user): array
+    {
+        $developer = $user->developer;
+
+        return [
+            'profileUrl' => $developer?->slug ? route('developers.show', $developer->slug) : null,
+            'cvUrl' => $developer?->cv_path_url,
+        ];
     }
 
     private function storeAttachments(Message $message, Request $request): void
