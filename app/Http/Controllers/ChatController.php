@@ -20,38 +20,9 @@ class ChatController extends Controller
     {
         $user = $request->user();
 
-        $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
-            ->whereNotNull('last_message_id')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(fn (Conversation $c) => [
-                'id' => $c->id,
-                'participant' => $c->participants->first() ? [
-                    'id' => $c->participants->first()->id,
-                    'name' => $c->participants->first()->name,
-                    'email' => $c->participants->first()->email,
-                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
-                ] : null,
-                'last_message' => $c->lastMessage ? [
-                    'id' => $c->lastMessage->id,
-                    'body' => $c->lastMessage->body,
-                    'user' => [
-                        'id' => $c->lastMessage->user->id,
-                        'name' => $c->lastMessage->user->name,
-                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
-                    ],
-                    'is_own' => $c->lastMessage->user_id === $user->id,
-                    'created_at' => $c->lastMessage->created_at->toISOString(),
-                ] : null,
-                'unread_count' => $c->unreadCountFor($user->id),
-                'updated_at' => $c->updated_at->toISOString(),
-            ]);
-
         return Inertia::render('Messages/Index', [
-            'conversations' => $conversations,
             'selectedConversationId' => null,
-            'messages' => [],
+            'messages' => ['data' => [], 'has_more' => false],
             'selectedParticipant' => null,
             'sharingLinks' => $this->getSharingLinks($user),
         ]);
@@ -66,66 +37,27 @@ class ChatController extends Controller
         $conversation->participants()
             ->updateExistingPivot($user->id, ['last_read_at' => now()]);
 
-        $messages = $conversation->messages()
-            ->with(['user:id,name,email,user_type', 'attachments'])
-            ->orderBy('created_at')
-            ->get()
-            ->map(fn (Message $m) => [
-                'id' => $m->id,
-                'conversation_id' => $m->conversation_id,
-                'user' => [
-                    'id' => $m->user->id,
-                    'name' => $m->user->name,
-                    'email' => $m->user->email,
-                    'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
-                ],
-                'body' => $m->body,
-                'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
-                    'id' => $a->id,
-                    'file_name' => $a->file_name,
-                    'file_url' => $a->file_url,
-                    'file_type' => $a->file_type,
-                    'file_size' => $a->file_size,
-                ]),
-                'is_own' => $m->user_id === $user->id,
-                'created_at' => $m->created_at->toISOString(),
-            ]);
+        $limit = 15;
+        $messagesQuery = $conversation->messages()
+            ->with(['user:id,name,email,user_type', 'attachments', 'parentMessage.user:id,name'])
+            ->orderByDesc('created_at')
+            ->limit($limit + 1);
+
+        $messagesCollection = $messagesQuery->get();
+        $hasMore = $messagesCollection->count() > $limit;
+        $messagesCollection = $hasMore ? $messagesCollection->take($limit) : $messagesCollection;
+
+        $messages = [
+            'data' => $messagesCollection->map(fn (Message $m) => $this->messageToArray($m, $user->id))->values()->all(),
+            'has_more' => $hasMore,
+        ];
 
         $participant = $conversation->participants()
             ->where('user_id', '!=', $user->id)
             ->select('users.id', 'users.name', 'users.email', 'users.user_type')
             ->first();
 
-        $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
-            ->whereNotNull('last_message_id')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(fn (Conversation $c) => [
-                'id' => $c->id,
-                'participant' => $c->participants->first() ? [
-                    'id' => $c->participants->first()->id,
-                    'name' => $c->participants->first()->name,
-                    'email' => $c->participants->first()->email,
-                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
-                ] : null,
-                'last_message' => $c->lastMessage ? [
-                    'id' => $c->lastMessage->id,
-                    'body' => $c->lastMessage->body,
-                    'user' => [
-                        'id' => $c->lastMessage->user->id,
-                        'name' => $c->lastMessage->user->name,
-                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
-                    ],
-                    'is_own' => $c->lastMessage->user_id === $user->id,
-                    'created_at' => $c->lastMessage->created_at->toISOString(),
-                ] : null,
-                'unread_count' => $c->unreadCountFor($user->id),
-                'updated_at' => $c->updated_at->toISOString(),
-            ]);
-
         return Inertia::render('Messages/Index', [
-            'conversations' => $conversations,
             'selectedConversationId' => $conversation->id,
             'messages' => $messages,
             'selectedParticipant' => $participant ? [
@@ -151,6 +83,7 @@ class ChatController extends Controller
             $message = $conversation->messages()->create([
                 'user_id' => $user->id,
                 'body' => $request->validated('body'),
+                'parent_message_id' => $request->validated('reply_to_id'),
             ]);
 
             $this->storeAttachments($message, $request);
@@ -183,6 +116,7 @@ class ChatController extends Controller
         $message = $conversation->messages()->create([
             'user_id' => $user->id,
             'body' => $request->validated('body'),
+            'parent_message_id' => $request->validated('reply_to_id'),
         ]);
 
         $this->storeAttachments($message, $request);
@@ -237,6 +171,44 @@ class ChatController extends Controller
             'profileUrl' => $developer?->slug ? route('developers.show', $developer->slug) : null,
             'cvUrl' => $developer?->cv_path_url,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function messageToArray(Message $m, int $currentUserId): array
+    {
+        $arr = [
+            'id' => $m->id,
+            'conversation_id' => $m->conversation_id,
+            'user' => [
+                'id' => $m->user->id,
+                'name' => $m->user->name,
+                'email' => $m->user->email,
+                'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
+            ],
+            'body' => $m->body,
+            'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
+                'id' => $a->id,
+                'file_name' => $a->file_name,
+                'file_url' => $a->file_url,
+                'file_type' => $a->file_type,
+                'file_size' => $a->file_size,
+            ])->values()->all(),
+            'is_own' => $m->user_id === $currentUserId,
+            'created_at' => $m->created_at->toISOString(),
+        ];
+
+        if ($m->relationLoaded('parentMessage') && $m->parentMessage) {
+            $p = $m->parentMessage;
+            $arr['reply_to'] = [
+                'id' => $p->id,
+                'body' => $p->body,
+                'user' => ['name' => $p->user->name ?? '—'],
+            ];
+        }
+
+        return $arr;
     }
 
     private function storeAttachments(Message $message, Request $request): void

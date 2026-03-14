@@ -15,7 +15,13 @@ class Message extends Model
         'conversation_id',
         'user_id',
         'body',
+        'parent_message_id',
     ];
+
+    public function parentMessage(): BelongsTo
+    {
+        return $this->belongsTo(Message::class, 'parent_message_id');
+    }
 
     public function conversation(): BelongsTo
     {

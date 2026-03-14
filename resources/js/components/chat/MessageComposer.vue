@@ -24,14 +24,18 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 
+import type { ChatMessage } from '@/types';
+
 const props = defineProps<{
     disabled?: boolean;
     profileUrl?: string | null;
     cvUrl?: string | null;
+    replyTo?: ChatMessage | null;
 }>();
 
 const emit = defineEmits<{
-    send: [payload: { body: string; attachments: File[] }];
+    send: [payload: { body: string; attachments: File[]; reply_to_id?: number }];
+    clearReply: [];
 }>();
 
 const attachments = ref<File[]>([]);
@@ -73,10 +77,12 @@ function handleSend() {
     emit('send', {
         body: isEmpty ? '' : body,
         attachments: [...attachments.value],
+        reply_to_id: props.replyTo?.id,
     });
 
     editor.value?.commands.clearContent();
     attachments.value = [];
+    emit('clearReply');
 }
 
 function onFileSelect(event: Event) {
@@ -103,6 +109,31 @@ function insertLink(url: string, label: string) {
 
 <template>
     <div class="border-t bg-background">
+        <div
+            v-if="replyTo"
+            class="flex items-center justify-between gap-2 border-b bg-muted/30 px-4 py-2"
+        >
+            <div class="min-w-0 flex-1">
+                <p class="text-xs font-medium text-muted-foreground">
+                    Replying to {{ replyTo.user.name }}
+                </p>
+                <div
+                    v-if="replyTo.body"
+                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 text-sm [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_a]:text-primary [&_a]:underline"
+                    v-html="replyTo.body"
+                />
+                <p v-else class="text-sm text-muted-foreground">—</p>
+            </div>
+            <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                class="h-7 w-7 shrink-0"
+                @click="emit('clearReply')"
+            >
+                <X class="size-4" />
+            </Button>
+        </div>
         <div
             v-if="attachments.length > 0"
             class="flex flex-wrap gap-2 border-b px-4 py-2"
@@ -192,7 +223,7 @@ function insertLink(url: string, label: string) {
                                 size="icon"
                                 class="h-7 w-7"
                                 :disabled="disabled"
-                                @click="insertLink(profileUrl!, 'My Profile')"
+                                @click="insertLink(profileUrl ?? '', 'My Profile')"
                             >
                                 <UserCircle class="size-3.5" />
                             </Button>
@@ -207,7 +238,7 @@ function insertLink(url: string, label: string) {
                                 size="icon"
                                 class="h-7 w-7"
                                 :disabled="disabled"
-                                @click="insertLink(cvUrl!, 'My CV')"
+                                @click="insertLink(cvUrl ?? '', 'My CV')"
                             >
                                 <FileText class="size-3.5" />
                             </Button>
