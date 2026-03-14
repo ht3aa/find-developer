@@ -77,4 +77,26 @@ class Conversation extends Model
             ->when($lastReadAt, fn ($q) => $q->where('created_at', '>', $lastReadAt))
             ->count();
     }
+
+    /**
+     * Get the created_at of the newest unread message for a user, or null if none.
+     */
+    public function newestUnreadMessageCreatedAtFor(int $userId): ?\Carbon\Carbon
+    {
+        $participant = $this->participants()->where('user_id', $userId)->first();
+
+        if (! $participant) {
+            return null;
+        }
+
+        $lastReadAt = $participant->pivot->last_read_at;
+
+        $message = $this->messages()
+            ->where('user_id', '!=', $userId)
+            ->when($lastReadAt, fn ($q) => $q->where('created_at', '>', $lastReadAt))
+            ->orderByDesc('created_at')
+            ->first();
+
+        return $message?->created_at;
+    }
 }
