@@ -1013,7 +1013,11 @@ function formatNum(n: number): string {
                                     @click="startChat"
                                 >
                                     <MessageCircle class="size-4" />
-                                    {{ isChatting ? 'Opening Chat...' : 'Chat with Developer' }}
+                                    {{
+                                        isChatting
+                                            ? 'Opening Chat...'
+                                            : 'Chat with Developer'
+                                    }}
                                 </Button>
                                 <Button
                                     v-else-if="isGuest"

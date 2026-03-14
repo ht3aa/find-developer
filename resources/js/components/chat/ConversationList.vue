@@ -19,8 +19,8 @@ const searchQuery = ref('');
 const filtered = computed(() => {
     if (!searchQuery.value) return props.conversations;
     const q = searchQuery.value.toLowerCase();
-    return props.conversations.filter(
-        (c) => c.participant?.name.toLowerCase().includes(q),
+    return props.conversations.filter((c) =>
+        c.participant?.name.toLowerCase().includes(q),
     );
 });
 </script>
@@ -29,7 +29,9 @@ const filtered = computed(() => {
     <div class="flex h-full flex-col">
         <div class="p-3">
             <div class="relative">
-                <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Search
+                    class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                />
                 <Input
                     v-model="searchQuery"
                     placeholder="Search conversations..."
@@ -39,8 +41,15 @@ const filtered = computed(() => {
         </div>
 
         <div class="flex-1 overflow-y-auto px-2">
-            <div v-if="filtered.length === 0" class="px-3 py-8 text-center text-sm text-muted-foreground">
-                {{ searchQuery ? 'No conversations found' : 'No conversations yet' }}
+            <div
+                v-if="filtered.length === 0"
+                class="px-3 py-8 text-center text-sm text-muted-foreground"
+            >
+                {{
+                    searchQuery
+                        ? 'No conversations found'
+                        : 'No conversations yet'
+                }}
             </div>
             <ConversationItem
                 v-for="conversation in filtered"

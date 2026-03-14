@@ -32,12 +32,18 @@ defineProps<{
             rel="noopener noreferrer"
             class="flex items-center gap-3 p-3 transition-colors hover:bg-accent"
         >
-            <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+            <div
+                class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted"
+            >
                 <FileText class="size-5 text-muted-foreground" />
             </div>
             <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium">{{ attachment.file_name }}</p>
-                <p class="text-xs text-muted-foreground">{{ formatFileSize(attachment.file_size) }}</p>
+                <p class="truncate text-sm font-medium">
+                    {{ attachment.file_name }}
+                </p>
+                <p class="text-xs text-muted-foreground">
+                    {{ formatFileSize(attachment.file_size) }}
+                </p>
             </div>
             <Download class="size-4 shrink-0 text-muted-foreground" />
         </a>

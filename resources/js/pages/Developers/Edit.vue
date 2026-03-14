@@ -5,6 +5,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import DeveloperController from '@/actions/App/Http/Controllers/Dashboard/DeveloperController';
 import DeveloperFormFields from '@/components/developers/DeveloperFormFields.vue';
 import Heading from '@/components/Heading.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
@@ -17,7 +18,6 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import InputError from '@/components/InputError.vue';
 import { dashboard } from '@/routes';
 import {
     edit as developersEdit,
@@ -106,7 +106,11 @@ watch(
             is_available: dev.is_available ?? false,
             availability_type: [...(dev.availability_type ?? [])],
             skills: [...(dev.skills ?? [])],
-            badges: [...((dev as Record<string, unknown>).badges as { name: string }[] ?? [])],
+            badges: [
+                ...(((dev as Record<string, unknown>).badges as {
+                    name: string;
+                }[]) ?? []),
+            ],
             status: (dev as Record<string, unknown>).status ?? 'pending',
             recommended_by_us: dev.recommended_by_us ?? false,
             cv_path_url: dev.cv_path_url ?? null,
@@ -118,7 +122,8 @@ watch(
 
 const needsRejectionReason = computed(() => {
     const status = formData.value.status as string;
-    const currentStatus = (props.developer as Record<string, unknown>).status as string;
+    const currentStatus = (props.developer as Record<string, unknown>)
+        .status as string;
     return status === 'rejected' && currentStatus !== 'rejected';
 });
 
@@ -151,7 +156,8 @@ function buildPayload(): Record<string, unknown> {
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,
-        rejection_reason: d.status === 'rejected' ? (d.rejection_reason ?? '') : null,
+        rejection_reason:
+            d.status === 'rejected' ? (d.rejection_reason ?? '') : null,
     };
 }
 
@@ -290,9 +296,7 @@ function confirmRejectionSubmit(): void {
                             class="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                             placeholder="Explain why the developer profile was rejected..."
                         />
-                        <InputError
-                            :message="formErrors.rejection_reason"
-                        />
+                        <InputError :message="formErrors.rejection_reason" />
                     </div>
                     <DialogFooter>
                         <Button
@@ -302,10 +306,7 @@ function confirmRejectionSubmit(): void {
                         >
                             Cancel
                         </Button>
-                        <Button
-                            type="submit"
-                            :disabled="submitting"
-                        >
+                        <Button type="submit" :disabled="submitting">
                             {{ submitting ? 'Saving...' : 'Confirm & Update' }}
                         </Button>
                     </DialogFooter>

@@ -10,11 +10,7 @@ import Navbar from '@/components/Navbar.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { getInitials } from '@/composables/useChat';
-import type {
-    ChatConversation,
-    ChatMessage,
-    ChatUserSummary,
-} from '@/types';
+import type { ChatConversation, ChatMessage, ChatUserSummary } from '@/types';
 
 const props = defineProps<{
     conversations: ChatConversation[];
@@ -108,7 +104,8 @@ function startPolling() {
                     const container = messagesContainer.value;
                     if (!container) return;
                     const { scrollTop, scrollHeight, clientHeight } = container;
-                    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+                    const isNearBottom =
+                        scrollHeight - scrollTop - clientHeight < 100;
                     if (isNearBottom) {
                         scrollToBottom();
                     }
@@ -142,9 +139,13 @@ const unreadTotal = computed(() =>
             <!-- Conversation list sidebar -->
             <aside
                 class="w-full flex-col border-r md:flex md:w-80 lg:w-96"
-                :class="mobileShowChat && selectedConversationId ? 'hidden' : 'flex'"
+                :class="
+                    mobileShowChat && selectedConversationId ? 'hidden' : 'flex'
+                "
             >
-                <div class="flex items-center justify-between border-b px-4 py-3">
+                <div
+                    class="flex items-center justify-between border-b px-4 py-3"
+                >
                     <h1 class="text-lg font-semibold">Messages</h1>
                     <NewConversationDialog />
                 </div>
@@ -158,7 +159,11 @@ const unreadTotal = computed(() =>
             <!-- Chat area -->
             <main
                 class="flex-1 flex-col"
-                :class="!mobileShowChat && selectedConversationId === null ? 'hidden md:flex' : 'flex'"
+                :class="
+                    !mobileShowChat && selectedConversationId === null
+                        ? 'hidden md:flex'
+                        : 'flex'
+                "
             >
                 <template v-if="selectedConversationId && selectedParticipant">
                     <!-- Chat header -->
@@ -172,13 +177,19 @@ const unreadTotal = computed(() =>
                             <ArrowLeft class="size-4" />
                         </Button>
                         <Avatar class="size-9">
-                            <AvatarFallback class="bg-primary/10 text-sm font-medium text-primary">
+                            <AvatarFallback
+                                class="bg-primary/10 text-sm font-medium text-primary"
+                            >
                                 {{ getInitials(selectedParticipant.name) }}
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <p class="text-sm font-medium">{{ selectedParticipant.name }}</p>
-                            <p class="text-xs text-muted-foreground">{{ selectedParticipant.email }}</p>
+                            <p class="text-sm font-medium">
+                                {{ selectedParticipant.name }}
+                            </p>
+                            <p class="text-xs text-muted-foreground">
+                                {{ selectedParticipant.email }}
+                            </p>
                         </div>
                     </div>
 
@@ -187,7 +198,10 @@ const unreadTotal = computed(() =>
                         ref="messagesContainer"
                         class="flex-1 space-y-4 overflow-y-auto px-4 py-4"
                     >
-                        <div v-if="messages.length === 0" class="flex h-full items-center justify-center">
+                        <div
+                            v-if="messages.length === 0"
+                            class="flex h-full items-center justify-center"
+                        >
                             <p class="text-sm text-muted-foreground">
                                 No messages yet. Start the conversation!
                             </p>
@@ -200,10 +214,7 @@ const unreadTotal = computed(() =>
                     </div>
 
                     <!-- Composer -->
-                    <MessageComposer
-                        :disabled="isSending"
-                        @send="handleSend"
-                    />
+                    <MessageComposer :disabled="isSending" @send="handleSend" />
                 </template>
 
                 <!-- Empty state -->
@@ -211,7 +222,9 @@ const unreadTotal = computed(() =>
                     v-else
                     class="flex h-full flex-col items-center justify-center gap-4 p-8"
                 >
-                    <div class="flex size-16 items-center justify-center rounded-full bg-muted">
+                    <div
+                        class="flex size-16 items-center justify-center rounded-full bg-muted"
+                    >
                         <MessageCircle class="size-8 text-muted-foreground" />
                     </div>
                     <div class="text-center">

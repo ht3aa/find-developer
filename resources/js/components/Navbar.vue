@@ -19,8 +19,8 @@ import {
 import { useAppearance } from '@/composables/useAppearance';
 import { dashboard, home, login, logout, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
-import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
+import blogs from '@/routes/blogs';
 
 const page = usePage();
 const auth = computed(
@@ -104,14 +104,23 @@ const toggleTheme = () => {
                     <component :is="themeIcon" class="size-5" />
                 </Button>
                 <template v-if="auth.user">
-                    <Button variant="ghost" size="icon" as-child class="relative">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        as-child
+                        class="relative"
+                    >
                         <Link href="/messages">
                             <MessageCircle class="size-5" />
                             <span
                                 v-if="unreadMessagesCount > 0"
-                                class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
+                                class="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
                             >
-                                {{ unreadMessagesCount > 9 ? '9+' : unreadMessagesCount }}
+                                {{
+                                    unreadMessagesCount > 9
+                                        ? '9+'
+                                        : unreadMessagesCount
+                                }}
                             </span>
                         </Link>
                     </Button>
@@ -187,14 +196,21 @@ const toggleTheme = () => {
                         </Button>
                         <template v-if="auth.user">
                             <Button variant="outline" as-child class="w-full">
-                                <Link href="/messages" class="relative inline-flex items-center gap-2">
+                                <Link
+                                    href="/messages"
+                                    class="relative inline-flex items-center gap-2"
+                                >
                                     <MessageCircle class="size-4" />
                                     Messages
                                     <span
                                         v-if="unreadMessagesCount > 0"
                                         class="ml-auto flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
                                     >
-                                        {{ unreadMessagesCount > 9 ? '9+' : unreadMessagesCount }}
+                                        {{
+                                            unreadMessagesCount > 9
+                                                ? '9+'
+                                                : unreadMessagesCount
+                                        }}
                                     </span>
                                 </Link>
                             </Button>

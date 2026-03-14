@@ -12,6 +12,8 @@ import {
     LayoutGrid,
     Mail,
     MessageCircle,
+    MessagesSquare,
+    Paperclip,
     Send,
     Shield,
     ThumbsUp,
@@ -149,6 +151,24 @@ const allMainNavItems: NavItem[] = [
         href: developerOffersIndex().url,
         icon: Send,
         can: 'viewDeveloperOffers',
+    },
+    {
+        title: 'Conversations',
+        href: '/dashboard/conversations',
+        icon: MessagesSquare,
+        can: 'viewConversations',
+    },
+    {
+        title: 'Chat Messages',
+        href: '/dashboard/chat-messages',
+        icon: MessageCircle,
+        can: 'viewConversations',
+    },
+    {
+        title: 'Attachments',
+        href: '/dashboard/message-attachments',
+        icon: Paperclip,
+        can: 'viewConversations',
     },
 ];
 

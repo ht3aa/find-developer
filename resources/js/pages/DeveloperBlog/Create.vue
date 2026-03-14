@@ -36,7 +36,9 @@ const formData = ref({
     published_at: '',
 });
 const featuredImageFile = ref<File | null>(null);
-const featuredImageUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
+const featuredImageUploadRef = ref<InstanceType<typeof FileUpload> | null>(
+    null,
+);
 
 const submitting = ref(false);
 const page = usePage();

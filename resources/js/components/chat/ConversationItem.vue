@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-    formatRelativeTime,
-    getInitials,
-} from '@/composables/useChat';
+import { formatRelativeTime, getInitials } from '@/composables/useChat';
 import type { ChatConversation } from '@/types';
 
 defineProps<{
@@ -23,8 +20,14 @@ function stripHtml(html: string | null): string {
         :class="{ 'bg-accent': isActive }"
     >
         <Avatar class="size-10 shrink-0">
-            <AvatarFallback class="bg-primary/10 text-sm font-medium text-primary">
-                {{ conversation.participant ? getInitials(conversation.participant.name) : '?' }}
+            <AvatarFallback
+                class="bg-primary/10 text-sm font-medium text-primary"
+            >
+                {{
+                    conversation.participant
+                        ? getInitials(conversation.participant.name)
+                        : '?'
+                }}
             </AvatarFallback>
         </Avatar>
 
@@ -37,19 +40,32 @@ function stripHtml(html: string | null): string {
                     v-if="conversation.last_message"
                     class="shrink-0 text-xs text-muted-foreground"
                 >
-                    {{ formatRelativeTime(conversation.last_message.created_at) }}
+                    {{
+                        formatRelativeTime(conversation.last_message.created_at)
+                    }}
                 </span>
             </div>
             <div class="flex items-center justify-between gap-2">
                 <p class="truncate text-xs text-muted-foreground">
-                    <span v-if="conversation.last_message?.is_own" class="text-muted-foreground">You: </span>
-                    {{ stripHtml(conversation.last_message?.body) || 'Attachment' }}
+                    <span
+                        v-if="conversation.last_message?.is_own"
+                        class="text-muted-foreground"
+                        >You:
+                    </span>
+                    {{
+                        stripHtml(conversation.last_message?.body) ||
+                        'Attachment'
+                    }}
                 </p>
                 <span
                     v-if="conversation.unread_count > 0"
                     class="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
                 >
-                    {{ conversation.unread_count > 9 ? '9+' : conversation.unread_count }}
+                    {{
+                        conversation.unread_count > 9
+                            ? '9+'
+                            : conversation.unread_count
+                    }}
                 </span>
             </div>
         </div>

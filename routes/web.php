@@ -4,6 +4,7 @@ use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Dashboard\ActivityLogController;
+use App\Http\Controllers\Dashboard\ConversationController as DashboardConversationController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\Dashboard\DeveloperOfferController as DashboardDevelope
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
 use App\Http\Controllers\Dashboard\DeveloperRecommendationController as DashboardDeveloperRecommendationController;
+use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
+use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
 use App\Http\Controllers\Dashboard\NewsletterController as DashboardNewsletterController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
@@ -94,6 +97,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('activity-log/suspend-causer', [ActivityLogController::class, 'suspendCauser'])->name('dashboard.activity-log.suspend-causer');
             Route::get('activity-log/{id}/properties', [ActivityLogController::class, 'properties'])->name('dashboard.activity-log.properties')->whereNumber('id');
             Route::get('activity-log/{id}', [ActivityLogController::class, 'show'])->name('dashboard.activity-log.show')->whereNumber('id');
+
+            Route::get('conversations', [DashboardConversationController::class, 'index'])->name('dashboard.conversations.index');
+            Route::get('conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('dashboard.conversations.show');
+            Route::get('chat-messages', [DashboardMessageController::class, 'index'])->name('dashboard.messages.index');
+            Route::get('chat-messages/{message}', [DashboardMessageController::class, 'show'])->name('dashboard.messages.show');
+            Route::get('message-attachments', [DashboardMessageAttachmentController::class, 'index'])->name('dashboard.message-attachments.index');
+            Route::get('message-attachments/{messageAttachment}', [DashboardMessageAttachmentController::class, 'show'])->name('dashboard.message-attachments.show');
         });
 
         Route::resource('badges', BadgeController::class)->except(['show']);
