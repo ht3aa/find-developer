@@ -16,5 +16,7 @@ Schedule::command('developers:send-weekly-profile-views')->weekly();
 
 // Schedule::command('linkedin:post-developer-profile')->cron('0 20 */2 * *');
 
+Schedule::command('messages:notify-unread')->dailyAt('09:00');
+
 Schedule::command('backup:run --only-db')->dailyAt('01:00');
 Schedule::command('backup:clean')->dailyAt('02:00');
