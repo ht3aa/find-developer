@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\DeveloperApprovedNotification;
 use App\Notifications\DeveloperSuspendedNotification;
 use App\Notifications\MailtrapNotification;
+use App\Services\DeveloperCvBuilderService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -66,6 +67,12 @@ class DeveloperObserver
             if (! empty($developer->email)) {
                 $developer->notify(new DeveloperSuspendedNotification($developer));
             }
+        }
+
+        $changes = $developer->getChanges();
+        unset($changes['cv_path']);
+        if ($developer->update_cv_automatic && ! empty($changes)) {
+            app(DeveloperCvBuilderService::class)->buildAndUpdate($developer);
         }
     }
 

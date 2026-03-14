@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\DeveloperProfileIndexRequest;
 use App\Http\Requests\Dashboard\DownloadDeveloperCvRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperProfileRequest;
-use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Badge;
 use App\Models\Developer;
@@ -62,7 +61,12 @@ class DeveloperProfileController extends Controller
         $skillIds = $data['skill_ids'] ?? null;
         $skillNames = $data['skill_names'] ?? null;
         $cvFile = $data['cv'] ?? null;
-        unset($data['skill_ids'], $data['skill_names'], $data['cv']);
+        $updateCvAutomatic = isset($data['update_cv_automatic']) ? (bool) $data['update_cv_automatic'] : null;
+        unset($data['skill_ids'], $data['skill_names'], $data['cv'], $data['update_cv_automatic']);
+
+        if ($updateCvAutomatic !== null) {
+            $data['update_cv_automatic'] = $updateCvAutomatic;
+        }
 
         $data['slug'] = Str::slug($data['name']);
 

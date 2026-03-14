@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Scopes\DeveloperScope;
+use App\Observers\DeveloperCompanyObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+#[ObservedBy(DeveloperCompanyObserver::class)]
 #[ScopedBy([DeveloperScope::class])]
 class DeveloperCompany extends Model
 {
