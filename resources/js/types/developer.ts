@@ -67,6 +67,7 @@ export type Developer = {
     github_url?: string | null;
     linkedin_url?: string | null;
     cv_path_url?: string | null;
+    update_cv_automatic?: boolean;
     recommendations_received_count: number;
     recommended_by_us?: boolean;
     youtube_video_id?: string | null;

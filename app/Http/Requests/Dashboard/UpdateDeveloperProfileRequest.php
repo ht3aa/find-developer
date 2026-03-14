@@ -5,12 +5,9 @@ namespace App\Http\Requests\Dashboard;
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\WorldGovernorate;
-use App\Models\Developer;
-use App\Models\Scopes\ApprovedScope;
 use App\Rules\UniqueDeveloperSlug;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 class UpdateDeveloperProfileRequest extends FormRequest
 {
@@ -72,6 +69,7 @@ class UpdateDeveloperProfileRequest extends FormRequest
             'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
+            'update_cv_automatic' => ['boolean'],
         ];
     }
 }

@@ -148,14 +148,18 @@ const skillsModel = computed({
     },
 });
 
+const updateCvAutomatic = ref(false);
+
 watch(
     () => props.developer,
     (dev) => {
         if (dev) {
             isAvailable.value = Boolean(dev.is_available);
+            updateCvAutomatic.value = Boolean(dev.update_cv_automatic);
             formData.value = reactive({
                 ...dev,
                 is_available: isAvailable.value,
+                update_cv_automatic: updateCvAutomatic.value,
                 job_title: dev.job_title,
                 location: dev.location,
                 skills: [...(dev.skills ?? [])],
@@ -165,6 +169,7 @@ watch(
         } else {
             formData.value = null;
             isAvailable.value = false;
+            updateCvAutomatic.value = false;
         }
     },
     { immediate: true },
@@ -172,6 +177,10 @@ watch(
 
 watch(isAvailable, (v) => {
     if (formData.value) formData.value.is_available = v;
+});
+
+watch(updateCvAutomatic, (v) => {
+    if (formData.value) formData.value.update_cv_automatic = v;
 });
 
 const newsletterTodos = computed(() => {
@@ -258,6 +267,7 @@ function buildPayload(): Record<string, unknown> | null {
         is_available: isAvailable.value ? 1 : 0,
         availability_type: (d.availability_type ?? []).map((a) => a.value),
         skill_names: (d.skills ?? []).map((s) => s.name),
+        update_cv_automatic: updateCvAutomatic.value ? 1 : 0,
     };
     if (cvFile.value) {
         payload.cv = cvFile.value;
@@ -666,7 +676,9 @@ function confirmExperienceChangeAndSubmit(): void {
                                         />
                                     </div>
 
-                                    <div class="flex items-center gap-4">
+                                    <div
+                                        class="flex flex-wrap items-center gap-4"
+                                    >
                                         <div
                                             class="flex items-center space-x-2"
                                         >
@@ -681,6 +693,23 @@ function confirmExperienceChangeAndSubmit(): void {
                                             <Label for="is_available"
                                                 >Available</Label
                                             >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <input
+                                                id="update_cv_automatic"
+                                                v-model="updateCvAutomatic"
+                                                type="checkbox"
+                                                name="update_cv_automatic"
+                                                value="1"
+                                                class="size-4 shrink-0 rounded border border-input shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+                                            />
+                                            <Label for="update_cv_automatic"
+                                                >Auto-update CV when profile,
+                                                Work Experience and Projects are
+                                                updated
+                                            </Label>
                                         </div>
                                     </div>
                                 </div>

@@ -119,6 +119,7 @@ class DeveloperResource extends JsonResource
             'github_url' => $developer->github_url,
             'linkedin_url' => $developer->linkedin_url,
             'cv_path_url' => $developer->cv_path_url,
+            'update_cv_automatic' => $developer->update_cv_automatic ?? false,
             'recommendations_received_count' => (int) ($developer->recommendations_received_count ?? 0),
             'recommended_by_us' => $developer->recommended_by_us,
             'youtube_video_id' => $developer->youtube_video_id,
