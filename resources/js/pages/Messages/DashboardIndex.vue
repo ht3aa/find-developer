@@ -21,7 +21,12 @@ import type { BreadcrumbItem } from '@/types';
 type MessageRow = {
     id: number;
     conversation_id: number;
-    user: { id: number; name: string; email: string } | null;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        user_type_label?: string;
+    } | null;
     body: string | null;
     body_preview: string | null;
     attachments_count: number;
@@ -132,6 +137,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 >Conversation</TableHead
                             >
                             <TableHead class="w-[200px]">Sender</TableHead>
+                            <TableHead class="w-[100px]">Type</TableHead>
                             <TableHead>Body Preview</TableHead>
                             <TableHead class="w-[100px]">Attachments</TableHead>
                             <TableHead class="w-[140px]">Date</TableHead>
@@ -162,6 +168,18 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </span>
                                 </span>
                                 <span v-else>—</span>
+                            </TableCell>
+                            <TableCell>
+                                <Badge
+                                    v-if="message.user?.user_type_label"
+                                    variant="secondary"
+                                    class="text-xs"
+                                >
+                                    {{ message.user.user_type_label }}
+                                </Badge>
+                                <span v-else class="text-muted-foreground"
+                                    >—</span
+                                >
                             </TableCell>
                             <TableCell
                                 class="max-w-[200px] truncate text-sm text-muted-foreground"

@@ -53,12 +53,13 @@ class HandleInertiaRequests extends Middleware
 
         $user = $request->user();
         $isDeveloper = $user?->isDeveloper();
+        $isAdmin = $user?->isAdmin();
         $can = $user ? [
-            'viewAnyDeveloper' => $isDeveloper && $user->can('viewAny', Developer::class),
-            'viewDeveloperProfile' => $isDeveloper && $user->can('viewDeveloperProfile', Developer::class),
+            'viewAnyDeveloper' => ($isDeveloper || $isAdmin) && $user->can('viewAny', Developer::class),
+            'viewDeveloperProfile' => ($isDeveloper || $isAdmin) && $user->can('viewDeveloperProfile', Developer::class),
             'viewAnyDeveloperCompany' => $isDeveloper && $user->can('viewAny', DeveloperCompany::class),
-            'viewAnyDeveloperProject' => $isDeveloper && $user->can('viewAny', DeveloperProject::class),
-            'viewAnyDeveloperBlog' => $isDeveloper && $user->can('viewAny', DeveloperBlog::class),
+            'viewAnyDeveloperProject' => ($isDeveloper || $isAdmin) && $user->can('viewAny', DeveloperProject::class),
+            'viewAnyDeveloperBlog' => ($isDeveloper || $isAdmin) && $user->can('viewAny', DeveloperBlog::class),
             'viewAnyBadge' => $user->can('viewAny', Badge::class),
             'viewAnyHackathon' => $user->can('viewAny', Hackathon::class),
             'viewAnyUser' => $user->can('viewAny', User::class),
@@ -73,7 +74,7 @@ class HandleInertiaRequests extends Middleware
         $appUrl = rtrim(config('app.url'), '/');
         $ogImage = config('app.og_image');
         if ($ogImage && ! str_starts_with($ogImage, 'http')) {
-            $ogImage = $appUrl.($ogImage[0] === '/' ? '' : '/').$ogImage;
+            $ogImage = $appUrl . ($ogImage[0] === '/' ? '' : '/') . $ogImage;
         }
 
         return [
@@ -88,11 +89,11 @@ class HandleInertiaRequests extends Middleware
                 'can' => $can,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'unreadMessagesCount' => fn () => $user ? $this->getUnreadMessagesCount($user) : 0,
+            'unreadMessagesCount' => fn() => $user ? $this->getUnreadMessagesCount($user) : 0,
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'info' => fn () => $request->session()->get('info'),
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'info' => fn() => $request->session()->get('info'),
             ],
         ];
     }
@@ -102,6 +103,6 @@ class HandleInertiaRequests extends Middleware
         return $user->conversations()
             ->whereNotNull('last_message_id')
             ->get()
-            ->sum(fn (Conversation $c) => $c->unreadCountFor($user->id));
+            ->sum(fn(Conversation $c) => $c->unreadCountFor($user->id));
     }
 }

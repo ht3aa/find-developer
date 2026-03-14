@@ -185,9 +185,17 @@ const unreadTotal = computed(() =>
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <p class="text-sm font-medium">
-                                {{ selectedParticipant.name }}
-                            </p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-medium">
+                                    {{ selectedParticipant.name }}
+                                </p>
+                                <span
+                                    v-if="selectedParticipant.user_type_label"
+                                    class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                                >
+                                    {{ selectedParticipant.user_type_label }}
+                                </span>
+                            </div>
                             <p class="text-xs text-muted-foreground">
                                 {{ selectedParticipant.email }}
                             </p>

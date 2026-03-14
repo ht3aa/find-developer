@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->can_access_admin_panel && $this->user_type === UserType::ADMIN;
+        return $this->user_type === UserType::ADMIN;
     }
 
     public function isHR(): bool
