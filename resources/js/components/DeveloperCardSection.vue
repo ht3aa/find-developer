@@ -431,7 +431,7 @@ onMounted(() => {
                         v-model="searchQuery"
                         type="search"
                         placeholder="Search by name, email, or skills..."
-                        class="h-10 min-w-0 flex-1 border-0 bg-transparent pl-10 pr-4 shadow-none focus-visible:ring-0"
+                        class="h-10 min-w-0 flex-1 border-0 bg-transparent pr-4 pl-10 shadow-none focus-visible:ring-0"
                         autocomplete="off"
                     />
                 </div>
@@ -442,10 +442,12 @@ onMounted(() => {
                 >
                     <p
                         v-if="paginationTotal !== null"
-                        class="order-first shrink-0 text-sm font-medium tabular-nums text-muted-foreground sm:order-none"
+                        class="order-first shrink-0 text-sm font-medium text-muted-foreground tabular-nums sm:order-none"
                         aria-live="polite"
                     >
-                        <span class="text-foreground">{{ paginationTotal }}</span>
+                        <span class="text-foreground">{{
+                            paginationTotal
+                        }}</span>
                         {{ paginationTotal === 1 ? 'developer' : 'developers' }}
                     </p>
 
@@ -458,7 +460,9 @@ onMounted(() => {
                             class="h-8 gap-1.5 px-2.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                             @click="clearCompare"
                         >
-                            <span class="tabular-nums">{{ compareIds.length }}/2</span>
+                            <span class="tabular-nums"
+                                >{{ compareIds.length }}/2</span
+                            >
                             Clear
                         </Button>
                         <TooltipProvider>
@@ -476,7 +480,10 @@ onMounted(() => {
                                             :disabled="compareIds.length !== 2"
                                             @click="openCompareDialog"
                                         >
-                                            <Scale class="size-4" aria-hidden="true" />
+                                            <Scale
+                                                class="size-4"
+                                                aria-hidden="true"
+                                            />
                                             Compare
                                         </Button>
                                     </span>
@@ -514,10 +521,16 @@ onMounted(() => {
                                 class="size-4"
                                 aria-hidden="true"
                             />
-                            {{ allCurrentSelected ? 'Deselect all' : 'Select all' }}
+                            {{
+                                allCurrentSelected
+                                    ? 'Deselect all'
+                                    : 'Select all'
+                            }}
                         </Button>
                         <Button
-                            :variant="compareIds.length > 0 ? 'default' : 'outline'"
+                            :variant="
+                                compareIds.length > 0 ? 'default' : 'outline'
+                            "
                             size="sm"
                             class="h-8 shrink-0 gap-1.5"
                             :disabled="compareIds.length === 0"
@@ -541,302 +554,338 @@ onMounted(() => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                class="relative h-8 shrink-0 gap-1.5 border-primary/50 bg-primary/5 hover:bg-primary/10 hover:border-primary"
+                                class="relative h-8 shrink-0 gap-1.5 border-primary/50 bg-primary/5 hover:border-primary hover:bg-primary/10"
                             >
-                                <SlidersHorizontal class="size-4" aria-hidden="true" />
+                                <SlidersHorizontal
+                                    class="size-4"
+                                    aria-hidden="true"
+                                />
                                 <span class="hidden sm:inline">Filters</span>
                                 <Badge
                                     v-if="activeFilterCount > 0"
                                     variant="secondary"
-                                    class="absolute -right-1 -top-1 flex size-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold"
+                                    class="absolute -top-1 -right-1 flex size-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold"
                                 >
                                     {{ activeFilterCount }}
                                 </Badge>
                             </Button>
                         </SheetTrigger>
-                <SheetContent
-                    side="top"
-                    class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
-                >
-                    <div class="mx-auto w-full max-w-4xl py-6 pr-10">
-                        <div
-                            class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3"
+                        <SheetContent
+                            side="top"
+                            class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
                         >
-                            <SheetTitle class="text-lg font-semibold">
-                                Advanced filters
-                            </SheetTitle>
-                            <div
-                                v-if="paginationTotal !== null"
-                                class="inline-flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5"
-                                aria-live="polite"
-                            >
-                                <Users
-                                    class="size-4 shrink-0 text-primary"
-                                    aria-hidden="true"
-                                />
-                                <span
-                                    class="text-base font-semibold tracking-tight text-foreground tabular-nums"
-                                >
-                                    {{ paginationTotal }}
-                                </span>
-                                <span class="text-sm text-muted-foreground">
-                                    developer{{
-                                        paginationTotal === 1 ? '' : 's'
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                        <SheetDescription class="sr-only">
-                            Filter developers by job title, skills, badges,
-                            availability type, has URLs, availability status,
-                            recommended status, and years of experience.
-                        </SheetDescription>
-                        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            <div class="space-y-2">
-                                <Label for="filter-job-title">Job title</Label>
-                                <SearchableSelect
-                                    id="filter-job-title"
-                                    :model-value="filterJobTitle"
-                                    :open="jobTitleSelectOpen"
-                                    options-url="/api/job-titles"
-                                    placeholder="e.g. Backend Developer"
-                                    multiple
-                                    :max-options="50"
-                                    @update:model-value="
-                                        filterJobTitle = Array.isArray($event)
-                                            ? $event
-                                            : $event
-                                              ? [$event]
-                                              : []
-                                    "
-                                    @update:open="onJobTitleOpenChange"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-skill">Skill</Label>
-                                <SearchableSelect
-                                    id="filter-skill"
-                                    :model-value="filterSkill"
-                                    :open="skillSelectOpen"
-                                    options-url="/api/skills"
-                                    placeholder="e.g. Laravel, Vue"
-                                    multiple
-                                    :max-options="50"
-                                    @update:model-value="
-                                        filterSkill = Array.isArray($event)
-                                            ? $event
-                                            : $event
-                                              ? [$event]
-                                              : []
-                                    "
-                                    @update:open="onSkillOpenChange"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-badge">Badge</Label>
-                                <SearchableSelect
-                                    id="filter-badge"
-                                    :model-value="filterBadge"
-                                    :open="badgeSelectOpen"
-                                    options-url="/api/badges"
-                                    placeholder="e.g. Laravel Expert"
-                                    multiple
-                                    :max-options="50"
-                                    @update:model-value="
-                                        filterBadge = Array.isArray($event)
-                                            ? $event
-                                            : $event
-                                              ? [$event]
-                                              : []
-                                    "
-                                    @update:open="onBadgeOpenChange"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-availability-type"
-                                    >Availability type</Label
-                                >
-                                <SearchableSelect
-                                    id="filter-availability-type"
-                                    :model-value="filterAvailabilityType"
-                                    :open="availabilityTypeSelectOpen"
-                                    :options="availabilityTypeOptions"
-                                    placeholder="e.g. Full-time, Remote"
-                                    multiple
-                                    @update:model-value="
-                                        filterAvailabilityType = Array.isArray(
-                                            $event,
-                                        )
-                                            ? $event
-                                            : $event
-                                              ? [$event]
-                                              : []
-                                    "
-                                    @update:open="onAvailabilityTypeOpenChange"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-has-urls">Has URLs</Label>
-                                <SearchableSelect
-                                    id="filter-has-urls"
-                                    :model-value="filterHasUrls"
-                                    :open="hasUrlsSelectOpen"
-                                    :options="hasUrlsOptions"
-                                    placeholder="e.g. GitHub, LinkedIn"
-                                    multiple
-                                    @update:model-value="
-                                        filterHasUrls = Array.isArray($event)
-                                            ? $event
-                                            : $event
-                                              ? [$event]
-                                              : []
-                                    "
-                                    @update:open="onHasUrlsOpenChange"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-is-available"
-                                    >Availability</Label
-                                >
-                                <select
-                                    id="filter-is-available"
-                                    v-model="isAvailable"
-                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                                >
-                                    <option value="all">All</option>
-                                    <option value="1">Available</option>
-                                    <option value="0">Not available</option>
-                                </select>
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-is-recommended"
-                                    >Recommended</Label
-                                >
-                                <select
-                                    id="filter-is-recommended"
-                                    v-model="isRecommended"
-                                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                                >
-                                    <option value="all">All</option>
-                                    <option value="1">Recommended</option>
-                                    <option value="0">Not recommended</option>
-                                </select>
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-years-min"
-                                    >Min. years of experience</Label
-                                >
-                                <Input
-                                    id="filter-years-min"
-                                    v-model="yearsMin"
-                                    type="number"
-                                    min="0"
-                                    placeholder="0"
-                                    class="w-full"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <Label for="filter-years-max"
-                                    >Max. years of experience</Label
-                                >
-                                <Input
-                                    id="filter-years-max"
-                                    v-model="yearsMax"
-                                    type="number"
-                                    min="0"
-                                    placeholder="Any"
-                                    class="w-full"
-                                />
-                            </div>
-                        </div>
-                        <div class="mt-6 flex flex-wrap items-center gap-2">
-                            <Button @click="applyFilters">
-                                Apply filters
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                class="text-muted-foreground"
-                                @click="clearFilters"
-                            >
-                                Clear all
-                            </Button>
-                        </div>
-
-                        <div
-                            class="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200"
-                        >
-                            <div
-                                class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6"
-                            >
+                            <div class="mx-auto w-full max-w-4xl py-6 pr-10">
                                 <div
-                                    class="flex min-w-0 flex-1 items-start gap-3"
+                                    class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3"
                                 >
+                                    <SheetTitle class="text-lg font-semibold">
+                                        Advanced filters
+                                    </SheetTitle>
                                     <div
-                                        class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                                        v-if="paginationTotal !== null"
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5"
+                                        aria-live="polite"
                                     >
-                                        <Sparkles
-                                            class="size-5"
+                                        <Users
+                                            class="size-4 shrink-0 text-primary"
                                             aria-hidden="true"
                                         />
-                                    </div>
-                                    <div class="min-w-0 flex-1 space-y-1">
-                                        <Label
-                                            class="text-base font-semibold tracking-tight text-foreground"
+                                        <span
+                                            class="text-base font-semibold tracking-tight text-foreground tabular-nums"
                                         >
-                                            AI prompt
-                                        </Label>
-                                        <p
+                                            {{ paginationTotal }}
+                                        </span>
+                                        <span
                                             class="text-sm text-muted-foreground"
                                         >
-                                            Copy this text and share it with an
-                                            AI assistant so it can search this
-                                            site using your current filters and
-                                            find the best match.
-                                        </p>
+                                            developer{{
+                                                paginationTotal === 1 ? '' : 's'
+                                            }}
+                                        </span>
                                     </div>
                                 </div>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="default"
-                                    class="shrink-0 gap-2 border-primary"
-                                    :aria-label="
-                                        aiPromptCopied
-                                            ? 'Copied'
-                                            : 'Copy AI prompt'
-                                    "
-                                    @click="copyAiPrompt"
+                                <SheetDescription class="sr-only">
+                                    Filter developers by job title, skills,
+                                    badges, availability type, has URLs,
+                                    availability status, recommended status, and
+                                    years of experience.
+                                </SheetDescription>
+                                <div
+                                    class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
                                 >
-                                    <Check
-                                        v-if="aiPromptCopied"
-                                        class="size-4 text-green-600 dark:text-green-400"
-                                        aria-hidden="true"
-                                    />
-                                    <Copy
-                                        v-else
-                                        class="size-4"
-                                        aria-hidden="true"
-                                    />
-                                    <span>{{
-                                        aiPromptCopied ? 'Copied' : 'Copy'
-                                    }}</span>
-                                </Button>
+                                    <div class="space-y-2">
+                                        <Label for="filter-job-title"
+                                            >Job title</Label
+                                        >
+                                        <SearchableSelect
+                                            id="filter-job-title"
+                                            :model-value="filterJobTitle"
+                                            :open="jobTitleSelectOpen"
+                                            options-url="/api/job-titles"
+                                            placeholder="e.g. Backend Developer"
+                                            multiple
+                                            :max-options="50"
+                                            @update:model-value="
+                                                filterJobTitle = Array.isArray(
+                                                    $event,
+                                                )
+                                                    ? $event
+                                                    : $event
+                                                      ? [$event]
+                                                      : []
+                                            "
+                                            @update:open="onJobTitleOpenChange"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-skill">Skill</Label>
+                                        <SearchableSelect
+                                            id="filter-skill"
+                                            :model-value="filterSkill"
+                                            :open="skillSelectOpen"
+                                            options-url="/api/skills"
+                                            placeholder="e.g. Laravel, Vue"
+                                            multiple
+                                            :max-options="50"
+                                            @update:model-value="
+                                                filterSkill = Array.isArray(
+                                                    $event,
+                                                )
+                                                    ? $event
+                                                    : $event
+                                                      ? [$event]
+                                                      : []
+                                            "
+                                            @update:open="onSkillOpenChange"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-badge">Badge</Label>
+                                        <SearchableSelect
+                                            id="filter-badge"
+                                            :model-value="filterBadge"
+                                            :open="badgeSelectOpen"
+                                            options-url="/api/badges"
+                                            placeholder="e.g. Laravel Expert"
+                                            multiple
+                                            :max-options="50"
+                                            @update:model-value="
+                                                filterBadge = Array.isArray(
+                                                    $event,
+                                                )
+                                                    ? $event
+                                                    : $event
+                                                      ? [$event]
+                                                      : []
+                                            "
+                                            @update:open="onBadgeOpenChange"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-availability-type"
+                                            >Availability type</Label
+                                        >
+                                        <SearchableSelect
+                                            id="filter-availability-type"
+                                            :model-value="
+                                                filterAvailabilityType
+                                            "
+                                            :open="availabilityTypeSelectOpen"
+                                            :options="availabilityTypeOptions"
+                                            placeholder="e.g. Full-time, Remote"
+                                            multiple
+                                            @update:model-value="
+                                                filterAvailabilityType =
+                                                    Array.isArray($event)
+                                                        ? $event
+                                                        : $event
+                                                          ? [$event]
+                                                          : []
+                                            "
+                                            @update:open="
+                                                onAvailabilityTypeOpenChange
+                                            "
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-has-urls"
+                                            >Has URLs</Label
+                                        >
+                                        <SearchableSelect
+                                            id="filter-has-urls"
+                                            :model-value="filterHasUrls"
+                                            :open="hasUrlsSelectOpen"
+                                            :options="hasUrlsOptions"
+                                            placeholder="e.g. GitHub, LinkedIn"
+                                            multiple
+                                            @update:model-value="
+                                                filterHasUrls = Array.isArray(
+                                                    $event,
+                                                )
+                                                    ? $event
+                                                    : $event
+                                                      ? [$event]
+                                                      : []
+                                            "
+                                            @update:open="onHasUrlsOpenChange"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-is-available"
+                                            >Availability</Label
+                                        >
+                                        <select
+                                            id="filter-is-available"
+                                            v-model="isAvailable"
+                                            class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                        >
+                                            <option value="all">All</option>
+                                            <option value="1">Available</option>
+                                            <option value="0">
+                                                Not available
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-is-recommended"
+                                            >Recommended</Label
+                                        >
+                                        <select
+                                            id="filter-is-recommended"
+                                            v-model="isRecommended"
+                                            class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+                                        >
+                                            <option value="all">All</option>
+                                            <option value="1">
+                                                Recommended
+                                            </option>
+                                            <option value="0">
+                                                Not recommended
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-years-min"
+                                            >Min. years of experience</Label
+                                        >
+                                        <Input
+                                            id="filter-years-min"
+                                            v-model="yearsMin"
+                                            type="number"
+                                            min="0"
+                                            placeholder="0"
+                                            class="w-full"
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="filter-years-max"
+                                            >Max. years of experience</Label
+                                        >
+                                        <Input
+                                            id="filter-years-max"
+                                            v-model="yearsMax"
+                                            type="number"
+                                            min="0"
+                                            placeholder="Any"
+                                            class="w-full"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    class="mt-6 flex flex-wrap items-center gap-2"
+                                >
+                                    <Button @click="applyFilters">
+                                        Apply filters
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        class="text-muted-foreground"
+                                        @click="clearFilters"
+                                    >
+                                        Clear all
+                                    </Button>
+                                </div>
+
+                                <div
+                                    class="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200"
+                                >
+                                    <div
+                                        class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6"
+                                    >
+                                        <div
+                                            class="flex min-w-0 flex-1 items-start gap-3"
+                                        >
+                                            <div
+                                                class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                                            >
+                                                <Sparkles
+                                                    class="size-5"
+                                                    aria-hidden="true"
+                                                />
+                                            </div>
+                                            <div
+                                                class="min-w-0 flex-1 space-y-1"
+                                            >
+                                                <Label
+                                                    class="text-base font-semibold tracking-tight text-foreground"
+                                                >
+                                                    AI prompt
+                                                </Label>
+                                                <p
+                                                    class="text-sm text-muted-foreground"
+                                                >
+                                                    Copy this text and share it
+                                                    with an AI assistant so it
+                                                    can search this site using
+                                                    your current filters and
+                                                    find the best match.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="default"
+                                            class="shrink-0 gap-2 border-primary"
+                                            :aria-label="
+                                                aiPromptCopied
+                                                    ? 'Copied'
+                                                    : 'Copy AI prompt'
+                                            "
+                                            @click="copyAiPrompt"
+                                        >
+                                            <Check
+                                                v-if="aiPromptCopied"
+                                                class="size-4 text-green-600 dark:text-green-400"
+                                                aria-hidden="true"
+                                            />
+                                            <Copy
+                                                v-else
+                                                class="size-4"
+                                                aria-hidden="true"
+                                            />
+                                            <span>{{
+                                                aiPromptCopied
+                                                    ? 'Copied'
+                                                    : 'Copy'
+                                            }}</span>
+                                        </Button>
+                                    </div>
+                                    <div
+                                        class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3"
+                                    >
+                                        <textarea
+                                            :value="aiPromptText"
+                                            readonly
+                                            rows="6"
+                                            class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 font-mono text-sm leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none"
+                                            aria-label="AI prompt text"
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3"
-                            >
-                                <textarea
-                                    :value="aiPromptText"
-                                    readonly
-                                    rows="6"
-                                    class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 font-mono text-sm leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none"
-                                    aria-label="AI prompt text"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </SheetContent>
-            </Sheet>
+                        </SheetContent>
+                    </Sheet>
                 </div>
             </div>
         </div>

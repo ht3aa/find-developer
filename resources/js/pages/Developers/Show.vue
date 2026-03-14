@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Briefcase,
@@ -10,6 +10,7 @@ import {
     Globe,
     Mail,
     MapPin,
+    MessageCircle,
     Phone,
     Star,
     ThumbsUp,
@@ -101,6 +102,31 @@ function truncatedText(text: string): string {
 }
 const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 const isGuest = computed(() => !auth.value?.user);
+const currentUserId = computed(
+    () => (page.props.auth as { user?: { id: number } })?.user?.id,
+);
+const canChat = computed(
+    () =>
+        !isGuest.value &&
+        props.developer.user_id &&
+        currentUserId.value !== props.developer.user_id,
+);
+
+const isChatting = ref(false);
+
+function startChat() {
+    if (!props.developer.user_id) return;
+    isChatting.value = true;
+    router.post(
+        '/messages',
+        { recipient_id: props.developer.user_id, body: '' },
+        {
+            onFinish: () => {
+                isChatting.value = false;
+            },
+        },
+    );
+}
 
 const showSalary = computed(() => {
     if (
@@ -442,6 +468,16 @@ function formatNum(n: number): string {
                                         <Globe class="size-4" />
                                         Portfolio
                                     </a>
+                                </Button>
+                                <Button
+                                    v-if="canChat"
+                                    variant="outline"
+                                    class="gap-2 rounded-xl"
+                                    :disabled="isChatting"
+                                    @click="startChat"
+                                >
+                                    <MessageCircle class="size-4" />
+                                    {{ isChatting ? 'Opening...' : 'Chat' }}
                                 </Button>
                             </div>
                         </section>
@@ -968,6 +1004,27 @@ function formatNum(n: number): string {
                                         <Mail class="size-4" />
                                         Contact Now
                                     </a>
+                                </Button>
+                                <Button
+                                    v-if="canChat"
+                                    variant="outline"
+                                    class="w-full gap-2 rounded-xl"
+                                    :disabled="isChatting"
+                                    @click="startChat"
+                                >
+                                    <MessageCircle class="size-4" />
+                                    {{ isChatting ? 'Opening Chat...' : 'Chat with Developer' }}
+                                </Button>
+                                <Button
+                                    v-else-if="isGuest"
+                                    variant="outline"
+                                    class="w-full gap-2 rounded-xl"
+                                    as-child
+                                >
+                                    <Link :href="login()">
+                                        <MessageCircle class="size-4" />
+                                        Login to Chat
+                                    </Link>
                                 </Button>
                                 <Button
                                     v-if="developer.cv_path_url"

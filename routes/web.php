@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Dashboard\ActivityLogController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
@@ -61,6 +62,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('developer-offers', [DeveloperOfferController::class, 'store'])->name('developer-offers.store');
     Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
     Route::post('hackathons/{hackathon:slug}/teams/{team}/vote', [HackathonTeamVoteController::class, 'store'])->name('hackathons.teams.vote');
+
+    Route::get('messages', [ChatController::class, 'index'])->name('messages.index');
+    Route::post('messages', [ChatController::class, 'store'])->name('messages.store');
+    Route::get('messages/search-users', [ChatController::class, 'searchUsers'])->name('messages.search-users');
+    Route::get('messages/{conversation}', [ChatController::class, 'show'])->name('messages.show');
+    Route::post('messages/{conversation}', [ChatController::class, 'sendMessage'])->name('messages.send');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

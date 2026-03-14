@@ -1,5 +1,6 @@
 export * from './auth';
 export * from './badge';
+export * from './chat';
 export * from './developer';
 export * from './navigation';
 export * from './ui';

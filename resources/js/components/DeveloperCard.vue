@@ -118,7 +118,7 @@ function formatNum(n: number): string {
         :class="[
             'group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
             modelValue
-                ? 'ring-2 ring-primary shadow-primary/10'
+                ? 'ring-2 shadow-primary/10 ring-primary'
                 : 'ring-border/50 hover:ring-primary/20',
         ]"
     >
@@ -134,17 +134,14 @@ function formatNum(n: number): string {
             class="absolute top-3.5 left-3.5 z-10 flex size-6 items-center justify-center rounded-md border-2 transition-all duration-200"
             :class="
                 modelValue
-                    ? 'border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/25 scale-105'
+                    ? 'scale-105 border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/25'
                     : 'border-muted-foreground/30 bg-background/90 backdrop-blur-sm hover:border-primary/60 hover:bg-primary/5'
             "
             :aria-label="`Select ${developer.name}`"
             :aria-pressed="modelValue"
             @click.stop.prevent="toggleSelect"
         >
-            <Check
-                v-if="modelValue"
-                class="size-3.5 stroke-[3]"
-            />
+            <Check v-if="modelValue" class="size-3.5 stroke-[3]" />
         </button>
 
         <!-- Recommended pill -->
