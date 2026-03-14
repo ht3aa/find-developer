@@ -26,6 +26,7 @@ const props = defineProps<{
 
 const messagesContainer = ref<HTMLElement | null>(null);
 const localConversations = ref<ChatConversation[]>([]);
+const loadingConversations = ref(false);
 const loadingOlder = ref(false);
 const localMessages = ref<ChatMessage[]>([]);
 const hasMoreOlder = ref(false);
@@ -63,6 +64,8 @@ const activeConversation = computed(() =>
 );
 
 async function fetchConversations() {
+    const isInitial = localConversations.value.length === 0;
+    if (isInitial) loadingConversations.value = true;
     try {
         const res = await fetch('/api/conversations', {
             credentials: 'same-origin',
@@ -72,17 +75,19 @@ async function fetchConversations() {
         localConversations.value = json.data ?? [];
     } catch {
         // ignore
+    } finally {
+        if (isInitial) loadingConversations.value = false;
     }
 }
 
 function selectConversation(conversationId: number) {
     mobileShowChat.value = true;
-    router.get(`/messages/${conversationId}`, {}, { preserveState: false });
+    router.get(`/messages/${conversationId}`, {}, { preserveState: true });
 }
 
 function goBackToList() {
     mobileShowChat.value = false;
-    router.get('/messages', {}, { preserveState: false });
+    router.get('/messages', {}, { preserveState: true });
 }
 
 function scrollToBottom() {
@@ -277,6 +282,7 @@ const unreadTotal = computed(() =>
                 <ConversationList
                     :conversations="localConversations"
                     :active-conversation-id="selectedConversationId"
+                    :loading="loadingConversations"
                     @select="selectConversation"
                 />
             </aside>
