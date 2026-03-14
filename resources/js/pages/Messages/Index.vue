@@ -17,6 +17,7 @@ const props = defineProps<{
     selectedConversationId: number | null;
     messages: ChatMessage[];
     selectedParticipant: ChatUserSummary | null;
+    sharingLinks?: { profileUrl: string | null; cvUrl: string | null };
 }>();
 
 const page = usePage();
@@ -214,7 +215,12 @@ const unreadTotal = computed(() =>
                     </div>
 
                     <!-- Composer -->
-                    <MessageComposer :disabled="isSending" @send="handleSend" />
+                    <MessageComposer
+                        :disabled="isSending"
+                        :profile-url="sharingLinks?.profileUrl ?? null"
+                        :cv-url="sharingLinks?.cvUrl ?? null"
+                        @send="handleSend"
+                    />
                 </template>
 
                 <!-- Empty state -->
