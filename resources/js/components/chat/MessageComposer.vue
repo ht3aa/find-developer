@@ -58,7 +58,8 @@ const editor = useEditor({
             return false;
         },
         attributes: {
-            class: 'outline-none min-h-[40px] max-h-[120px] overflow-y-auto px-3 py-2 text-sm',
+            class: 'outline-none min-h-[40px] max-h-[120px] overflow-y-auto px-3 py-2 text-sm text-start',
+            dir: 'auto',
         },
     },
 });
