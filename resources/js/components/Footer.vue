@@ -4,8 +4,8 @@ import { Github, Heart, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { home, login, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
-import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 import blogs from '@/routes/blogs';
+import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 
 const supportEmail = 'ht3aa2001@gmail.com';
 

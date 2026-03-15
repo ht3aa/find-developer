@@ -8,5 +8,6 @@ export type DeveloperTableRow = {
     status: string;
     status_label: string;
     is_available: boolean;
+    meets_newsletter_requirements: boolean;
     profile_url: string | null;
 };

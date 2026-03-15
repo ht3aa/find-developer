@@ -19,8 +19,8 @@ import {
 import { useAppearance } from '@/composables/useAppearance';
 import { dashboard, home, login, logout, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
-import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 import blogs from '@/routes/blogs';
+import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
 
 const page = usePage();
 const auth = computed(
