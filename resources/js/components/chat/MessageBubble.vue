@@ -4,7 +4,8 @@ import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { formatMessageTime, getInitials } from '@/composables/useChat';
-import { Reply } from 'lucide-vue-next';
+import { Copy, Reply } from 'lucide-vue-next';
+import { ref } from 'vue';
 import type { ChatMessage } from '@/types';
 
 const props = defineProps<{
@@ -14,6 +15,31 @@ const props = defineProps<{
 const emit = defineEmits<{
     reply: [message: ChatMessage];
 }>();
+
+const copied = ref(false);
+let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function stripHtml(html: string | null): string {
+    if (!html) return '';
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent?.trim() ?? '';
+}
+
+async function copyMessage(): Promise<void> {
+    const text = stripHtml(props.message.body);
+    if (!text) return;
+    try {
+        await navigator.clipboard.writeText(text);
+        copied.value = true;
+        if (copiedTimeout) clearTimeout(copiedTimeout);
+        copiedTimeout = setTimeout(() => {
+            copied.value = false;
+        }, 1500);
+    } catch {
+        // ignore
+    }
+}
 </script>
 
 <template>
@@ -113,14 +139,26 @@ const emit = defineEmits<{
                 />
             </div>
 
-            <button
-                type="button"
-                class="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
-                @click="emit('reply', message)"
-            >
-                <Reply class="size-3" />
-                Reply
-            </button>
+            <div class="mt-1 flex items-center gap-3">
+                <button
+                    v-if="message.body"
+                    type="button"
+                    class="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                    :title="copied ? 'Copied!' : 'Copy'"
+                    @click="copyMessage"
+                >
+                    <Copy class="size-3" />
+                    {{ copied ? 'Copied!' : 'Copy' }}
+                </button>
+                <button
+                    type="button"
+                    class="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                    @click="emit('reply', message)"
+                >
+                    <Reply class="size-3" />
+                    Reply
+                </button>
+            </div>
         </div>
     </div>
 </template>
