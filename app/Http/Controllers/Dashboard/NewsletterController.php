@@ -8,6 +8,7 @@ use App\Http\Requests\Dashboard\BulkEmailNewsletterRequest;
 use App\Models\Newsletter;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,10 +17,19 @@ class NewsletterController extends Controller
     /**
      * Display a listing of newsletter subscribers.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $subscribers = Newsletter::query()
-            ->orderByDesc('created_at')
+        $search = $request->query('search');
+        $searchTerm = is_string($search) ? trim($search) : '';
+
+        $query = Newsletter::query()->orderByDesc('created_at');
+
+        if ($searchTerm !== '') {
+            $term = '%'.addcslashes($searchTerm, '%_\\').'%';
+            $query->where('email', 'like', $term);
+        }
+
+        $subscribers = $query
             ->paginate(20)
             ->withQueryString()
             ->through(fn (Newsletter $n) => [
@@ -30,6 +40,9 @@ class NewsletterController extends Controller
 
         return Inertia::render('Newsletter/Index', [
             'subscribers' => $subscribers,
+            'filters' => [
+                'search' => $searchTerm,
+            ],
             'bulkEmailUrl' => route('dashboard.newsletter.bulk-email'),
             'bulkEmailAllUrl' => route('dashboard.newsletter.bulk-email-all'),
         ]);

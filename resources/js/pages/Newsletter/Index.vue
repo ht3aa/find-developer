@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { ChevronDown, Mail } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
+import { ChevronDown, Mail, Search } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 import NewsletterDataTable from '@/components/newsletter/NewsletterDataTable.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Button } from '@/components/ui/button';
@@ -48,13 +49,26 @@ type Props = {
         from: number | null;
         to: number | null;
     };
+    filters?: { search?: string };
     bulkEmailUrl?: string;
     bulkEmailAllUrl?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
+    filters: () => ({ search: '' }),
     bulkEmailUrl: undefined,
     bulkEmailAllUrl: undefined,
+});
+
+const searchQuery = ref(props.filters.search ?? '');
+const debouncedSearch = refDebounced(searchQuery, 300);
+
+watch(debouncedSearch, (value) => {
+    router.get(newsletterIndex().url, { search: value || undefined }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
 });
 
 const page = usePage();
@@ -147,6 +161,31 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
+            <div
+                v-if="subscribers.data.length > 0 || (filters?.search ?? '')"
+                class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+                <div class="relative flex-1 sm:max-w-md">
+                    <Search
+                        class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                    />
+                    <Input
+                        v-model="searchQuery"
+                        type="search"
+                        placeholder="Search by email..."
+                        class="pl-9"
+                        aria-label="Search subscribers"
+                    />
+                </div>
+                <p
+                    v-if="subscribers.total > 0"
+                    class="text-sm text-muted-foreground"
+                >
+                    Showing {{ subscribers.from }}–{{ subscribers.to }} of
+                    {{ subscribers.total }}
+                </p>
+            </div>
+
             <Dialog v-model:open="bulkEmailOpen">
                 <DialogContent class="sm:max-w-md">
                     <DialogHeader>
@@ -208,11 +247,22 @@ const breadcrumbs: BreadcrumbItem[] = [
             </Dialog>
 
             <NewsletterDataTable
-                v-if="subscribers.data.length > 0"
+                v-if="subscribers.data.length > 0 || (filters?.search ?? '')"
                 :data="subscribers.data"
                 :from="subscribers.from"
                 :bulk-email-url="bulkEmailUrl"
             />
+
+            <div
+                v-else-if="(filters?.search ?? '')"
+                class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
+            >
+                <Search class="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 class="mb-2 text-lg font-semibold">No subscribers found</h3>
+                <p class="text-center text-sm text-muted-foreground">
+                    Try adjusting your search.
+                </p>
+            </div>
 
             <div
                 v-else

@@ -4,6 +4,7 @@ use App\Models\Newsletter;
 use App\Models\User;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Support\Facades\Notification;
+use Inertia\Testing\AssertableInertia as Assert;
 
 test('guest can subscribe to newsletter with valid email', function () {
     $response = $this->post(route('newsletter.store'), [
@@ -56,6 +57,29 @@ test('super admin can view dashboard newsletter index', function () {
 
     $response = $this->get(route('dashboard.newsletter.index'));
     $response->assertOk();
+});
+
+test('dashboard newsletter index filters subscribers by search query', function () {
+    $superEmail = 'superadmin@example.com';
+    config(['app.super_admin_emails' => $superEmail]);
+    $user = User::factory()->create(['email' => $superEmail]);
+    $this->actingAs($user);
+
+    Newsletter::factory()->create(['email' => 'alice@example.com']);
+    Newsletter::factory()->create(['email' => 'bob@example.com']);
+    Newsletter::factory()->create(['email' => 'alice.work@company.com']);
+
+    $response = $this->get(route('dashboard.newsletter.index', ['search' => 'alice']));
+
+    $response->assertOk()->assertInertia(fn (Assert $page) => $page
+        ->component('Newsletter/Index')
+        ->has('subscribers')
+        ->has('filters')
+        ->where('filters.search', 'alice')
+        ->where('subscribers.data', fn ($data) => count($data) === 2
+            && collect($data)->pluck('email')->contains('alice@example.com')
+            && collect($data)->pluck('email')->contains('alice.work@company.com'))
+    );
 });
 
 test('dashboard newsletter bulk-email-all redirects guest to login', function () {
