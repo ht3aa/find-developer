@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DeveloperProjectsSeeder::class,
             UserServicesSeeder::class,
             UserAppointmentsSeeder::class,
+            ConversationSeeder::class,
         ]);
     }
 }
