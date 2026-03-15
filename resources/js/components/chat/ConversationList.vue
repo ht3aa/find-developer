@@ -1,21 +1,36 @@
 <script setup lang="ts">
 import { Search } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    watch,
+} from 'vue';
 import ConversationItem from '@/components/chat/ConversationItem.vue';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ChatConversation } from '@/types';
 
-const props = defineProps<{
-    conversations: ChatConversation[];
-    activeConversationId: number | null;
-    loading?: boolean;
-}>();
+const props = withDefaults(
+    defineProps<{
+        conversations: ChatConversation[];
+        activeConversationId: number | null;
+        loading?: boolean;
+        hasMore?: boolean;
+        loadingMore?: boolean;
+    }>(),
+    { hasMore: false, loadingMore: false },
+);
 
 const emit = defineEmits<{
     select: [conversationId: number];
+    loadMore: [];
 }>();
 
+const scrollContainer = ref<HTMLElement | null>(null);
+const loadMoreSentinel = ref<HTMLElement | null>(null);
 const searchQuery = ref('');
 
 const filtered = computed(() => {
@@ -25,10 +40,59 @@ const filtered = computed(() => {
         c.participant?.name.toLowerCase().includes(q),
     );
 });
+
+let observer: IntersectionObserver | null = null;
+
+function setupObserver() {
+    observer?.disconnect();
+    if (
+        !loadMoreSentinel.value ||
+        !scrollContainer.value ||
+        props.loading ||
+        !props.hasMore
+    ) {
+        return;
+    }
+
+    observer = new IntersectionObserver(
+        (entries) => {
+            if (props.loadingMore || !props.hasMore || props.loading) return;
+            const entry = entries[0];
+            if (entry?.isIntersecting) {
+                emit('loadMore');
+            }
+        },
+        {
+            root: scrollContainer.value,
+            rootMargin: '100px',
+            threshold: 0,
+        },
+    );
+    observer.observe(loadMoreSentinel.value);
+}
+
+function trySetupObserver() {
+    nextTick(() => {
+        if (loadMoreSentinel.value && scrollContainer.value) {
+            setupObserver();
+        }
+    });
+}
+
+onMounted(trySetupObserver);
+
+onBeforeUnmount(() => {
+    observer?.disconnect();
+});
+
+watch(
+    () => [props.hasMore, props.loading, filtered.value.length],
+    trySetupObserver,
+);
 </script>
 
 <template>
-    <div class="flex h-full flex-col">
+    <div class="flex max-h-[60vh] flex-col">
         <div class="p-3">
             <div class="relative">
                 <Search
@@ -42,7 +106,10 @@ const filtered = computed(() => {
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-2">
+        <div
+            ref="scrollContainer"
+            class="min-h-0 flex-1 overflow-y-auto px-2"
+        >
             <template v-if="loading">
                 <div
                     v-for="i in 5"
@@ -74,6 +141,18 @@ const filtered = computed(() => {
                     :is-active="conversation.id === activeConversationId"
                     @click="emit('select', conversation.id)"
                 />
+                <div
+                    v-if="hasMore && !searchQuery"
+                    ref="loadMoreSentinel"
+                    class="h-4 shrink-0"
+                    aria-hidden="true"
+                />
+                <div
+                    v-if="loadingMore"
+                    class="flex items-center justify-center py-3 text-sm text-muted-foreground"
+                >
+                    Loading more...
+                </div>
             </template>
         </div>
     </div>

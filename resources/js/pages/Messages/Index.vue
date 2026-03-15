@@ -34,6 +34,8 @@ const props = defineProps<{
 const messagesContainer = ref<HTMLElement | null>(null);
 const localConversations = ref<ChatConversation[]>([]);
 const loadingConversations = ref(false);
+const loadingMoreConversations = ref(false);
+const hasMoreConversations = ref(false);
 const loadingOlder = ref(false);
 const localMessages = ref<ChatMessage[]>([]);
 const hasMoreOlder = ref(false);
@@ -78,12 +80,49 @@ async function fetchConversations() {
             credentials: 'same-origin',
         });
         if (!res.ok) return;
-        const json = (await res.json()) as { data: ChatConversation[] };
+        const json = (await res.json()) as {
+            data: ChatConversation[];
+            meta?: { has_more: boolean };
+        };
         localConversations.value = json.data ?? [];
+        hasMoreConversations.value = json.meta?.has_more ?? false;
     } catch {
         // ignore
     } finally {
         if (isInitial) loadingConversations.value = false;
+    }
+}
+
+async function loadMoreConversations() {
+    if (
+        loadingMoreConversations.value ||
+        !hasMoreConversations.value
+    ) {
+        return;
+    }
+    const last = localConversations.value.at(-1);
+    if (!last?.id) return;
+
+    loadingMoreConversations.value = true;
+    try {
+        const params = new URLSearchParams({
+            before_id: String(last.id),
+        });
+        const res = await fetch(`/api/conversations?${params}`, {
+            credentials: 'same-origin',
+        });
+        if (!res.ok) return;
+        const json = (await res.json()) as {
+            data: ChatConversation[];
+            meta?: { has_more: boolean };
+        };
+        const newItems = json.data ?? [];
+        localConversations.value = [...localConversations.value, ...newItems];
+        hasMoreConversations.value = json.meta?.has_more ?? false;
+    } catch {
+        // ignore
+    } finally {
+        loadingMoreConversations.value = false;
     }
 }
 
@@ -278,7 +317,7 @@ const unreadTotal = computed(() =>
         <div class="mx-auto flex w-full max-w-7xl flex-1 overflow-hidden">
             <!-- Conversation list sidebar -->
             <aside
-                class="w-full flex-col border-r md:flex md:w-80 lg:w-96"
+                class="min-h-0 w-full flex-col border-r md:flex md:w-80 lg:w-96"
                 :class="
                     mobileShowChat && selectedConversationId ? 'hidden' : 'flex'
                 "
@@ -318,7 +357,10 @@ const unreadTotal = computed(() =>
                     :conversations="localConversations"
                     :active-conversation-id="selectedConversationId"
                     :loading="loadingConversations"
+                    :has-more="hasMoreConversations"
+                    :loading-more="loadingMoreConversations"
                     @select="selectConversation"
+                    @load-more="loadMoreConversations"
                 />
             </aside>
 

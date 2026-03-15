@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Conversation;
+use App\Http\Resources\ConversationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
 {
     /**
-     * List the authenticated user's conversations.
+     * List the authenticated user's conversations (cursor-based, 15 per fetch).
+     * Pass before_id (from last item) to load older conversations.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
+        $limit = 15;
 
-        $conversations = $user->conversations()
+        $query = $user->conversations()
             ->with([
                 'lastMessage.user:id,name,user_type',
                 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)
@@ -24,34 +26,25 @@ class ConversationController extends Controller
                     ->with('developer:id,user_id,slug'),
             ])
             ->whereNotNull('last_message_id')
-            ->orderByDesc('updated_at')
-            ->get()
-            ->map(fn (Conversation $c) => [
-                'id' => $c->id,
-                'participant' => $c->participants->first() ? [
-                    'id' => $c->participants->first()->id,
-                    'name' => $c->participants->first()->name,
-                    'email' => $c->participants->first()->email,
-                    'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
-                    'developer_slug' => $c->participants->first()->developer?->slug,
-                ] : null,
-                'last_message' => $c->lastMessage ? [
-                    'id' => $c->lastMessage->id,
-                    'body' => $c->lastMessage->body,
-                    'user' => [
-                        'id' => $c->lastMessage->user->id,
-                        'name' => $c->lastMessage->user->name,
-                        'user_type_label' => $c->lastMessage->user->user_type?->getLabel() ?? '—',
-                    ],
-                    'is_own' => $c->lastMessage->user_id === $user->id,
-                    'created_at' => $c->lastMessage->created_at->toISOString(),
-                ] : null,
-                'unread_count' => $c->unreadCountFor($user->id),
-                'updated_at' => $c->updated_at->toISOString(),
-            ])
-            ->values()
-            ->all();
+            ->orderByDesc('conversations.updated_at')
+            ->orderByDesc('conversations.id');
 
-        return response()->json(['data' => $conversations]);
+        $beforeId = $request->integer('before_id');
+        if ($beforeId > 0) {
+            $query->where('conversations.id', '<', $beforeId);
+        }
+
+        $conversations = $query->limit($limit + 1)->get();
+        $hasMore = $conversations->count() > $limit;
+        if ($hasMore) {
+            $conversations = $conversations->take($limit);
+        }
+
+        return response()->json([
+            'data' => ConversationResource::collection($conversations),
+            'meta' => [
+                'has_more' => $hasMore,
+            ],
+        ]);
     }
 }
