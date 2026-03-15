@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Search } from 'lucide-vue-next';
+import { ChevronDown, Search } from 'lucide-vue-next';
 import {
     computed,
     nextTick,
@@ -106,10 +106,11 @@ watch(
             </div>
         </div>
 
-        <div
-            ref="scrollContainer"
-            class="min-h-0 flex-1 overflow-y-auto px-2"
-        >
+        <div class="relative min-h-0 flex-1">
+            <div
+                ref="scrollContainer"
+                class="h-full overflow-y-auto px-2"
+            >
             <template v-if="loading">
                 <div
                     v-for="i in 5"
@@ -154,6 +155,21 @@ watch(
                     Loading more...
                 </div>
             </template>
+            </div>
+
+            <!-- Scroll-for-more indicator (purely visual, non-interactive) -->
+            <div
+                v-if="hasMore && !searchQuery && !loading && filtered.length > 0 && !loadingMore"
+                class="pointer-events-none select-none absolute bottom-0 left-0 right-0 flex flex-col items-center bg-gradient-to-t from-background via-background/95 to-transparent pt-6 pb-2"
+                role="presentation"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <span class="flex items-center gap-1 text-xs text-muted-foreground">
+                    <ChevronDown class="size-3.5 animate-bounce" />
+                    Scroll for more
+                </span>
+            </div>
         </div>
     </div>
 </template>
