@@ -95,7 +95,8 @@ async function copyMessage(): Promise<void> {
 
             <div
                 v-if="message.reply_to"
-                class="mb-2 border-l-2 border-muted-foreground/30 pl-3 text-xs text-muted-foreground [&_a]:text-primary [&_a]:underline"
+                dir="auto"
+                class="mb-2 border-s-2 border-muted-foreground/30 ps-3 text-start text-xs text-muted-foreground [&_a]:text-primary [&_a]:underline"
             >
                 <Link
                     v-if="message.reply_to.user.developer_slug"
@@ -112,13 +113,14 @@ async function copyMessage(): Promise<void> {
                 </span>
                 <div
                     v-if="message.reply_to.body"
-                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1"
+                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 text-start [&_p]:my-0 [&_p]:text-start [&_ul]:my-1 [&_ul]:text-start [&_ol]:my-1 [&_ol]:text-start"
                     v-html="message.reply_to.body"
                 />
             </div>
             <div
                 v-if="message.body"
-                class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2"
+                dir="auto"
+                class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2 text-start [&_p]:text-start [&_ul]:text-start [&_ol]:text-start"
                 :class="
                     message.is_own
                         ? 'rounded-tr-sm bg-primary text-primary-foreground [&_a]:text-primary-foreground/90 [&_a]:underline [&_code]:bg-primary-foreground/20 [&_code]:text-primary-foreground'
