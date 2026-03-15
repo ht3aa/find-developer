@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ArrowLeft, MessageCircle } from 'lucide-vue-next';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { ArrowLeft, MessageCircle, ShieldCheck } from 'lucide-vue-next';
+import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    watch,
+} from 'vue';
 import ConversationList from '@/components/chat/ConversationList.vue';
 import MessageBubble from '@/components/chat/MessageBubble.vue';
 import MessageComposer from '@/components/chat/MessageComposer.vue';
@@ -127,7 +134,10 @@ async function loadOlderMessages() {
         if (!res.ok) {
             throw new Error('Failed to load messages');
         }
-        const json = (await res.json()) as { data: ChatMessage[]; has_more: boolean };
+        const json = (await res.json()) as {
+            data: ChatMessage[];
+            has_more: boolean;
+        };
         localMessages.value = [...(json.data ?? []), ...localMessages.value];
         hasMoreOlder.value = json.has_more ?? false;
 
@@ -273,11 +283,36 @@ const unreadTotal = computed(() =>
                     mobileShowChat && selectedConversationId ? 'hidden' : 'flex'
                 "
             >
-                <div
-                    class="flex items-center justify-between border-b px-4 py-3"
-                >
-                    <h1 class="text-lg font-semibold">Messages</h1>
-                    <NewConversationDialog />
+                <div class="border-b px-4 py-3">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-lg font-semibold">Messages</h1>
+                        <NewConversationDialog />
+                    </div>
+                    <div
+                        class="mt-3 flex gap-2.5 rounded-lg border border-border/80 bg-muted/40 px-3 py-2.5"
+                        role="note"
+                        aria-label="Chat safety guidelines"
+                    >
+                        <ShieldCheck
+                            class="mt-0.5 size-4 shrink-0 text-primary/80"
+                            aria-hidden
+                        />
+                        <p
+                            class="text-xs leading-relaxed text-muted-foreground"
+                        >
+                            Don't share sensitive information. Chat is for Find
+                            Developer platform topics only. For secrets, use
+                            <a
+                                href="https://onetimesecret.com/en/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center font-medium text-primary underline-offset-4 transition-colors hover:text-primary/90 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                            >
+                                OneTimeSecret
+                            </a>
+                            .
+                        </p>
+                    </div>
                 </div>
                 <ConversationList
                     :conversations="localConversations"
@@ -323,10 +358,7 @@ const unreadTotal = computed(() =>
                                 >
                                     {{ selectedParticipant.name }}
                                 </Link>
-                                <p
-                                    v-else
-                                    class="text-sm font-medium"
-                                >
+                                <p v-else class="text-sm font-medium">
                                     {{ selectedParticipant.name }}
                                 </p>
                                 <span

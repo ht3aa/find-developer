@@ -34,7 +34,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    send: [payload: { body: string; attachments: File[]; reply_to_id?: number }];
+    send: [
+        payload: { body: string; attachments: File[]; reply_to_id?: number },
+    ];
     clearReply: [];
 }>();
 
@@ -45,7 +47,10 @@ const editor = useEditor({
     content: '',
     extensions: [
         StarterKit,
-        Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-primary underline' } }),
+        Link.configure({
+            openOnClick: false,
+            HTMLAttributes: { class: 'text-primary underline' },
+        }),
         Placeholder.configure({ placeholder: 'Type a message...' }),
     ],
     editorProps: {
@@ -120,7 +125,7 @@ function insertLink(url: string, label: string) {
                 </p>
                 <div
                     v-if="replyTo.body"
-                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 text-sm [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_a]:text-primary [&_a]:underline"
+                    class="prose prose-sm dark:prose-invert mt-0.5 max-w-none text-sm [&_a]:text-primary [&_a]:underline [&_ol]:my-1 [&_p]:my-0 [&_ul]:my-1"
                     v-html="replyTo.body"
                 />
                 <p v-else class="text-sm text-muted-foreground">—</p>
@@ -224,7 +229,9 @@ function insertLink(url: string, label: string) {
                                 size="icon"
                                 class="h-7 w-7"
                                 :disabled="disabled"
-                                @click="insertLink(profileUrl ?? '', 'My Profile')"
+                                @click="
+                                    insertLink(profileUrl ?? '', 'My Profile')
+                                "
                             >
                                 <UserCircle class="size-3.5" />
                             </Button>

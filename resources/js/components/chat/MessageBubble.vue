@@ -75,10 +75,7 @@ async function copyMessage(): Promise<void> {
                 >
                     {{ message.user.name }}
                 </Link>
-                <span
-                    v-else
-                    class="text-xs font-medium text-muted-foreground"
-                >
+                <span v-else class="text-xs font-medium text-muted-foreground">
                     {{ message.is_own ? 'You' : message.user.name }}
                 </span>
                 <Badge
@@ -105,22 +102,19 @@ async function copyMessage(): Promise<void> {
                 >
                     {{ message.reply_to.user.name }}
                 </Link>
-                <span
-                    v-else
-                    class="font-medium"
-                >
+                <span v-else class="font-medium">
                     {{ message.reply_to.user.name }}
                 </span>
                 <div
                     v-if="message.reply_to.body"
-                    class="prose prose-sm dark:prose-invert max-w-none mt-0.5 text-start [&_p]:my-0 [&_p]:text-start [&_ul]:my-1 [&_ul]:text-start [&_ol]:my-1 [&_ol]:text-start"
+                    class="prose prose-sm dark:prose-invert mt-0.5 max-w-none text-start [&_ol]:my-1 [&_ol]:text-start [&_p]:my-0 [&_p]:text-start [&_ul]:my-1 [&_ul]:text-start"
                     v-html="message.reply_to.body"
                 />
             </div>
             <div
                 v-if="message.body"
                 dir="auto"
-                class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2 text-start [&_p]:text-start [&_ul]:text-start [&_ol]:text-start"
+                class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2 text-start [&_ol]:text-start [&_p]:text-start [&_ul]:text-start"
                 :class="
                     message.is_own
                         ? 'rounded-tr-sm bg-primary text-primary-foreground [&_a]:text-primary-foreground/90 [&_a]:underline [&_code]:bg-primary-foreground/20 [&_code]:text-primary-foreground'
