@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ArrowLeft, MessageCircle } from 'lucide-vue-next';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import ConversationList from '@/components/chat/ConversationList.vue';
@@ -316,7 +316,17 @@ const unreadTotal = computed(() =>
                         </Avatar>
                         <div>
                             <div class="flex items-center gap-2">
-                                <p class="text-sm font-medium">
+                                <Link
+                                    v-if="selectedParticipant.developer_slug"
+                                    :href="`/developers/${selectedParticipant.developer_slug}`"
+                                    class="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                                >
+                                    {{ selectedParticipant.name }}
+                                </Link>
+                                <p
+                                    v-else
+                                    class="text-sm font-medium"
+                                >
                                     {{ selectedParticipant.name }}
                                 </p>
                                 <span

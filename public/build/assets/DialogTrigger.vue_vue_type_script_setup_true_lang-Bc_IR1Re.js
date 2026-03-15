@@ -1,0 +1,1 @@
+import{D as r}from"./DialogTrigger-CTviC-0g.js";import{d as s,i as t,u as i,W as l,e as n,Y as p,o as g}from"./app-BHCMAKqf.js";const m=s({__name:"DialogTrigger",props:{asChild:{type:Boolean},as:{}},setup(e){const a=e;return(o,d)=>(g(),t(i(r),l({"data-slot":"dialog-trigger"},a),{default:n(()=>[p(o.$slots,"default")]),_:3},16))}});export{m as _};

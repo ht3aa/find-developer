@@ -3,6 +3,7 @@ export interface ChatUserSummary {
     name: string;
     email: string;
     user_type_label?: string;
+    developer_slug?: string | null;
 }
 
 export interface MessageAttachment {
@@ -16,7 +17,7 @@ export interface MessageAttachment {
 export interface MessageReplyTo {
     id: number;
     body: string | null;
-    user: { name: string };
+    user: { name: string; developer_slug?: string | null };
 }
 
 export interface ChatMessage {

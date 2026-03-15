@@ -27,7 +27,7 @@ class ConversationMessageController extends Controller
 
         $limit = 15;
         $messages = $conversation->messages()
-            ->with(['user:id,name,email,user_type', 'attachments', 'parentMessage.user:id,name'])
+            ->with(['user.developer:id,user_id,slug', 'attachments', 'parentMessage.user.developer:id,user_id,slug'])
             ->where('id', '<', $beforeId)
             ->orderByDesc('created_at')
             ->limit($limit + 1)
@@ -48,6 +48,7 @@ class ConversationMessageController extends Controller
                     'name' => $m->user->name,
                     'email' => $m->user->email,
                     'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
+                    'developer_slug' => $m->user->developer?->slug,
                 ],
                 'body' => $m->body,
                 'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
@@ -65,7 +66,10 @@ class ConversationMessageController extends Controller
                 $arr['reply_to'] = [
                     'id' => $p->id,
                     'body' => $p->body,
-                    'user' => ['name' => $p->user->name ?? '—'],
+                    'user' => [
+                        'name' => $p->user->name ?? '—',
+                        'developer_slug' => $p->user->developer?->slug,
+                    ],
                 ];
             }
 

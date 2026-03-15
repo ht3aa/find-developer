@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { formatRelativeTime, getInitials } from '@/composables/useChat';
 import type { ChatConversation } from '@/types';
@@ -34,7 +35,18 @@ function stripHtml(html: string | null): string {
         <div class="min-w-0 flex-1">
             <div class="flex items-center justify-between gap-2">
                 <div class="flex min-w-0 items-center gap-1.5">
-                    <span class="truncate text-sm font-medium text-foreground">
+                    <Link
+                        v-if="conversation.participant?.developer_slug"
+                        :href="`/developers/${conversation.participant.developer_slug}`"
+                        class="truncate text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                        @click.stop
+                    >
+                        {{ conversation.participant.name }}
+                    </Link>
+                    <span
+                        v-else
+                        class="truncate text-sm font-medium text-foreground"
+                    >
                         {{ conversation.participant?.name ?? 'Unknown' }}
                     </span>
                     <span

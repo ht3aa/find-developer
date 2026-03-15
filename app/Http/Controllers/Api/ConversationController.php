@@ -17,7 +17,12 @@ class ConversationController extends Controller
         $user = $request->user();
 
         $conversations = $user->conversations()
-            ->with(['lastMessage.user:id,name,user_type', 'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)->select('users.id', 'users.name', 'users.email', 'users.user_type')])
+            ->with([
+                'lastMessage.user:id,name,user_type',
+                'participants' => fn ($q) => $q->where('user_id', '!=', $user->id)
+                    ->select('users.id', 'users.name', 'users.email', 'users.user_type')
+                    ->with('developer:id,user_id,slug'),
+            ])
             ->whereNotNull('last_message_id')
             ->orderByDesc('updated_at')
             ->get()
@@ -28,6 +33,7 @@ class ConversationController extends Controller
                     'name' => $c->participants->first()->name,
                     'email' => $c->participants->first()->email,
                     'user_type_label' => $c->participants->first()->user_type?->getLabel() ?? '—',
+                    'developer_slug' => $c->participants->first()->developer?->slug,
                 ] : null,
                 'last_message' => $c->lastMessage ? [
                     'id' => $c->lastMessage->id,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +42,17 @@ const emit = defineEmits<{
                 class="flex flex-wrap items-center gap-2"
                 :class="message.is_own ? 'flex-row-reverse' : 'flex-row'"
             >
-                <span class="text-xs font-medium text-muted-foreground">
+                <Link
+                    v-if="!message.is_own && message.user.developer_slug"
+                    :href="`/developers/${message.user.developer_slug}`"
+                    class="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                >
+                    {{ message.user.name }}
+                </Link>
+                <span
+                    v-else
+                    class="text-xs font-medium text-muted-foreground"
+                >
                     {{ message.is_own ? 'You' : message.user.name }}
                 </span>
                 <Badge
@@ -60,7 +71,19 @@ const emit = defineEmits<{
                 v-if="message.reply_to"
                 class="mb-2 border-l-2 border-muted-foreground/30 pl-3 text-xs text-muted-foreground [&_a]:text-primary [&_a]:underline"
             >
-                <span class="font-medium">{{ message.reply_to.user.name }}</span>
+                <Link
+                    v-if="message.reply_to.user.developer_slug"
+                    :href="`/developers/${message.reply_to.user.developer_slug}`"
+                    class="font-medium underline-offset-4 hover:underline"
+                >
+                    {{ message.reply_to.user.name }}
+                </Link>
+                <span
+                    v-else
+                    class="font-medium"
+                >
+                    {{ message.reply_to.user.name }}
+                </span>
                 <div
                     v-if="message.reply_to.body"
                     class="prose prose-sm dark:prose-invert max-w-none mt-0.5 [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1"
