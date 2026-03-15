@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { Copy, Reply } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { formatMessageTime, getInitials } from '@/composables/useChat';
-import { Copy, Reply } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
 import type { ChatMessage } from '@/types';
 import { transformOneTimeSecretLinks } from '@/utils/linkify';
 

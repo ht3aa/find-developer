@@ -6,6 +6,7 @@ use App\Mail\NewsletterDevelopersMail;
 use App\Models\Developer;
 use App\Models\Newsletter;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 
 class SendNewsletterDevelopersCommand extends Command
@@ -59,19 +60,11 @@ class SendNewsletterDevelopersCommand extends Command
         return self::SUCCESS;
     }
 
-    private function queryDevelopers(int $minYears, ?int $maxYears): \Illuminate\Database\Eloquent\Builder
+    private function queryDevelopers(int $minYears, ?int $maxYears): Builder
     {
-        $query = Developer::query()
-            ->available()
-            ->withCount('badges')
-            ->having('badges_count', '>=', 2)
-            ->whereHas('companies')
-            ->whereHas('projects')
-            ->whereHas('skills')
-            ->whereNotNull('cv_path')
-            ->where('cv_path', '!=', '')
-            ->with(['jobTitle:id,name']);
-
-        return $query->byExperience($minYears, $maxYears);
+        return Developer::query()
+            ->eligibleForNewsletter()
+            ->with(['jobTitle:id,name'])
+            ->byExperience($minYears, $maxYears);
     }
 }

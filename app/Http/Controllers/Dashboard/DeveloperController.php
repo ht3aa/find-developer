@@ -12,8 +12,13 @@ use App\Http\Requests\Dashboard\DeveloperEditRequest;
 use App\Http\Requests\Dashboard\DeveloperIndexRequest;
 use App\Http\Requests\Dashboard\StoreDeveloperRequest;
 use App\Http\Requests\Dashboard\UpdateDeveloperRequest;
+use App\Http\Resources\DeveloperResource;
+use App\Models\Badge;
 use App\Models\Developer;
+use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
+use App\Models\Skill;
+use App\Models\User;
 use App\Notifications\DeveloperRejectedNotification;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +40,7 @@ class DeveloperController extends Controller
 
         $query = Developer::withoutGlobalScope(ApprovedScope::class)
             ->with(['jobTitle'])
+            ->withCount(['badges', 'companies', 'projects', 'skills'])
             ->orderBy('name');
 
         if ($searchTerm !== '') {
@@ -60,6 +66,7 @@ class DeveloperController extends Controller
             'status' => $d->status->value,
             'status_label' => $d->status->getLabel(),
             'is_available' => $d->is_available,
+            'meets_newsletter_requirements' => $d->meetsNewsletterRequirements(),
             'profile_url' => $d->slug ? route('developers.show', $d->slug) : null,
         ]);
 
@@ -150,13 +157,13 @@ class DeveloperController extends Controller
      */
     public function create(DeveloperCreateRequest $request): Response
     {
-        $users = \App\Models\User::whereDoesntHave('developer')
+        $users = User::whereDoesntHave('developer')
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
 
         return Inertia::render('Developers/Create', [
             'users' => $users,
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -173,7 +180,7 @@ class DeveloperController extends Controller
         unset($data['skill_ids'], $data['skill_names'], $data['badge_names'], $data['cv']);
 
         $data['slug'] = Str::slug($data['name']);
-        $data['status'] = $data['status'] ?? \App\Enums\DeveloperStatus::PENDING;
+        $data['status'] = $data['status'] ?? DeveloperStatus::PENDING;
         $data['is_available'] = $data['is_available'] ?? false;
         $data['recommended_by_us'] = $data['recommended_by_us'] ?? false;
 
@@ -182,12 +189,12 @@ class DeveloperController extends Controller
         if ($skillIds !== null) {
             $developer->skills()->sync($skillIds);
         } elseif ($skillNames !== null) {
-            $ids = \App\Models\Skill::whereIn('name', $skillNames)->pluck('id')->all();
+            $ids = Skill::whereIn('name', $skillNames)->pluck('id')->all();
             $developer->skills()->sync($ids);
         }
 
         if ($badgeNames !== null) {
-            $badgeIds = \App\Models\Badge::whereIn('name', $badgeNames)->pluck('id')->all();
+            $badgeIds = Badge::whereIn('name', $badgeNames)->pluck('id')->all();
             $developer->badges()->sync($badgeIds);
         }
 
@@ -211,9 +218,9 @@ class DeveloperController extends Controller
             ->with(['jobTitle', 'skills', 'badges'])
             ->findOrFail($developer);
 
-        $developer = (new \App\Http\Resources\DeveloperResource($developerModel))->resolve();
+        $developer = (new DeveloperResource($developerModel))->resolve();
 
-        $usersQuery = \App\Models\User::query()->orderBy('name');
+        $usersQuery = User::query()->orderBy('name');
         if ($developerModel->user_id) {
             $usersQuery->where(function ($q) use ($developerModel) {
                 $q->whereDoesntHave('developer')
@@ -226,7 +233,7 @@ class DeveloperController extends Controller
 
         return Inertia::render('Developers/Edit', [
             'developer' => $developer,
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
             'users' => $users,
         ]);
     }
@@ -262,12 +269,12 @@ class DeveloperController extends Controller
         if ($skillIds !== null) {
             $developer->skills()->sync($skillIds);
         } elseif ($skillNames !== null) {
-            $ids = \App\Models\Skill::whereIn('name', $skillNames)->pluck('id')->all();
+            $ids = Skill::whereIn('name', $skillNames)->pluck('id')->all();
             $developer->skills()->sync($ids);
         }
 
         if ($badgeNames !== null) {
-            $badgeIds = \App\Models\Badge::whereIn('name', $badgeNames)->pluck('id')->all();
+            $badgeIds = Badge::whereIn('name', $badgeNames)->pluck('id')->all();
             $developer->badges()->sync($badgeIds);
         }
 

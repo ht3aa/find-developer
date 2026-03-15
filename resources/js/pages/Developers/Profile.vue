@@ -316,7 +316,7 @@ function confirmExperienceChangeAndSubmit(): void {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+            class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4"
         >
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -359,7 +359,22 @@ function confirmExperienceChangeAndSubmit(): void {
                     </p>
                 </div>
 
-                <template v-if="!allNewsletterRequirementsMet">
+                <template v-if="allNewsletterRequirementsMet">
+                    <div
+                        class="rounded-lg border border-green-500/30 bg-green-500/10 p-4"
+                    >
+                        <p
+                            class="flex gap-2 text-sm text-green-700 dark:text-green-400"
+                        >
+                            <Check class="mt-0.5 h-4 w-4 shrink-0" />
+                            <span>
+                                Your profile will be included in the newsletter
+                                sent to companies emails.
+                            </span>
+                        </p>
+                    </div>
+                </template>
+                <template v-else>
                     <div
                         class="rounded-lg border border-primary/20 bg-primary/5 p-4"
                     >
@@ -402,7 +417,42 @@ function confirmExperienceChangeAndSubmit(): void {
                     </div>
                 </template>
 
-                <div class="grid gap-6 lg:grid-cols-2">
+                <Dialog
+                    :open="showExperienceBadgeModal"
+                    @update:open="showExperienceBadgeModal = $event"
+                >
+                    <DialogContent
+                        :show-close-button="true"
+                        class="sm:max-w-md"
+                    >
+                        <DialogHeader>
+                            <DialogTitle>Experience changed</DialogTitle>
+                            <DialogDescription>
+                                Changing your years of experience will
+                                remove your
+                                <strong>Experience Validated</strong> badge.
+                                You will need to re-schedule a meeting with
+                                an admin to get the badge again. Do you want
+                                to continue?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter class="gap-2 sm:gap-0">
+                            <Button
+                                variant="outline"
+                                @click="showExperienceBadgeModal = false"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                @click="confirmExperienceChangeAndSubmit"
+                            >
+                                Continue
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                <div class="grid items-start gap-6 lg:grid-cols-2">
                     <Card>
                         <CardHeader class="pb-4">
                             <h3
@@ -748,59 +798,26 @@ function confirmExperienceChangeAndSubmit(): void {
                         </CardContent>
                     </Card>
 
-                    <Dialog
-                        :open="showExperienceBadgeModal"
-                        @update:open="showExperienceBadgeModal = $event"
-                    >
-                        <DialogContent
-                            :show-close-button="true"
-                            class="sm:max-w-md"
-                        >
-                            <DialogHeader>
-                                <DialogTitle>Experience changed</DialogTitle>
-                                <DialogDescription>
-                                    Changing your years of experience will
-                                    remove your
-                                    <strong>Experience Validated</strong> badge.
-                                    You will need to re-schedule a meeting with
-                                    an admin to get the badge again. Do you want
-                                    to continue?
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter class="gap-2 sm:gap-0">
-                                <Button
-                                    variant="outline"
-                                    @click="showExperienceBadgeModal = false"
+                    <div class="lg:sticky lg:top-4">
+                        <Card>
+                            <CardHeader class="pb-4">
+                                <h3
+                                    class="text-sm font-medium text-muted-foreground"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    @click="confirmExperienceChangeAndSubmit"
-                                >
-                                    Continue
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-
-                    <Card class="h-fit">
-                        <CardHeader class="pb-4">
-                            <h3
-                                class="text-sm font-medium text-muted-foreground"
-                            >
-                                Card preview
-                            </h3>
-                            <p class="text-xs text-muted-foreground">
-                                Changes are reflected in real-time
-                            </p>
-                        </CardHeader>
-                        <CardContent>
-                            <DeveloperCard
-                                v-if="previewDeveloper"
-                                :developer="previewDeveloper"
-                            />
-                        </CardContent>
-                    </Card>
+                                    Card preview
+                                </h3>
+                                <p class="text-xs text-muted-foreground">
+                                    Changes are reflected in real-time
+                                </p>
+                            </CardHeader>
+                            <CardContent>
+                                <DeveloperCard
+                                    v-if="previewDeveloper"
+                                    :developer="previewDeveloper"
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </template>
 

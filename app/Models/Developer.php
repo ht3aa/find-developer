@@ -13,6 +13,7 @@ use App\Observers\AdminDeveloperObserver;
 use App\Observers\DeveloperObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -121,9 +122,9 @@ class Developer extends Model
     /**
      * Get offers where this developer is in developer_ids.
      *
-     * @return \Illuminate\Database\Eloquent\Builder<DeveloperOffer>
+     * @return Builder<DeveloperOffer>
      */
-    public function offers(): \Illuminate\Database\Eloquent\Builder
+    public function offers(): Builder
     {
         return DeveloperOffer::query()->whereJsonContains('developer_ids', $this->id);
     }
@@ -232,6 +233,68 @@ class Developer extends Model
         }
 
         return $query;
+    }
+
+    /**
+     * Scope: developers eligible for the newsletter (available, 2+ badges,
+     * work experience, projects, CV, and skills).
+     */
+    public function scopeEligibleForNewsletter($query)
+    {
+        return $query
+            ->available()
+            ->withCount('badges')
+            ->having('badges_count', '>=', 2)
+            ->whereHas('companies')
+            ->whereHas('projects')
+            ->whereHas('skills')
+            ->whereNotNull('cv_path')
+            ->where('cv_path', '!=', '');
+    }
+
+    /**
+     * Whether this developer meets all newsletter eligibility requirements.
+     * Uses withCount attributes when present to avoid N+1.
+     */
+    public function meetsNewsletterRequirements(): bool
+    {
+        if (! $this->is_available) {
+            return false;
+        }
+
+        $badgesCount = array_key_exists('badges_count', $this->attributes)
+            ? (int) $this->attributes['badges_count']
+            : $this->badges()->count();
+        if ($badgesCount < 2) {
+            return false;
+        }
+
+        $hasCompanies = array_key_exists('companies_count', $this->attributes)
+            ? (int) $this->attributes['companies_count'] > 0
+            : $this->companies()->exists();
+        if (! $hasCompanies) {
+            return false;
+        }
+
+        $hasProjects = array_key_exists('projects_count', $this->attributes)
+            ? (int) $this->attributes['projects_count'] > 0
+            : $this->projects()->exists();
+        if (! $hasProjects) {
+            return false;
+        }
+
+        $hasSkills = array_key_exists('skills_count', $this->attributes)
+            ? (int) $this->attributes['skills_count'] > 0
+            : $this->skills()->exists();
+        if (! $hasSkills) {
+            return false;
+        }
+
+        if (empty(trim((string) ($this->cv_path ?? '')))) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getCurrencyAttribute(): string

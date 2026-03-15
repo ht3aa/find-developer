@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/vue3';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { ExternalLink, Pencil } from 'lucide-vue-next';
+import { Check, ExternalLink, Mail, Pencil, X } from 'lucide-vue-next';
 import { h } from 'vue';
 import DeveloperController from '@/actions/App/Http/Controllers/Dashboard/DeveloperController';
 import { Badge } from '@/components/ui/badge';
@@ -118,6 +118,47 @@ export function getColumns(
                     },
                     () => (row.original.is_available ? 'Yes' : 'No'),
                 ),
+        },
+        {
+            accessorKey: 'meets_newsletter_requirements',
+            header: () =>
+                h('span', { class: 'flex items-center gap-1.5' }, [
+                    h(Mail, { class: 'h-4 w-4' }),
+                    'Newsletter',
+                ]),
+            cell: ({ row }) => {
+                const meets = row.original.meets_newsletter_requirements;
+                return h(
+                    'span',
+                    {
+                        class: 'inline-flex items-center justify-center gap-1.5',
+                        title: meets
+                            ? 'Eligible for newsletter (available, 2+ badges, work experience, projects, CV, skills)'
+                            : 'Not eligible for newsletter',
+                        'aria-label': meets
+                            ? 'Eligible for newsletter'
+                            : 'Not eligible for newsletter',
+                    },
+                    [
+                        meets
+                            ? h(Check, {
+                                  class: 'h-4 w-4 text-green-600 dark:text-green-400',
+                              })
+                            : h(X, {
+                                  class: 'h-4 w-4 text-muted-foreground',
+                              }),
+                        h(
+                            'span',
+                            {
+                                class: meets
+                                    ? 'text-green-700 dark:text-green-300'
+                                    : 'text-muted-foreground',
+                            },
+                            meets ? 'Eligible' : 'Not eligible',
+                        ),
+                    ],
+                );
+            },
         },
         {
             id: 'actions',
