@@ -5,8 +5,9 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { formatMessageTime, getInitials } from '@/composables/useChat';
 import { Copy, Reply } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import type { ChatMessage } from '@/types';
+import { transformOneTimeSecretLinks } from '@/utils/linkify';
 
 const props = defineProps<{
     message: ChatMessage;
@@ -40,6 +41,15 @@ async function copyMessage(): Promise<void> {
         // ignore
     }
 }
+
+const displayBody = computed(() =>
+    transformOneTimeSecretLinks(props.message.body),
+);
+const displayReplyBody = computed(() =>
+    props.message.reply_to?.body
+        ? transformOneTimeSecretLinks(props.message.reply_to.body)
+        : '',
+);
 </script>
 
 <template>
@@ -106,13 +116,13 @@ async function copyMessage(): Promise<void> {
                     {{ message.reply_to.user.name }}
                 </span>
                 <div
-                    v-if="message.reply_to.body"
+                    v-if="displayReplyBody"
                     class="prose prose-sm dark:prose-invert mt-0.5 max-w-none text-start [&_ol]:my-1 [&_ol]:text-start [&_p]:my-0 [&_p]:text-start [&_ul]:my-1 [&_ul]:text-start"
-                    v-html="message.reply_to.body"
+                    v-html="displayReplyBody"
                 />
             </div>
             <div
-                v-if="message.body"
+                v-if="displayBody"
                 dir="auto"
                 class="prose prose-sm dark:prose-invert max-w-none rounded-2xl px-4 py-2 text-start [&_ol]:text-start [&_p]:text-start [&_ul]:text-start"
                 :class="
@@ -120,7 +130,7 @@ async function copyMessage(): Promise<void> {
                         ? 'rounded-tr-sm bg-primary text-primary-foreground [&_a]:text-primary-foreground/90 [&_a]:underline [&_code]:bg-primary-foreground/20 [&_code]:text-primary-foreground'
                         : 'rounded-tl-sm bg-muted'
                 "
-                v-html="message.body"
+                v-html="displayBody"
             />
 
             <div

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import {
     ArrowLeft,
     Calendar,
@@ -15,6 +16,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
+import { transformOneTimeSecretLinks } from '@/utils/linkify';
 
 type MessageDetail = {
     id: number;
@@ -44,6 +46,10 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const displayBody = computed(() =>
+    transformOneTimeSecretLinks(props.message.body),
+);
 
 function formatDate(iso: string): string {
     const d = new Date(iso);
@@ -192,7 +198,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </CardContent>
             </Card>
 
-            <Card v-if="message.body">
+            <Card v-if="displayBody">
                 <CardHeader class="pb-2">
                     <h3 class="text-sm font-medium text-muted-foreground">
                         Message Body
@@ -201,7 +207,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <CardContent>
                     <div
                         class="prose prose-sm dark:prose-invert max-w-none"
-                        v-html="message.body"
+                        v-html="displayBody"
                     />
                 </CardContent>
             </Card>

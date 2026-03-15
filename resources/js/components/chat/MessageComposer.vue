@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/tooltip';
 
 import type { ChatMessage } from '@/types';
+import { transformOneTimeSecretLinks } from '@/utils/linkify';
 
 const props = defineProps<{
     disabled?: boolean;
@@ -49,7 +50,14 @@ const editor = useEditor({
         StarterKit,
         Link.configure({
             openOnClick: false,
-            HTMLAttributes: { class: 'text-primary underline' },
+            autolink: true,
+            linkOnPaste: true,
+            defaultProtocol: 'https',
+            HTMLAttributes: {
+                class: 'text-primary underline',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+            },
         }),
         Placeholder.configure({ placeholder: 'Type a message...' }),
     ],
@@ -75,10 +83,12 @@ watch(
 );
 
 function handleSend() {
-    const body = editor.value?.getHTML() ?? '';
+    let body = editor.value?.getHTML() ?? '';
     const isEmpty = editor.value?.isEmpty;
 
     if (isEmpty && attachments.value.length === 0) return;
+
+    body = transformOneTimeSecretLinks(body);
 
     emit('send', {
         body: isEmpty ? '' : body,
@@ -108,7 +118,9 @@ function insertLink(url: string, label: string) {
     editor.value
         .chain()
         .focus()
-        .insertContent(`<a href="${url}" target="_blank">${label}</a>`)
+        .insertContent(
+            `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`,
+        )
         .run();
 }
 </script>
