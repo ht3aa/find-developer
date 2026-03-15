@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMessageRequest;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\MessageAttachment;
+use App\Notifications\NewConversationNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -80,5 +82,106 @@ class ConversationMessageController extends Controller
             'data' => $data,
             'has_more' => $hasMore,
         ]);
+    }
+
+    /**
+     * Send a new message in a conversation.
+     *
+     * @return JsonResponse{message: array}
+     */
+    public function store(StoreMessageRequest $request, Conversation $conversation): JsonResponse
+    {
+        $this->authorize('sendMessage', $conversation);
+
+        $user = $request->user();
+        $isFirstMessage = $conversation->messages()->doesntExist();
+
+        $message = $conversation->messages()->create([
+            'user_id' => $user->id,
+            'body' => $request->validated('body'),
+            'parent_message_id' => $request->validated('reply_to_id'),
+        ]);
+
+        $this->storeAttachments($message, $request);
+
+        $conversation->update(['last_message_id' => $message->id]);
+        $conversation->touch();
+
+        $conversation->participants()
+            ->updateExistingPivot($user->id, ['last_read_at' => now()]);
+
+        if ($isFirstMessage) {
+            $recipient = $conversation->participants()
+                ->where('user_id', '!=', $user->id)
+                ->first();
+
+            $recipient?->notify(new NewConversationNotification($user));
+        }
+
+        $message->load(['user.developer:id,user_id,slug', 'attachments', 'parentMessage.user.developer:id,user_id,slug']);
+
+        $data = $this->messageToArray($message, $user->id);
+
+        return response()->json(['message' => $data], 201);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function messageToArray(Message $m, int $currentUserId): array
+    {
+        $arr = [
+            'id' => $m->id,
+            'conversation_id' => $m->conversation_id,
+            'user' => [
+                'id' => $m->user->id,
+                'name' => $m->user->name,
+                'email' => $m->user->email,
+                'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
+                'developer_slug' => $m->user->developer?->slug,
+            ],
+            'body' => $m->body,
+            'attachments' => $m->attachments->map(fn (MessageAttachment $a) => [
+                'id' => $a->id,
+                'file_name' => $a->file_name,
+                'file_url' => $a->file_url,
+                'file_type' => $a->file_type,
+                'file_size' => $a->file_size,
+            ])->values()->all(),
+            'is_own' => $m->user_id === $currentUserId,
+            'created_at' => $m->created_at->toISOString(),
+        ];
+
+        if ($m->relationLoaded('parentMessage') && $m->parentMessage) {
+            $p = $m->parentMessage;
+            $arr['reply_to'] = [
+                'id' => $p->id,
+                'body' => $p->body,
+                'user' => [
+                    'name' => $p->user->name ?? '—',
+                    'developer_slug' => $p->user->developer?->slug,
+                ],
+            ];
+        }
+
+        return $arr;
+    }
+
+    private function storeAttachments(Message $message, Request $request): void
+    {
+        if (! $request->hasFile('attachments')) {
+            return;
+        }
+
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('chat-attachments', ['disk' => 's3']);
+
+            $message->attachments()->create([
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => $file->getClientMimeType(),
+                'file_size' => $file->getSize(),
+            ]);
+        }
     }
 }

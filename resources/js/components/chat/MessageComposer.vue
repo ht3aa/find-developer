@@ -15,7 +15,7 @@ import {
     UserCircle,
     X,
 } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     Tooltip,
@@ -99,6 +99,7 @@ function handleSend() {
     editor.value?.commands.clearContent();
     attachments.value = [];
     emit('clearReply');
+    focusEditor();
 }
 
 function onFileSelect(event: Event) {
@@ -112,6 +113,12 @@ function onFileSelect(event: Event) {
 function removeAttachment(index: number) {
     attachments.value.splice(index, 1);
 }
+
+function focusEditor() {
+    nextTick(() => editor.value?.commands.focus());
+}
+
+defineExpose({ focus: focusEditor });
 
 function insertLink(url: string, label: string) {
     if (!editor.value) return;

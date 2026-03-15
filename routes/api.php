@@ -18,4 +18,6 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         ->name('api.conversations.index');
     Route::get('/conversations/{conversation}/messages', [ConversationMessageController::class, 'index'])
         ->name('api.conversations.messages.index');
+    Route::post('/conversations/{conversation}/messages', [ConversationMessageController::class, 'store'])
+        ->name('api.conversations.messages.store');
 });

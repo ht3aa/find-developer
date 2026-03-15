@@ -32,6 +32,7 @@ const props = defineProps<{
 }>();
 
 const messagesContainer = ref<HTMLElement | null>(null);
+const messageComposerRef = ref<InstanceType<typeof MessageComposer> | null>(null);
 const localConversations = ref<ChatConversation[]>([]);
 const loadingConversations = ref(false);
 const loadingMoreConversations = ref(false);
@@ -200,7 +201,7 @@ function handleScroll() {
     }
 }
 
-function handleSend(payload: {
+async function handleSend(payload: {
     body: string;
     attachments: File[];
     reply_to_id?: number;
@@ -221,14 +222,44 @@ function handleSend(payload: {
         formData.append(`attachments[${i}]`, file);
     });
 
-    router.post(`/messages/${props.selectedConversationId}`, formData, {
-        forceFormData: true,
-        preserveScroll: true,
-        onFinish: () => {
-            isSending.value = false;
+    const token = document.cookie
+        .match(/XSRF-TOKEN=([^;]+)/)?.[1];
+    const headers: Record<string, string> = {};
+    if (token) {
+        headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+    }
+    headers['Accept'] = 'application/json';
+
+    try {
+        const res = await fetch(
+            `/api/conversations/${props.selectedConversationId}/messages`,
+            {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers,
+            },
+        );
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(
+                (err as { message?: string })?.message ?? 'Failed to send message',
+            );
+        }
+
+        const json = (await res.json()) as { message: ChatMessage };
+        if (json.message) {
+            localMessages.value = [...localMessages.value, json.message];
             scrollToBottom();
-        },
-    });
+            await fetchConversations();
+        }
+    } catch (e) {
+        console.error('Send message failed:', e);
+    } finally {
+        isSending.value = false;
+        nextTick(() => messageComposerRef.value?.focus());
+    }
 }
 
 function setupScrollListener() {
@@ -460,6 +491,7 @@ const unreadTotal = computed(() =>
 
                     <!-- Composer -->
                     <MessageComposer
+                        ref="messageComposerRef"
                         :disabled="isSending"
                         :profile-url="sharingLinks?.profileUrl ?? null"
                         :cv-url="sharingLinks?.cvUrl ?? null"
