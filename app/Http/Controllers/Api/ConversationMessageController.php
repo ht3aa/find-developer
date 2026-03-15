@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class ConversationMessageController extends Controller
 {
     /**
-     * Fetch older messages for a conversation (cursor-based, before_id).
+     * Fetch messages for a conversation (cursor-based).
+     * - before_id: older messages (id < before_id)
+     * - after_id: newer messages (id > after_id), for polling new messages
      *
      * @return JsonResponse{data: array, has_more: bool}
      */
@@ -23,18 +25,23 @@ class ConversationMessageController extends Controller
         $this->authorize('view', $conversation);
 
         $beforeId = $request->integer('before_id');
-        if ($beforeId <= 0) {
+        $afterId = $request->integer('after_id');
+        $limit = 15;
+
+        $query = $conversation->messages()
+            ->with(['user.developer:id,user_id,slug', 'attachments', 'parentMessage.user.developer:id,user_id,slug']);
+
+        if ($afterId > 0) {
+            $query->where('id', '>', $afterId)
+                ->orderBy('id');
+        } elseif ($beforeId > 0) {
+            $query->where('id', '<', $beforeId)
+                ->orderByDesc('created_at');
+        } else {
             return response()->json(['data' => [], 'has_more' => false]);
         }
 
-        $limit = 15;
-        $messages = $conversation->messages()
-            ->with(['user.developer:id,user_id,slug', 'attachments', 'parentMessage.user.developer:id,user_id,slug'])
-            ->where('id', '<', $beforeId)
-            ->orderByDesc('created_at')
-            ->limit($limit + 1)
-            ->get();
-
+        $messages = $query->limit($limit + 1)->get();
         $hasMore = $messages->count() > $limit;
         if ($hasMore) {
             $messages = $messages->take($limit);

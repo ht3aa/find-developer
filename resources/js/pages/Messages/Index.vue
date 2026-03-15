@@ -307,20 +307,45 @@ watch(
 
 let pollInterval: ReturnType<typeof setInterval> | null = null;
 
-function startPolling() {
-    stopPolling();
-    pollInterval = setInterval(() => {
-        if (props.selectedConversationId) {
-            fetchConversations().then(() => {
-                const container = messagesContainer.value;
-                if (!container) return;
+async function fetchNewMessages() {
+    if (!props.selectedConversationId) return;
+    const newestId = localMessages.value.reduce(
+        (max, m) => (m.id > max ? m.id : max),
+        0,
+    );
+    if (newestId === 0) return;
+
+    try {
+        const res = await fetch(
+            `/api/conversations/${props.selectedConversationId}/messages?after_id=${newestId}`,
+            { credentials: 'same-origin' },
+        );
+        if (!res.ok) return;
+        const json = (await res.json()) as { data: ChatMessage[] };
+        const newMessages = json.data ?? [];
+        if (newMessages.length > 0) {
+            localMessages.value = [...localMessages.value, ...newMessages];
+            await fetchConversations();
+            const container = messagesContainer.value;
+            if (container) {
                 const { scrollTop, scrollHeight, clientHeight } = container;
                 const isNearBottom =
                     scrollHeight - scrollTop - clientHeight < 100;
                 if (isNearBottom) {
                     scrollToBottom();
                 }
-            });
+            }
+        }
+    } catch {
+        // ignore
+    }
+}
+
+function startPolling() {
+    stopPolling();
+    pollInterval = setInterval(() => {
+        if (props.selectedConversationId) {
+            fetchNewMessages();
         }
     }, 5000);
 }
