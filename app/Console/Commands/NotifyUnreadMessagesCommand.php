@@ -16,7 +16,7 @@ class NotifyUnreadMessagesCommand extends Command
 
     public function handle(): int
     {
-        $threshold = now()->subDays(7);
+        $threshold = now()->subDays(2);
 
         $participants = DB::table('conversation_participants')->get();
 
