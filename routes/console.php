@@ -18,5 +18,5 @@ Schedule::command('developers:send-weekly-profile-views')->weekly();
 
 Schedule::command('messages:notify-unread')->dailyAt('09:00');
 
-Schedule::command('backup:run --only-db')->dailyAt('01:00');
-Schedule::command('backup:clean')->dailyAt('02:00');
+Schedule::command('backup:run --only-db')->twiceDaily(0, 12);
+Schedule::command('backup:clean')->twiceDaily(1, 13);
