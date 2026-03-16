@@ -60,6 +60,7 @@ const auth = computed(
 const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 
 const skillsExpanded = ref(false);
+const isCardHovered = ref(false);
 const visibleSkillsCount = 5;
 const hasMoreSkills = computed(
     () => props.developer.skills.length > visibleSkillsCount,
@@ -111,6 +112,16 @@ const subscribeToSeeSalaryUrl = computed(() => {
 function formatNum(n: number): string {
     return new Intl.NumberFormat().format(n);
 }
+
+function onThumbnailError(
+    e: Event,
+    videoId: string,
+): void {
+    const img = e.target as HTMLImageElement;
+    if (img) {
+        img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
+}
 </script>
 
 <template>
@@ -121,6 +132,8 @@ function formatNum(n: number): string {
                 ? 'ring-2 shadow-primary/10 ring-primary'
                 : 'ring-border/50 hover:ring-primary/20',
         ]"
+        @mouseenter="isCardHovered = true"
+        @mouseleave="isCardHovered = false"
     >
         <!-- Top accent gradient -->
         <div
@@ -199,7 +212,16 @@ function formatNum(n: number): string {
                 v-if="developer.youtube_video_id"
                 class="relative aspect-video w-full overflow-hidden bg-muted"
             >
+                <img
+                    v-if="!isCardHovered"
+                    :src="`https://img.youtube.com/vi/${developer.youtube_video_id}/maxresdefault.jpg`"
+                    :alt="`${developer.name} video thumbnail`"
+                    class="size-full object-cover"
+                    loading="lazy"
+                    @error="onThumbnailError($event, developer.youtube_video_id)"
+                />
                 <iframe
+                    v-else
                     :src="`https://www.youtube.com/embed/${developer.youtube_video_id}?autoplay=1&mute=1&loop=1&playlist=${developer.youtube_video_id}`"
                     title="YouTube video"
                     class="size-full"
