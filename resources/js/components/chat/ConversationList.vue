@@ -107,65 +107,70 @@ watch(
         </div>
 
         <div class="relative min-h-0 flex-1">
-            <div
-                ref="scrollContainer"
-                class="h-full overflow-y-auto px-2"
-            >
-            <template v-if="loading">
-                <div
-                    v-for="i in 5"
-                    :key="i"
-                    class="flex items-center gap-3 rounded-lg px-3 py-3"
-                >
-                    <Skeleton class="size-10 shrink-0 rounded-full" />
-                    <div class="min-w-0 flex-1 space-y-2">
-                        <Skeleton class="h-4 w-3/4" />
-                        <Skeleton class="h-3 w-1/2" />
+            <div ref="scrollContainer" class="h-full overflow-y-auto px-2">
+                <template v-if="loading">
+                    <div
+                        v-for="i in 5"
+                        :key="i"
+                        class="flex items-center gap-3 rounded-lg px-3 py-3"
+                    >
+                        <Skeleton class="size-10 shrink-0 rounded-full" />
+                        <div class="min-w-0 flex-1 space-y-2">
+                            <Skeleton class="h-4 w-3/4" />
+                            <Skeleton class="h-3 w-1/2" />
+                        </div>
                     </div>
-                </div>
-            </template>
-            <template v-else>
-                <div
-                    v-if="filtered.length === 0"
-                    class="px-3 py-8 text-center text-sm text-muted-foreground"
-                >
-                    {{
-                        searchQuery
-                            ? 'No conversations found'
-                            : 'No conversations yet'
-                    }}
-                </div>
-                <ConversationItem
-                    v-for="conversation in filtered"
-                    :key="conversation.id"
-                    :conversation="conversation"
-                    :is-active="conversation.id === activeConversationId"
-                    @click="emit('select', conversation.id)"
-                />
-                <div
-                    v-if="hasMore && !searchQuery"
-                    ref="loadMoreSentinel"
-                    class="h-4 shrink-0"
-                    aria-hidden="true"
-                />
-                <div
-                    v-if="loadingMore"
-                    class="flex items-center justify-center py-3 text-sm text-muted-foreground"
-                >
-                    Loading more...
-                </div>
-            </template>
+                </template>
+                <template v-else>
+                    <div
+                        v-if="filtered.length === 0"
+                        class="px-3 py-8 text-center text-sm text-muted-foreground"
+                    >
+                        {{
+                            searchQuery
+                                ? 'No conversations found'
+                                : 'No conversations yet'
+                        }}
+                    </div>
+                    <ConversationItem
+                        v-for="conversation in filtered"
+                        :key="conversation.id"
+                        :conversation="conversation"
+                        :is-active="conversation.id === activeConversationId"
+                        @click="emit('select', conversation.id)"
+                    />
+                    <div
+                        v-if="hasMore && !searchQuery"
+                        ref="loadMoreSentinel"
+                        class="h-4 shrink-0"
+                        aria-hidden="true"
+                    />
+                    <div
+                        v-if="loadingMore"
+                        class="flex items-center justify-center py-3 text-sm text-muted-foreground"
+                    >
+                        Loading more...
+                    </div>
+                </template>
             </div>
 
             <!-- Scroll-for-more indicator (purely visual, non-interactive) -->
             <div
-                v-if="hasMore && !searchQuery && !loading && filtered.length > 0 && !loadingMore"
-                class="pointer-events-none select-none absolute bottom-0 left-0 right-0 flex flex-col items-center bg-gradient-to-t from-background via-background/95 to-transparent pt-6 pb-2"
+                v-if="
+                    hasMore &&
+                    !searchQuery &&
+                    !loading &&
+                    filtered.length > 0 &&
+                    !loadingMore
+                "
+                class="pointer-events-none absolute right-0 bottom-0 left-0 flex flex-col items-center bg-gradient-to-t from-background via-background/95 to-transparent pt-6 pb-2 select-none"
                 role="presentation"
                 aria-hidden="true"
                 tabindex="-1"
             >
-                <span class="flex items-center gap-1 text-xs text-muted-foreground">
+                <span
+                    class="flex items-center gap-1 text-xs text-muted-foreground"
+                >
                     <ChevronDown class="size-3.5 animate-bounce" />
                     Scroll for more
                 </span>

@@ -45,7 +45,7 @@ const scrollToTop = () => {
 
 onMounted(() => {
     window.scrollTo(0, 0);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 });
 
 onUnmounted(() => {
@@ -61,10 +61,7 @@ onUnmounted(() => {
         :image="appOgImage"
         :json-ld="webSiteJsonLd"
     />
-    <Head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <Head />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

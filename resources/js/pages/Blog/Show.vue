@@ -61,10 +61,7 @@ const articleJsonLd = computed(() => {
         og-type="article"
         :json-ld="articleJsonLd"
     />
-    <Head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <Head />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

@@ -1,0 +1,1 @@
+import{c as t}from"./index-CJjjmD5B.js";import{d as o,t as n,R as r,G as l,u as c,z as p}from"./vue-vendor-DDVGRk6H.js";const f=o({__name:"CardTitle",props:{class:{type:[Boolean,null,String,Object,Array]}},setup(e){const s=e;return(a,i)=>(p(),n("h3",{"data-slot":"card-title",class:l(c(t)("leading-none font-semibold",s.class))},[r(a.$slots,"default")],2))}});export{f as _};

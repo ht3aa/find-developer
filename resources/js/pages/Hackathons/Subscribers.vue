@@ -22,10 +22,7 @@ const props = defineProps<{
         :description="`Developers registered for ${hackathon.title}`"
         :canonical="`/hackathons/${hackathon.slug}/subscribers`"
     />
-    <Head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <Head />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

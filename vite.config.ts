@@ -24,4 +24,38 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (
+                        id.includes('node_modules/vue') ||
+                        id.includes('node_modules/@vue') ||
+                        id.includes('node_modules/reka-ui')
+                    ) {
+                        return 'vue-vendor';
+                    }
+                    if (id.includes('node_modules/@inertiajs')) {
+                        return 'inertia-vendor';
+                    }
+                    if (id.includes('node_modules/chart.js')) {
+                        return 'chartjs';
+                    }
+                    if (id.includes('node_modules/gsap')) {
+                        return 'gsap';
+                    }
+                    if (
+                        id.includes('node_modules/@tiptap') ||
+                        id.includes('node_modules/prosemirror') ||
+                        id.includes('node_modules/@tiptap/pm')
+                    ) {
+                        return 'tiptap';
+                    }
+                    if (id.includes('node_modules/@tanstack')) {
+                        return 'tanstack';
+                    }
+                },
+            },
+        },
+    },
 });

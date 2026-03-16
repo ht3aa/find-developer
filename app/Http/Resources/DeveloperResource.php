@@ -27,7 +27,7 @@ class DeveloperResource extends JsonResource
 
         $availabilityType = $developer->availability_type;
         $availabilityTypeArray = is_array($availabilityType)
-            ? collect($availabilityType)->map(fn ($t) => [
+            ? collect($availabilityType)->map(fn($t) => [
                 'value' => is_object($t) && property_exists($t, 'value') ? $t->value : (string) $t,
                 'label' => is_object($t) && method_exists($t, 'getLabel') ? $t->getLabel() : (string) $t,
             ])->values()->all()
@@ -44,62 +44,62 @@ class DeveloperResource extends JsonResource
 
         $recommendations = $developer->relationLoaded('recommendationsReceived')
             ? $developer->recommendationsReceived
-                ->map(fn ($r) => [
-                    'note' => $r->recommendation_note,
-                    'recommender_name' => $r->recommender?->name ?? 'Anonymous',
-                    'recommender_job_title' => $r->recommender?->jobTitle?->name ?? null,
-                ])
-                ->values()
-                ->all()
+            ->map(fn($r) => [
+                'note' => $r->recommendation_note,
+                'recommender_name' => $r->recommender?->name ?? 'Anonymous',
+                'recommender_job_title' => $r->recommender?->jobTitle?->name ?? null,
+            ])
+            ->values()
+            ->all()
             : [];
 
         $workExperience = $developer->relationLoaded('companies')
             ? $developer->companies
-                ->map(function ($company) {
-                    $allRoles = collect([$company])
-                        ->concat($company->children ?: collect())
-                        ->sortByDesc(fn ($r) => $r->start_date?->timestamp ?? 0)
-                        ->values();
+            ->map(function ($company) {
+                $allRoles = collect([$company])
+                    ->concat($company->children ?: collect())
+                    ->sortByDesc(fn($r) => $r->start_date?->timestamp ?? 0)
+                    ->values();
 
-                    $roles = $allRoles
-                        ->map(fn ($r) => [
-                            'job_title' => $r->jobTitle?->name ?? null,
-                            'start_date' => $r->start_date?->format('M Y'),
-                            'end_date' => $r->is_current ? null : ($r->end_date?->format('M Y') ?? null),
-                            'is_current' => $r->is_current,
-                            'duration' => $this->formatDuration($r->start_date, $r->end_date, $r->is_current),
-                            'description' => $r->description,
-                        ])
-                        ->values()
-                        ->all();
+                $roles = $allRoles
+                    ->map(fn($r) => [
+                        'job_title' => $r->jobTitle?->name ?? null,
+                        'start_date' => $r->start_date?->format('M Y'),
+                        'end_date' => $r->is_current ? null : ($r->end_date?->format('M Y') ?? null),
+                        'is_current' => $r->is_current,
+                        'duration' => $this->formatDuration($r->start_date, $r->end_date, $r->is_current),
+                        'description' => $r->description,
+                    ])
+                    ->values()
+                    ->all();
 
-                    $totalDuration = null;
-                    if ($allRoles->count() > 1) {
-                        $totalMonths = (int) $allRoles->sum(fn ($r) => $r->start_date
-                            ? $r->start_date->diffInMonths($r->is_current ? now() : ($r->end_date ?? $r->start_date))
-                            : 0);
-                        $totalDuration = CarbonInterval::months($totalMonths)->cascade()->forHumans();
-                    }
+                $totalDuration = null;
+                if ($allRoles->count() > 1) {
+                    $totalMonths = (int) $allRoles->sum(fn($r) => $r->start_date
+                        ? $r->start_date->diffInMonths($r->is_current ? now() : ($r->end_date ?? $r->start_date))
+                        : 0);
+                    $totalDuration = CarbonInterval::months($totalMonths)->cascade()->forHumans();
+                }
 
-                    return [
-                        'company_name' => $company->company_name,
-                        'roles' => $roles,
-                        'total_duration' => $totalDuration,
-                    ];
-                })
-                ->values()
-                ->all()
+                return [
+                    'company_name' => $company->company_name,
+                    'roles' => $roles,
+                    'total_duration' => $totalDuration,
+                ];
+            })
+            ->values()
+            ->all()
             : [];
 
         $projects = $developer->relationLoaded('projects')
             ? $developer->projects
-                ->map(fn ($p) => [
-                    'title' => $p->title,
-                    'description' => $p->description,
-                    'link' => $p->link,
-                ])
-                ->values()
-                ->all()
+            ->map(fn($p) => [
+                'title' => $p->title,
+                'description' => $p->description,
+                'link' => $p->link,
+            ])
+            ->values()
+            ->all()
             : [];
 
         return [
@@ -129,7 +129,7 @@ class DeveloperResource extends JsonResource
                 'name' => $developer->jobTitle?->name ?? '',
             ],
             'location' => $locationLabel !== null ? ['label' => $locationLabel] : null,
-            'skills' => $developer->skills->map(fn ($s) => ['name' => $s->name])->values()->all(),
+            'skills' => $developer->skills->map(fn($s) => ['name' => $s->name])->values()->all(),
             'availability_type' => $availabilityTypeArray,
             'status' => $developer->status->value,
             'profile_url' => $developer->slug ? url("/developers/{$developer->slug}") : null,
@@ -169,9 +169,9 @@ class DeveloperResource extends JsonResource
         }
         $years = (int) floor($months / 12);
         $remainder = $months % 12;
-        $yrPart = $years ? $years.' yr'.($years > 1 ? 's' : '') : '';
-        $moPart = $remainder ? $remainder.' mo'.($remainder > 1 ? 's' : '') : '';
+        $yrPart = $years ? $years . ' yr' . ($years > 1 ? 's' : '') : '';
+        $moPart = $remainder ? $remainder . ' mo' . ($remainder > 1 ? 's' : '') : '';
 
-        return trim($yrPart.($yrPart && $moPart ? ' and ' : '').$moPart) ?: null;
+        return trim($yrPart . ($yrPart && $moPart ? ' and ' : '') . $moPart) ?: null;
     }
 }

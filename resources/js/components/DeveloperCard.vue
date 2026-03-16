@@ -113,10 +113,7 @@ function formatNum(n: number): string {
     return new Intl.NumberFormat().format(n);
 }
 
-function onThumbnailError(
-    e: Event,
-    videoId: string,
-): void {
+function onThumbnailError(e: Event, videoId: string): void {
     const img = e.target as HTMLImageElement;
     if (img) {
         img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -218,7 +215,9 @@ function onThumbnailError(
                     :alt="`${developer.name} video thumbnail`"
                     class="size-full object-cover"
                     loading="lazy"
-                    @error="onThumbnailError($event, developer.youtube_video_id)"
+                    @error="
+                        onThumbnailError($event, developer.youtube_video_id)
+                    "
                 />
                 <iframe
                     v-else

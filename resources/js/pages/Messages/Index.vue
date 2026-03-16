@@ -32,7 +32,9 @@ const props = defineProps<{
 }>();
 
 const messagesContainer = ref<HTMLElement | null>(null);
-const messageComposerRef = ref<InstanceType<typeof MessageComposer> | null>(null);
+const messageComposerRef = ref<InstanceType<typeof MessageComposer> | null>(
+    null,
+);
 const localConversations = ref<ChatConversation[]>([]);
 const loadingConversations = ref(false);
 const loadingMoreConversations = ref(false);
@@ -95,10 +97,7 @@ async function fetchConversations() {
 }
 
 async function loadMoreConversations() {
-    if (
-        loadingMoreConversations.value ||
-        !hasMoreConversations.value
-    ) {
+    if (loadingMoreConversations.value || !hasMoreConversations.value) {
         return;
     }
     const last = localConversations.value.at(-1);
@@ -222,8 +221,7 @@ async function handleSend(payload: {
         formData.append(`attachments[${i}]`, file);
     });
 
-    const token = document.cookie
-        .match(/XSRF-TOKEN=([^;]+)/)?.[1];
+    const token = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
     const headers: Record<string, string> = {};
     if (token) {
         headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
@@ -244,7 +242,8 @@ async function handleSend(payload: {
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));
             throw new Error(
-                (err as { message?: string })?.message ?? 'Failed to send message',
+                (err as { message?: string })?.message ??
+                    'Failed to send message',
             );
         }
 

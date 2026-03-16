@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import AverageSalaryByExperienceChart from '@/components/charts/AverageSalaryByExperienceChart.vue';
-import DevelopersByAvailabilityTypeChart from '@/components/charts/DevelopersByAvailabilityTypeChart.vue';
-import DevelopersByJobTitleChart from '@/components/charts/DevelopersByJobTitleChart.vue';
-import DevelopersByLocationChart from '@/components/charts/DevelopersByLocationChart.vue';
+import { defineAsyncComponent } from 'vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+
+const AverageSalaryByExperienceChart = defineAsyncComponent(
+    () => import('@/components/charts/AverageSalaryByExperienceChart.vue'),
+);
+const DevelopersByAvailabilityTypeChart = defineAsyncComponent(
+    () => import('@/components/charts/DevelopersByAvailabilityTypeChart.vue'),
+);
+const DevelopersByJobTitleChart = defineAsyncComponent(
+    () => import('@/components/charts/DevelopersByJobTitleChart.vue'),
+);
+const DevelopersByLocationChart = defineAsyncComponent(
+    () => import('@/components/charts/DevelopersByLocationChart.vue'),
+);
 
 type LocationPoint = { label: string; count: number };
 type AvailabilityPoint = { label: string; count: number };
@@ -28,10 +38,7 @@ defineProps<{
         description="Explore developer statistics: locations, availability types, salary by experience, and job titles."
         canonical="/charts"
     />
-    <Head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <Head />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

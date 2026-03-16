@@ -1,0 +1,1 @@
+import{d as r,C as s,u as t,av as l,W as n,x as i,R as p,z as g}from"./vue-vendor-DDVGRk6H.js";const u=r({__name:"DialogTrigger",props:{asChild:{type:Boolean},as:{}},setup(a){const e=a;return(o,d)=>(g(),s(t(l),n({"data-slot":"dialog-trigger"},e),{default:i(()=>[p(o.$slots,"default")]),_:3},16))}});export{u as _};

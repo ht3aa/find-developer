@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
 import { ArrowDown, Loader2 } from 'lucide-vue-next';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import DotGrid from '@/components/animations/DotGrid.vue';
+import {
+    computed,
+    defineAsyncComponent,
+    onMounted,
+    onUnmounted,
+    ref,
+} from 'vue';
 import Duck from '@/components/Duck.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+const DotGrid = defineAsyncComponent(
+    () => import('@/components/animations/DotGrid.vue'),
+);
 
 const QURAN_API_BASE = 'https://quranapi.pages.dev/api';
 const VERSE_REFRESH_INTERVAL_MS = 60_000;

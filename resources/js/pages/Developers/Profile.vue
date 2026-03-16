@@ -315,9 +315,7 @@ function confirmExperienceChangeAndSubmit(): void {
     <Head title="Developer Profile" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4"
-        >
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <div
@@ -428,12 +426,11 @@ function confirmExperienceChangeAndSubmit(): void {
                         <DialogHeader>
                             <DialogTitle>Experience changed</DialogTitle>
                             <DialogDescription>
-                                Changing your years of experience will
-                                remove your
-                                <strong>Experience Validated</strong> badge.
-                                You will need to re-schedule a meeting with
-                                an admin to get the badge again. Do you want
-                                to continue?
+                                Changing your years of experience will remove
+                                your
+                                <strong>Experience Validated</strong> badge. You
+                                will need to re-schedule a meeting with an admin
+                                to get the badge again. Do you want to continue?
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter class="gap-2 sm:gap-0">
@@ -443,9 +440,7 @@ function confirmExperienceChangeAndSubmit(): void {
                             >
                                 Cancel
                             </Button>
-                            <Button
-                                @click="confirmExperienceChangeAndSubmit"
-                            >
+                            <Button @click="confirmExperienceChangeAndSubmit">
                                 Continue
                             </Button>
                         </DialogFooter>

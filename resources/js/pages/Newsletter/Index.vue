@@ -64,11 +64,15 @@ const searchQuery = ref(props.filters.search ?? '');
 const debouncedSearch = refDebounced(searchQuery, 300);
 
 watch(debouncedSearch, (value) => {
-    router.get(newsletterIndex().url, { search: value || undefined }, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-    });
+    router.get(
+        newsletterIndex().url,
+        { search: value || undefined },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 });
 
 const page = usePage();
@@ -254,7 +258,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             />
 
             <div
-                v-else-if="(filters?.search ?? '')"
+                v-else-if="filters?.search ?? ''"
                 class="flex flex-col items-center justify-center rounded-xl border border-dashed py-12"
             >
                 <Search class="mb-4 h-12 w-12 text-muted-foreground" />
