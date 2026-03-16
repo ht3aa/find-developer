@@ -1,10 +1,19 @@
 import type { ColumnDef } from '@tanstack/vue-table';
+import { MoreHorizontal, Trash2 } from 'lucide-vue-next';
 import { h } from 'vue';
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export type SubscriberRow = {
     id: number;
     email: string;
     subscribed_at: string;
+    delete_url: string;
 };
 
 const checkboxClass =
@@ -13,6 +22,7 @@ const checkboxClass =
 export function getColumns(
     rowIndexOffset: number,
     formatDate: (iso: string) => string,
+    onDelete: (row: SubscriberRow) => void,
 ): ColumnDef<SubscriberRow>[] {
     return [
         {
@@ -79,6 +89,47 @@ export function getColumns(
                     },
                     formatDate(row.original.subscribed_at),
                 ),
+            enableSorting: false,
+        },
+        {
+            id: 'actions',
+            header: '',
+            cell: ({ row }) =>
+                h(DropdownMenu, null, {
+                    default: () => [
+                        h(DropdownMenuTrigger, { asChild: true }, () =>
+                            h(
+                                Button,
+                                {
+                                    variant: 'ghost',
+                                    size: 'icon',
+                                    class: 'h-8 w-8',
+                                },
+                                () => [
+                                    h(
+                                        'span',
+                                        { class: 'sr-only' },
+                                        'Open menu',
+                                    ),
+                                    h(MoreHorizontal, { class: 'h-4 w-4' }),
+                                ],
+                            ),
+                        ),
+                        h(DropdownMenuContent, { align: 'end' }, () => [
+                            h(
+                                DropdownMenuItem,
+                                {
+                                    class: 'text-destructive focus:text-destructive',
+                                    onClick: () => onDelete(row.original),
+                                },
+                                () => [
+                                    h(Trash2, { class: 'mr-2 h-4 w-4' }),
+                                    'Delete',
+                                ],
+                            ),
+                        ]),
+                    ],
+                }),
             enableSorting: false,
         },
     ];

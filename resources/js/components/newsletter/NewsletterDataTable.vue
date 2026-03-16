@@ -29,8 +29,9 @@ const props = withDefaults(
         data: SubscriberRow[];
         from: number | null;
         bulkEmailUrl?: string;
+        onDelete?: (row: SubscriberRow) => void;
     }>(),
-    { bulkEmailUrl: '' },
+    { bulkEmailUrl: '', onDelete: undefined },
 );
 
 function formatDate(iso: string): string {
@@ -47,7 +48,10 @@ function formatDate(iso: string): string {
 const rowIndexOffset = computed(() =>
     props.from != null ? props.from - 1 : 0,
 );
-const columns = computed(() => getColumns(rowIndexOffset.value, formatDate));
+const onDelete = (row: SubscriberRow) => props.onDelete?.(row);
+const columns = computed(() =>
+    getColumns(rowIndexOffset.value, formatDate, onDelete),
+);
 
 const rowSelection = ref<Record<string, boolean>>({});
 
@@ -154,7 +158,9 @@ function submitBulkEmail() {
                                     ? 'w-[80px]'
                                     : header.id === 'subscribed_at'
                                       ? 'w-[180px]'
-                                      : undefined
+                                      : header.id === 'actions'
+                                        ? 'w-[70px]'
+                                        : undefined
                             "
                         >
                             <FlexRender

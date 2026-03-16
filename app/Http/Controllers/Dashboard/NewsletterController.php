@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\BulkEmailAllNewsletterRequest;
 use App\Http\Requests\Dashboard\BulkEmailNewsletterRequest;
+use App\Http\Requests\Dashboard\NewsletterDestroyRequest;
 use App\Models\Newsletter;
 use App\Notifications\MailtrapNotification;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +37,7 @@ class NewsletterController extends Controller
                 'id' => $n->id,
                 'email' => $n->email,
                 'subscribed_at' => $n->created_at->toIso8601String(),
+                'delete_url' => route('dashboard.newsletter.destroy', $n),
             ]);
 
         return Inertia::render('Newsletter/Index', [
@@ -117,5 +119,17 @@ class NewsletterController extends Controller
         return redirect()
             ->route('dashboard.newsletter.index')
             ->with('success', 'Bulk email sent to '.$subscribers->count().' subscriber(s) via Mailtrap.');
+    }
+
+    /**
+     * Remove a newsletter subscriber.
+     */
+    public function destroy(NewsletterDestroyRequest $request, Newsletter $newsletter): RedirectResponse
+    {
+        $newsletter->delete();
+
+        return redirect()
+            ->route('dashboard.newsletter.index')
+            ->with('success', 'Subscriber removed successfully.');
     }
 }

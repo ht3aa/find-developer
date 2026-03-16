@@ -169,3 +169,36 @@ test('super admin can send bulk email to selected newsletter subscribers', funct
     Notification::assertSentTo($a, MailtrapNotification::class);
     Notification::assertSentTo($b, MailtrapNotification::class);
 });
+
+test('dashboard newsletter destroy redirects guest to login', function () {
+    $newsletter = Newsletter::factory()->create(['email' => 'sub@example.com']);
+
+    $response = $this->delete(route('dashboard.newsletter.destroy', $newsletter));
+
+    $response->assertRedirect(route('login'));
+    expect(Newsletter::find($newsletter->id))->not->toBeNull();
+});
+
+test('dashboard newsletter destroy returns 403 for non super admin', function () {
+    $user = User::factory()->create(['email' => 'nonsuper@example.com']);
+    $newsletter = Newsletter::factory()->create(['email' => 'sub@example.com']);
+    $this->actingAs($user);
+
+    $response = $this->delete(route('dashboard.newsletter.destroy', $newsletter));
+
+    $response->assertForbidden();
+    expect(Newsletter::find($newsletter->id))->not->toBeNull();
+});
+
+test('super admin can delete a newsletter subscriber', function () {
+    $superEmail = 'superadmin@example.com';
+    config(['app.super_admin_emails' => $superEmail]);
+    $user = User::factory()->create(['email' => $superEmail]);
+    $newsletter = Newsletter::factory()->create(['email' => 'sub@example.com']);
+
+    $response = $this->actingAs($user)->delete(route('dashboard.newsletter.destroy', $newsletter));
+
+    $response->assertRedirect(route('dashboard.newsletter.index'));
+    $response->assertSessionHas('success');
+    expect(Newsletter::find($newsletter->id))->toBeNull();
+});

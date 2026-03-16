@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
             Route::get('newsletter', [DashboardNewsletterController::class, 'index'])->name('dashboard.newsletter.index');
             Route::post('newsletter/bulk-email', [DashboardNewsletterController::class, 'bulkEmail'])->name('dashboard.newsletter.bulk-email');
             Route::post('newsletter/bulk-email-all', [DashboardNewsletterController::class, 'bulkEmailAll'])->name('dashboard.newsletter.bulk-email-all');
+            Route::delete('newsletter/{newsletter}', [DashboardNewsletterController::class, 'destroy'])->name('dashboard.newsletter.destroy');
             Route::resource('developer-offers', DashboardDeveloperOfferController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::get('activity-log', [ActivityLogController::class, 'index'])->name('dashboard.activity-log.index');
             Route::post('activity-log/suspend-causer', [ActivityLogController::class, 'suspendCauser'])->name('dashboard.activity-log.suspend-causer');

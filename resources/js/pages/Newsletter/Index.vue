@@ -31,6 +31,7 @@ type Subscriber = {
     id: number;
     email: string;
     subscribed_at: string;
+    delete_url: string;
 };
 
 type PaginationLink = {
@@ -109,6 +110,18 @@ function submitBulkEmailAll() {
             },
         },
     );
+}
+
+function confirmDelete(subscriber: Subscriber) {
+    if (
+        window.confirm(
+            `Are you sure you want to remove "${subscriber.email}" from the newsletter?`,
+        )
+    ) {
+        router.delete(subscriber.delete_url, {
+            preserveScroll: true,
+        });
+    }
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -255,6 +268,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 :data="subscribers.data"
                 :from="subscribers.from"
                 :bulk-email-url="bulkEmailUrl"
+                :on-delete="confirmDelete"
             />
 
             <div
