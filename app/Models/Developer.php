@@ -72,6 +72,11 @@ class Developer extends Model
         'availability_type' => AvailabilityTypeArray::class,
     ];
 
+    protected $hidden = [
+        'expected_salary_from',
+        'expected_salary_to',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -46,20 +46,23 @@ Route::get('/robots.txt', function () {
     ]);
 })->name('robots');
 
-Route::get('/', [DeveloperController::class, 'index'])->name('home');
-Route::post('newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
-Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
-Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.index');
-Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
-Route::get('hackathons', [PublicHackathonController::class, 'index'])->name('hackathons.public');
-Route::get('hackathons/{hackathon:slug}', [PublicHackathonController::class, 'show'])->name('hackathons.show');
-Route::get('hackathons/{hackathon:slug}/teams', [PublicHackathonController::class, 'teams'])
-    ->name('hackathons.teams.public');
-Route::get('hackathons/{hackathon:slug}/subscribers', [PublicHackathonController::class, 'subscribers'])
-    ->name('hackathons.subscribers.public');
-Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
-Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('throttle:web')->group(function () {
+    Route::get('/', [DeveloperController::class, 'index'])->name('home');
+    Route::post('newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+    Route::get('badges', [PublicBadgeController::class, 'index'])->name('badges.public');
+    Route::get('blogs', [PublicBlogController::class, 'index'])->name('blogs.public.index');
+    Route::get('blogs/{slug}', [PublicBlogController::class, 'show'])->name('blogs.public.show')->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+    Route::get('hackathons', [PublicHackathonController::class, 'index'])->name('hackathons.public');
+    Route::get('hackathons/{hackathon:slug}', [PublicHackathonController::class, 'show'])->name('hackathons.show');
+    Route::get('hackathons/{hackathon:slug}/teams', [PublicHackathonController::class, 'teams'])
+        ->name('hackathons.teams.public');
+    Route::get('hackathons/{hackathon:slug}/subscribers', [PublicHackathonController::class, 'subscribers'])
+        ->name('hackathons.subscribers.public');
+    Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
+    Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
+});
+
+Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::get('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'show'])->name('developers.recommend');
     Route::post('developers/{developer:slug}/recommend', [DeveloperRecommendationController::class, 'store'])->name('developers.recommendations.store');
     Route::post('developer-offers', [DeveloperOfferController::class, 'store'])->name('developer-offers.store');
@@ -73,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('messages/{conversation}', [ChatController::class, 'sendMessage'])->name('messages.send');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
