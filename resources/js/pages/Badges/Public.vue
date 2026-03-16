@@ -33,10 +33,7 @@ function toggleExpand(badgeId: number) {
         description="Badges represent skills, achievements, and certifications earned by our developers. Browse the full catalog."
         canonical="/badges"
     />
-    <Head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    </Head>
+    <Head />
     <div class="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
 

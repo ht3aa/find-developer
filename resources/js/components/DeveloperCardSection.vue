@@ -12,11 +12,16 @@ import {
     Sparkles,
     Users,
 } from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
-import DeveloperCompareDialog from '@/components/DeveloperCompareDialog.vue';
-import DeveloperOfferForm from '@/components/DeveloperOfferForm.vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
+
+const DeveloperCompareDialog = defineAsyncComponent(
+    () => import('@/components/DeveloperCompareDialog.vue'),
+);
+const DeveloperOfferForm = defineAsyncComponent(
+    () => import('@/components/DeveloperOfferForm.vue'),
+);
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
