@@ -72,10 +72,6 @@ class Developer extends Model
         'availability_type' => AvailabilityTypeArray::class,
     ];
 
-    protected $hidden = [
-        'expected_salary_from',
-        'expected_salary_to',
-    ];
 
     public function user(): BelongsTo
     {
@@ -158,7 +154,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => StorageHelper::url($this->cv_path),
+            get: fn() => StorageHelper::url($this->cv_path),
         );
     }
 
