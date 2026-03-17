@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
 import { Bug, ChevronUp } from 'lucide-vue-next';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import DeveloperCardSection from '@/components/DeveloperCardSection.vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue';
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+
+const DeveloperCardSection = defineAsyncComponent(
+    () => import('@/components/DeveloperCardSection.vue'),
+);
 
 const page = usePage();
 const flashSuccess = computed(
@@ -93,9 +96,27 @@ onUnmounted(() => {
             :newsletter-store-url="newsletterStoreUrl || undefined"
         />
 
-        <DeveloperCardSection
-            :developer-offers-store-url="developerOffersStoreUrl ?? undefined"
-        />
+        <Suspense>
+            <DeveloperCardSection
+                :developer-offers-store-url="
+                    developerOffersStoreUrl ?? undefined
+                "
+            />
+            <template #fallback>
+                <section
+                    id="developers"
+                    class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+                >
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div
+                            v-for="i in 6"
+                            :key="i"
+                            class="h-64 animate-pulse rounded-lg border border-border bg-muted/50"
+                        />
+                    </div>
+                </section>
+            </template>
+        </Suspense>
 
         <Footer />
 

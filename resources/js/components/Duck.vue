@@ -5,6 +5,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useQuackAudio } from '@/composables/useQuackAudio';
 
 const props = withDefaults(
     defineProps<{
@@ -17,15 +18,7 @@ const props = withDefaults(
     },
 );
 
-const quackAudio = new Audio('/sound/quack.mp3');
-
-function playQuack(): void {
-    quackAudio.currentTime = 0;
-    quackAudio.playbackRate = 1.5;
-    quackAudio.play().catch(() => {
-        // Ignore autoplay policy / user gesture requirements
-    });
-}
+const { playQuack } = useQuackAudio();
 </script>
 
 <template>

@@ -54,6 +54,12 @@ export default defineConfig({
                     if (id.includes('node_modules/@tanstack')) {
                         return 'tanstack';
                     }
+                    if (
+                        id.includes('resources/js/components/ui/') &&
+                        !id.includes('node_modules')
+                    ) {
+                        return 'ui-components';
+                    }
                 },
             },
         },
