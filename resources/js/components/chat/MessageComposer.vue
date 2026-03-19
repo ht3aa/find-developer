@@ -13,9 +13,11 @@ import {
     Paperclip,
     SendHorizontal,
     UserCircle,
+    UserRoundSearch,
     X,
 } from 'lucide-vue-next';
 import { nextTick, ref, watch } from 'vue';
+import DeveloperMentionPickerDialog from '@/components/chat/DeveloperMentionPickerDialog.vue';
 import { Button } from '@/components/ui/button';
 import {
     Tooltip,
@@ -43,6 +45,7 @@ const emit = defineEmits<{
 
 const attachments = ref<File[]>([]);
 const fileInput = ref<HTMLInputElement | null>(null);
+const developerMentionOpen = ref(false);
 
 const editor = useEditor({
     content: '',
@@ -129,6 +132,36 @@ function insertLink(url: string, label: string) {
             `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`,
         )
         .run();
+}
+
+function insertDeveloperProfileLink(profileUrl: string, displayName: string) {
+    if (!editor.value) return;
+    editor.value
+        .chain()
+        .focus()
+        .insertContent({
+            type: 'text',
+            text: displayName,
+            marks: [
+                {
+                    type: 'link',
+                    attrs: {
+                        href: profileUrl,
+                        target: '_blank',
+                        rel: 'noopener noreferrer',
+                    },
+                },
+            ],
+        })
+        .insertContent(' ')
+        .run();
+}
+
+function onDeveloperMentionSelect(payload: {
+    profileUrl: string;
+    displayName: string;
+}) {
+    insertDeveloperProfileLink(payload.profileUrl, payload.displayName);
 }
 </script>
 
@@ -237,6 +270,25 @@ function insertLink(url: string, label: string) {
                 <Code class="size-3.5" />
             </Button>
 
+            <div class="mx-1 h-4 w-px bg-border" />
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger as-child>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="h-7 w-7"
+                            :disabled="disabled"
+                            @click="developerMentionOpen = true"
+                        >
+                            <UserRoundSearch class="size-3.5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Mention a developer</TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+
             <template v-if="profileUrl || cvUrl">
                 <div class="mx-1 h-4 w-px bg-border" />
                 <TooltipProvider>
@@ -315,5 +367,10 @@ function insertLink(url: string, label: string) {
                 <SendHorizontal class="size-4" />
             </Button>
         </div>
+
+        <DeveloperMentionPickerDialog
+            v-model:open="developerMentionOpen"
+            @select="onDeveloperMentionSelect"
+        />
     </div>
 </template>
