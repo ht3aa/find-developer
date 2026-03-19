@@ -27,11 +27,7 @@ const DeveloperFiltersPanelContent = defineAsyncComponent(
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
     Tooltip,
     TooltipContent,
@@ -374,6 +370,27 @@ onMounted(() => {
         id="developers"
         class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
+        <!-- Subscribe note -->
+        <div
+            class="mb-8 rounded-xl border-2 border-primary/30 bg-primary/10 p-6 text-center sm:p-8"
+        >
+            <p class="text-lg font-semibold text-foreground sm:text-xl">
+                Unlock direct contact details & CVs
+            </p>
+            <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                Subscribers get access to developer phone numbers and resumes —
+                connect faster with the right talent for your team.
+            </p>
+            <a
+                href="mailto:ht3aa2001@gmail.com?subject=Subscription%20Inquiry%20-%20Phone%20%26%20CV"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+            >
+                Get access — contact ht3aa2001@gmail.com
+            </a>
+        </div>
+
         <div
             v-if="stats && !developerIds?.length"
             class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
@@ -605,30 +622,20 @@ onMounted(() => {
                                     @update:filter-job-title="
                                         filterJobTitle = $event
                                     "
-                                    @update:filter-skill="
-                                        filterSkill = $event
-                                    "
-                                    @update:filter-badge="
-                                        filterBadge = $event
-                                    "
+                                    @update:filter-skill="filterSkill = $event"
+                                    @update:filter-badge="filterBadge = $event"
                                     @update:filter-availability-type="
                                         filterAvailabilityType = $event
                                     "
                                     @update:filter-has-urls="
                                         filterHasUrls = $event
                                     "
-                                    @update:is-available="
-                                        isAvailable = $event
-                                    "
+                                    @update:is-available="isAvailable = $event"
                                     @update:is-recommended="
                                         isRecommended = $event
                                     "
-                                    @update:years-min="
-                                        yearsMin = $event
-                                    "
-                                    @update:years-max="
-                                        yearsMax = $event
-                                    "
+                                    @update:years-min="yearsMin = $event"
+                                    @update:years-max="yearsMax = $event"
                                     @update:job-title-select-open="
                                         jobTitleSelectOpen = $event
                                     "

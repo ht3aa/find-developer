@@ -75,6 +75,7 @@ class DeveloperPolicy
     {
         return $user->can('View:DeveloperProfile') || $user->isSuperAdmin();
     }
+
     public function updateDeveloperProfile(User $user, ?Developer $developer = null): bool
     {
         return $user->can('Update:DeveloperProfile') || $user->isSuperAdmin();
@@ -83,5 +84,15 @@ class DeveloperPolicy
     public function recommend(User $user, Developer $developer): bool
     {
         return $user->can('Recommend:Developers') || $user->isSuperAdmin();
+    }
+
+    public function viewPhone(User $user, ?Developer $developer = null): bool
+    {
+        return $user->can('ViewPhone:Developers') || $user->isSuperAdmin();
+    }
+
+    public function viewCv(User $user, ?Developer $developer = null): bool
+    {
+        return $user->can('ViewCv:Developers') || $user->isSuperAdmin();
     }
 }

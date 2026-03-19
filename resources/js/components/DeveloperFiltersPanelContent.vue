@@ -1,28 +1,25 @@
 <script setup lang="ts">
 import { Check, Copy, Sparkles, Users } from 'lucide-vue-next';
+import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    SheetDescription,
-    SheetTitle,
-} from '@/components/ui/sheet';
-import SearchableSelect from '@/components/SearchableSelect.vue';
+import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import {
     availabilityTypeOptions,
     hasUrlsOptions,
 } from '@/utils/developerEnums';
 
-function normalizeSelectValue(
-    event: string | string[] | null,
-): string[] {
+function normalizeSelectValue(event: string | string[] | null): string[] {
     if (event == null) return [];
     return Array.isArray(event) ? event : event ? [event] : [];
 }
 
 function getSelectValue(event: Event): string {
     const target = event.target;
-    return target && 'value' in target ? String((target as { value: string }).value) : 'all';
+    return target && 'value' in target
+        ? String((target as { value: string }).value)
+        : 'all';
 }
 
 const props = defineProps<{
@@ -87,9 +84,7 @@ const emit = defineEmits<{
                     {{ props.paginationTotal }}
                 </span>
                 <span class="text-sm text-muted-foreground">
-                    developer{{
-                        props.paginationTotal === 1 ? '' : 's'
-                    }}
+                    developer{{ props.paginationTotal === 1 ? '' : 's' }}
                 </span>
             </div>
         </div>
@@ -110,7 +105,10 @@ const emit = defineEmits<{
                     multiple
                     :max-options="50"
                     @update:model-value="
-                        emit('update:filterJobTitle', normalizeSelectValue($event))
+                        emit(
+                            'update:filterJobTitle',
+                            normalizeSelectValue($event),
+                        )
                     "
                     @update:open="emit('update:jobTitleSelectOpen', $event)"
                 />
@@ -148,9 +146,7 @@ const emit = defineEmits<{
                 />
             </div>
             <div class="space-y-2">
-                <Label for="filter-availability-type"
-                    >Availability type</Label
-                >
+                <Label for="filter-availability-type">Availability type</Label>
                 <SearchableSelect
                     id="filter-availability-type"
                     :model-value="props.filterAvailabilityType"
@@ -179,7 +175,10 @@ const emit = defineEmits<{
                     placeholder="e.g. GitHub, LinkedIn"
                     multiple
                     @update:model-value="
-                        emit('update:filterHasUrls', normalizeSelectValue($event))
+                        emit(
+                            'update:filterHasUrls',
+                            normalizeSelectValue($event),
+                        )
                     "
                     @update:open="emit('update:hasUrlsSelectOpen', $event)"
                 />
@@ -203,7 +202,9 @@ const emit = defineEmits<{
                     id="filter-is-recommended"
                     :value="props.isRecommended"
                     class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-                    @change="emit('update:isRecommended', getSelectValue($event))"
+                    @change="
+                        emit('update:isRecommended', getSelectValue($event))
+                    "
                 >
                     <option value="all">All</option>
                     <option value="1">Recommended</option>
@@ -211,9 +212,7 @@ const emit = defineEmits<{
                 </select>
             </div>
             <div class="space-y-2">
-                <Label for="filter-years-min"
-                    >Min. years of experience</Label
-                >
+                <Label for="filter-years-min">Min. years of experience</Label>
                 <Input
                     id="filter-years-min"
                     :model-value="props.yearsMin"
@@ -227,9 +226,7 @@ const emit = defineEmits<{
                 />
             </div>
             <div class="space-y-2">
-                <Label for="filter-years-max"
-                    >Max. years of experience</Label
-                >
+                <Label for="filter-years-max">Max. years of experience</Label>
                 <Input
                     id="filter-years-max"
                     :model-value="props.yearsMax"
@@ -264,10 +261,7 @@ const emit = defineEmits<{
                     <div
                         class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
                     >
-                        <Sparkles
-                            class="size-5"
-                            aria-hidden="true"
-                        />
+                        <Sparkles class="size-5" aria-hidden="true" />
                     </div>
                     <div class="min-w-0 flex-1 space-y-1">
                         <Label

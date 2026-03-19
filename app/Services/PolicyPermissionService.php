@@ -126,6 +126,8 @@ class PolicyPermissionService
             'DeleteAny' => 'Delete any',
             'Restore' => 'Restore',
             'ForceDelete' => 'Force delete',
+            'ViewPhone' => 'View phone',
+            'ViewCv' => 'View CV',
         ];
 
         return $labels[$ability] ?? preg_replace('/([a-z])([A-Z])/', '$1 $2', $ability);

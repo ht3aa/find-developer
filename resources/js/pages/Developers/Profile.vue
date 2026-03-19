@@ -512,6 +512,12 @@ function confirmExperienceChangeAndSubmit(): void {
                                             placeholder="+964..."
                                             class="transition-colors focus-visible:ring-2"
                                         />
+                                        <p
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            Hidden from public view — only
+                                            visible to recruiters.
+                                        </p>
                                     </div>
 
                                     <div class="grid gap-2">
@@ -637,18 +643,26 @@ function confirmExperienceChangeAndSubmit(): void {
                                         </div>
                                     </div>
 
-                                    <FileUpload
-                                        id="cv"
-                                        ref="cvUploadRef"
-                                        v-model="cvFile"
-                                        label="CV (PDF, max 10MB)"
-                                        accept=".pdf,application/pdf"
-                                        :existing-url="
-                                            formData?.cv_path_url ?? null
-                                        "
-                                        existing-label="View current CV"
-                                        :error="formErrors.cv"
-                                    />
+                                    <div class="grid gap-2">
+                                        <FileUpload
+                                            id="cv"
+                                            ref="cvUploadRef"
+                                            v-model="cvFile"
+                                            label="CV (PDF, max 10MB)"
+                                            accept=".pdf,application/pdf"
+                                            :existing-url="
+                                                formData?.cv_path_url ?? null
+                                            "
+                                            existing-label="View current CV"
+                                            :error="formErrors.cv"
+                                        />
+                                        <p
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            Hidden from public view — only
+                                            visible to recruiters.
+                                        </p>
+                                    </div>
 
                                     <Separator />
 
