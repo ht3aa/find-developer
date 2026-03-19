@@ -69,12 +69,14 @@ class HandleInertiaRequests extends Middleware
             'viewDeveloperOffers' => $user->isSuperAdmin(),
             'viewNewsletter' => $user->isSuperAdmin(),
             'viewConversations' => $user->isSuperAdmin(),
+            'viewDeveloperPhone' => $user->can('viewPhone', Developer::class),
+            'viewDeveloperCv' => $user->can('viewCv', Developer::class),
         ] : [];
 
         $appUrl = rtrim(config('app.url'), '/');
         $ogImage = config('app.og_image');
         if ($ogImage && ! str_starts_with($ogImage, 'http')) {
-            $ogImage = $appUrl . ($ogImage[0] === '/' ? '' : '/') . $ogImage;
+            $ogImage = $appUrl.($ogImage[0] === '/' ? '' : '/').$ogImage;
         }
 
         return [
@@ -89,11 +91,11 @@ class HandleInertiaRequests extends Middleware
                 'can' => $can,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'unreadMessagesCount' => fn() => $user ? $this->getUnreadMessagesCount($user) : 0,
+            'unreadMessagesCount' => fn () => $user ? $this->getUnreadMessagesCount($user) : 0,
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error' => fn() => $request->session()->get('error'),
-                'info' => fn() => $request->session()->get('info'),
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
             ],
         ];
     }
@@ -103,6 +105,6 @@ class HandleInertiaRequests extends Middleware
         return $user->conversations()
             ->whereNotNull('last_message_id')
             ->get()
-            ->sum(fn(Conversation $c) => $c->unreadCountFor($user->id));
+            ->sum(fn (Conversation $c) => $c->unreadCountFor($user->id));
     }
 }
