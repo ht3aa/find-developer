@@ -100,7 +100,6 @@ function shouldTruncate(description: string | null | undefined): boolean {
 function truncatedText(text: string): string {
     return text.slice(0, DESCRIPTION_TRUNCATE_LENGTH).trim() + '…';
 }
-const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 const isGuest = computed(() => !auth.value?.user);
 const currentUserId = computed(
     () => (page.props.auth as { user?: { id: number } })?.user?.id,
@@ -129,12 +128,9 @@ function startChat() {
 }
 
 const showSalary = computed(() => {
-    if (
-        !props.developer.expected_salary_from &&
-        !props.developer.expected_salary_to
-    )
-        return false;
-    return isAdmin.value;
+    const from = props.developer.expected_salary_from;
+    const to = props.developer.expected_salary_to;
+    return from != null || to != null;
 });
 
 const salaryLabel = computed(() => {
@@ -142,16 +138,16 @@ const salaryLabel = computed(() => {
     const from = d.expected_salary_from;
     const to = d.expected_salary_to;
     const cur = d.currency ?? '';
-    if (from && to) return `${formatNum(from)} – ${formatNum(to)} ${cur}/mo`;
-    if (from) return `From ${formatNum(from)} ${cur}/yr`;
-    if (to) return `Up to ${formatNum(to)} ${cur}/yr`;
+    if (from != null && to != null) {
+        return `${from} – ${to} ${cur}`;
+    }
+    if (from != null) {
+        return `From ${from} ${cur}`;
+    }
+    if (to != null) {
+        return `Up to ${to} ${cur}`;
+    }
     return '';
-});
-
-const subscriptionContactEmail = 'ht3aa2001@gmail.com';
-
-const subscribeToSeeSalaryUrl = computed(() => {
-    return `mailto:${subscriptionContactEmail}?subject=Subscription%20Inquiry`;
 });
 
 const experienceLabel = computed(() => {
@@ -166,9 +162,6 @@ const initials = computed(() =>
         .join(''),
 );
 
-function formatNum(n: number): string {
-    return new Intl.NumberFormat().format(n);
-}
 </script>
 
 <template>
@@ -967,30 +960,14 @@ function formatNum(n: number): string {
                                         </a>
                                     </dd>
                                 </div>
-                                <div
-                                    v-if="
-                                        developer.expected_salary_from ||
-                                        developer.expected_salary_to
-                                    "
-                                >
+                                <div v-if="showSalary">
                                     <dt class="text-muted-foreground">
                                         Salary
                                     </dt>
                                     <dd class="mt-0.5">
-                                        <template v-if="showSalary">
-                                            <span class="font-semibold">{{
-                                                salaryLabel
-                                            }}</span>
-                                        </template>
-                                        <a
-                                            v-else
-                                            :href="subscribeToSeeSalaryUrl"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="font-semibold text-primary hover:underline"
-                                        >
-                                            Subscribe to see salary
-                                        </a>
+                                        <span class="font-semibold">{{
+                                            salaryLabel
+                                        }}</span>
                                     </dd>
                                 </div>
                             </dl>

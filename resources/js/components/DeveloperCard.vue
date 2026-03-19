@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import {
     Briefcase,
     Check,
@@ -30,14 +30,12 @@ const props = withDefaults(
         developer: Developer;
         currentUserDeveloper?: Developer | null;
         recommendedDeveloperIds?: number[];
-        contactEmail?: string;
         selectable?: boolean;
         modelValue?: boolean;
     }>(),
     {
         currentUserDeveloper: null,
         recommendedDeveloperIds: () => [],
-        contactEmail: '',
         selectable: false,
         modelValue: false,
     },
@@ -52,12 +50,6 @@ function toggleSelect(): void {
         emit('update:modelValue', !props.modelValue);
     }
 }
-
-const page = usePage();
-const auth = computed(
-    () => page.props.auth as { user?: { is_admin?: boolean } } | undefined,
-);
-const isAdmin = computed(() => auth.value?.user?.is_admin === true);
 
 const skillsExpanded = ref(false);
 const isCardHovered = ref(false);
@@ -85,12 +77,9 @@ const badgesPageUrl = computed(
 );
 
 const showSalary = computed(() => {
-    if (
-        !props.developer.expected_salary_from &&
-        !props.developer.expected_salary_to
-    )
-        return false;
-    return isAdmin.value;
+    const from = props.developer.expected_salary_from;
+    const to = props.developer.expected_salary_to;
+    return from != null || to != null;
 });
 
 const salaryLabel = computed(() => {
@@ -98,22 +87,17 @@ const salaryLabel = computed(() => {
     const from = d.expected_salary_from;
     const to = d.expected_salary_to;
     const cur = d.currency ?? '';
-    if (from && to) return `${formatNum(from)} - ${formatNum(to)} ${cur}/month`;
-    if (from) return `From ${formatNum(from)} ${cur}/year`;
-    if (to) return `Up to ${formatNum(to)} ${cur}/year`;
+    if (from != null && to != null) {
+        return `${from} – ${to} ${cur}`;
+    }
+    if (from != null) {
+        return `From ${from} ${cur}`;
+    }
+    if (to != null) {
+        return `Up to ${to} ${cur}`;
+    }
     return '';
 });
-
-const subscriptionContactEmail = 'ht3aa2001@gmail.com';
-
-const subscribeToSeeSalaryUrl = computed(() => {
-    const email = props.contactEmail || subscriptionContactEmail;
-    return `mailto:${email}?subject=Subscription%20Inquiry`;
-});
-
-function formatNum(n: number): string {
-    return new Intl.NumberFormat().format(n);
-}
 
 function onThumbnailError(e: Event, videoId: string): void {
     const img = e.target as HTMLImageElement;
@@ -341,10 +325,7 @@ function onThumbnailError(e: Event, videoId: string): void {
 
                 <!-- Salary -->
                 <li
-                    v-if="
-                        developer.expected_salary_from ||
-                        developer.expected_salary_to
-                    "
+                    v-if="showSalary"
                     class="flex items-center gap-3 text-muted-foreground"
                 >
                     <span
@@ -352,21 +333,9 @@ function onThumbnailError(e: Event, videoId: string): void {
                     >
                         <span class="text-sm leading-none font-bold">$</span>
                     </span>
-                    <template v-if="showSalary">
-                        <span class="font-medium text-foreground">{{
-                            salaryLabel
-                        }}</span>
-                    </template>
-                    <template v-else>
-                        <a
-                            :href="subscribeToSeeSalaryUrl"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-medium text-foreground transition-colors hover:text-primary"
-                        >
-                            Subscribe to see salary
-                        </a>
-                    </template>
+                    <span class="font-medium text-foreground">{{
+                        salaryLabel
+                    }}</span>
                 </li>
 
                 <li
