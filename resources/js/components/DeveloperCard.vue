@@ -104,8 +104,10 @@ const salaryLabel = computed(() => {
     return '';
 });
 
+const subscriptionContactEmail = 'ht3aa2001@gmail.com';
+
 const subscribeToSeeSalaryUrl = computed(() => {
-    const email = props.contactEmail || 'contact@example.com';
+    const email = props.contactEmail || subscriptionContactEmail;
     return `mailto:${email}?subject=Subscription%20Inquiry`;
 });
 

@@ -148,8 +148,10 @@ const salaryLabel = computed(() => {
     return '';
 });
 
+const subscriptionContactEmail = 'ht3aa2001@gmail.com';
+
 const subscribeToSeeSalaryUrl = computed(() => {
-    return `mailto:contact@example.com?subject=Subscription%20Inquiry`;
+    return `mailto:${subscriptionContactEmail}?subject=Subscription%20Inquiry`;
 });
 
 const experienceLabel = computed(() => {
