@@ -1,7 +1,21 @@
 <script setup lang="ts">
-import { Check, Copy, Plus, Sparkles, Trash2, Users } from 'lucide-vue-next';
+import {
+    Check,
+    ChevronDown,
+    Copy,
+    Plus,
+    Sparkles,
+    Trash2,
+    Users,
+} from 'lucide-vue-next';
+import { ref } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
@@ -108,6 +122,8 @@ const levelChoices: { key: Exclude<ExperienceLevel, ''>; label: string }[] = [
     { key: 'mid', label: 'Mid' },
     { key: 'senior', label: 'Senior' },
 ];
+
+const roleFiltersOpen = ref(false);
 </script>
 
 <template>
@@ -159,43 +175,55 @@ const levelChoices: { key: Exclude<ExperienceLevel, ''>; label: string }[] = [
             status, and years of experience.
         </SheetDescription>
 
-        <div
+        <Collapsible
+            v-model:open="roleFiltersOpen"
             class="mb-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.06]"
         >
-            <div
-                class="border-b border-border/70 bg-muted/20 px-4 py-4 sm:px-5 sm:py-4"
+            <CollapsibleTrigger
+                class="flex w-full items-start justify-between gap-3 bg-muted/20 px-4 py-4 text-left transition-colors hover:bg-muted/30 sm:px-5 sm:py-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none focus-visible:ring-offset-background"
             >
-                <p
-                    class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
-                >
-                    Role filters
-                </p>
-                <p class="mt-1 text-sm text-muted-foreground">
-                    Each row is one job title and experience band. Multiple rows
-                    match
-                    <span class="font-medium text-foreground">any</span> row
-                    (OR). Rows with a title and level replace the custom job
-                    title and min/max years until you change those fields.
-                </p>
-                <div
-                    class="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground"
-                    aria-hidden="true"
-                >
-                    <span
-                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                        >Junior ≤2 yrs</span
+                <div class="min-w-0 flex-1">
+                    <p
+                        class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
                     >
-                    <span
-                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                        >Mid 3–5 yrs</span
+                        Role filters
+                    </p>
+                    <p class="mt-1 text-sm text-muted-foreground">
+                        Each row is one job title and experience band. Multiple
+                        rows match
+                        <span class="font-medium text-foreground">any</span> row
+                        (OR). Rows with a title and level replace the custom job
+                        title and min/max years until you change those fields.
+                    </p>
+                    <div
+                        class="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground"
+                        aria-hidden="true"
                     >
-                    <span
-                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                        >Senior 6+ yrs</span
-                    >
+                        <span
+                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                            >Junior ≤2 yrs</span
+                        >
+                        <span
+                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                            >Mid 3–5 yrs</span
+                        >
+                        <span
+                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                            >Senior 6+ yrs</span
+                        >
+                    </div>
                 </div>
-            </div>
-            <div class="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
+                <span
+                    class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-muted/50 text-muted-foreground transition-transform duration-200"
+                    :class="{ 'rotate-180': roleFiltersOpen }"
+                >
+                    <ChevronDown class="size-4" aria-hidden="true" />
+                </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent
+                class="overflow-hidden border-t border-border/70 bg-muted/15"
+            >
+                <div class="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
                 <div
                     v-for="row in props.roleBandRows"
                     :key="row.clientId"
@@ -274,8 +302,9 @@ const levelChoices: { key: Exclude<ExperienceLevel, ''>; label: string }[] = [
                     <Plus class="size-4" aria-hidden="true" />
                     Add role filter
                 </Button>
-            </div>
-        </div>
+                </div>
+            </CollapsibleContent>
+        </Collapsible>
 
         <div class="mb-4 border-b border-border/60 pb-4">
             <h2
