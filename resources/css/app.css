@@ -88,7 +88,41 @@
     }
 }
 
+@keyframes filters-attention-shake {
+    0%,
+    92%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    93% {
+        transform: translate3d(-3px, 0, 0);
+    }
+    94.5% {
+        transform: translate3d(3px, 0, 0);
+    }
+    96% {
+        transform: translate3d(-2px, 0, 0);
+    }
+    97.5% {
+        transform: translate3d(2px, 0, 0);
+    }
+    99% {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
 @layer utilities {
+    /** Periodic nudge on the developer Filters control; disabled when `prefers-reduced-motion` is set. */
+    .animate-filters-attention {
+        animation: filters-attention-shake 6.5s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .animate-filters-attention {
+            animation: none;
+        }
+    }
+
     .z-sticky-bar {
         z-index: var(--z-sticky-bar);
     }

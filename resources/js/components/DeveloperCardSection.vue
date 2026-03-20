@@ -642,6 +642,9 @@ onMounted(() => {
                                 variant="default"
                                 size="sm"
                                 class="relative h-8 shrink-0 gap-1.5 shadow-sm"
+                                :class="{
+                                    'animate-filters-attention': !advancedOpen,
+                                }"
                             >
                                 <SlidersHorizontal
                                     class="size-4"
