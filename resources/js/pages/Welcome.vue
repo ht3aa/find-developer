@@ -31,6 +31,9 @@ const newsletterStoreUrl = computed(
 const developerOffersStoreUrl = computed(
     () => (page.props.developerOffersStoreUrl as string) ?? null,
 );
+const heroGreetingNote = computed(
+    () => (page.props.heroGreetingNote as string | undefined) ?? '',
+);
 const webSiteJsonLd = computed(() => ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -93,6 +96,7 @@ onUnmounted(() => {
         </div>
 
         <Hero
+            :hero-greeting-note="heroGreetingNote || undefined"
             badge="Find developers"
             title="Find the right developer for your project"
             description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."

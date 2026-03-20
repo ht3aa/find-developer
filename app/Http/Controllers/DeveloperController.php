@@ -26,6 +26,7 @@ class DeveloperController extends Controller
             'canRegister' => Features::enabled(Features::registration()),
             'newsletterStoreUrl' => route('newsletter.store'),
             'developerOffersStoreUrl' => $user ? route('developer-offers.store') : null,
+            'heroGreetingNote' => 'أيامكم سعيدة، وينعاد عليكم بالصحة والعافية، وإن شاء الله المنصة تكبر بوجودكم وتفيدكم أكثر فأكثر.',
         ]);
     }
 
@@ -56,16 +57,16 @@ class DeveloperController extends Controller
             'jobTitle',
             'skills',
             'badges',
-            'companies' => fn($q) => $q
+            'companies' => fn ($q) => $q
                 ->withoutGlobalScope(DeveloperScope::class)
                 ->topLevel()
                 ->visible()
-                ->with(['jobTitle:id,name', 'children' => fn($c) => $c->withoutGlobalScope(DeveloperScope::class)->visible()->with('jobTitle:id,name')])
+                ->with(['jobTitle:id,name', 'children' => fn ($c) => $c->withoutGlobalScope(DeveloperScope::class)->visible()->with('jobTitle:id,name')])
                 ->orderByDesc('start_date'),
-            'recommendationsReceived' => fn($q) => $q
+            'recommendationsReceived' => fn ($q) => $q
                 ->where('status', RecommendationStatus::APPROVED)
                 ->with('recommender:id,name,job_title_id', 'recommender.jobTitle:id,name'),
-            'projects' => fn($q) => $q
+            'projects' => fn ($q) => $q
                 ->withoutGlobalScope(DeveloperScope::class)
                 ->visible(),
         ]);

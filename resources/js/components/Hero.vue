@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { ArrowDown, Loader2 } from 'lucide-vue-next';
+import { ArrowDown, Loader2, Sparkles } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -37,6 +37,7 @@ interface QuranVerse {
 
 const props = withDefaults(
     defineProps<{
+        heroGreetingNote?: string;
         badge?: string;
         title?: string;
         description?: string;
@@ -241,6 +242,44 @@ onUnmounted(() => {
             class="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32"
         >
             <div class="flex flex-col items-center text-center">
+                <!-- Community greeting -->
+                <aside
+                    v-if="props.heroGreetingNote"
+                    class="hero-greeting-note relative mb-8 w-full max-w-2xl overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/[0.09] via-background/95 to-background/90 px-5 py-4 text-center shadow-md shadow-primary/[0.07] ring-1 ring-primary/10 backdrop-blur-[2px] sm:px-7 sm:py-5 dark:border-primary/25 dark:from-primary/[0.14] dark:via-background/90 dark:shadow-primary/[0.12] dark:ring-primary/15"
+                    dir="rtl"
+                    lang="ar"
+                    aria-labelledby="hero-greeting-heading"
+                >
+                    <span
+                        id="hero-greeting-heading"
+                        class="sr-only"
+                        lang="en"
+                    >
+                        Message from the team in Arabic
+                    </span>
+                    <div
+                        class="pointer-events-none absolute -top-px right-1/2 h-px w-24 translate-x-1/2 bg-gradient-to-l from-transparent via-primary/50 to-transparent opacity-80"
+                        aria-hidden="true"
+                    />
+                    <div
+                        class="mb-3 flex justify-center"
+                        aria-hidden="true"
+                    >
+                        <span
+                            class="inline-flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary shadow-inner ring-1 ring-primary/15 dark:bg-primary/20"
+                        >
+                            <Sparkles
+                                class="size-4 motion-safe:animate-pulse"
+                                stroke-width="2"
+                            />
+                        </span>
+                    </div>
+                    <p
+                        class="hero-greeting-text relative text-pretty text-lg leading-[1.85] font-semibold tracking-wide text-foreground sm:text-xl"
+                    >
+                        {{ props.heroGreetingNote }}
+                    </p>
+                </aside>
                 <!-- Success message -->
                 <div
                     v-if="props.successMessage"
@@ -407,6 +446,29 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.hero-greeting-text {
+    font-family:
+        'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .hero-greeting-note {
+        animation: hero-greeting-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+}
+
+@keyframes hero-greeting-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes float {
     0%,
     100% {
