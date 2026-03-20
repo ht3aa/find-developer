@@ -13,6 +13,7 @@ test('sitemap returns valid xml with expected urls', function () {
     $response->assertSee('<loc>https://example.com/</loc>', false);
     $response->assertSee('<loc>https://example.com/badges</loc>', false);
     $response->assertSee('<loc>https://example.com/blogs</loc>', false);
+    $response->assertSee('<loc>https://example.com/privacy-policy</loc>', false);
 });
 
 test('robots.txt returns plain text and references sitemap', function () {

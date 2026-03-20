@@ -33,6 +33,11 @@ class SitemapController extends Controller
             'changefreq' => 'daily',
             'priority' => '0.8',
         ]);
+        $urls->push([
+            'loc' => $baseUrl.'/privacy-policy',
+            'changefreq' => 'yearly',
+            'priority' => '0.3',
+        ]);
 
         $developerSlugs = Developer::query()
             ->whereNotNull('slug')

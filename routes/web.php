@@ -29,6 +29,7 @@ use App\Http\Controllers\HackathonTeamController;
 use App\Http\Controllers\HackathonTeamMemberController;
 use App\Http\Controllers\HackathonTeamVoteController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\PublicHackathonController;
@@ -60,6 +61,7 @@ Route::middleware('throttle:web')->group(function () {
         ->name('hackathons.subscribers.public');
     Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
     Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
+    Route::get('privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 });
 
 Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
