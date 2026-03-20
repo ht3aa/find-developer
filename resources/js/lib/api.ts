@@ -1,3 +1,10 @@
+import {
+    type ApiRoleBand,
+    decodeRoleBandsFromFilter,
+    encodeRoleBandsForFilter,
+    presetIdsToApiBands,
+} from '@/lib/roleBandFilters';
+
 export type DeveloperFilters = {
     search?: string;
     jobTitle?: string[];
@@ -10,11 +17,16 @@ export type DeveloperFilters = {
     yearsMin?: string;
     yearsMax?: string;
     /**
-     * Quick role presets (OR). When non-empty, job title + global years filters are omitted — each preset carries its own title + band.
+     * OR’d job title + experience bands (JSON on the wire). When set, global job title and years filters are omitted.
      */
-    presetIds?: string[];
+    roleBands?: ApiRoleBand[];
     /** Comma-separated developer IDs to restrict results. */
     ids?: number[];
+};
+
+/** URL + API parse result including hydrated role bands (from `role_bands` JSON or legacy `preset_ids`). */
+export type DeveloperFiltersFromUrl = DeveloperFilters & {
+    initialRoleBands: ApiRoleBand[];
 };
 
 function toFilterValue(val: string | string[] | null | undefined): string {
@@ -39,9 +51,12 @@ export function buildDevelopersApiUrl(
     const params = new URLSearchParams();
     if (filters.search?.trim())
         params.set('filter[search]', filters.search.trim());
-    const presetIdsVal = toFilterValue(filters.presetIds);
-    if (presetIdsVal) {
-        params.set('filter[preset_ids]', presetIdsVal);
+    const hasRoleBands = (filters.roleBands?.length ?? 0) > 0;
+    if (hasRoleBands) {
+        params.set(
+            'filter[role_bands]',
+            encodeRoleBandsForFilter(filters.roleBands),
+        );
     } else {
         const jobTitleVal = toFilterValue(filters.jobTitle);
         if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
@@ -59,7 +74,7 @@ export function buildDevelopersApiUrl(
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')
         params.set('filter[is_recommended]', filters.isRecommended);
-    if (!presetIdsVal) {
+    if (!hasRoleBands) {
         if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
         if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
     }
@@ -70,7 +85,7 @@ export function buildDevelopersApiUrl(
     return q ? `${base}?${q}` : base;
 }
 
-export function parseFiltersFromUrl(): DeveloperFilters {
+export function parseFiltersFromUrl(): DeveloperFiltersFromUrl {
     const params = new URLSearchParams(window.location.search);
     const filter: Record<string, string> = {};
     for (const [k, v] of params.entries()) {
@@ -85,36 +100,38 @@ export function parseFiltersFromUrl(): DeveloperFilters {
               .filter((n) => !Number.isNaN(n))
         : undefined;
 
+    const fromJson = filter.role_bands
+        ? decodeRoleBandsFromFilter(filter.role_bands)
+        : null;
     const presetIds = parseFilterArray(filter.preset_ids);
-    if (presetIds.length > 0) {
-        return {
-            search: filter.search ?? '',
-            presetIds,
-            jobTitle: [],
-            skill: parseFilterArray(filter.skill),
-            badge: parseFilterArray(filter.badge),
-            availabilityType: parseFilterArray(filter.availability_type),
-            hasUrls: parseFilterArray(filter.has_urls),
-            isAvailable: filter.is_available ?? 'all',
-            isRecommended: filter.is_recommended ?? 'all',
-            yearsMin: '',
-            yearsMax: '',
-            ids,
-        };
-    }
+    const fromPresets =
+        fromJson && fromJson.length > 0
+            ? null
+            : presetIds.length > 0
+              ? presetIdsToApiBands(presetIds)
+              : null;
+    const initialRoleBands: ApiRoleBand[] =
+        fromJson && fromJson.length > 0
+            ? fromJson
+            : fromPresets && fromPresets.length > 0
+              ? fromPresets
+              : [];
+
+    const useRoleBands = initialRoleBands.length > 0;
 
     return {
         search: filter.search ?? '',
-        jobTitle: parseFilterArray(filter['job_title.name']),
+        jobTitle: useRoleBands ? [] : parseFilterArray(filter['job_title.name']),
         skill: parseFilterArray(filter.skill),
         badge: parseFilterArray(filter.badge),
         availabilityType: parseFilterArray(filter.availability_type),
         hasUrls: parseFilterArray(filter.has_urls),
         isAvailable: filter.is_available ?? 'all',
         isRecommended: filter.is_recommended ?? 'all',
-        yearsMin: filter.years_min ?? '',
-        yearsMax: filter.years_max ?? '',
+        yearsMin: useRoleBands ? '' : (filter.years_min ?? ''),
+        yearsMax: useRoleBands ? '' : (filter.years_max ?? ''),
         ids,
+        initialRoleBands,
     };
 }
 
@@ -122,9 +139,12 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     const params = new URLSearchParams();
     if (filters.search?.trim())
         params.set('filter[search]', filters.search.trim());
-    const presetIdsVal = toFilterValue(filters.presetIds);
-    if (presetIdsVal) {
-        params.set('filter[preset_ids]', presetIdsVal);
+    const hasRoleBands = (filters.roleBands?.length ?? 0) > 0;
+    if (hasRoleBands) {
+        params.set(
+            'filter[role_bands]',
+            encodeRoleBandsForFilter(filters.roleBands),
+        );
     } else {
         const jobTitleVal = toFilterValue(filters.jobTitle);
         if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
@@ -142,7 +162,7 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')
         params.set('filter[is_recommended]', filters.isRecommended);
-    if (!presetIdsVal) {
+    if (!hasRoleBands) {
         if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
         if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
     }

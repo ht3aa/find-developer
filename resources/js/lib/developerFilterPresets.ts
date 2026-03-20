@@ -1,5 +1,6 @@
 /**
- * Preset `id` values are sent as `filter[preset_ids]` (comma-separated) and must stay in sync with
+ * Preset `id` values map to API bands for legacy `filter[preset_ids]` URLs; dynamic UI uses
+ * `filter[role_bands]` JSON. PHP `rolePresetDefinition()` must stay in sync with
  * `DeveloperRepository::rolePresetDefinition()` on the server.
  */
 export type DeveloperFilterPresetGroup = 'frontend' | 'backend' | 'fullstack';

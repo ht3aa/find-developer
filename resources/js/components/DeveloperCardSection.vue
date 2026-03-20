@@ -42,7 +42,12 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
-import type { DeveloperFilterPreset } from '@/lib/developerFilterPresets';
+import {
+    apiBandToRow,
+    createRoleBandRow,
+    rowsToApiBands,
+    type UiRoleBandRow,
+} from '@/lib/roleBandFilters';
 import type { Developer } from '@/types/developer';
 import {
     availabilityTypeOptions,
@@ -143,7 +148,11 @@ const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
 const searchQuery = ref(initialFilters.search ?? '');
 const debouncedQuery = refDebounced(searchQuery, 500);
-const selectedPresetIds = ref<string[]>(initialFilters.presetIds ?? []);
+const roleBandRows = ref<UiRoleBandRow[]>(
+    initialFilters.initialRoleBands.length > 0
+        ? initialFilters.initialRoleBands.map((b) => apiBandToRow(b))
+        : [createRoleBandRow()],
+);
 const filterJobTitle = ref<string[]>(initialFilters.jobTitle ?? []);
 const filterSkill = ref<string[]>(initialFilters.skill ?? []);
 const filterBadge = ref<string[]>(initialFilters.badge ?? []);
@@ -169,10 +178,13 @@ const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const hasUrlsSelectOpen = ref(false);
+/** Which role-band row’s job title combobox is open (controlled; matches sheet + dialog focus). */
+const roleBandJobTitleOpenClientId = ref<string | null>(null);
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
+        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -184,6 +196,7 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -194,6 +207,7 @@ function onBadgeOpenChange(open: boolean): void {
     badgeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -204,6 +218,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -214,9 +229,28 @@ function onHasUrlsOpenChange(open: boolean): void {
     hasUrlsSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
+    }
+}
+
+function onRoleBandJobTitleOpen(payload: {
+    clientId: string;
+    open: boolean;
+}): void {
+    if (payload.open) {
+        roleBandJobTitleOpenClientId.value = payload.clientId;
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
+        return;
+    }
+    if (roleBandJobTitleOpenClientId.value === payload.clientId) {
+        roleBandJobTitleOpenClientId.value = null;
     }
 }
 
@@ -241,10 +275,11 @@ function getFilters(): DeveloperFilters {
         isRecommended: isRecommended.value,
         ids: props.developerIds?.length ? props.developerIds : undefined,
     };
-    if (selectedPresetIds.value.length > 0) {
+    const roleBands = rowsToApiBands(roleBandRows.value);
+    if (roleBands.length > 0) {
         return {
             ...shared,
-            presetIds: [...selectedPresetIds.value],
+            roleBands,
             jobTitle: [],
             yearsMin: '',
             yearsMax: '',
@@ -309,7 +344,7 @@ function applyFilters(): void {
 
 function clearFilters(): void {
     searchQuery.value = '';
-    selectedPresetIds.value = [];
+    roleBandRows.value = [createRoleBandRow()];
     filterJobTitle.value = [];
     filterSkill.value = [];
     filterBadge.value = [];
@@ -327,37 +362,26 @@ function clearFilters(): void {
 }
 
 function onFilterJobTitleUpdate(v: string[]): void {
-    if (selectedPresetIds.value.length > 0) {
-        selectedPresetIds.value = [];
-    }
+    roleBandRows.value = [createRoleBandRow()];
     filterJobTitle.value = v;
 }
 
 function onYearsMinUpdate(v: string): void {
-    if (selectedPresetIds.value.length > 0) {
-        selectedPresetIds.value = [];
-    }
+    roleBandRows.value = [createRoleBandRow()];
     yearsMin.value = v;
 }
 
 function onYearsMaxUpdate(v: string): void {
-    if (selectedPresetIds.value.length > 0) {
-        selectedPresetIds.value = [];
-    }
+    roleBandRows.value = [createRoleBandRow()];
     yearsMax.value = v;
 }
 
-function toggleFilterPreset(preset: DeveloperFilterPreset): void {
-    const i = selectedPresetIds.value.indexOf(preset.id);
-    if (i === -1) {
-        selectedPresetIds.value = [...selectedPresetIds.value, preset.id];
+function onRoleBandRowsUpdate(rows: UiRoleBandRow[]): void {
+    roleBandRows.value = rows;
+    if (rowsToApiBands(rows).length > 0) {
         filterJobTitle.value = [];
         yearsMin.value = '';
         yearsMax.value = '';
-    } else {
-        selectedPresetIds.value = selectedPresetIds.value.filter(
-            (id) => id !== preset.id,
-        );
     }
     fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
 }
@@ -390,8 +414,9 @@ function copyAiPrompt(): void {
 
 const activeFilterCount = computed(() => {
     let count = 0;
-    if (selectedPresetIds.value.length > 0) {
-        count += selectedPresetIds.value.length;
+    const bandCount = rowsToApiBands(roleBandRows.value).length;
+    if (bandCount > 0) {
+        count += bandCount;
     } else {
         if (filterJobTitle.value.length > 0)
             count += filterJobTitle.value.length;
@@ -423,6 +448,7 @@ watch(advancedOpen, (isOpen: boolean) => {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
     }
 });
 
@@ -670,8 +696,10 @@ onMounted(() => {
                                 <Suspense>
                                     <DeveloperFiltersPanelContent
                                         v-if="advancedOpen"
-                                        :search-query="searchQuery"
-                                        :selected-preset-ids="selectedPresetIds"
+                                        :role-band-rows="roleBandRows"
+                                        :role-band-job-title-open-client-id="
+                                            roleBandJobTitleOpenClientId
+                                        "
                                         :filter-job-title="filterJobTitle"
                                         :filter-skill="filterSkill"
                                         :filter-badge="filterBadge"
@@ -725,24 +753,29 @@ onMounted(() => {
                                             onYearsMaxUpdate($event)
                                         "
                                         @update:job-title-select-open="
-                                            jobTitleSelectOpen = $event
+                                            onJobTitleOpenChange($event)
                                         "
                                         @update:skill-select-open="
-                                            skillSelectOpen = $event
+                                            onSkillOpenChange($event)
                                         "
                                         @update:badge-select-open="
-                                            badgeSelectOpen = $event
+                                            onBadgeOpenChange($event)
                                         "
                                         @update:availability-type-select-open="
-                                            availabilityTypeSelectOpen = $event
+                                            onAvailabilityTypeOpenChange($event)
                                         "
                                         @update:has-urls-select-open="
-                                            hasUrlsSelectOpen = $event
+                                            onHasUrlsOpenChange($event)
                                         "
                                         @apply-filters="applyFilters"
                                         @clear-filters="clearFilters"
                                         @copy-ai-prompt="copyAiPrompt"
-                                        @toggle-preset="toggleFilterPreset"
+                                        @update:role-band-rows="
+                                            onRoleBandRowsUpdate($event)
+                                        "
+                                        @role-band-job-title-open="
+                                            onRoleBandJobTitleOpen($event)
+                                        "
                                     />
                                     <template #fallback>
                                         <div

@@ -1,29 +1,15 @@
 <script setup lang="ts">
-import {
-    Check,
-    ChevronDown,
-    Copy,
-    Layers,
-    Sparkles,
-    Users,
-} from 'lucide-vue-next';
-import { ref } from 'vue';
+import { Check, Copy, Plus, Sparkles, Trash2, Users } from 'lucide-vue-next';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import {
-    DEVELOPER_FILTER_PRESET_GROUPS,
-    DEVELOPER_FILTER_PRESETS,
-    type DeveloperFilterPreset,
-    type DeveloperFilterPresetGroup,
-} from '@/lib/developerFilterPresets';
+    createRoleBandRow,
+    type ExperienceLevel,
+    type UiRoleBandRow,
+} from '@/lib/roleBandFilters';
 import {
     availabilityTypeOptions,
     hasUrlsOptions,
@@ -42,10 +28,9 @@ function getSelectValue(event: Event): string {
 }
 
 const props = defineProps<{
-    /** Used so preset selection is cleared when the user types in the main search bar. */
-    searchQuery: string;
-    /** Selected quick preset ids (multi-select, combined with OR on the server). */
-    selectedPresetIds: string[];
+    roleBandRows: UiRoleBandRow[];
+    /** Controlled open state for role row job title selects (one row at a time). */
+    roleBandJobTitleOpenClientId: string | null;
     filterJobTitle: string[];
     filterSkill: string[];
     filterBadge: string[];
@@ -66,6 +51,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+    (
+        e: 'roleBandJobTitleOpen',
+        payload: { clientId: string; open: boolean },
+    ): void;
+    (e: 'update:roleBandRows', v: UiRoleBandRow[]): void;
     (e: 'update:filterJobTitle', v: string[]): void;
     (e: 'update:filterSkill', v: string[]): void;
     (e: 'update:filterBadge', v: string[]): void;
@@ -83,38 +73,47 @@ const emit = defineEmits<{
     (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
-    (e: 'togglePreset', preset: DeveloperFilterPreset): void;
 }>();
 
-function presetsForGroup(
-    key: DeveloperFilterPresetGroup,
-): DeveloperFilterPreset[] {
-    return DEVELOPER_FILTER_PRESETS.filter((p) => p.group === key);
+function patchRow(
+    clientId: string,
+    patch: Partial<Pick<UiRoleBandRow, 'jobTitle' | 'level'>>,
+): void {
+    const next = props.roleBandRows.map((r) =>
+        r.clientId === clientId ? { ...r, ...patch } : r,
+    );
+    emit('update:roleBandRows', next);
 }
 
-function presetGroupPanelClass(key: DeveloperFilterPresetGroup): string {
-    const accents: Record<DeveloperFilterPresetGroup, string> = {
-        frontend:
-            'border-l-[3px] border-l-violet-500/75 pl-3 sm:pl-4 dark:border-l-violet-400/65',
-        backend:
-            'border-l-[3px] border-l-sky-500/75 pl-3 sm:pl-4 dark:border-l-sky-400/65',
-        fullstack:
-            'border-l-[3px] border-l-amber-500/75 pl-3 sm:pl-4 dark:border-l-amber-400/65',
-    };
-    return accents[key];
+function onRowJobTitle(clientId: string, v: string | string[] | null): void {
+    const raw = Array.isArray(v) ? v[0] : v;
+    patchRow(clientId, { jobTitle: raw ? String(raw) : '' });
 }
 
-function isPresetSelected(id: string): boolean {
-    return props.selectedPresetIds.includes(id);
+function setRowLevel(clientId: string, level: ExperienceLevel): void {
+    patchRow(clientId, { level });
 }
 
-const presetsSectionOpen = ref(false);
+function removeRow(clientId: string): void {
+    const next = props.roleBandRows.filter((r) => r.clientId !== clientId);
+    emit('update:roleBandRows', next.length > 0 ? next : [createRoleBandRow()]);
+}
+
+function addRoleBandRow(): void {
+    emit('update:roleBandRows', [...props.roleBandRows, createRoleBandRow()]);
+}
+
+const levelChoices: { key: Exclude<ExperienceLevel, ''>; label: string }[] = [
+    { key: 'junior', label: 'Junior' },
+    { key: 'mid', label: 'Mid' },
+    { key: 'senior', label: 'Senior' },
+];
 </script>
 
 <template>
-    <div class="mx-auto w-full max-w-4xl pb-5 pr-8 sm:pb-6 sm:pr-10">
+    <div class="mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6">
         <div
-            class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md shadow-black/5 ring-1 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
+            class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md ring-1 shadow-black/5 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
         >
             <div class="min-w-0 space-y-1">
                 <SheetTitle
@@ -123,7 +122,8 @@ const presetsSectionOpen = ref(false);
                     Advanced filters
                 </SheetTitle>
                 <p class="text-sm leading-snug text-muted-foreground">
-                    Combine role presets (OR) or fine-tune with custom fields.
+                    Add role rows (job title + band) combined with OR, or use
+                    custom fields below.
                 </p>
             </div>
             <div
@@ -144,127 +144,138 @@ const presetsSectionOpen = ref(false);
                     </span>
                     <span class="text-xs font-medium text-muted-foreground">
                         matching
-                        {{ props.paginationTotal === 1 ? 'developer' : 'developers' }}
+                        {{
+                            props.paginationTotal === 1
+                                ? 'developer'
+                                : 'developers'
+                        }}
                     </span>
                 </div>
             </div>
         </div>
         <SheetDescription class="sr-only">
-            Filter developers by job title, skills, badges, availability type,
-            has URLs, availability status, recommended status, years of
-            experience, and quick role presets.
+            Filter developers by role bands, job title, skills, badges,
+            availability type, has URLs, availability status, recommended
+            status, and years of experience.
         </SheetDescription>
 
-        <Collapsible
-            v-model:open="presetsSectionOpen"
+        <div
             class="mb-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.06]"
         >
-            <CollapsibleTrigger
-                class="flex w-full items-center justify-between gap-3 rounded-t-2xl px-4 py-4 text-left transition-colors hover:bg-muted/30 sm:px-5 sm:py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            <div
+                class="border-b border-border/70 bg-muted/20 px-4 py-4 sm:px-5 sm:py-4"
             >
-                <div class="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
-                    <div
-                        class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary shadow-inner"
-                    >
-                        <Layers class="size-5" aria-hidden="true" />
-                    </div>
-                    <div class="min-w-0">
-                        <p
-                            class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
-                        >
-                            Quick role filters
-                        </p>
-                        <p
-                            class="mt-0.5 text-sm font-medium text-foreground sm:text-base"
-                        >
-                            Tap to select multiple — results match
-                            <span class="whitespace-nowrap">any</span> chosen
-                            band
-                        </p>
-                    </div>
-                </div>
-                <span
-                    class="flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-muted/50 text-muted-foreground transition-transform duration-200"
-                    :class="{ 'rotate-180': presetsSectionOpen }"
+                <p
+                    class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
                 >
-                    <ChevronDown class="size-4" aria-hidden="true" />
-                </span>
-            </CollapsibleTrigger>
-            <CollapsibleContent
-                class="overflow-hidden border-t border-border/70 bg-muted/25"
-            >
-                <div class="space-y-5 px-4 py-5 sm:px-6 sm:py-6">
-                    <p
-                        class="text-sm leading-relaxed text-muted-foreground"
+                    Role filters
+                </p>
+                <p class="mt-1 text-sm text-muted-foreground">
+                    Each row is one job title and experience band. Multiple rows
+                    match
+                    <span class="font-medium text-foreground">any</span> row
+                    (OR). Rows with a title and level replace the custom job
+                    title and min/max years until you change those fields.
+                </p>
+                <div
+                    class="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground"
+                    aria-hidden="true"
+                >
+                    <span
+                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                        >Junior ≤2 yrs</span
                     >
-                        Each chip is a
-                        <strong class="font-medium text-foreground"
-                            >job title + experience band</strong
-                        >. Select several to widen the pool (OR). Presets replace
-                        the custom job title and min/max years fields until you
-                        change those fields or deselect all presets. Use
-                        <span class="font-medium text-foreground"
-                            >Apply filters</span
+                    <span
+                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                        >Mid 3–5 yrs</span
+                    >
+                    <span
+                        class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
+                        >Senior 6+ yrs</span
+                    >
+                </div>
+            </div>
+            <div class="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
+                <div
+                    v-for="row in props.roleBandRows"
+                    :key="row.clientId"
+                    class="rounded-xl border border-border/80 bg-muted/15 p-4 shadow-sm sm:p-5"
+                >
+                    <div class="mb-3 flex items-start justify-between gap-3">
+                        <Label
+                            :for="`role-band-title-${row.clientId}`"
+                            class="text-xs font-semibold tracking-wide text-foreground/90 uppercase"
                         >
-                        after editing skills or other fields below.
+                            Job title
+                        </Label>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            class="size-8 shrink-0 text-muted-foreground hover:text-destructive"
+                            :aria-label="'Remove role filter row'"
+                            @click="removeRow(row.clientId)"
+                        >
+                            <Trash2 class="size-4" aria-hidden="true" />
+                        </Button>
+                    </div>
+                    <SearchableSelect
+                        :id="`role-band-title-${row.clientId}`"
+                        :model-value="row.jobTitle || null"
+                        :open="
+                            props.roleBandJobTitleOpenClientId === row.clientId
+                        "
+                        options-url="/api/job-titles"
+                        placeholder="Search job titles…"
+                        :max-options="50"
+                        @update:model-value="
+                            onRowJobTitle(row.clientId, $event)
+                        "
+                        @update:open="
+                            emit('roleBandJobTitleOpen', {
+                                clientId: row.clientId,
+                                open: $event,
+                            })
+                        "
+                    />
+                    <p
+                        class="mt-4 mb-2 text-xs font-semibold tracking-wide text-foreground/90 uppercase"
+                    >
+                        Experience
                     </p>
                     <div
-                        class="flex flex-wrap gap-2 border-b border-border/60 pb-5"
-                        aria-hidden="true"
+                        class="grid grid-cols-3 gap-2 sm:gap-3"
+                        role="group"
+                        :aria-label="'Experience level for this row'"
                     >
-                        <span
-                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
-                            >Junior ≤2 yrs</span
+                        <button
+                            v-for="choice in levelChoices"
+                            :key="choice.key"
+                            type="button"
+                            :aria-pressed="row.level === choice.key"
+                            class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] sm:min-h-12 sm:px-3 sm:py-3"
+                            :class="
+                                row.level === choice.key
+                                    ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
+                                    : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
+                            "
+                            @click="setRowLevel(row.clientId, choice.key)"
                         >
-                        <span
-                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
-                            >Mid 3–5 yrs</span
-                        >
-                        <span
-                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
-                            >Senior 6+ yrs</span
-                        >
-                    </div>
-                    <div class="space-y-5">
-                        <div
-                            v-for="section in DEVELOPER_FILTER_PRESET_GROUPS"
-                            :key="section.key"
-                            class="rounded-xl border border-border/70 bg-background/80 py-3 shadow-sm backdrop-blur-sm sm:py-4"
-                            :class="presetGroupPanelClass(section.key)"
-                        >
-                            <p
-                                class="mb-3 text-xs font-semibold tracking-wide text-foreground/90 uppercase sm:text-[13px]"
-                            >
-                                {{ section.title }}
-                            </p>
-                            <div
-                                class="grid grid-cols-3 gap-2 sm:gap-3"
-                                role="group"
-                                :aria-label="`${section.title} experience presets`"
-                            >
-                                <button
-                                    v-for="preset in presetsForGroup(section.key)"
-                                    :key="preset.id"
-                                    type="button"
-                                    :aria-pressed="isPresetSelected(preset.id)"
-                                    class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 sm:min-h-12 sm:px-3 sm:py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
-                                    :class="
-                                        isPresetSelected(preset.id)
-                                            ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
-                                            : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
-                                    "
-                                    @click="emit('togglePreset', preset)"
-                                >
-                                    <span class="leading-tight">{{
-                                        preset.label
-                                    }}</span>
-                                </button>
-                            </div>
-                        </div>
+                            {{ choice.label }}
+                        </button>
                     </div>
                 </div>
-            </CollapsibleContent>
-        </Collapsible>
+                <Button
+                    type="button"
+                    variant="outline"
+                    class="w-full gap-2 border-dashed sm:w-auto"
+                    @click="addRoleBandRow"
+                >
+                    <Plus class="size-4" aria-hidden="true" />
+                    Add role filter
+                </Button>
+            </div>
+        </div>
 
         <div class="mb-4 border-b border-border/60 pb-4">
             <h2

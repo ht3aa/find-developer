@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
-import { Check, ChevronsUpDown, Search, X } from 'lucide-vue-next';
+import { Check, ChevronsUpDown, X } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useId } from 'vue';
 import { Badge } from '@/components/ui/badge';
@@ -195,7 +195,9 @@ function removeValue(value: string, event: Event): void {
 <template>
     <Combobox
         :name="id ?? instanceId"
-        :model-value="multiple ? selectedValues : (selectedValues[1] ?? null)"
+        :model-value="
+            multiple ? selectedValues : (selectedValues[0] ?? null)
+        "
         :multiple="multiple"
         :open="effectiveOpen"
         :open-on-click="true"

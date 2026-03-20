@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Developer;
+use App\Models\JobTitle;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -75,6 +76,9 @@ class DeveloperRepository
                 }),
                 AllowedFilter::callback('preset_ids', function ($query, $value) {
                     $this->applyPresetIdsFilter($query, $value);
+                }),
+                AllowedFilter::callback('role_bands', function ($query, $value) {
+                    $this->applyRoleBandsJsonFilter($query, $value);
                 }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
                     if ($value === null || $value === '') {
@@ -204,6 +208,9 @@ class DeveloperRepository
                 AllowedFilter::callback('preset_ids', function ($query, $value) {
                     $this->applyPresetIdsFilter($query, $value);
                 }),
+                AllowedFilter::callback('role_bands', function ($query, $value) {
+                    $this->applyRoleBandsJsonFilter($query, $value);
+                }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
                     if ($value === null || $value === '') {
                         return;
@@ -296,6 +303,83 @@ class DeveloperRepository
             return;
         }
 
+        $this->applyRoleBandsOr($query, $bands);
+    }
+
+    /**
+     * Dynamic job title + experience bands from JSON (OR). Titles must match active job titles.
+     *
+     * @param  Builder<Developer>  $query
+     */
+    private function applyRoleBandsJsonFilter(Builder $query, mixed $value): void
+    {
+        if (! is_string($value) || $value === '') {
+            return;
+        }
+
+        $decoded = base64_decode($value, true);
+        if ($decoded === false || $decoded === '') {
+            return;
+        }
+
+        if (strlen($decoded) > 4096) {
+            return;
+        }
+
+        try {
+            $parsed = json_decode($decoded, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            return;
+        }
+
+        if (! is_array($parsed)) {
+            return;
+        }
+
+        /** @var list<array{job_title: string, years_min: int|null, years_max: int|null}> $bands */
+        $bands = [];
+        foreach ($parsed as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $title = isset($item['job_title']) ? trim((string) $item['job_title']) : '';
+            if ($title === '') {
+                continue;
+            }
+            $bands[] = [
+                'job_title' => $title,
+                'years_min' => $this->filterYearBound($item['years_min'] ?? null),
+                'years_max' => $this->filterYearBound($item['years_max'] ?? null),
+            ];
+        }
+
+        $bands = array_slice($bands, 0, 20);
+        if ($bands === []) {
+            return;
+        }
+
+        $titles = array_values(array_unique(array_column($bands, 'job_title')));
+        $validTitles = JobTitle::query()
+            ->active()
+            ->whereIn('name', $titles)
+            ->pluck('name')
+            ->all();
+        $valid = array_flip($validTitles);
+
+        $bands = array_values(array_filter($bands, fn (array $b) => isset($valid[$b['job_title']])));
+        if ($bands === []) {
+            return;
+        }
+
+        $this->applyRoleBandsOr($query, $bands);
+    }
+
+    /**
+     * @param  list<array{job_title: string, years_min: int|null, years_max: int|null}>  $bands
+     * @param  Builder<Developer>  $query
+     */
+    private function applyRoleBandsOr(Builder $query, array $bands): void
+    {
         $query->where(function (Builder $outer) use ($bands) {
             foreach ($bands as $band) {
                 $outer->orWhere(function (Builder $q) use ($band) {
@@ -311,6 +395,18 @@ class DeveloperRepository
                 });
             }
         });
+    }
+
+    private function filterYearBound(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+
+        return null;
     }
 
     /**
