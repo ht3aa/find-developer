@@ -9,6 +9,10 @@ export type DeveloperFilters = {
     isRecommended?: string;
     yearsMin?: string;
     yearsMax?: string;
+    /**
+     * Quick role presets (OR). When non-empty, job title + global years filters are omitted — each preset carries its own title + band.
+     */
+    presetIds?: string[];
     /** Comma-separated developer IDs to restrict results. */
     ids?: number[];
 };
@@ -35,8 +39,13 @@ export function buildDevelopersApiUrl(
     const params = new URLSearchParams();
     if (filters.search?.trim())
         params.set('filter[search]', filters.search.trim());
-    const jobTitleVal = toFilterValue(filters.jobTitle);
-    if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
+    const presetIdsVal = toFilterValue(filters.presetIds);
+    if (presetIdsVal) {
+        params.set('filter[preset_ids]', presetIdsVal);
+    } else {
+        const jobTitleVal = toFilterValue(filters.jobTitle);
+        if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
+    }
     const skillVal = toFilterValue(filters.skill);
     if (skillVal) params.set('filter[skill]', skillVal);
     const badgeVal = toFilterValue(filters.badge);
@@ -50,8 +59,10 @@ export function buildDevelopersApiUrl(
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')
         params.set('filter[is_recommended]', filters.isRecommended);
-    if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
-    if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    if (!presetIdsVal) {
+        if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
+        if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    }
     if (filters.ids?.length) {
         params.set('filter[ids]', filters.ids.join(','));
     }
@@ -74,6 +85,24 @@ export function parseFiltersFromUrl(): DeveloperFilters {
               .filter((n) => !Number.isNaN(n))
         : undefined;
 
+    const presetIds = parseFilterArray(filter.preset_ids);
+    if (presetIds.length > 0) {
+        return {
+            search: filter.search ?? '',
+            presetIds,
+            jobTitle: [],
+            skill: parseFilterArray(filter.skill),
+            badge: parseFilterArray(filter.badge),
+            availabilityType: parseFilterArray(filter.availability_type),
+            hasUrls: parseFilterArray(filter.has_urls),
+            isAvailable: filter.is_available ?? 'all',
+            isRecommended: filter.is_recommended ?? 'all',
+            yearsMin: '',
+            yearsMax: '',
+            ids,
+        };
+    }
+
     return {
         search: filter.search ?? '',
         jobTitle: parseFilterArray(filter['job_title.name']),
@@ -93,8 +122,13 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     const params = new URLSearchParams();
     if (filters.search?.trim())
         params.set('filter[search]', filters.search.trim());
-    const jobTitleVal = toFilterValue(filters.jobTitle);
-    if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
+    const presetIdsVal = toFilterValue(filters.presetIds);
+    if (presetIdsVal) {
+        params.set('filter[preset_ids]', presetIdsVal);
+    } else {
+        const jobTitleVal = toFilterValue(filters.jobTitle);
+        if (jobTitleVal) params.set('filter[job_title.name]', jobTitleVal);
+    }
     const skillVal = toFilterValue(filters.skill);
     if (skillVal) params.set('filter[skill]', skillVal);
     const badgeVal = toFilterValue(filters.badge);
@@ -108,8 +142,10 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')
         params.set('filter[is_recommended]', filters.isRecommended);
-    if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
-    if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    if (!presetIdsVal) {
+        if (filters.yearsMin) params.set('filter[years_min]', filters.yearsMin);
+        if (filters.yearsMax) params.set('filter[years_max]', filters.yearsMax);
+    }
     if (filters.ids?.length) {
         params.set('filter[ids]', filters.ids.join(','));
     }

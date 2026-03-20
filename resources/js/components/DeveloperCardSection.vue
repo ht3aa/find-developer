@@ -143,6 +143,7 @@ const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
 const searchQuery = ref(initialFilters.search ?? '');
 const debouncedQuery = refDebounced(searchQuery, 500);
+const selectedPresetIds = ref<string[]>(initialFilters.presetIds ?? []);
 const filterJobTitle = ref<string[]>(initialFilters.jobTitle ?? []);
 const filterSkill = ref<string[]>(initialFilters.skill ?? []);
 const filterBadge = ref<string[]>(initialFilters.badge ?? []);
@@ -220,18 +221,40 @@ function onHasUrlsOpenChange(open: boolean): void {
 }
 
 function getFilters(): DeveloperFilters {
-    return {
+    const shared: Pick<
+        DeveloperFilters,
+        | 'search'
+        | 'skill'
+        | 'badge'
+        | 'availabilityType'
+        | 'hasUrls'
+        | 'isAvailable'
+        | 'isRecommended'
+        | 'ids'
+    > = {
         search: debouncedQuery.value,
-        jobTitle: filterJobTitle.value,
         skill: filterSkill.value,
         badge: filterBadge.value,
         availabilityType: filterAvailabilityType.value,
         hasUrls: filterHasUrls.value,
         isAvailable: isAvailable.value,
         isRecommended: isRecommended.value,
+        ids: props.developerIds?.length ? props.developerIds : undefined,
+    };
+    if (selectedPresetIds.value.length > 0) {
+        return {
+            ...shared,
+            presetIds: [...selectedPresetIds.value],
+            jobTitle: [],
+            yearsMin: '',
+            yearsMax: '',
+        };
+    }
+    return {
+        ...shared,
+        jobTitle: filterJobTitle.value,
         yearsMin: yearsMin.value,
         yearsMax: yearsMax.value,
-        ids: props.developerIds?.length ? props.developerIds : undefined,
     };
 }
 
@@ -286,6 +309,7 @@ function applyFilters(): void {
 
 function clearFilters(): void {
     searchQuery.value = '';
+    selectedPresetIds.value = [];
     filterJobTitle.value = [];
     filterSkill.value = [];
     filterBadge.value = [];
@@ -302,17 +326,39 @@ function clearFilters(): void {
     );
 }
 
-function applyFilterPreset(preset: DeveloperFilterPreset): void {
-    searchQuery.value = '';
-    filterJobTitle.value = [...preset.jobTitles];
-    filterSkill.value = [];
-    filterBadge.value = [];
-    filterAvailabilityType.value = [];
-    filterHasUrls.value = [];
-    isAvailable.value = 'all';
-    isRecommended.value = 'all';
-    yearsMin.value = preset.yearsMin;
-    yearsMax.value = preset.yearsMax;
+function onFilterJobTitleUpdate(v: string[]): void {
+    if (selectedPresetIds.value.length > 0) {
+        selectedPresetIds.value = [];
+    }
+    filterJobTitle.value = v;
+}
+
+function onYearsMinUpdate(v: string): void {
+    if (selectedPresetIds.value.length > 0) {
+        selectedPresetIds.value = [];
+    }
+    yearsMin.value = v;
+}
+
+function onYearsMaxUpdate(v: string): void {
+    if (selectedPresetIds.value.length > 0) {
+        selectedPresetIds.value = [];
+    }
+    yearsMax.value = v;
+}
+
+function toggleFilterPreset(preset: DeveloperFilterPreset): void {
+    const i = selectedPresetIds.value.indexOf(preset.id);
+    if (i === -1) {
+        selectedPresetIds.value = [...selectedPresetIds.value, preset.id];
+        filterJobTitle.value = [];
+        yearsMin.value = '';
+        yearsMax.value = '';
+    } else {
+        selectedPresetIds.value = selectedPresetIds.value.filter(
+            (id) => id !== preset.id,
+        );
+    }
     fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
 }
 
@@ -344,7 +390,14 @@ function copyAiPrompt(): void {
 
 const activeFilterCount = computed(() => {
     let count = 0;
-    if (filterJobTitle.value.length > 0) count += filterJobTitle.value.length;
+    if (selectedPresetIds.value.length > 0) {
+        count += selectedPresetIds.value.length;
+    } else {
+        if (filterJobTitle.value.length > 0)
+            count += filterJobTitle.value.length;
+        if (yearsMin.value) count++;
+        if (yearsMax.value) count++;
+    }
     if (filterSkill.value.length > 0) count += filterSkill.value.length;
     if (filterBadge.value.length > 0) count += filterBadge.value.length;
     if (filterAvailabilityType.value.length > 0)
@@ -352,8 +405,6 @@ const activeFilterCount = computed(() => {
     if (filterHasUrls.value.length > 0) count += filterHasUrls.value.length;
     if (isAvailable.value && isAvailable.value !== 'all') count++;
     if (isRecommended.value && isRecommended.value !== 'all') count++;
-    if (yearsMin.value) count++;
-    if (yearsMax.value) count++;
     return count;
 });
 
@@ -608,81 +659,100 @@ onMounted(() => {
                         </SheetTrigger>
                         <SheetContent
                             side="top"
-                            class="flex max-h-[85vh] flex-col overflow-y-auto border-b"
+                            class="flex max-h-[85vh] flex-col gap-0 overflow-hidden border-b p-0"
                         >
-                            <Suspense>
-                                <DeveloperFiltersPanelContent
-                                    v-if="advancedOpen"
-                                    :search-query="searchQuery"
-                                    :filter-job-title="filterJobTitle"
-                                    :filter-skill="filterSkill"
-                                    :filter-badge="filterBadge"
-                                    :filter-availability-type="
-                                        filterAvailabilityType
-                                    "
-                                    :filter-has-urls="filterHasUrls"
-                                    :is-available="isAvailable"
-                                    :is-recommended="isRecommended"
-                                    :years-min="yearsMin"
-                                    :years-max="yearsMax"
-                                    :job-title-select-open="jobTitleSelectOpen"
-                                    :skill-select-open="skillSelectOpen"
-                                    :badge-select-open="badgeSelectOpen"
-                                    :availability-type-select-open="
-                                        availabilityTypeSelectOpen
-                                    "
-                                    :has-urls-select-open="hasUrlsSelectOpen"
-                                    :pagination-total="paginationTotal"
-                                    :ai-prompt-text="aiPromptText"
-                                    :ai-prompt-copied="aiPromptCopied"
-                                    @update:filter-job-title="
-                                        filterJobTitle = $event
-                                    "
-                                    @update:filter-skill="filterSkill = $event"
-                                    @update:filter-badge="filterBadge = $event"
-                                    @update:filter-availability-type="
-                                        filterAvailabilityType = $event
-                                    "
-                                    @update:filter-has-urls="
-                                        filterHasUrls = $event
-                                    "
-                                    @update:is-available="isAvailable = $event"
-                                    @update:is-recommended="
-                                        isRecommended = $event
-                                    "
-                                    @update:years-min="yearsMin = $event"
-                                    @update:years-max="yearsMax = $event"
-                                    @update:job-title-select-open="
-                                        jobTitleSelectOpen = $event
-                                    "
-                                    @update:skill-select-open="
-                                        skillSelectOpen = $event
-                                    "
-                                    @update:badge-select-open="
-                                        badgeSelectOpen = $event
-                                    "
-                                    @update:availability-type-select-open="
-                                        availabilityTypeSelectOpen = $event
-                                    "
-                                    @update:has-urls-select-open="
-                                        hasUrlsSelectOpen = $event
-                                    "
-                                    @apply-filters="applyFilters"
-                                    @clear-filters="clearFilters"
-                                    @copy-ai-prompt="copyAiPrompt"
-                                    @apply-preset="applyFilterPreset"
-                                />
-                                <template #fallback>
-                                    <div
-                                        class="flex min-h-[200px] items-center justify-center py-12"
-                                    >
+                            <div
+                                class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pt-8 pr-12 pb-6 sm:px-6 sm:pt-8 sm:pr-14 sm:pb-8"
+                            >
+                                <Suspense>
+                                    <DeveloperFiltersPanelContent
+                                        v-if="advancedOpen"
+                                        :search-query="searchQuery"
+                                        :selected-preset-ids="selectedPresetIds"
+                                        :filter-job-title="filterJobTitle"
+                                        :filter-skill="filterSkill"
+                                        :filter-badge="filterBadge"
+                                        :filter-availability-type="
+                                            filterAvailabilityType
+                                        "
+                                        :filter-has-urls="filterHasUrls"
+                                        :is-available="isAvailable"
+                                        :is-recommended="isRecommended"
+                                        :years-min="yearsMin"
+                                        :years-max="yearsMax"
+                                        :job-title-select-open="
+                                            jobTitleSelectOpen
+                                        "
+                                        :skill-select-open="skillSelectOpen"
+                                        :badge-select-open="badgeSelectOpen"
+                                        :availability-type-select-open="
+                                            availabilityTypeSelectOpen
+                                        "
+                                        :has-urls-select-open="
+                                            hasUrlsSelectOpen
+                                        "
+                                        :pagination-total="paginationTotal"
+                                        :ai-prompt-text="aiPromptText"
+                                        :ai-prompt-copied="aiPromptCopied"
+                                        @update:filter-job-title="
+                                            onFilterJobTitleUpdate($event)
+                                        "
+                                        @update:filter-skill="
+                                            filterSkill = $event
+                                        "
+                                        @update:filter-badge="
+                                            filterBadge = $event
+                                        "
+                                        @update:filter-availability-type="
+                                            filterAvailabilityType = $event
+                                        "
+                                        @update:filter-has-urls="
+                                            filterHasUrls = $event
+                                        "
+                                        @update:is-available="
+                                            isAvailable = $event
+                                        "
+                                        @update:is-recommended="
+                                            isRecommended = $event
+                                        "
+                                        @update:years-min="
+                                            onYearsMinUpdate($event)
+                                        "
+                                        @update:years-max="
+                                            onYearsMaxUpdate($event)
+                                        "
+                                        @update:job-title-select-open="
+                                            jobTitleSelectOpen = $event
+                                        "
+                                        @update:skill-select-open="
+                                            skillSelectOpen = $event
+                                        "
+                                        @update:badge-select-open="
+                                            badgeSelectOpen = $event
+                                        "
+                                        @update:availability-type-select-open="
+                                            availabilityTypeSelectOpen = $event
+                                        "
+                                        @update:has-urls-select-open="
+                                            hasUrlsSelectOpen = $event
+                                        "
+                                        @apply-filters="applyFilters"
+                                        @clear-filters="clearFilters"
+                                        @copy-ai-prompt="copyAiPrompt"
+                                        @toggle-preset="toggleFilterPreset"
+                                    />
+                                    <template #fallback>
                                         <div
-                                            class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                                            aria-hidden
-                                        />
-                                    </div>
-                                </template>
-                            </Suspense>
+                                            class="flex min-h-[200px] items-center justify-center py-12"
+                                        >
+                                            <div
+                                                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                                                aria-hidden
+                                            />
+                                        </div>
+                                    </template>
+                                </Suspense>
+                            </div>
                         </SheetContent>
                     </Sheet>
                 </div>

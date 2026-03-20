@@ -1,3 +1,7 @@
+/**
+ * Preset `id` values are sent as `filter[preset_ids]` (comma-separated) and must stay in sync with
+ * `DeveloperRepository::rolePresetDefinition()` on the server.
+ */
 export type DeveloperFilterPresetGroup = 'frontend' | 'backend' | 'fullstack';
 
 export type DeveloperFilterPreset = {

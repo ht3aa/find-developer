@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { Check, ChevronDown, Copy, Sparkles, Users } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import {
+    Check,
+    ChevronDown,
+    Copy,
+    Layers,
+    Sparkles,
+    Users,
+} from 'lucide-vue-next';
+import { ref } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,8 +42,10 @@ function getSelectValue(event: Event): string {
 }
 
 const props = defineProps<{
-    /** Used so preset “active” state ignores the main search bar. */
+    /** Used so preset selection is cleared when the user types in the main search bar. */
     searchQuery: string;
+    /** Selected quick preset ids (multi-select, combined with OR on the server). */
+    selectedPresetIds: string[];
     filterJobTitle: string[];
     filterSkill: string[];
     filterBadge: string[];
@@ -74,7 +83,7 @@ const emit = defineEmits<{
     (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
-    (e: 'applyPreset', preset: DeveloperFilterPreset): void;
+    (e: 'togglePreset', preset: DeveloperFilterPreset): void;
 }>();
 
 function presetsForGroup(
@@ -83,57 +92,61 @@ function presetsForGroup(
     return DEVELOPER_FILTER_PRESETS.filter((p) => p.group === key);
 }
 
-const activePresetId = computed((): string | null => {
-    if (props.searchQuery.trim() !== '') {
-        return null;
-    }
-    if (
-        props.filterSkill.length > 0 ||
-        props.filterBadge.length > 0 ||
-        props.filterAvailabilityType.length > 0 ||
-        props.filterHasUrls.length > 0
-    ) {
-        return null;
-    }
-    if (props.isAvailable !== 'all' || props.isRecommended !== 'all') {
-        return null;
-    }
-    const titles = [...props.filterJobTitle].sort().join('\0');
-    const ym = props.yearsMin;
-    const yx = props.yearsMax;
-    const match = DEVELOPER_FILTER_PRESETS.find((p) => {
-        const pt = [...p.jobTitles].sort().join('\0');
-        return pt === titles && p.yearsMin === ym && p.yearsMax === yx;
-    });
-    return match?.id ?? null;
-});
+function presetGroupPanelClass(key: DeveloperFilterPresetGroup): string {
+    const accents: Record<DeveloperFilterPresetGroup, string> = {
+        frontend:
+            'border-l-[3px] border-l-violet-500/75 pl-3 sm:pl-4 dark:border-l-violet-400/65',
+        backend:
+            'border-l-[3px] border-l-sky-500/75 pl-3 sm:pl-4 dark:border-l-sky-400/65',
+        fullstack:
+            'border-l-[3px] border-l-amber-500/75 pl-3 sm:pl-4 dark:border-l-amber-400/65',
+    };
+    return accents[key];
+}
 
-const presetsSectionOpen = ref(true);
+function isPresetSelected(id: string): boolean {
+    return props.selectedPresetIds.includes(id);
+}
+
+const presetsSectionOpen = ref(false);
 </script>
 
 <template>
-    <div class="mx-auto w-full max-w-4xl py-6 pr-10">
-        <div class="mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
-            <SheetTitle class="text-lg font-semibold">
-                Advanced filters
-            </SheetTitle>
+    <div class="mx-auto w-full max-w-4xl pb-5 pr-8 sm:pb-6 sm:pr-10">
+        <div
+            class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md shadow-black/5 ring-1 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
+        >
+            <div class="min-w-0 space-y-1">
+                <SheetTitle
+                    class="text-xl font-semibold tracking-tight text-foreground"
+                >
+                    Advanced filters
+                </SheetTitle>
+                <p class="text-sm leading-snug text-muted-foreground">
+                    Combine role presets (OR) or fine-tune with custom fields.
+                </p>
+            </div>
             <div
                 v-if="props.paginationTotal !== null"
-                class="inline-flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5"
+                class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-primary/25 bg-primary/10 px-3.5 py-2 sm:self-center"
                 aria-live="polite"
             >
-                <Users
-                    class="size-4 shrink-0 text-primary"
-                    aria-hidden="true"
-                />
-                <span
-                    class="text-base font-semibold tracking-tight text-foreground tabular-nums"
+                <div
+                    class="flex size-9 items-center justify-center rounded-lg bg-primary/15 text-primary"
                 >
-                    {{ props.paginationTotal }}
-                </span>
-                <span class="text-sm text-muted-foreground">
-                    developer{{ props.paginationTotal === 1 ? '' : 's' }}
-                </span>
+                    <Users class="size-4 shrink-0" aria-hidden="true" />
+                </div>
+                <div class="leading-tight">
+                    <span
+                        class="block text-lg font-bold tracking-tight text-foreground tabular-nums"
+                    >
+                        {{ props.paginationTotal }}
+                    </span>
+                    <span class="text-xs font-medium text-muted-foreground">
+                        matching
+                        {{ props.paginationTotal === 1 ? 'developer' : 'developers' }}
+                    </span>
+                </div>
             </div>
         </div>
         <SheetDescription class="sr-only">
@@ -144,63 +157,107 @@ const presetsSectionOpen = ref(true);
 
         <Collapsible
             v-model:open="presetsSectionOpen"
-            class="mb-6 overflow-hidden rounded-xl border border-border/70 bg-muted/15"
+            class="mb-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.06]"
         >
             <CollapsibleTrigger
-                class="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/25 sm:px-5 sm:py-3.5"
+                class="flex w-full items-center justify-between gap-3 rounded-t-2xl px-4 py-4 text-left transition-colors hover:bg-muted/30 sm:px-5 sm:py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-                <div class="min-w-0 flex-1">
-                    <p
-                        class="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                <div class="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+                    <div
+                        class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary shadow-inner"
                     >
-                        Quick role filters
-                    </p>
-                    <p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">
-                        Job title + experience presets
-                    </p>
+                        <Layers class="size-5" aria-hidden="true" />
+                    </div>
+                    <div class="min-w-0">
+                        <p
+                            class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
+                        >
+                            Quick role filters
+                        </p>
+                        <p
+                            class="mt-0.5 text-sm font-medium text-foreground sm:text-base"
+                        >
+                            Tap to select multiple — results match
+                            <span class="whitespace-nowrap">any</span> chosen
+                            band
+                        </p>
+                    </div>
                 </div>
-                <ChevronDown
-                    class="size-4 shrink-0 text-muted-foreground transition-transform duration-200"
+                <span
+                    class="flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-muted/50 text-muted-foreground transition-transform duration-200"
                     :class="{ 'rotate-180': presetsSectionOpen }"
-                    aria-hidden="true"
-                />
+                >
+                    <ChevronDown class="size-4" aria-hidden="true" />
+                </span>
             </CollapsibleTrigger>
-            <CollapsibleContent class="border-t border-border/60 overflow-hidden">
-                <div class="px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
-                    <p class="mb-4 text-xs text-muted-foreground sm:text-sm">
-                        One tap sets job title and years (junior ≤2, mid 3–5,
-                        senior 6+) and clears other filters below. Use Apply if
-                        you change fields manually afterward.
+            <CollapsibleContent
+                class="overflow-hidden border-t border-border/70 bg-muted/25"
+            >
+                <div class="space-y-5 px-4 py-5 sm:px-6 sm:py-6">
+                    <p
+                        class="text-sm leading-relaxed text-muted-foreground"
+                    >
+                        Each chip is a
+                        <strong class="font-medium text-foreground"
+                            >job title + experience band</strong
+                        >. Select several to widen the pool (OR). Presets replace
+                        the custom job title and min/max years fields until you
+                        change those fields or deselect all presets. Use
+                        <span class="font-medium text-foreground"
+                            >Apply filters</span
+                        >
+                        after editing skills or other fields below.
                     </p>
-                    <div class="space-y-4">
+                    <div
+                        class="flex flex-wrap gap-2 border-b border-border/60 pb-5"
+                        aria-hidden="true"
+                    >
+                        <span
+                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
+                            >Junior ≤2 yrs</span
+                        >
+                        <span
+                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
+                            >Mid 3–5 yrs</span
+                        >
+                        <span
+                            class="inline-flex items-center rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground ring-1 ring-border/80"
+                            >Senior 6+ yrs</span
+                        >
+                    </div>
+                    <div class="space-y-5">
                         <div
                             v-for="section in DEVELOPER_FILTER_PRESET_GROUPS"
                             :key="section.key"
+                            class="rounded-xl border border-border/70 bg-background/80 py-3 shadow-sm backdrop-blur-sm sm:py-4"
+                            :class="presetGroupPanelClass(section.key)"
                         >
                             <p
-                                class="mb-2 text-xs font-medium text-foreground/80 sm:text-sm"
+                                class="mb-3 text-xs font-semibold tracking-wide text-foreground/90 uppercase sm:text-[13px]"
                             >
                                 {{ section.title }}
                             </p>
                             <div
-                                class="grid grid-cols-3 gap-2 sm:gap-2.5"
+                                class="grid grid-cols-3 gap-2 sm:gap-3"
                                 role="group"
-                                :aria-label="`${section.title} presets`"
+                                :aria-label="`${section.title} experience presets`"
                             >
                                 <button
                                     v-for="preset in presetsForGroup(section.key)"
                                     :key="preset.id"
                                     type="button"
-                                    class="rounded-lg border border-border bg-background/90 px-2.5 py-2 text-left text-xs shadow-sm transition-colors hover:border-primary/50 hover:bg-muted/40 sm:px-3 sm:py-2.5 sm:text-sm"
-                                    :class="{
-                                        'border-primary bg-primary/8 ring-2 ring-primary/25':
-                                            activePresetId === preset.id,
-                                    }"
-                                    @click="emit('applyPreset', preset)"
+                                    :aria-pressed="isPresetSelected(preset.id)"
+                                    class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 sm:min-h-12 sm:px-3 sm:py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+                                    :class="
+                                        isPresetSelected(preset.id)
+                                            ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
+                                            : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
+                                    "
+                                    @click="emit('togglePreset', preset)"
                                 >
-                                    <span
-                                        class="block font-semibold leading-tight"
-                                        >{{ preset.label }}</span>
+                                    <span class="leading-tight">{{
+                                        preset.label
+                                    }}</span>
                                 </button>
                             </div>
                         </div>
@@ -208,6 +265,17 @@ const presetsSectionOpen = ref(true);
                 </div>
             </CollapsibleContent>
         </Collapsible>
+
+        <div class="mb-4 border-b border-border/60 pb-4">
+            <h2
+                class="text-[11px] font-bold tracking-[0.14em] text-muted-foreground uppercase"
+            >
+                Custom filters
+            </h2>
+            <p class="mt-1.5 text-sm text-muted-foreground">
+                Mix and match fields, then apply.
+            </p>
+        </div>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div class="space-y-2">
@@ -356,11 +424,18 @@ const presetsSectionOpen = ref(true);
                 />
             </div>
         </div>
-        <div class="mt-6 flex flex-wrap items-center gap-2">
-            <Button @click="emit('applyFilters')">Apply filters</Button>
+        <div
+            class="mt-8 flex flex-wrap items-center gap-3 border-t border-border/70 pt-6"
+        >
+            <Button
+                class="min-h-10 min-w-[9.5rem] shadow-sm"
+                @click="emit('applyFilters')"
+            >
+                Apply filters
+            </Button>
             <Button
                 variant="ghost"
-                class="text-muted-foreground"
+                class="min-h-10 text-muted-foreground hover:text-foreground"
                 @click="emit('clearFilters')"
             >
                 Clear all
@@ -368,14 +443,14 @@ const presetsSectionOpen = ref(true);
         </div>
 
         <div
-            class="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200"
+            class="mt-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition-all duration-200 dark:ring-white/[0.06]"
         >
             <div
-                class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6"
+                class="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:p-5"
             >
-                <div class="flex min-w-0 flex-1 items-start gap-3">
+                <div class="flex min-w-0 flex-1 items-start gap-3 sm:gap-4">
                     <div
-                        class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                        class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary shadow-inner"
                     >
                         <Sparkles class="size-5" aria-hidden="true" />
                     </div>
@@ -396,7 +471,7 @@ const presetsSectionOpen = ref(true);
                     type="button"
                     variant="outline"
                     size="default"
-                    class="shrink-0 gap-2 border-primary"
+                    class="shrink-0 gap-2 border-primary/50 bg-background shadow-sm hover:bg-primary/5"
                     :aria-label="
                         props.aiPromptCopied ? 'Copied' : 'Copy AI prompt'
                     "
@@ -412,13 +487,13 @@ const presetsSectionOpen = ref(true);
                 </Button>
             </div>
             <div
-                class="border-t border-border bg-muted/20 px-4 py-3 sm:px-4 sm:py-3"
+                class="border-t border-border/70 bg-muted/30 px-4 py-3 sm:px-5 sm:py-4"
             >
                 <textarea
                     :value="props.aiPromptText"
                     readonly
                     rows="6"
-                    class="w-full resize-none rounded-lg border border-border/60 bg-background px-3.5 py-3 font-mono text-sm leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none"
+                    class="w-full resize-none rounded-xl border border-border/70 bg-background px-3.5 py-3 font-mono text-sm leading-relaxed text-foreground shadow-inner selection:bg-primary/20 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                     aria-label="AI prompt text"
                 />
             </div>

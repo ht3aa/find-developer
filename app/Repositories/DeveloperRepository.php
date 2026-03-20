@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Developer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -71,6 +72,9 @@ class DeveloperRepository
                             }
                         });
                     });
+                }),
+                AllowedFilter::callback('preset_ids', function ($query, $value) {
+                    $this->applyPresetIdsFilter($query, $value);
                 }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
                     if ($value === null || $value === '') {
@@ -197,6 +201,9 @@ class DeveloperRepository
                         });
                     });
                 }),
+                AllowedFilter::callback('preset_ids', function ($query, $value) {
+                    $this->applyPresetIdsFilter($query, $value);
+                }),
                 AllowedFilter::callback('years_min', function ($query, $value) {
                     if ($value === null || $value === '') {
                         return;
@@ -268,6 +275,61 @@ class DeveloperRepository
             ]);
 
         return $query->count();
+    }
+
+    /**
+     * OR together quick-role presets (job title + experience band per preset).
+     *
+     * @param  Builder<Developer>  $query
+     */
+    private function applyPresetIdsFilter(Builder $query, mixed $value): void
+    {
+        $ids = $this->parseFilterValues($value);
+        $bands = [];
+        foreach ($ids as $id) {
+            $band = $this->rolePresetDefinition($id);
+            if ($band !== null) {
+                $bands[] = $band;
+            }
+        }
+        if ($bands === []) {
+            return;
+        }
+
+        $query->where(function (Builder $outer) use ($bands) {
+            foreach ($bands as $band) {
+                $outer->orWhere(function (Builder $q) use ($band) {
+                    $q->whereHas('jobTitle', function (Builder $jt) use ($band) {
+                        $jt->where('name', $band['job_title']);
+                    });
+                    if ($band['years_min'] !== null) {
+                        $q->where('years_of_experience', '>=', $band['years_min']);
+                    }
+                    if ($band['years_max'] !== null) {
+                        $q->where('years_of_experience', '<=', $band['years_max']);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * @return array{job_title: string, years_min: int|null, years_max: int|null}|null
+     */
+    private function rolePresetDefinition(string $id): ?array
+    {
+        return match ($id) {
+            'fe-junior' => ['job_title' => 'Frontend Developer', 'years_min' => null, 'years_max' => 2],
+            'fe-mid' => ['job_title' => 'Frontend Developer', 'years_min' => 3, 'years_max' => 5],
+            'fe-senior' => ['job_title' => 'Frontend Developer', 'years_min' => 6, 'years_max' => null],
+            'be-junior' => ['job_title' => 'Backend Developer', 'years_min' => null, 'years_max' => 2],
+            'be-mid' => ['job_title' => 'Backend Developer', 'years_min' => 3, 'years_max' => 5],
+            'be-senior' => ['job_title' => 'Backend Developer', 'years_min' => 6, 'years_max' => null],
+            'fs-junior' => ['job_title' => 'Full Stack Developer', 'years_min' => null, 'years_max' => 2],
+            'fs-mid' => ['job_title' => 'Full Stack Developer', 'years_min' => 3, 'years_max' => 5],
+            'fs-senior' => ['job_title' => 'Full Stack Developer', 'years_min' => 6, 'years_max' => null],
+            default => null,
+        };
     }
 
     /**
