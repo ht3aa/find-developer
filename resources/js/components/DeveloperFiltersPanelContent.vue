@@ -1,10 +1,22 @@
 <script setup lang="ts">
-import { Check, Copy, Sparkles, Users } from 'lucide-vue-next';
+import { Check, ChevronDown, Copy, Sparkles, Users } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
+import {
+    DEVELOPER_FILTER_PRESET_GROUPS,
+    DEVELOPER_FILTER_PRESETS,
+    type DeveloperFilterPreset,
+    type DeveloperFilterPresetGroup,
+} from '@/lib/developerFilterPresets';
 import {
     availabilityTypeOptions,
     hasUrlsOptions,
@@ -23,6 +35,8 @@ function getSelectValue(event: Event): string {
 }
 
 const props = defineProps<{
+    /** Used so preset “active” state ignores the main search bar. */
+    searchQuery: string;
     filterJobTitle: string[];
     filterSkill: string[];
     filterBadge: string[];
@@ -60,7 +74,41 @@ const emit = defineEmits<{
     (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
+    (e: 'applyPreset', preset: DeveloperFilterPreset): void;
 }>();
+
+function presetsForGroup(
+    key: DeveloperFilterPresetGroup,
+): DeveloperFilterPreset[] {
+    return DEVELOPER_FILTER_PRESETS.filter((p) => p.group === key);
+}
+
+const activePresetId = computed((): string | null => {
+    if (props.searchQuery.trim() !== '') {
+        return null;
+    }
+    if (
+        props.filterSkill.length > 0 ||
+        props.filterBadge.length > 0 ||
+        props.filterAvailabilityType.length > 0 ||
+        props.filterHasUrls.length > 0
+    ) {
+        return null;
+    }
+    if (props.isAvailable !== 'all' || props.isRecommended !== 'all') {
+        return null;
+    }
+    const titles = [...props.filterJobTitle].sort().join('\0');
+    const ym = props.yearsMin;
+    const yx = props.yearsMax;
+    const match = DEVELOPER_FILTER_PRESETS.find((p) => {
+        const pt = [...p.jobTitles].sort().join('\0');
+        return pt === titles && p.yearsMin === ym && p.yearsMax === yx;
+    });
+    return match?.id ?? null;
+});
+
+const presetsSectionOpen = ref(true);
 </script>
 
 <template>
@@ -90,9 +138,77 @@ const emit = defineEmits<{
         </div>
         <SheetDescription class="sr-only">
             Filter developers by job title, skills, badges, availability type,
-            has URLs, availability status, recommended status, and years of
-            experience.
+            has URLs, availability status, recommended status, years of
+            experience, and quick role presets.
         </SheetDescription>
+
+        <Collapsible
+            v-model:open="presetsSectionOpen"
+            class="mb-6 overflow-hidden rounded-xl border border-border/70 bg-muted/15"
+        >
+            <CollapsibleTrigger
+                class="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/25 sm:px-5 sm:py-3.5"
+            >
+                <div class="min-w-0 flex-1">
+                    <p
+                        class="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                    >
+                        Quick role filters
+                    </p>
+                    <p class="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+                        Job title + experience presets
+                    </p>
+                </div>
+                <ChevronDown
+                    class="size-4 shrink-0 text-muted-foreground transition-transform duration-200"
+                    :class="{ 'rotate-180': presetsSectionOpen }"
+                    aria-hidden="true"
+                />
+            </CollapsibleTrigger>
+            <CollapsibleContent class="border-t border-border/60 overflow-hidden">
+                <div class="px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+                    <p class="mb-4 text-xs text-muted-foreground sm:text-sm">
+                        One tap sets job title and years (junior ≤2, mid 3–5,
+                        senior 6+) and clears other filters below. Use Apply if
+                        you change fields manually afterward.
+                    </p>
+                    <div class="space-y-4">
+                        <div
+                            v-for="section in DEVELOPER_FILTER_PRESET_GROUPS"
+                            :key="section.key"
+                        >
+                            <p
+                                class="mb-2 text-xs font-medium text-foreground/80 sm:text-sm"
+                            >
+                                {{ section.title }}
+                            </p>
+                            <div
+                                class="grid grid-cols-3 gap-2 sm:gap-2.5"
+                                role="group"
+                                :aria-label="`${section.title} presets`"
+                            >
+                                <button
+                                    v-for="preset in presetsForGroup(section.key)"
+                                    :key="preset.id"
+                                    type="button"
+                                    class="rounded-lg border border-border bg-background/90 px-2.5 py-2 text-left text-xs shadow-sm transition-colors hover:border-primary/50 hover:bg-muted/40 sm:px-3 sm:py-2.5 sm:text-sm"
+                                    :class="{
+                                        'border-primary bg-primary/8 ring-2 ring-primary/25':
+                                            activePresetId === preset.id,
+                                    }"
+                                    @click="emit('applyPreset', preset)"
+                                >
+                                    <span
+                                        class="block font-semibold leading-tight"
+                                        >{{ preset.label }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </CollapsibleContent>
+        </Collapsible>
+
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div class="space-y-2">
                 <Label for="filter-job-title">Job title</Label>

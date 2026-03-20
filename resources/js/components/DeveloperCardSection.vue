@@ -42,6 +42,7 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
+import type { DeveloperFilterPreset } from '@/lib/developerFilterPresets';
 import type { Developer } from '@/types/developer';
 import {
     availabilityTypeOptions,
@@ -299,6 +300,20 @@ function clearFilters(): void {
             ? buildDevelopersApiUrl(API_BASE, { ids: props.developerIds })
             : API_BASE,
     );
+}
+
+function applyFilterPreset(preset: DeveloperFilterPreset): void {
+    searchQuery.value = '';
+    filterJobTitle.value = [...preset.jobTitles];
+    filterSkill.value = [];
+    filterBadge.value = [];
+    filterAvailabilityType.value = [];
+    filterHasUrls.value = [];
+    isAvailable.value = 'all';
+    isRecommended.value = 'all';
+    yearsMin.value = preset.yearsMin;
+    yearsMax.value = preset.yearsMax;
+    fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
 }
 
 const filteredPageUrl = computed(() => getFilteredPageUrl(getFilters()));
@@ -573,9 +588,9 @@ onMounted(() => {
                     <Sheet v-model:open="advancedOpen">
                         <SheetTrigger as-child>
                             <Button
-                                variant="outline"
+                                variant="default"
                                 size="sm"
-                                class="relative h-8 shrink-0 gap-1.5 border-primary/50 bg-primary/5 hover:border-primary hover:bg-primary/10"
+                                class="relative h-8 shrink-0 gap-1.5 shadow-sm"
                             >
                                 <SlidersHorizontal
                                     class="size-4"
@@ -585,7 +600,7 @@ onMounted(() => {
                                 <Badge
                                     v-if="activeFilterCount > 0"
                                     variant="secondary"
-                                    class="absolute -top-1 -right-1 flex size-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold"
+                                    class="absolute -top-1 -right-1 flex size-5 min-w-5 items-center justify-center rounded-full border border-primary-foreground/25 bg-primary-foreground px-1 text-[10px] font-semibold text-primary"
                                 >
                                     {{ activeFilterCount }}
                                 </Badge>
@@ -598,6 +613,7 @@ onMounted(() => {
                             <Suspense>
                                 <DeveloperFiltersPanelContent
                                     v-if="advancedOpen"
+                                    :search-query="searchQuery"
                                     :filter-job-title="filterJobTitle"
                                     :filter-skill="filterSkill"
                                     :filter-badge="filterBadge"
@@ -654,6 +670,7 @@ onMounted(() => {
                                     @apply-filters="applyFilters"
                                     @clear-filters="clearFilters"
                                     @copy-ai-prompt="copyAiPrompt"
+                                    @apply-preset="applyFilterPreset"
                                 />
                                 <template #fallback>
                                     <div
