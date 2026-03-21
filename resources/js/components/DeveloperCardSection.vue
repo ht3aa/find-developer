@@ -61,7 +61,7 @@ import {
     parseFiltersFromUrl,
     updateUrlWithFilters,
 } from '@/lib/api';
-import type { Developer } from '@/types/developer';
+import type { Developer, DeveloperBadge } from '@/types/developer';
 
 const props = withDefaults(
     defineProps<{
@@ -450,6 +450,40 @@ function visibleSkillTags(developer: Developer): {
     return { tags: names.slice(0, max), more: names.length - max };
 }
 
+function visibleDeveloperBadges(developer: Developer): {
+    badges: DeveloperBadge[];
+    more: number;
+} {
+    const max = 3;
+    const list = developer.badges;
+    if (list.length <= max) {
+        return { badges: list, more: 0 };
+    }
+    return { badges: list.slice(0, max), more: list.length - max };
+}
+
+function developerBadgeInlineStyle(
+    badge: DeveloperBadge,
+): Record<string, string> | undefined {
+    if (!badge.color) {
+        return undefined;
+    }
+
+    return {
+        borderColor: `${badge.color}50`,
+        backgroundColor: `${badge.color}14`,
+        color: badge.color,
+    };
+}
+
+function developerHasSocialLinks(developer: Developer): boolean {
+    return Boolean(
+        developer.portfolio_url ||
+            developer.github_url ||
+            developer.linkedin_url,
+    );
+}
+
 onMounted(() => {
     if (typeof localStorage !== 'undefined') {
         const stored = localStorage.getItem(VIEW_LAYOUT_STORAGE_KEY);
@@ -831,7 +865,7 @@ watch(viewLayout, (layout: ViewLayout) => {
             class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
         >
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[86rem] caption-bottom text-sm">
+                <table class="w-full min-w-[104rem] caption-bottom text-sm">
                     <thead
                         class="border-b border-border/70 bg-gradient-to-b from-muted/50 to-muted/25"
                     >
@@ -893,6 +927,18 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 scope="col"
                             >
                                 Skills
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Badges
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Social links
                             </th>
                             <th
                                 class="h-11 px-4 text-right align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
@@ -959,6 +1005,29 @@ watch(viewLayout, (layout: ViewLayout) => {
                                     />
                                 </div>
                             </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <div
+                                        class="h-5 w-12 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-5 w-16 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <div
+                                        class="h-3 w-16 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-3 w-14 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-3 w-16 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-right">
                                 <div
                                     class="ml-auto h-8 w-8 animate-pulse rounded-md bg-muted-foreground/15"
@@ -1010,7 +1079,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
             >
                 <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
-                    <Table class="min-w-[86rem] text-sm">
+                    <Table class="min-w-[104rem] text-sm">
                         <TableHeader
                             class="[&_tr]:border-border/60 [&_tr]:border-b [&_tr]:bg-gradient-to-b [&_tr]:from-muted/55 [&_tr]:to-muted/25"
                         >
@@ -1077,6 +1146,18 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 </TableHead>
                                 <TableHead
                                     scope="col"
+                                    class="min-w-[11rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Badges
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[6.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Social links
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
                                     class="w-24 py-3.5 pr-4 pl-2 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                                 >
                                     Profile
@@ -1123,6 +1204,23 @@ watch(viewLayout, (layout: ViewLayout) => {
                                             class="line-clamp-1 text-xs text-muted-foreground"
                                             >{{ developer.email }}</span
                                         >
+                                        <span
+                                            v-if="
+                                                developer.recommendations_received_count >
+                                                0
+                                            "
+                                            class="text-xs font-medium tabular-nums text-blue-600 dark:text-blue-400"
+                                        >
+                                            {{
+                                                developer.recommendations_received_count
+                                            }}
+                                            {{
+                                                developer.recommendations_received_count ===
+                                                1
+                                                    ? 'Recommendation'
+                                                    : 'Recommendations'
+                                            }}
+                                        </span>
                                         <div
                                             v-if="developer.recommended_by_us"
                                             class="mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:text-amber-200"
@@ -1270,6 +1368,97 @@ watch(viewLayout, (layout: ViewLayout) => {
                                             }}
                                         </span>
                                     </div>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[13rem] px-4 py-3.5 align-middle"
+                                >
+                                    <div
+                                        v-if="developer.badges.length > 0"
+                                        class="flex flex-wrap items-center gap-1"
+                                    >
+                                        <Badge
+                                            v-for="(
+                                                badge, badgeIndex
+                                            ) in visibleDeveloperBadges(
+                                                developer,
+                                            ).badges"
+                                            :key="
+                                                badge.slug ??
+                                                `${badge.name}-${badgeIndex}`
+                                            "
+                                            variant="outline"
+                                            class="max-w-[8rem] border-border/70 bg-background/80 px-2 py-0 text-[11px] font-normal text-muted-foreground"
+                                            :style="
+                                                developerBadgeInlineStyle(badge)
+                                            "
+                                        >
+                                            <span class="truncate">{{
+                                                badge.name
+                                            }}</span>
+                                        </Badge>
+                                        <span
+                                            v-if="
+                                                visibleDeveloperBadges(
+                                                    developer,
+                                                ).more > 0
+                                            "
+                                            class="text-[11px] text-muted-foreground tabular-nums"
+                                        >
+                                            +{{
+                                                visibleDeveloperBadges(
+                                                    developer,
+                                                ).more
+                                            }}
+                                        </span>
+                                    </div>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[12rem] px-4 py-3.5 align-middle"
+                                >
+                                    <div
+                                        v-if="
+                                            developerHasSocialLinks(developer)
+                                        "
+                                        class="flex flex-col gap-1"
+                                    >
+                                        <a
+                                            v-if="developer.portfolio_url"
+                                            :href="developer.portfolio_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            Portfolio
+                                        </a>
+                                        <a
+                                            v-if="developer.github_url"
+                                            :href="developer.github_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            GitHub
+                                        </a>
+                                        <a
+                                            v-if="developer.linkedin_url"
+                                            :href="developer.linkedin_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            LinkedIn
+                                        </a>
+                                    </div>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
                                 </TableCell>
                                 <TableCell
                                     class="py-3.5 pr-4 pl-2 text-right align-middle"
