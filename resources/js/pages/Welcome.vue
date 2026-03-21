@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { Bug, ChevronUp, CircleHelp } from 'lucide-vue-next';
+import { Bug, ChevronUp, CircleHelp, X } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -12,6 +12,13 @@ import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+import { Button } from '@/components/ui/button';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {
     destroyWelcomeTour,
     startWelcomeTour,
@@ -49,7 +56,18 @@ const webSiteJsonLd = computed(() => ({
 
 const reportBugsUrl = 'https://github.com/ht3aa/find-developer';
 
+const WELCOME_HELP_NUDGE_KEY = 'find-developer-welcome-help-nudge-dismissed';
+
 const showBackToTop = ref(false);
+const showHelpNudge = ref(false);
+let helpNudgeTimerId: ReturnType<typeof setTimeout> | null = null;
+
+function dismissHelpNudge(persist = true): void {
+    showHelpNudge.value = false;
+    if (persist && typeof localStorage !== 'undefined') {
+        localStorage.setItem(WELCOME_HELP_NUDGE_KEY, '1');
+    }
+}
 
 const handleScroll = () => {
     showBackToTop.value = window.scrollY > 300;
@@ -62,14 +80,26 @@ const scrollToTop = () => {
 onMounted(() => {
     window.scrollTo(0, 0);
     window.addEventListener('scroll', handleScroll, { passive: true });
+    if (
+        typeof localStorage !== 'undefined' &&
+        !localStorage.getItem(WELCOME_HELP_NUDGE_KEY)
+    ) {
+        helpNudgeTimerId = window.setTimeout(() => {
+            showHelpNudge.value = true;
+        }, 1400);
+    }
 });
 
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll);
+    if (helpNudgeTimerId !== null) {
+        window.clearTimeout(helpNudgeTimerId);
+    }
     destroyWelcomeTour();
 });
 
 async function runWelcomeTour(): Promise<void> {
+    dismissHelpNudge(true);
     await startWelcomeTour();
 }
 </script>
@@ -141,15 +171,74 @@ async function runWelcomeTour(): Promise<void> {
 
         <Footer />
 
-        <button
-            type="button"
-            class="fixed left-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:scale-105 hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
-            aria-label="Start page tour: how to search developers"
-            title="How to use this page"
-            @click="runWelcomeTour"
+        <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0 translate-y-1"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 translate-y-1"
         >
-            <CircleHelp class="size-6 text-primary" aria-hidden="true" />
-        </button>
+            <div
+                v-if="showHelpNudge"
+                class="fixed z-[60] w-[min(19rem,calc(100vw-3rem))] rounded-lg border border-border bg-popover p-3 text-popover-foreground shadow-lg outline-none"
+                role="dialog"
+                aria-labelledby="welcome-help-nudge-title"
+                aria-describedby="welcome-help-nudge-desc"
+                :style="{ left: '1.5rem', bottom: '5.25rem' }"
+            >
+                <div class="flex gap-2">
+                    <div class="min-w-0 flex-1">
+                        <p
+                            id="welcome-help-nudge-title"
+                            class="text-sm font-semibold text-foreground"
+                        >
+                            Need a hand?
+                        </p>
+                        <p
+                            id="welcome-help-nudge-desc"
+                            class="mt-1 text-xs leading-relaxed text-muted-foreground"
+                        >
+                            Click me if you need any help — the button below
+                            starts a short tour of how to search and explore
+                            developers.
+                        </p>
+                    </div>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        class="size-8 shrink-0 text-muted-foreground hover:text-foreground"
+                        aria-label="Dismiss help hint"
+                        @click="dismissHelpNudge(true)"
+                    >
+                        <X class="size-4" aria-hidden="true" />
+                    </Button>
+                </div>
+                <div
+                    class="pointer-events-none absolute -bottom-1.5 left-7 size-3 rotate-45 border-r border-b border-border bg-popover"
+                    aria-hidden="true"
+                />
+            </div>
+        </Transition>
+
+        <TooltipProvider :delay-duration="250">
+            <Tooltip>
+                <TooltipTrigger as-child>
+                    <button
+                        type="button"
+                        class="fixed left-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:scale-105 hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                        aria-label="Click me if you need any help — starts a guided tour of this page"
+                        @click="runWelcomeTour"
+                    >
+                        <CircleHelp class="size-6 text-primary" aria-hidden="true" />
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" :side-offset="10" class="max-w-[16rem] text-balance">
+                    Click me if you need any help
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
 
         <Transition
             enter-active-class="transition duration-200 ease-out"
