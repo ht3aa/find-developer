@@ -5,6 +5,7 @@ import {
     Award,
     Check,
     ExternalLink,
+    FileText,
     FilterX,
     LayoutGrid,
     Scale,
@@ -410,6 +411,25 @@ function developerProfileHref(developer: Developer): string | null {
     return null;
 }
 
+function developerTableSalaryLabel(developer: Developer): string {
+    const from = developer.expected_salary_from;
+    const to = developer.expected_salary_to;
+    const cur = developer.currency?.trim() ? developer.currency : '';
+    const curSuffix = cur ? ` ${cur}` : '';
+
+    if (from != null && to != null) {
+        return `${from} – ${to}${curSuffix}`;
+    }
+    if (from != null) {
+        return `From ${from}${curSuffix}`;
+    }
+    if (to != null) {
+        return `Up to ${to}${curSuffix}`;
+    }
+
+    return '—';
+}
+
 function availabilityTypeLabels(developer: Developer): string {
     const labels =
         developer.availability_type
@@ -811,7 +831,7 @@ watch(viewLayout, (layout: ViewLayout) => {
             class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
         >
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[56rem] caption-bottom text-sm">
+                <table class="w-full min-w-[86rem] caption-bottom text-sm">
                     <thead
                         class="border-b border-border/70 bg-gradient-to-b from-muted/50 to-muted/25"
                     >
@@ -836,7 +856,31 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                                 scope="col"
                             >
+                                Location
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Phone
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
                                 Experience
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Salary
+                            </th>
+                            <th
+                                class="h-11 w-16 px-4 text-center align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                CV
                             </th>
                             <th
                                 class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
@@ -877,7 +921,27 @@ watch(viewLayout, (layout: ViewLayout) => {
                             </td>
                             <td class="px-4 py-3">
                                 <div
+                                    class="h-4 w-24 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-28 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
                                     class="h-4 w-10 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-32 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <div
+                                    class="mx-auto h-8 w-8 animate-pulse rounded-md bg-muted-foreground/15"
                                 />
                             </td>
                             <td class="px-4 py-3">
@@ -946,7 +1010,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
             >
                 <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
-                    <Table class="min-w-[56rem] text-sm">
+                    <Table class="min-w-[86rem] text-sm">
                         <TableHeader
                             class="[&_tr]:border-border/60 [&_tr]:border-b [&_tr]:bg-gradient-to-b [&_tr]:from-muted/55 [&_tr]:to-muted/25"
                         >
@@ -971,9 +1035,33 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 </TableHead>
                                 <TableHead
                                     scope="col"
+                                    class="min-w-[7.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Location
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[9rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Phone
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
                                     class="w-24 px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                                 >
                                     Exp.
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[10.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Salary
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-16 px-2 py-3.5 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    CV
                                 </TableHead>
                                 <TableHead
                                     scope="col"
@@ -1055,11 +1143,71 @@ watch(viewLayout, (layout: ViewLayout) => {
                                     }}</span>
                                 </TableCell>
                                 <TableCell
+                                    class="max-w-[12rem] px-4 py-3.5 align-middle text-muted-foreground"
+                                >
+                                    <span class="line-clamp-2 leading-snug">{{
+                                        developer.location?.label ?? '—'
+                                    }}</span>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[11rem] px-4 py-3.5 align-middle tabular-nums text-muted-foreground"
+                                >
+                                    <a
+                                        v-if="developer.phone"
+                                        :href="`tel:${developer.phone.replace(/\s+/g, '')}`"
+                                        class="line-clamp-2 text-primary underline-offset-2 hover:underline"
+                                        :aria-label="`Call ${developer.name} at ${developer.phone}`"
+                                    >
+                                        {{ developer.phone }}
+                                    </a>
+                                    <span v-else class="line-clamp-2">—</span>
+                                </TableCell>
+                                <TableCell
                                     class="px-4 py-3.5 align-middle tabular-nums text-muted-foreground"
                                 >
                                     {{ developer.years_of_experience }}
                                     <span class="text-xs text-muted-foreground/80"
                                         >yrs</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[14rem] px-4 py-3.5 align-middle text-muted-foreground"
+                                >
+                                    <span
+                                        class="line-clamp-3 text-xs leading-snug tabular-nums"
+                                        >{{
+                                            developerTableSalaryLabel(
+                                                developer,
+                                            )
+                                        }}</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="px-2 py-3.5 text-center align-middle"
+                                >
+                                    <Button
+                                        v-if="developer.cv_path_url"
+                                        variant="ghost"
+                                        size="icon"
+                                        class="size-9 shrink-0 text-muted-foreground hover:text-foreground"
+                                        as-child
+                                    >
+                                        <a
+                                            :href="developer.cv_path_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            :aria-label="`Open CV for ${developer.name}`"
+                                        >
+                                            <FileText
+                                                class="size-4"
+                                                aria-hidden="true"
+                                            />
+                                        </a>
+                                    </Button>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
                                     >
                                 </TableCell>
                                 <TableCell class="px-4 py-3.5 align-middle">
