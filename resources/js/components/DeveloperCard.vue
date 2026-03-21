@@ -32,12 +32,15 @@ const props = withDefaults(
         recommendedDeveloperIds?: number[];
         selectable?: boolean;
         modelValue?: boolean;
+        /** When true and the developer has badges, marks the badge row for the welcome tour. */
+        tourBadgesAnchor?: boolean;
     }>(),
     {
         currentUserDeveloper: null,
         recommendedDeveloperIds: () => [],
         selectable: false,
         modelValue: false,
+        tourBadgesAnchor: false,
     },
 );
 
@@ -155,6 +158,9 @@ function onThumbnailError(e: Event, videoId: string): void {
             <!-- Badges row -->
             <div
                 v-if="developer.badges.length > 0"
+                :data-tour="
+                    tourBadgesAnchor ? 'developer-card-badges' : undefined
+                "
                 class="flex flex-wrap gap-2"
             >
                 <TooltipProvider

@@ -154,6 +154,11 @@ const allCurrentSelected = computed(
         ),
 );
 
+const tourBadgesAnchorDeveloperId = computed((): number | null => {
+    const d = developers.value.find((dev) => dev.badges.length > 0);
+    return d != null ? developerNumericId(d) : null;
+});
+
 function onOfferSuccess(): void {
     offerFormOpen.value = false;
     clearSelection();
@@ -1250,6 +1255,11 @@ watch(viewLayout, (layout: ViewLayout) => {
                     :key="developer.id"
                     :developer="developer"
                     :selectable="true"
+                    :tour-badges-anchor="
+                        tourBadgesAnchorDeveloperId !== null &&
+                        tourBadgesAnchorDeveloperId ===
+                            developerNumericId(developer)
+                    "
                     :model-value="
                         compareIds.includes(developerNumericId(developer))
                     "
@@ -1360,7 +1370,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                         </TableHeader>
                         <TableBody>
                             <TableRow
-                                v-for="developer in developers"
+                                v-for="(developer, developerIndex) in developers"
                                 :key="developer.id"
                                 :data-state="
                                     compareIds.includes(
@@ -1632,6 +1642,11 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 </TableCell>
                                 <TableCell
                                     class="max-w-[13rem] px-4 py-3.5 align-middle"
+                                    :data-tour="
+                                        developerIndex === 0
+                                            ? 'developer-card-badges'
+                                            : undefined
+                                    "
                                 >
                                     <div
                                         v-if="developer.badges.length > 0"

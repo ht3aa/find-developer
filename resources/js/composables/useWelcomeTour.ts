@@ -107,6 +107,22 @@ function buildSteps(): DriveStep[] {
             },
         },
         {
+            element: '[data-tour="developer-card-badges"]',
+            popover: {
+                title: 'Achievement badges',
+                description:
+                    'These are platform badges (for example hackathons, certifications, or milestones). Hover an icon on a card to see the badge name, or click it to open the Badges page for full descriptions. In table view, names appear in the Badges column on each row.',
+                side: 'bottom',
+                align: 'center',
+            },
+            onHighlightStarted: () => {
+                scrollDevelopersIntoView();
+            },
+            onHighlighted: (_el, _step, { driver: d }) => {
+                window.setTimeout(() => d.refresh(), 450);
+            },
+        },
+        {
             element: '[data-tour="developer-results"]',
             popover: {
                 title: 'Open profiles',
