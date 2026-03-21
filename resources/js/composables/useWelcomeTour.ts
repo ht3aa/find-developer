@@ -27,6 +27,22 @@ function buildSteps(): DriveStep[] {
             },
         },
         {
+            element: '[data-tour="developer-subscribe-cta"]',
+            popover: {
+                title: 'Unlock contacts & CVs',
+                description:
+                    'Public listings are limited. Subscribers get developer phone numbers and resume (CV) links so you can reach the right people faster. Use the contact button to ask about subscription access.',
+                side: 'bottom',
+                align: 'center',
+            },
+            onHighlightStarted: () => {
+                scrollDevelopersIntoView();
+            },
+            onHighlighted: (_el, _step, { driver: d }) => {
+                window.setTimeout(() => d.refresh(), 450);
+            },
+        },
+        {
             element: '[data-tour="developer-search"]',
             popover: {
                 title: 'Search developers',

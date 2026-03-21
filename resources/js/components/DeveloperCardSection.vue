@@ -645,6 +645,7 @@ watch(viewLayout, (layout: ViewLayout) => {
     >
         <!-- Subscribe note -->
         <div
+            data-tour="developer-subscribe-cta"
             class="mb-8 rounded-xl border-2 border-primary/30 bg-primary/10 p-6 text-center sm:p-8"
         >
             <p class="text-lg font-semibold text-foreground sm:text-xl">
