@@ -43,6 +43,7 @@
         "chart.js": "^4.5.1",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "driver.js": "^1.4.0",
         "gsap": "^3.14.2",
         "laravel-vite-plugin": "^2.0.0",
         "lucide-vue-next": "^0.468.0",

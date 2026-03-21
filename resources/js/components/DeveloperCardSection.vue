@@ -715,6 +715,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-3.5"
             >
                 <div
+                    data-tour="developer-search"
                     class="relative flex min-w-0 flex-1 items-center rounded-lg border border-input bg-muted/30 transition-colors focus-within:border-primary focus-within:bg-background focus-within:ring-2 focus-within:ring-primary/20"
                 >
                     <Search
@@ -746,6 +747,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     </p>
 
                     <div
+                        data-tour="developer-view-toggle"
                         class="inline-flex shrink-0 rounded-lg border border-border/80 bg-muted/40 p-0.5 shadow-inner"
                         role="group"
                         aria-label="Developer list layout"
@@ -788,7 +790,10 @@ watch(viewLayout, (layout: ViewLayout) => {
                     </div>
 
                     <!-- Compare (always visible) -->
-                    <div class="flex items-center gap-1.5">
+                    <div
+                        data-tour="developer-compare"
+                        class="flex items-center gap-1.5"
+                    >
                         <Button
                             v-if="compareIds.length > 0"
                             variant="ghost"
@@ -888,6 +893,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     <Sheet v-model:open="advancedOpen">
                         <SheetTrigger as-child>
                             <Button
+                                data-tour="developer-filters"
                                 variant="default"
                                 size="sm"
                                 class="relative h-8 shrink-0 gap-1.5 shadow-sm"
@@ -1235,6 +1241,7 @@ watch(viewLayout, (layout: ViewLayout) => {
         <template v-else-if="!loading">
             <div
                 v-if="viewLayout === 'cards'"
+                data-tour="developer-results"
                 class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
                 <DeveloperCard
@@ -1253,6 +1260,7 @@ watch(viewLayout, (layout: ViewLayout) => {
 
             <div
                 v-else
+                data-tour="developer-results"
                 role="region"
                 aria-label="Developers in table view"
                 class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"

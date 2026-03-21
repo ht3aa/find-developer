@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { Bug, ChevronUp } from 'lucide-vue-next';
+import { Bug, ChevronUp, CircleHelp } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -12,6 +12,10 @@ import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
+import {
+    destroyWelcomeTour,
+    startWelcomeTour,
+} from '@/composables/useWelcomeTour';
 
 const DeveloperCardSection = defineAsyncComponent(
     () => import('@/components/DeveloperCardSection.vue'),
@@ -62,7 +66,12 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll);
+    destroyWelcomeTour();
 });
+
+async function runWelcomeTour(): Promise<void> {
+    await startWelcomeTour();
+}
 </script>
 
 <template>
@@ -95,16 +104,18 @@ onUnmounted(() => {
             </span>
         </div>
 
-        <Hero
-            :hero-greeting-note="heroGreetingNote || undefined"
-            badge="Find developers"
-            title="Find the right developer for your project"
-            description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
-            primary-action-label="Browse developers"
-            primary-action-href="#developers"
-            :success-message="flashSuccess ?? undefined"
-            :newsletter-store-url="newsletterStoreUrl || undefined"
-        />
+        <div data-tour="welcome-hero">
+            <Hero
+                :hero-greeting-note="heroGreetingNote || undefined"
+                badge="Find developers"
+                title="Find the right developer for your project"
+                description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
+                primary-action-label="Browse developers"
+                primary-action-href="#developers"
+                :success-message="flashSuccess ?? undefined"
+                :newsletter-store-url="newsletterStoreUrl || undefined"
+            />
+        </div>
 
         <Suspense>
             <DeveloperCardSection
@@ -129,6 +140,16 @@ onUnmounted(() => {
         </Suspense>
 
         <Footer />
+
+        <button
+            type="button"
+            class="fixed left-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:scale-105 hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+            aria-label="Start page tour: how to search developers"
+            title="How to use this page"
+            @click="runWelcomeTour"
+        >
+            <CircleHelp class="size-6 text-primary" aria-hidden="true" />
+        </button>
 
         <Transition
             enter-active-class="transition duration-200 ease-out"

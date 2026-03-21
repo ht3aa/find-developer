@@ -308,3 +308,51 @@
 .prose ol ol ol {
     list-style-type: lower-roman;
 }
+
+/* driver.js welcome tour — popover is portaled to body, outside Vue root */
+.driver-popover.welcome-tour-popover {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow:
+        0 10px 40px -10px rgb(0 0 0 / 0.18),
+        0 4px 16px -8px rgb(0 0 0 / 0.12);
+    max-width: min(320px, calc(100vw - 32px));
+}
+
+.driver-popover.welcome-tour-popover .driver-popover-title {
+    color: var(--foreground);
+}
+
+.driver-popover.welcome-tour-popover .driver-popover-description {
+    color: var(--muted-foreground);
+}
+
+.driver-popover.welcome-tour-popover .driver-popover-progress-text {
+    color: var(--muted-foreground);
+}
+
+.driver-popover.welcome-tour-popover .driver-popover-footer button {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border-color: transparent;
+    text-shadow: none;
+    border-radius: var(--radius);
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+}
+
+.driver-popover.welcome-tour-popover
+    .driver-popover-footer
+    button:hover,
+.driver-popover.welcome-tour-popover
+    .driver-popover-footer
+    button:focus {
+    background-color: color-mix(in hsl, var(--primary) 90%, black);
+}
+
+.driver-popover.welcome-tour-popover .driver-popover-close-btn:hover,
+.driver-popover.welcome-tour-popover .driver-popover-close-btn:focus {
+    color: var(--foreground);
+}
