@@ -58,8 +58,8 @@ export type Developer = {
     email: string;
     years_of_experience: number;
     phone?: string | null;
-    expected_salary_from?: number | null;
-    expected_salary_to?: number | null;
+    expected_salary_from?: string | number | null;
+    expected_salary_to?: string | number | null;
     currency?: string | null;
     is_available: boolean;
     bio?: string | null;
