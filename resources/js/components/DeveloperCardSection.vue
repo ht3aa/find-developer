@@ -68,10 +68,6 @@ import {
     type UiRoleBandRow,
 } from '@/lib/roleBandFilters';
 import type { Developer } from '@/types/developer';
-import {
-    availabilityTypeOptions,
-    hasUrlsOptions,
-} from '@/utils/developerEnums';
 
 const props = withDefaults(
     defineProps<{
@@ -214,6 +210,9 @@ const developers = ref<Developer[]>([]);
 const loading = ref(false);
 const loadingMore = ref(false);
 const nextPageUrl = ref<string | null>(null);
+
+/** Table YouTube cell: show embed on hover (same behavior as developer cards). */
+const tableYoutubeHoverDeveloperId = ref<number | null>(null);
 
 const stats = ref<{ total: number; recommended: number } | null>(null);
 const paginationTotal = ref<number | null>(null);
@@ -578,6 +577,48 @@ function developerHasSocialLinks(developer: Developer): boolean {
             developer.github_url ||
             developer.linkedin_url,
     );
+}
+
+const YOUTUBE_VIDEO_ID_FROM_URL =
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+
+function developerYoutubeVideoId(developer: Developer): string | null {
+    if (developer.youtube_video_id) {
+        return developer.youtube_video_id;
+    }
+    if (developer.youtube_url) {
+        const match = developer.youtube_url.match(YOUTUBE_VIDEO_ID_FROM_URL);
+
+        return match?.[1] ?? null;
+    }
+
+    return null;
+}
+
+function developerYoutubeHref(developer: Developer): string | null {
+    if (developer.youtube_url) {
+        return developer.youtube_url;
+    }
+    if (developer.youtube_video_id) {
+        return `https://www.youtube.com/watch?v=${developer.youtube_video_id}`;
+    }
+
+    return null;
+}
+
+function onTableYoutubeThumbnailError(e: Event, videoId: string): void {
+    const img = e.target as HTMLImageElement;
+    if (img) {
+        img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
+}
+
+function onTableYoutubeCellEnter(developer: Developer): void {
+    tableYoutubeHoverDeveloperId.value = developerNumericId(developer);
+}
+
+function onTableYoutubeCellLeave(): void {
+    tableYoutubeHoverDeveloperId.value = null;
 }
 
 onMounted(() => {
@@ -992,7 +1033,7 @@ watch(viewLayout, (layout: ViewLayout) => {
             class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
         >
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[104rem] caption-bottom text-sm">
+                <table class="w-full min-w-[112rem] caption-bottom text-sm">
                     <thead
                         class="border-b border-border/70 bg-gradient-to-b from-muted/50 to-muted/25"
                     >
@@ -1006,6 +1047,12 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 scope="col"
                             >
                                 Developer
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                YouTube
                             </th>
                             <th
                                 class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
@@ -1085,6 +1132,11 @@ watch(viewLayout, (layout: ViewLayout) => {
                             <td class="px-4 py-3">
                                 <div
                                     class="h-4 w-40 max-w-full animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-2 py-3">
+                                <div
+                                    class="aspect-video w-full max-w-[12rem] animate-pulse rounded-md bg-muted-foreground/15"
                                 />
                             </td>
                             <td class="px-4 py-3">
@@ -1206,7 +1258,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
             >
                 <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
-                    <Table class="min-w-[104rem] text-sm">
+                    <Table class="min-w-[112rem] text-sm">
                         <TableHeader
                             class="[&_tr]:border-border/60 [&_tr]:border-b [&_tr]:bg-gradient-to-b [&_tr]:from-muted/55 [&_tr]:to-muted/25"
                         >
@@ -1222,6 +1274,12 @@ watch(viewLayout, (layout: ViewLayout) => {
                                     class="min-w-[11rem] py-3.5 pr-4 pl-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                                 >
                                     Developer
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-44 min-w-[11rem] max-w-[14rem] px-2 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    YouTube
                                 </TableHead>
                                 <TableHead
                                     scope="col"
@@ -1359,6 +1417,73 @@ watch(viewLayout, (layout: ViewLayout) => {
                                             Recommended
                                         </div>
                                     </div>
+                                </TableCell>
+                                <TableCell
+                                    class="w-44 min-w-[11rem] max-w-[14rem] px-2 py-3.5 align-middle"
+                                >
+                                    <div
+                                        v-if="
+                                            developerYoutubeVideoId(developer)
+                                        "
+                                        class="relative aspect-video w-full overflow-hidden rounded-md bg-muted ring-1 ring-border/60"
+                                        @mouseenter="
+                                            onTableYoutubeCellEnter(developer)
+                                        "
+                                        @mouseleave="onTableYoutubeCellLeave"
+                                    >
+                                        <img
+                                            v-if="
+                                                tableYoutubeHoverDeveloperId !==
+                                                developerNumericId(developer)
+                                            "
+                                            :src="`https://img.youtube.com/vi/${developerYoutubeVideoId(developer)}/maxresdefault.jpg`"
+                                            :alt="`Video by ${developer.name}`"
+                                            class="size-full object-cover"
+                                            loading="lazy"
+                                            @error="
+                                                onTableYoutubeThumbnailError(
+                                                    $event,
+                                                    developerYoutubeVideoId(
+                                                        developer,
+                                                    )!,
+                                                )
+                                            "
+                                        />
+                                        <iframe
+                                            v-else
+                                            :src="`https://www.youtube.com/embed/${developerYoutubeVideoId(developer)}?autoplay=1&mute=1&loop=1&playlist=${developerYoutubeVideoId(developer)}`"
+                                            title="YouTube video"
+                                            class="size-full border-0"
+                                            allow="
+                                                accelerometer;
+                                                autoplay;
+                                                clipboard-write;
+                                                encrypted-media;
+                                                gyroscope;
+                                                picture-in-picture;
+                                                web-share;
+                                            "
+                                            allowfullscreen
+                                        />
+                                    </div>
+                                    <a
+                                        v-else-if="
+                                            developerYoutubeHref(developer)
+                                        "
+                                        :href="
+                                            developerYoutubeHref(developer)!
+                                        "
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="line-clamp-2 text-xs text-primary underline-offset-2 hover:underline"
+                                    >
+                                        YouTube
+                                    </a>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
                                 </TableCell>
                                 <TableCell
                                     class="px-4 py-3.5 align-middle text-muted-foreground"

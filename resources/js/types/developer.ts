@@ -71,6 +71,7 @@ export type Developer = {
     recommendations_received_count: number;
     recommended_by_us?: boolean;
     youtube_video_id?: string | null;
+    youtube_url?: string | null;
     badges: DeveloperBadge[];
     job_title: DeveloperJobTitle;
     location?: DeveloperLocation | null;
