@@ -2,13 +2,10 @@
 
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\Dashboard\ConversationController as DashboardConversationController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
-use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
-use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
@@ -73,12 +70,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
 
-            Route::get('conversations', [DashboardConversationController::class, 'index'])->name('dashboard.conversations.index');
-            Route::get('conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('dashboard.conversations.show');
-            Route::get('chat-messages', [DashboardMessageController::class, 'index'])->name('dashboard.messages.index');
-            Route::get('chat-messages/{message}', [DashboardMessageController::class, 'show'])->name('dashboard.messages.show');
-            Route::get('message-attachments', [DashboardMessageAttachmentController::class, 'index'])->name('dashboard.message-attachments.index');
-            Route::get('message-attachments/{messageAttachment}', [DashboardMessageAttachmentController::class, 'show'])->name('dashboard.message-attachments.show');
         });
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])

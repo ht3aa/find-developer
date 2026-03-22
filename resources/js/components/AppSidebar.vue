@@ -106,19 +106,19 @@ const allMainNavItems: NavItem[] = [
     },
     {
         title: 'Conversations',
-        href: '/dashboard/conversations',
+        href: '/admin/conversations',
         icon: MessagesSquare,
         can: 'viewConversations',
     },
     {
         title: 'Chat Messages',
-        href: '/dashboard/chat-messages',
+        href: '/admin/chat-messages',
         icon: MessageCircle,
         can: 'viewConversations',
     },
     {
         title: 'Attachments',
-        href: '/dashboard/message-attachments',
+        href: '/admin/message-attachments',
         icon: Paperclip,
         can: 'viewConversations',
     },
