@@ -87,40 +87,10 @@ const allMainNavItems: NavItem[] = [
         can: 'viewAnyDeveloperBlog',
     },
     {
-        title: 'Hackathons',
-        href: '/admin/hackathons',
-        icon: Trophy,
-        can: 'viewAnyHackathon',
-    },
-    {
         title: 'Roles',
         href: rolesRoutes.index.url(),
         icon: Shield,
         can: 'viewAnyRole',
-    },
-    {
-        title: 'Developer Offers',
-        href: '/admin/developer-offers',
-        icon: Send,
-        can: 'viewDeveloperOffers',
-    },
-    {
-        title: 'Conversations',
-        href: '/admin/conversations',
-        icon: MessagesSquare,
-        can: 'viewConversations',
-    },
-    {
-        title: 'Chat Messages',
-        href: '/admin/chat-messages',
-        icon: MessageCircle,
-        can: 'viewConversations',
-    },
-    {
-        title: 'Attachments',
-        href: '/admin/message-attachments',
-        icon: Paperclip,
-        can: 'viewConversations',
     },
 ];
 
