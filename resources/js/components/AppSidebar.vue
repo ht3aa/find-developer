@@ -36,7 +36,6 @@ import { index as developerProfileIndex } from '@/routes/dashboard/developer-pro
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerOffersIndex } from '@/routes/developer-offers';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
-import { index as hackathonsIndex } from '@/routes/hackathons';
 import rolesRoutes from '@/routes/roles';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
@@ -90,7 +89,7 @@ const allMainNavItems: NavItem[] = [
     },
     {
         title: 'Hackathons',
-        href: hackathonsIndex(),
+        href: '/admin/hackathons',
         icon: Trophy,
         can: 'viewAnyHackathon',
     },

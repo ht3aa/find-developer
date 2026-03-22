@@ -15,12 +15,7 @@ use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperOfferController;
 use App\Http\Controllers\DeveloperRecommendationController;
-use App\Http\Controllers\HackathonAttendanceController;
-use App\Http\Controllers\HackathonController;
 use App\Http\Controllers\HackathonSubscribeController;
-use App\Http\Controllers\HackathonSubscribersController;
-use App\Http\Controllers\HackathonTeamController;
-use App\Http\Controllers\HackathonTeamMemberController;
 use App\Http\Controllers\HackathonTeamVoteController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PrivacyPolicyController;
@@ -79,14 +74,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
 
-            Route::prefix('hackathons/{hackathon}')->group(function () {
-                Route::resource('teams', HackathonTeamController::class)->except(['show']);
-                Route::resource('teams.members', HackathonTeamMemberController::class)->except(['show']);
-                Route::resource('subscribers', HackathonSubscribersController::class)->except(['show']);
-                Route::get('attendance', [HackathonAttendanceController::class, 'index'])->name('hackathons.attendance.index');
-                Route::patch('attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
-            });
-
             Route::resource('developer-offers', DashboardDeveloperOfferController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::get('conversations', [DashboardConversationController::class, 'index'])->name('dashboard.conversations.index');
             Route::get('conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('dashboard.conversations.show');
@@ -95,8 +82,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
             Route::get('message-attachments', [DashboardMessageAttachmentController::class, 'index'])->name('dashboard.message-attachments.index');
             Route::get('message-attachments/{messageAttachment}', [DashboardMessageAttachmentController::class, 'show'])->name('dashboard.message-attachments.show');
         });
-
-        Route::resource('hackathons', HackathonController::class)->except(['show']);
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])
             ->name('dashboard.developer-profile.index');
