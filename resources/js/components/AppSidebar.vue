@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import {
-    BookOpen,
     Briefcase,
     FileText,
     Folder,
     FolderKanban,
     Home,
+    LayoutDashboard,
     LayoutGrid,
     Mail,
     MessageCircle,
-    MessagesSquare,
-    Paperclip,
-    Send,
     Shield,
-    ThumbsUp,
-    Trophy,
     User,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
@@ -56,6 +51,13 @@ const allMainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
         can: 'viewDeveloperProfile',
+    },
+    {
+        title: 'Admin panel',
+        href: '/admin',
+        icon: LayoutDashboard,
+        can: 'viewAdminPanel',
+        external: true,
     },
     {
         title: 'Messages',

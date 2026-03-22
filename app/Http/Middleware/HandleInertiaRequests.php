@@ -69,6 +69,7 @@ class HandleInertiaRequests extends Middleware
             'viewDeveloperOffers' => $user->isSuperAdmin(),
             'viewNewsletter' => $user->isSuperAdmin(),
             'viewConversations' => $user->isSuperAdmin(),
+            'viewAdminPanel' => $user->isSuperAdmin(),
             'viewDeveloperPhone' => $user->can('viewPhone', Developer::class),
             'viewDeveloperCv' => $user->can('viewCv', Developer::class),
         ] : [];

@@ -17,7 +17,10 @@ class DashboardController extends Controller
      */
     public function index(): Response
     {
-        $this->authorize('viewDeveloperProfile', auth()->user()?->developer);
+        $this->authorize(
+            'viewDeveloperProfile',
+            auth()->user()?->developer ?? new Developer,
+        );
 
         return Inertia::render('Dashboard', [
             'stats' => [

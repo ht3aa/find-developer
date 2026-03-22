@@ -24,6 +24,8 @@ export type AuthCan = {
     viewRecommendationsDashboard?: boolean;
     viewDeveloperOffers?: boolean;
     viewNewsletter?: boolean;
+    viewConversations?: boolean;
+    viewAdminPanel?: boolean;
     // Table row actions
     updateDeveloper?: boolean;
     viewDeveloper?: boolean;
