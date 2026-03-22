@@ -36,7 +36,6 @@ import { index as developerProfileIndex } from '@/routes/dashboard/developer-pro
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerOffersIndex } from '@/routes/developer-offers';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
-import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import { index as hackathonsIndex } from '@/routes/hackathons';
 import rolesRoutes from '@/routes/roles';
 import { index as workExperienceIndex } from '@/routes/work-experience';
@@ -100,12 +99,6 @@ const allMainNavItems: NavItem[] = [
         href: rolesRoutes.index.url(),
         icon: Shield,
         can: 'viewAnyRole',
-    },
-    {
-        title: 'Recommendations',
-        href: developerRecommendationsIndex().url,
-        icon: ThumbsUp,
-        can: 'viewRecommendationsDashboard',
     },
     {
         title: 'Developer Offers',

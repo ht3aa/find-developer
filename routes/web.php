@@ -8,7 +8,6 @@ use App\Http\Controllers\Dashboard\DeveloperBlogController;
 use App\Http\Controllers\Dashboard\DeveloperOfferController as DashboardDeveloperOfferController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
-use App\Http\Controllers\Dashboard\DeveloperRecommendationController as DashboardDeveloperRecommendationController;
 use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
 use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
 use App\Http\Controllers\Dashboard\RoleController;
@@ -109,7 +108,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
         Route::resource('work-experience', WorkExperienceController::class)->except(['show']);
         Route::resource('developer-projects', DeveloperProjectController::class)->except(['show']);
         Route::resource('developer-blogs', DeveloperBlogController::class)->except(['show']);
-        Route::resource('developer-recommendations', DashboardDeveloperRecommendationController::class)->only(['index', 'edit', 'update', 'destroy']);
     });
 });
 
