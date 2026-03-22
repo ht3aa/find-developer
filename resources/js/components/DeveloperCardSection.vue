@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { refDebounced, useClipboard } from '@vueuse/core';
 import {
     Award,
@@ -67,6 +67,7 @@ import {
     rowsToApiBands,
     type UiRoleBandRow,
 } from '@/lib/roleBandFilters';
+import type { Auth } from '@/types/auth';
 import type { Developer } from '@/types/developer';
 
 const props = withDefaults(
@@ -77,6 +78,11 @@ const props = withDefaults(
         developerOffersStoreUrl?: string;
     }>(),
     {},
+);
+
+const page = usePage();
+const isSuperAdminUser = computed(
+    () => Boolean((page.props.auth as Auth).is_super_admin),
 );
 
 const offerFormOpen = ref(false);
@@ -206,6 +212,9 @@ const filterAvailabilityType = ref<string[]>(
     initialFilters.availabilityType ?? [],
 );
 const filterHasUrls = ref<string[]>(initialFilters.hasUrls ?? []);
+const filterNullFields = ref<string[]>(
+    isSuperAdminUser.value ? (initialFilters.nullField ?? []) : [],
+);
 const isAvailable = ref(initialFilters.isAvailable ?? 'all');
 const isRecommended = ref(initialFilters.isRecommended ?? 'all');
 const yearsMin = ref(initialFilters.yearsMin ?? '');
@@ -227,6 +236,7 @@ const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const hasUrlsSelectOpen = ref(false);
+const nullFieldSelectOpen = ref(false);
 /** Which role-band row’s job title combobox is open (controlled; matches sheet + dialog focus). */
 const roleBandJobTitleOpenClientId = ref<string | null>(null);
 
@@ -238,6 +248,7 @@ function onJobTitleOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
     }
 }
 
@@ -249,6 +260,7 @@ function onSkillOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
     }
 }
 
@@ -260,6 +272,7 @@ function onBadgeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
     }
 }
 
@@ -271,6 +284,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
     }
 }
 
@@ -282,6 +296,19 @@ function onHasUrlsOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
+    }
+}
+
+function onNullFieldOpenChange(open: boolean): void {
+    nullFieldSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        roleBandJobTitleOpenClientId.value = null;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
     }
 }
 
@@ -296,6 +323,7 @@ function onRoleBandJobTitleOpen(payload: {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
         return;
     }
     if (roleBandJobTitleOpenClientId.value === payload.clientId) {
@@ -314,6 +342,7 @@ function getFilters(): DeveloperFilters {
         | 'isAvailable'
         | 'isRecommended'
         | 'ids'
+        | 'nullField'
     > = {
         search: debouncedQuery.value,
         skill: filterSkill.value,
@@ -323,6 +352,10 @@ function getFilters(): DeveloperFilters {
         isAvailable: isAvailable.value,
         isRecommended: isRecommended.value,
         ids: props.developerIds?.length ? props.developerIds : undefined,
+        nullField:
+            isSuperAdminUser.value && filterNullFields.value.length > 0
+                ? filterNullFields.value
+                : undefined,
     };
     const roleBands = rowsToApiBands(roleBandRows.value);
     if (roleBands.length > 0) {
@@ -350,7 +383,7 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
     }
     try {
         const target = url ?? buildDevelopersApiUrl(API_BASE, getFilters());
-        const res = await fetch(target);
+        const res = await fetch(target, { credentials: 'same-origin' });
         if (!res.ok) throw new Error('Failed to fetch developers');
         const data = await res.json();
         const newDevelopers = data.data ?? [];
@@ -399,6 +432,7 @@ function clearFilters(): void {
     filterBadge.value = [];
     filterAvailabilityType.value = [];
     filterHasUrls.value = [];
+    filterNullFields.value = [];
     isAvailable.value = 'all';
     isRecommended.value = 'all';
     yearsMin.value = '';
@@ -479,6 +513,9 @@ const activeFilterCount = computed(() => {
     if (filterHasUrls.value.length > 0) count += filterHasUrls.value.length;
     if (isAvailable.value && isAvailable.value !== 'all') count++;
     if (isRecommended.value && isRecommended.value !== 'all') count++;
+    if (isSuperAdminUser.value && filterNullFields.value.length > 0) {
+        count += filterNullFields.value.length;
+    }
     return count;
 });
 
@@ -497,6 +534,7 @@ watch(advancedOpen, (isOpen: boolean) => {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
         roleBandJobTitleOpenClientId.value = null;
     }
 });
@@ -957,6 +995,13 @@ watch(viewLayout, (layout: ViewLayout) => {
                                         :has-urls-select-open="
                                             hasUrlsSelectOpen
                                         "
+                                        :show-super-admin-filters="
+                                            isSuperAdminUser
+                                        "
+                                        :filter-null-field="filterNullFields"
+                                        :null-field-select-open="
+                                            nullFieldSelectOpen
+                                        "
                                         :pagination-total="paginationTotal"
                                         :ai-prompt-text="aiPromptText"
                                         :ai-prompt-copied="aiPromptCopied"
@@ -1001,6 +1046,12 @@ watch(viewLayout, (layout: ViewLayout) => {
                                         "
                                         @update:has-urls-select-open="
                                             onHasUrlsOpenChange($event)
+                                        "
+                                        @update:filter-null-field="
+                                            filterNullFields = $event
+                                        "
+                                        @update:null-field-select-open="
+                                            onNullFieldOpenChange($event)
                                         "
                                         @apply-filters="applyFilters"
                                         @clear-filters="clearFilters"

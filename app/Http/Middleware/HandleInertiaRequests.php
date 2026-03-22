@@ -89,6 +89,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
                 'permissions' => $permissions,
                 'can' => $can,
+                'is_super_admin' => $user?->isSuperAdmin() ?? false,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'unreadMessagesCount' => fn () => $user ? $this->getUnreadMessagesCount($user) : 0,

@@ -27,6 +27,7 @@ import {
 import {
     availabilityTypeOptions,
     hasUrlsOptions,
+    nullFieldFilterOptions,
 } from '@/utils/developerEnums';
 
 function normalizeSelectValue(event: string | string[] | null): string[] {
@@ -59,6 +60,10 @@ const props = defineProps<{
     badgeSelectOpen: boolean;
     availabilityTypeSelectOpen: boolean;
     hasUrlsSelectOpen: boolean;
+    /** Super admin: filter rows where selected columns are null/empty. */
+    showSuperAdminFilters: boolean;
+    filterNullField: string[];
+    nullFieldSelectOpen: boolean;
     paginationTotal: number | null;
     aiPromptText: string;
     aiPromptCopied: boolean;
@@ -84,6 +89,8 @@ const emit = defineEmits<{
     (e: 'update:badgeSelectOpen', v: boolean): void;
     (e: 'update:availabilityTypeSelectOpen', v: boolean): void;
     (e: 'update:hasUrlsSelectOpen', v: boolean): void;
+    (e: 'update:filterNullField', v: string[]): void;
+    (e: 'update:nullFieldSelectOpen', v: boolean): void;
     (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
@@ -172,7 +179,8 @@ const roleFiltersOpen = ref(false);
         <SheetDescription class="sr-only">
             Filter developers by role bands, job title, skills, badges,
             availability type, has URLs, availability status, recommended
-            status, and years of experience.
+            status, years of experience, and for super admins missing profile
+            fields.
         </SheetDescription>
 
         <Collapsible
@@ -405,6 +413,42 @@ const roleFiltersOpen = ref(false);
                         )
                     "
                     @update:open="emit('update:hasUrlsSelectOpen', $event)"
+                />
+            </div>
+            <div
+                v-if="props.showSuperAdminFilters"
+                class="space-y-2 rounded-xl border border-amber-500/35 bg-amber-500/5 p-3 sm:col-span-2"
+            >
+                <Label
+                    for="filter-null-field"
+                    class="text-amber-950 dark:text-amber-100"
+                >
+                    Missing field (super admin)
+                </Label>
+                <p
+                    class="text-xs leading-snug text-muted-foreground"
+                    id="filter-null-field-hint"
+                >
+                    Show developers where any selected column is empty. Multiple
+                    selections use OR (match if missing any of these fields).
+                </p>
+                <SearchableSelect
+                    id="filter-null-field"
+                    aria-describedby="filter-null-field-hint"
+                    :model-value="props.filterNullField"
+                    :open="props.nullFieldSelectOpen"
+                    :options="nullFieldFilterOptions"
+                    placeholder="e.g. Phone, Bio, CV"
+                    multiple
+                    @update:model-value="
+                        emit(
+                            'update:filterNullField',
+                            normalizeSelectValue($event),
+                        )
+                    "
+                    @update:open="
+                        emit('update:nullFieldSelectOpen', $event)
+                    "
                 />
             </div>
             <div class="space-y-2">

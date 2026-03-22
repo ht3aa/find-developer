@@ -13,6 +13,28 @@ use Spatie\QueryBuilder\QueryBuilder;
 class DeveloperRepository
 {
     /**
+     * Super-admin only: filter by developer columns that are null or (for text) empty string.
+     * Query param `filter[null_field]` — comma-separated keys; rows match if **any** selected field is missing (OR).
+     *
+     * @var array<string, string>
+     */
+    private const NULL_FIELD_FILTERS = [
+        'phone' => 'phone',
+        'bio' => 'bio',
+        'portfolio_url' => 'portfolio_url',
+        'github_url' => 'github_url',
+        'linkedin_url' => 'linkedin_url',
+        'youtube_url' => 'youtube_url',
+        'cv_path' => 'cv_path',
+        'slug' => 'slug',
+        'location' => 'location',
+        'expected_salary_from' => 'expected_salary_from',
+        'expected_salary_to' => 'expected_salary_to',
+        'user_id' => 'user_id',
+        'availability_type' => 'availability_type',
+    ];
+
+    /**
      * Get paginated developers with optional search via query string.
      */
     public function getPaginated(Request $request, int $perPage = 15): LengthAwarePaginator
@@ -159,6 +181,9 @@ class DeveloperRepository
                     }
                     $query->whereIn('developers.id', $ids);
                 }),
+                AllowedFilter::callback('null_field', function ($query, $value) {
+                    $this->applyNullFieldFilter($query, $value);
+                }),
             ])
             ->allowedSorts(...['name', 'years_of_experience', 'created_at'])
             ->orderBy('badges_count', 'desc')
@@ -278,6 +303,9 @@ class DeveloperRepository
                     }
                     $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     $query->where('developers.recommended_by_us', $bool);
+                }),
+                AllowedFilter::callback('null_field', function ($query, $value) {
+                    $this->applyNullFieldFilter($query, $value);
                 }),
             ]);
 
@@ -441,5 +469,56 @@ class DeveloperRepository
         $values = is_array($value) ? $value : explode(',', (string) $value);
 
         return array_values(array_filter(array_map('trim', $values)));
+    }
+
+    /**
+     * @param  Builder<Developer>  $query
+     */
+    private function applyNullFieldFilter(Builder $query, mixed $value): void
+    {
+        if (! auth()->user()?->isSuperAdmin()) {
+            return;
+        }
+
+        $keys = $this->parseFilterValues($value);
+        if ($keys === []) {
+            return;
+        }
+
+        $validKeys = array_values(array_filter(
+            $keys,
+            fn (string $k) => isset(self::NULL_FIELD_FILTERS[$k]),
+        ));
+
+        if ($validKeys === []) {
+            return;
+        }
+
+        $query->where(function (Builder $outer) use ($validKeys) {
+            foreach ($validKeys as $key) {
+                $column = self::NULL_FIELD_FILTERS[$key];
+                $outer->orWhere(function (Builder $q) use ($key, $column) {
+                    $this->whereDeveloperFieldIsNullOrEmpty($q, $key, $column);
+                });
+            }
+        });
+    }
+
+    /**
+     * @param  Builder<Developer>  $query
+     */
+    private function whereDeveloperFieldIsNullOrEmpty(Builder $query, string $key, string $column): void
+    {
+        $qualified = 'developers.'.$column;
+
+        if (in_array($key, ['expected_salary_from', 'expected_salary_to', 'user_id', 'availability_type'], true)) {
+            $query->whereNull($qualified);
+
+            return;
+        }
+
+        $query->where(function (Builder $q) use ($qualified) {
+            $q->whereNull($qualified)->orWhere($qualified, '');
+        });
     }
 }

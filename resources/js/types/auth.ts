@@ -47,6 +47,8 @@ export type Auth = {
     permissions?: string[];
     /** Laravel Gate/policy results for sidebar and UI. */
     can?: AuthCan;
+    /** Email-based super admin (see `config('app.super_admin_emails')`). */
+    is_super_admin?: boolean;
 };
 
 export type TwoFactorConfigContent = {

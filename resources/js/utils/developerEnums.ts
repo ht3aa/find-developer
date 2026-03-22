@@ -14,3 +14,23 @@ export const hasUrlsOptions: { value: string; label: string }[] = [
     { value: 'portfolio', label: 'Portfolio' },
     { value: 'youtube', label: 'YouTube' },
 ];
+
+/**
+ * Developer columns that may be null — super-admin “missing data” filter (OR semantics).
+ * Values must match `DeveloperRepository::NULL_FIELD_FILTERS` keys.
+ */
+export const nullFieldFilterOptions: { value: string; label: string }[] = [
+    { value: 'phone', label: 'Phone' },
+    { value: 'bio', label: 'Bio' },
+    { value: 'portfolio_url', label: 'Portfolio URL' },
+    { value: 'github_url', label: 'GitHub URL' },
+    { value: 'linkedin_url', label: 'LinkedIn URL' },
+    { value: 'youtube_url', label: 'YouTube URL' },
+    { value: 'cv_path', label: 'CV' },
+    { value: 'slug', label: 'Slug' },
+    { value: 'location', label: 'Location' },
+    { value: 'expected_salary_from', label: 'Expected salary (from)' },
+    { value: 'expected_salary_to', label: 'Expected salary (to)' },
+    { value: 'user_id', label: 'Linked user account' },
+    { value: 'availability_type', label: 'Availability type' },
+];

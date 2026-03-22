@@ -22,6 +22,10 @@ export type DeveloperFilters = {
     roleBands?: ApiRoleBand[];
     /** Comma-separated developer IDs to restrict results. */
     ids?: number[];
+    /**
+     * Super admin: developer table columns that must be null/empty (OR). Sent as `filter[null_field]`.
+     */
+    nullField?: string[];
 };
 
 /** URL + API parse result including hydrated role bands (from `role_bands` JSON or legacy `preset_ids`). */
@@ -81,6 +85,8 @@ export function buildDevelopersApiUrl(
     if (filters.ids?.length) {
         params.set('filter[ids]', filters.ids.join(','));
     }
+    const nullFieldVal = toFilterValue(filters.nullField);
+    if (nullFieldVal) params.set('filter[null_field]', nullFieldVal);
     const q = params.toString();
     return q ? `${base}?${q}` : base;
 }
@@ -132,6 +138,7 @@ export function parseFiltersFromUrl(): DeveloperFiltersFromUrl {
         yearsMax: useRoleBands ? '' : (filter.years_max ?? ''),
         ids,
         initialRoleBands,
+        nullField: parseFilterArray(filter.null_field),
     };
 }
 
@@ -169,6 +176,8 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
     if (filters.ids?.length) {
         params.set('filter[ids]', filters.ids.join(','));
     }
+    const nullFieldVal = toFilterValue(filters.nullField);
+    if (nullFieldVal) params.set('filter[null_field]', nullFieldVal);
     const q = params.toString();
     const newUrl = q
         ? `${window.location.pathname}?${q}`
