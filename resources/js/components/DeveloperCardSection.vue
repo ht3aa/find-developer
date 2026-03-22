@@ -1,18 +1,28 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { refDebounced, useClipboard } from '@vueuse/core';
 import {
     Award,
     Check,
-    Copy,
+    ExternalLink,
+    FileText,
     FilterX,
+    LayoutGrid,
     Scale,
     Search,
     Send,
     SlidersHorizontal,
-    Sparkles,
+    Star,
+    Table2,
     Users,
 } from 'lucide-vue-next';
-import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue';
+import {
+    computed,
+    defineAsyncComponent,
+    onMounted,
+    ref,
+    watch,
+} from 'vue';
 import DeveloperCard from '@/components/DeveloperCard.vue';
 
 const DeveloperCompareDialog = defineAsyncComponent(
@@ -26,8 +36,17 @@ const DeveloperFiltersPanelContent = defineAsyncComponent(
 );
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import {
     Tooltip,
     TooltipContent,
@@ -49,10 +68,6 @@ import {
     type UiRoleBandRow,
 } from '@/lib/roleBandFilters';
 import type { Developer } from '@/types/developer';
-import {
-    availabilityTypeOptions,
-    hasUrlsOptions,
-} from '@/utils/developerEnums';
 
 const props = withDefaults(
     defineProps<{
@@ -72,10 +87,23 @@ const compareDialogOpen = ref(false);
 
 const canSelectDevelopers = computed(() => !!props.developerOffersStoreUrl);
 
-function onCardSelectionChange(id: number, selected: boolean): void {
+function developerNumericId(developer: Pick<Developer, 'id'>): number {
+    return Number(developer.id);
+}
+
+function onCardSelectionChange(
+    rawId: number | string,
+    selected: boolean,
+): void {
+    const id = Number(rawId);
+    if (Number.isNaN(id)) {
+        return;
+    }
     if (selected) {
         if (!compareIds.value.includes(id)) {
-            const dev = developers.value.find((d) => d.id === id);
+            const dev = developers.value.find(
+                (d) => developerNumericId(d) === id,
+            );
             if (dev) {
                 compareIds.value = [...compareIds.value, id];
                 compareDevelopersData.value = [
@@ -87,9 +115,16 @@ function onCardSelectionChange(id: number, selected: boolean): void {
     } else {
         compareIds.value = compareIds.value.filter((i) => i !== id);
         compareDevelopersData.value = compareDevelopersData.value.filter(
-            (d) => d.id !== id,
+            (d) => developerNumericId(d) !== id,
         );
     }
+}
+
+function onTableCheckboxUpdate(
+    developer: Developer,
+    value: boolean | 'indeterminate',
+): void {
+    onCardSelectionChange(developer.id, value === true);
 }
 
 function clearSelection(): void {
@@ -104,25 +139,30 @@ function openOfferForm(): void {
 }
 
 function selectAllCurrent(): void {
-    const ids = developers.value.map((d) => Number(d.id));
+    const ids = developers.value.map((d) => developerNumericId(d));
     compareIds.value = ids;
     compareDevelopersData.value = developers.value.filter((d) =>
-        ids.includes(d.id),
+        ids.includes(developerNumericId(d)),
     );
 }
 
 const allCurrentSelected = computed(
     () =>
         developers.value.length > 0 &&
-        developers.value.every((d) => compareIds.value.includes(d.id)),
+        developers.value.every((d) =>
+            compareIds.value.includes(developerNumericId(d)),
+        ),
 );
+
+const tourBadgesAnchorDeveloperId = computed((): number | null => {
+    const d = developers.value.find((dev) => dev.badges.length > 0);
+    return d != null ? developerNumericId(d) : null;
+});
 
 function onOfferSuccess(): void {
     offerFormOpen.value = false;
     clearSelection();
 }
-
-const compareSelectionCount = computed(() => compareIds.value.length);
 
 const compareDevelopers = computed((): [Developer, Developer] | null => {
     if (compareDevelopersData.value.length !== 2) return null;
@@ -143,6 +183,12 @@ function clearCompare(): void {
     compareDevelopersData.value = [];
     compareDialogOpen.value = false;
 }
+
+const VIEW_LAYOUT_STORAGE_KEY = 'developers-directory-view-layout';
+
+type ViewLayout = 'cards' | 'table';
+
+const viewLayout = ref<ViewLayout>('cards');
 
 const API_BASE = '/api/developers';
 const initialFilters = parseFiltersFromUrl();
@@ -169,6 +215,9 @@ const developers = ref<Developer[]>([]);
 const loading = ref(false);
 const loadingMore = ref(false);
 const nextPageUrl = ref<string | null>(null);
+
+/** Table YouTube cell: show embed on hover (same behavior as developer cards). */
+const tableYoutubeHoverDeveloperId = ref<number | null>(null);
 
 const stats = ref<{ total: number; recommended: number } | null>(null);
 const paginationTotal = ref<number | null>(null);
@@ -452,8 +501,145 @@ watch(advancedOpen, (isOpen: boolean) => {
     }
 });
 
+function developerProfileHref(developer: Developer): string | null {
+    if (developer.profile_url) {
+        return developer.profile_url;
+    }
+    if (developer.slug) {
+        return `/developers/${developer.slug}`;
+    }
+    return null;
+}
+
+function developerTableSalaryLabel(developer: Developer): string {
+    const from = developer.expected_salary_from;
+    const to = developer.expected_salary_to;
+    const cur = developer.currency?.trim() ? developer.currency : '';
+    const curSuffix = cur ? ` ${cur}` : '';
+
+    if (from != null && to != null) {
+        return `${from} – ${to}${curSuffix}`;
+    }
+    if (from != null) {
+        return `From ${from}${curSuffix}`;
+    }
+    if (to != null) {
+        return `Up to ${to}${curSuffix}`;
+    }
+
+    return '—';
+}
+
+function availabilityTypeLabels(developer: Developer): string {
+    const labels =
+        developer.availability_type
+            ?.map((t) => t.label)
+            .filter((label) => label.length > 0) ?? [];
+    return labels.join(', ');
+}
+
+function visibleSkillTags(developer: Developer): {
+    tags: string[];
+    more: number;
+} {
+    const max = 4;
+    const names = developer.skills.map((s) => s.name);
+    if (names.length <= max) {
+        return { tags: names, more: 0 };
+    }
+    return { tags: names.slice(0, max), more: names.length - max };
+}
+
+function visibleDeveloperBadges(developer: Developer): {
+    badges: DeveloperBadge[];
+    more: number;
+} {
+    const max = 3;
+    const list = developer.badges;
+    if (list.length <= max) {
+        return { badges: list, more: 0 };
+    }
+    return { badges: list.slice(0, max), more: list.length - max };
+}
+
+function developerBadgeInlineStyle(
+    badge: DeveloperBadge,
+): Record<string, string> | undefined {
+    if (!badge.color) {
+        return undefined;
+    }
+
+    return {
+        borderColor: `${badge.color}50`,
+        backgroundColor: `${badge.color}14`,
+        color: badge.color,
+    };
+}
+
+function developerHasSocialLinks(developer: Developer): boolean {
+    return Boolean(
+        developer.portfolio_url ||
+            developer.github_url ||
+            developer.linkedin_url,
+    );
+}
+
+const YOUTUBE_VIDEO_ID_FROM_URL =
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+
+function developerYoutubeVideoId(developer: Developer): string | null {
+    if (developer.youtube_video_id) {
+        return developer.youtube_video_id;
+    }
+    if (developer.youtube_url) {
+        const match = developer.youtube_url.match(YOUTUBE_VIDEO_ID_FROM_URL);
+
+        return match?.[1] ?? null;
+    }
+
+    return null;
+}
+
+function developerYoutubeHref(developer: Developer): string | null {
+    if (developer.youtube_url) {
+        return developer.youtube_url;
+    }
+    if (developer.youtube_video_id) {
+        return `https://www.youtube.com/watch?v=${developer.youtube_video_id}`;
+    }
+
+    return null;
+}
+
+function onTableYoutubeThumbnailError(e: Event, videoId: string): void {
+    const img = e.target as HTMLImageElement;
+    if (img) {
+        img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
+}
+
+function onTableYoutubeCellEnter(developer: Developer): void {
+    tableYoutubeHoverDeveloperId.value = developerNumericId(developer);
+}
+
+function onTableYoutubeCellLeave(): void {
+    tableYoutubeHoverDeveloperId.value = null;
+}
+
 onMounted(() => {
+    if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(VIEW_LAYOUT_STORAGE_KEY);
+        if (stored === 'cards' || stored === 'table') {
+            viewLayout.value = stored;
+        }
+    }
     fetchDevelopers();
+});
+
+watch(viewLayout, (layout: ViewLayout) => {
+    if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(VIEW_LAYOUT_STORAGE_KEY, layout);
+    }
 });
 </script>
 
@@ -464,6 +650,7 @@ onMounted(() => {
     >
         <!-- Subscribe note -->
         <div
+            data-tour="developer-subscribe-cta"
             class="mb-8 rounded-xl border-2 border-primary/30 bg-primary/10 p-6 text-center sm:p-8"
         >
             <p class="text-lg font-semibold text-foreground sm:text-xl">
@@ -534,6 +721,7 @@ onMounted(() => {
                 class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-3.5"
             >
                 <div
+                    data-tour="developer-search"
                     class="relative flex min-w-0 flex-1 items-center rounded-lg border border-input bg-muted/30 transition-colors focus-within:border-primary focus-within:bg-background focus-within:ring-2 focus-within:ring-primary/20"
                 >
                     <Search
@@ -564,8 +752,54 @@ onMounted(() => {
                         {{ paginationTotal === 1 ? 'developer' : 'developers' }}
                     </p>
 
+                    <div
+                        data-tour="developer-view-toggle"
+                        class="inline-flex shrink-0 rounded-lg border border-border/80 bg-muted/40 p-0.5 shadow-inner"
+                        role="group"
+                        aria-label="Developer list layout"
+                    >
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            :class="[
+                                'h-8 gap-1.5 rounded-md px-2.5 sm:px-3',
+                                viewLayout === 'cards'
+                                    ? 'bg-background text-foreground shadow-sm hover:bg-background'
+                                    : 'text-muted-foreground hover:bg-transparent hover:text-foreground',
+                            ]"
+                            :aria-pressed="viewLayout === 'cards'"
+                            @click="viewLayout = 'cards'"
+                        >
+                            <LayoutGrid
+                                class="size-4 shrink-0"
+                                aria-hidden="true"
+                            />
+                            <span class="hidden sm:inline">Cards</span>
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            :class="[
+                                'h-8 gap-1.5 rounded-md px-2.5 sm:px-3',
+                                viewLayout === 'table'
+                                    ? 'bg-background text-foreground shadow-sm hover:bg-background'
+                                    : 'text-muted-foreground hover:bg-transparent hover:text-foreground',
+                            ]"
+                            :aria-pressed="viewLayout === 'table'"
+                            @click="viewLayout = 'table'"
+                        >
+                            <Table2 class="size-4 shrink-0" aria-hidden="true" />
+                            <span class="hidden sm:inline">Table</span>
+                        </Button>
+                    </div>
+
                     <!-- Compare (always visible) -->
-                    <div class="flex items-center gap-1.5">
+                    <div
+                        data-tour="developer-compare"
+                        class="flex items-center gap-1.5"
+                    >
                         <Button
                             v-if="compareIds.length > 0"
                             variant="ghost"
@@ -665,6 +899,7 @@ onMounted(() => {
                     <Sheet v-model:open="advancedOpen">
                         <SheetTrigger as-child>
                             <Button
+                                data-tour="developer-filters"
                                 variant="default"
                                 size="sm"
                                 class="relative h-8 shrink-0 gap-1.5 shadow-sm"
@@ -795,7 +1030,10 @@ onMounted(() => {
             </div>
         </div>
 
-        <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+            v-if="loading && viewLayout === 'cards'"
+            class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
             <div
                 v-for="i in 6"
                 :key="i"
@@ -803,7 +1041,196 @@ onMounted(() => {
             />
         </div>
         <div
-            v-else-if="developers.length === 0"
+            v-else-if="loading && viewLayout === 'table'"
+            class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
+        >
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[112rem] caption-bottom text-sm">
+                    <thead
+                        class="border-b border-border/70 bg-gradient-to-b from-muted/50 to-muted/25"
+                    >
+                        <tr>
+                            <th
+                                class="h-11 w-12 px-4 text-left align-middle"
+                                scope="col"
+                            />
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Developer
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                YouTube
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Role
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Location
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Phone
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Experience
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Salary
+                            </th>
+                            <th
+                                class="h-11 w-16 px-4 text-center align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                CV
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Availability
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Skills
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Badges
+                            </th>
+                            <th
+                                class="h-11 px-4 text-left align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Social links
+                            </th>
+                            <th
+                                class="h-11 px-4 text-right align-middle text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                scope="col"
+                            >
+                                Profile
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="[&_tr:nth-child(odd)]:bg-muted/15">
+                        <tr v-for="i in 8" :key="i" class="border-b border-border/40">
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-4 animate-pulse rounded bg-muted-foreground/20"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-40 max-w-full animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-2 py-3">
+                                <div
+                                    class="aspect-video w-full max-w-[12rem] animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-28 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-24 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-28 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-10 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-32 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <div
+                                    class="mx-auto h-8 w-8 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div
+                                    class="h-4 w-36 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-1.5">
+                                    <div
+                                        class="h-5 w-14 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-5 w-16 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <div
+                                        class="h-5 w-12 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-5 w-16 animate-pulse rounded-full bg-muted-foreground/15"
+                                    />
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <div
+                                        class="h-3 w-16 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-3 w-14 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                    <div
+                                        class="h-3 w-16 animate-pulse rounded bg-muted-foreground/15"
+                                    />
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div
+                                    class="ml-auto h-8 w-8 animate-pulse rounded-md bg-muted-foreground/15"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div
+            v-else-if="!loading && developers.length === 0"
             class="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border py-12 text-center text-muted-foreground"
         >
             <p>No developers found.</p>
@@ -817,19 +1244,534 @@ onMounted(() => {
                 Clear filters
             </Button>
         </div>
-        <template v-else>
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <template v-else-if="!loading">
+            <div
+                v-if="viewLayout === 'cards'"
+                data-tour="developer-results"
+                class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
                 <DeveloperCard
                     v-for="developer in developers"
                     :key="developer.id"
                     :developer="developer"
                     :selectable="true"
-                    :model-value="compareIds.includes(developer.id)"
+                    :tour-badges-anchor="
+                        tourBadgesAnchorDeveloperId !== null &&
+                        tourBadgesAnchorDeveloperId ===
+                            developerNumericId(developer)
+                    "
+                    :model-value="
+                        compareIds.includes(developerNumericId(developer))
+                    "
                     @update:model-value="
                         onCardSelectionChange(developer.id, $event)
                     "
                 />
             </div>
+
+            <div
+                v-else
+                data-tour="developer-results"
+                role="region"
+                aria-label="Developers in table view"
+                class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
+            >
+                <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+                    <Table class="min-w-[112rem] text-sm">
+                        <TableHeader
+                            class="[&_tr]:border-border/60 [&_tr]:border-b [&_tr]:bg-gradient-to-b [&_tr]:from-muted/55 [&_tr]:to-muted/25"
+                        >
+                            <TableRow class="border-0 hover:bg-transparent">
+                                <TableHead
+                                    scope="col"
+                                    class="w-12 py-3.5 pl-4 pr-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    <span class="sr-only">Select</span>
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[11rem] py-3.5 pr-4 pl-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Developer
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-44 min-w-[11rem] max-w-[14rem] px-2 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    YouTube
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[8.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Role
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[7.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Location
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[9rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Phone
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-24 px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Exp.
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[10.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Salary
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-16 px-2 py-3.5 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    CV
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[10rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Availability
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[14rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Skills
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[11rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Badges
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="min-w-[6.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Social links
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-24 py-3.5 pr-4 pl-2 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Profile
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow
+                                v-for="(developer, developerIndex) in developers"
+                                :key="developer.id"
+                                :data-state="
+                                    compareIds.includes(
+                                        developerNumericId(developer),
+                                    )
+                                        ? 'selected'
+                                        : undefined
+                                "
+                                class="group border-border/50 transition-colors odd:bg-muted/[0.12] hover:bg-primary/[0.04]"
+                            >
+                                <TableCell class="py-3.5 pl-4 pr-2 align-middle">
+                                    <Checkbox
+                                        :id="`dev-select-${developer.id}`"
+                                        :model-value="
+                                            compareIds.includes(
+                                                developerNumericId(developer),
+                                            )
+                                        "
+                                        :aria-label="`Select ${developer.name}`"
+                                        @update:model-value="
+                                            onTableCheckboxUpdate(
+                                                developer,
+                                                $event,
+                                            )
+                                        "
+                                    />
+                                </TableCell>
+                                <TableCell class="py-3.5 pr-4 pl-2 align-middle">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span
+                                            class="font-medium text-foreground"
+                                            >{{ developer.name }}</span
+                                        >
+                                        <span
+                                            class="line-clamp-1 text-xs text-muted-foreground"
+                                            >{{ developer.email }}</span
+                                        >
+                                        <span
+                                            v-if="
+                                                developer.recommendations_received_count >
+                                                0
+                                            "
+                                            class="text-xs font-medium tabular-nums text-blue-600 dark:text-blue-400"
+                                        >
+                                            {{
+                                                developer.recommendations_received_count
+                                            }}
+                                            {{
+                                                developer.recommendations_received_count ===
+                                                1
+                                                    ? 'Recommendation'
+                                                    : 'Recommendations'
+                                            }}
+                                        </span>
+                                        <div
+                                            v-if="developer.recommended_by_us"
+                                            class="mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:text-amber-200"
+                                        >
+                                            <Star
+                                                class="size-3 shrink-0 fill-amber-500/80 text-amber-600 dark:text-amber-400"
+                                                aria-hidden="true"
+                                            />
+                                            Recommended
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell
+                                    class="w-44 min-w-[11rem] max-w-[14rem] px-2 py-3.5 align-middle"
+                                >
+                                    <div
+                                        v-if="
+                                            developerYoutubeVideoId(developer)
+                                        "
+                                        class="relative aspect-video w-full overflow-hidden rounded-md bg-muted ring-1 ring-border/60"
+                                        @mouseenter="
+                                            onTableYoutubeCellEnter(developer)
+                                        "
+                                        @mouseleave="onTableYoutubeCellLeave"
+                                    >
+                                        <img
+                                            v-if="
+                                                tableYoutubeHoverDeveloperId !==
+                                                developerNumericId(developer)
+                                            "
+                                            :src="`https://img.youtube.com/vi/${developerYoutubeVideoId(developer)}/maxresdefault.jpg`"
+                                            :alt="`Video by ${developer.name}`"
+                                            class="size-full object-cover"
+                                            loading="lazy"
+                                            @error="
+                                                onTableYoutubeThumbnailError(
+                                                    $event,
+                                                    developerYoutubeVideoId(
+                                                        developer,
+                                                    )!,
+                                                )
+                                            "
+                                        />
+                                        <iframe
+                                            v-else
+                                            :src="`https://www.youtube.com/embed/${developerYoutubeVideoId(developer)}?autoplay=1&mute=1&loop=1&playlist=${developerYoutubeVideoId(developer)}`"
+                                            title="YouTube video"
+                                            class="size-full border-0"
+                                            allow="
+                                                accelerometer;
+                                                autoplay;
+                                                clipboard-write;
+                                                encrypted-media;
+                                                gyroscope;
+                                                picture-in-picture;
+                                                web-share;
+                                            "
+                                            allowfullscreen
+                                        />
+                                    </div>
+                                    <a
+                                        v-else-if="
+                                            developerYoutubeHref(developer)
+                                        "
+                                        :href="
+                                            developerYoutubeHref(developer)!
+                                        "
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="line-clamp-2 text-xs text-primary underline-offset-2 hover:underline"
+                                    >
+                                        YouTube
+                                    </a>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="px-4 py-3.5 align-middle text-muted-foreground"
+                                >
+                                    <span class="line-clamp-2 leading-snug">{{
+                                        developer.job_title?.name ?? '—'
+                                    }}</span>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[12rem] px-4 py-3.5 align-middle text-muted-foreground"
+                                >
+                                    <span class="line-clamp-2 leading-snug">{{
+                                        developer.location?.label ?? '—'
+                                    }}</span>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[11rem] px-4 py-3.5 align-middle tabular-nums text-muted-foreground"
+                                >
+                                    <a
+                                        v-if="developer.phone"
+                                        :href="`tel:${developer.phone.replace(/\s+/g, '')}`"
+                                        class="line-clamp-2 text-primary underline-offset-2 hover:underline"
+                                        :aria-label="`Call ${developer.name} at ${developer.phone}`"
+                                    >
+                                        {{ developer.phone }}
+                                    </a>
+                                    <span v-else class="line-clamp-2">—</span>
+                                </TableCell>
+                                <TableCell
+                                    class="px-4 py-3.5 align-middle tabular-nums text-muted-foreground"
+                                >
+                                    {{ developer.years_of_experience }}
+                                    <span class="text-xs text-muted-foreground/80"
+                                        >yrs</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[14rem] px-4 py-3.5 align-middle text-muted-foreground"
+                                >
+                                    <span
+                                        class="line-clamp-3 text-xs leading-snug tabular-nums"
+                                        >{{
+                                            developerTableSalaryLabel(
+                                                developer,
+                                            )
+                                        }}</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="px-2 py-3.5 text-center align-middle"
+                                >
+                                    <Button
+                                        v-if="developer.cv_path_url"
+                                        variant="ghost"
+                                        size="icon"
+                                        class="size-9 shrink-0 text-muted-foreground hover:text-foreground"
+                                        as-child
+                                    >
+                                        <a
+                                            :href="developer.cv_path_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            :aria-label="`Open CV for ${developer.name}`"
+                                        >
+                                            <FileText
+                                                class="size-4"
+                                                aria-hidden="true"
+                                            />
+                                        </a>
+                                    </Button>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell class="px-4 py-3.5 align-middle">
+                                    <div
+                                        class="flex min-w-0 max-w-[13rem] flex-col gap-1"
+                                    >
+                                        <Badge
+                                            :variant="
+                                                developer.is_available
+                                                    ? 'default'
+                                                    : 'secondary'
+                                            "
+                                            class="w-fit pointer-events-none font-normal"
+                                        >
+                                            {{
+                                                developer.is_available
+                                                    ? 'Available'
+                                                    : 'Unavailable'
+                                            }}
+                                        </Badge>
+                                        <span
+                                            v-if="
+                                                availabilityTypeLabels(
+                                                    developer,
+                                                )
+                                            "
+                                            class="line-clamp-2 text-[11px] leading-snug text-muted-foreground"
+                                        >
+                                            {{
+                                                availabilityTypeLabels(
+                                                    developer,
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </TableCell>
+                                <TableCell class="max-w-xs px-4 py-3.5 align-middle">
+                                    <div
+                                        class="flex flex-wrap items-center gap-1"
+                                    >
+                                        <Badge
+                                            v-for="skill in visibleSkillTags(
+                                                developer,
+                                            ).tags"
+                                            :key="skill"
+                                            variant="outline"
+                                            class="border-border/70 bg-background/80 px-2 py-0 text-[11px] font-normal text-muted-foreground"
+                                        >
+                                            {{ skill }}
+                                        </Badge>
+                                        <span
+                                            v-if="
+                                                visibleSkillTags(developer)
+                                                    .more > 0
+                                            "
+                                            class="text-[11px] text-muted-foreground tabular-nums"
+                                        >
+                                            +{{
+                                                visibleSkillTags(developer).more
+                                            }}
+                                        </span>
+                                    </div>
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[13rem] px-4 py-3.5 align-middle"
+                                    :data-tour="
+                                        developerIndex === 0
+                                            ? 'developer-card-badges'
+                                            : undefined
+                                    "
+                                >
+                                    <div
+                                        v-if="developer.badges.length > 0"
+                                        class="flex flex-wrap items-center gap-1"
+                                    >
+                                        <Badge
+                                            v-for="(
+                                                badge, badgeIndex
+                                            ) in visibleDeveloperBadges(
+                                                developer,
+                                            ).badges"
+                                            :key="
+                                                badge.slug ??
+                                                `${badge.name}-${badgeIndex}`
+                                            "
+                                            variant="outline"
+                                            class="max-w-[8rem] border-border/70 bg-background/80 px-2 py-0 text-[11px] font-normal text-muted-foreground"
+                                            :style="
+                                                developerBadgeInlineStyle(badge)
+                                            "
+                                        >
+                                            <span class="truncate">{{
+                                                badge.name
+                                            }}</span>
+                                        </Badge>
+                                        <span
+                                            v-if="
+                                                visibleDeveloperBadges(
+                                                    developer,
+                                                ).more > 0
+                                            "
+                                            class="text-[11px] text-muted-foreground tabular-nums"
+                                        >
+                                            +{{
+                                                visibleDeveloperBadges(
+                                                    developer,
+                                                ).more
+                                            }}
+                                        </span>
+                                    </div>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="max-w-[12rem] px-4 py-3.5 align-middle"
+                                >
+                                    <div
+                                        v-if="
+                                            developerHasSocialLinks(developer)
+                                        "
+                                        class="flex flex-col gap-1"
+                                    >
+                                        <a
+                                            v-if="developer.portfolio_url"
+                                            :href="developer.portfolio_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            Portfolio
+                                        </a>
+                                        <a
+                                            v-if="developer.github_url"
+                                            :href="developer.github_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            GitHub
+                                        </a>
+                                        <a
+                                            v-if="developer.linkedin_url"
+                                            :href="developer.linkedin_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="line-clamp-2 w-fit text-xs text-primary underline-offset-2 hover:underline"
+                                        >
+                                            LinkedIn
+                                        </a>
+                                    </div>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="py-3.5 pr-4 pl-2 text-right align-middle"
+                                >
+                                    <Button
+                                        v-if="developerProfileHref(developer)"
+                                        variant="ghost"
+                                        size="icon"
+                                        class="size-9 shrink-0 text-muted-foreground hover:text-foreground"
+                                        as-child
+                                    >
+                                        <Link
+                                            :href="
+                                                developerProfileHref(
+                                                    developer,
+                                                ) as string
+                                            "
+                                            :aria-label="`Open profile for ${developer.name}`"
+                                        >
+                                            <ExternalLink
+                                                class="size-4"
+                                                aria-hidden="true"
+                                            />
+                                        </Link>
+                                    </Button>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+
             <div
                 v-if="nextPageUrl && developers.length > 0"
                 class="mt-8 flex justify-center"
