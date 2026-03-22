@@ -16,10 +16,15 @@ test('welcome page and developer directory vue include tour anchors', function (
         ->toContain('data-tour="developer-view-toggle"')
         ->toContain('data-tour="developer-compare"')
         ->toContain('developer-card-badges')
-        ->toContain('data-tour="developer-results"');
+        ->toContain('data-tour="developer-results"')
+        ->toContain('startMessageToDeveloper')
+        ->toContain('canMessageDeveloper');
 
     $card = file_get_contents(resource_path('js/components/DeveloperCard.vue'));
-    expect($card)->toContain('developer-card-badges');
+    expect($card)
+        ->toContain('developer-card-badges')
+        ->toContain('startConversation')
+        ->toContain('MessageSquare');
 
     $tour = file_get_contents(resource_path('js/composables/useWelcomeTour.ts'));
     expect($tour)

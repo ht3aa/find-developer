@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import {
     Briefcase,
     Check,
@@ -7,6 +7,7 @@ import {
     Globe,
     Mail,
     MapPin,
+    MessageSquare,
     Phone,
     Star,
     ThumbsUp,
@@ -29,6 +30,8 @@ const props = withDefaults(
     defineProps<{
         developer: Developer;
         currentUserDeveloper?: Developer | null;
+        /** When set (logged-in user id), shows Message for other users' profiles. */
+        currentUserId?: number | null;
         recommendedDeveloperIds?: number[];
         selectable?: boolean;
         modelValue?: boolean;
@@ -37,6 +40,7 @@ const props = withDefaults(
     }>(),
     {
         currentUserDeveloper: null,
+        currentUserId: null,
         recommendedDeveloperIds: () => [],
         selectable: false,
         modelValue: false,
@@ -84,6 +88,26 @@ const showSalary = computed(() => {
     const to = props.developer.expected_salary_to;
     return from != null || to != null;
 });
+
+const showMessageButton = computed(() => {
+    const uid = props.developer.user_id;
+    return (
+        props.currentUserId != null &&
+        uid != null &&
+        uid !== props.currentUserId
+    );
+});
+
+function startConversation(): void {
+    const uid = props.developer.user_id;
+    if (uid == null) {
+        return;
+    }
+    router.post('/messages', {
+        recipient_id: uid,
+        body: '',
+    });
+}
 
 const salaryLabel = computed(() => {
     const d = props.developer;
@@ -474,6 +498,23 @@ function onThumbnailError(e: Event, videoId: string): void {
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>Email</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider v-if="showMessageButton">
+                            <Tooltip>
+                                <TooltipTrigger as-child>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="icon"
+                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        @click.stop.prevent="startConversation"
+                                    >
+                                        <MessageSquare class="size-4" />
+                                        <span class="sr-only">Message</span>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Message</TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
                         <TooltipProvider v-if="developer.cv_path_url">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced, useClipboard } from '@vueuse/core';
 import {
     Award,
@@ -8,6 +8,7 @@ import {
     FileText,
     FilterX,
     LayoutGrid,
+    MessageSquare,
     Scale,
     Search,
     Send,
@@ -84,6 +85,26 @@ const page = usePage();
 const isSuperAdminUser = computed(
     () => Boolean((page.props.auth as Auth).is_super_admin),
 );
+
+const currentUserId = computed(
+    () => (page.props.auth as Auth | { user?: { id: number } | null }).user?.id,
+);
+
+function canMessageDeveloper(developer: Developer): boolean {
+    const uid = developer.user_id;
+    const myId = currentUserId.value;
+    return myId != null && uid != null && uid !== myId;
+}
+
+function startMessageToDeveloper(developer: Developer): void {
+    if (developer.user_id == null) {
+        return;
+    }
+    router.post('/messages', {
+        recipient_id: developer.user_id,
+        body: '',
+    });
+}
 
 const offerFormOpen = ref(false);
 
@@ -1305,6 +1326,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     v-for="developer in developers"
                     :key="developer.id"
                     :developer="developer"
+                    :current-user-id="currentUserId"
                     :selectable="true"
                     :tour-badges-anchor="
                         tourBadgesAnchorDeveloperId !== null &&
@@ -1410,6 +1432,12 @@ watch(viewLayout, (layout: ViewLayout) => {
                                     class="min-w-[6.5rem] px-4 py-3.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                                 >
                                     Social links
+                                </TableHead>
+                                <TableHead
+                                    scope="col"
+                                    class="w-16 px-2 py-3.5 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                                >
+                                    Msg
                                 </TableHead>
                                 <TableHead
                                     scope="col"
@@ -1781,6 +1809,31 @@ watch(viewLayout, (layout: ViewLayout) => {
                                             LinkedIn
                                         </a>
                                     </div>
+                                    <span
+                                        v-else
+                                        class="text-xs text-muted-foreground"
+                                        >—</span
+                                    >
+                                </TableCell>
+                                <TableCell
+                                    class="px-2 py-3.5 text-center align-middle"
+                                >
+                                    <Button
+                                        v-if="canMessageDeveloper(developer)"
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        class="size-9 shrink-0 text-muted-foreground hover:text-foreground"
+                                        :aria-label="`Message ${developer.name}`"
+                                        @click.stop.prevent="
+                                            startMessageToDeveloper(developer)
+                                        "
+                                    >
+                                        <MessageSquare
+                                            class="size-4"
+                                            aria-hidden="true"
+                                        />
+                                    </Button>
                                     <span
                                         v-else
                                         class="text-xs text-muted-foreground"
