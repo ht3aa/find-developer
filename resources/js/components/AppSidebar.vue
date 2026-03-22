@@ -33,7 +33,6 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
-import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
 import { index as developerOffersIndex } from '@/routes/developer-offers';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
@@ -101,12 +100,6 @@ const allMainNavItems: NavItem[] = [
         href: rolesRoutes.index.url(),
         icon: Shield,
         can: 'viewAnyRole',
-    },
-    {
-        title: 'Newsletter',
-        href: newsletterIndex().url,
-        icon: Mail,
-        can: 'viewNewsletter',
     },
     {
         title: 'Recommendations',

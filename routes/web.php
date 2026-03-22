@@ -11,7 +11,6 @@ use App\Http\Controllers\Dashboard\DeveloperProjectController;
 use App\Http\Controllers\Dashboard\DeveloperRecommendationController as DashboardDeveloperRecommendationController;
 use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
 use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
-use App\Http\Controllers\Dashboard\NewsletterController as DashboardNewsletterController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
@@ -89,10 +88,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
                 Route::patch('attendance', [HackathonAttendanceController::class, 'update'])->name('hackathons.attendance.update');
             });
 
-            Route::get('newsletter', [DashboardNewsletterController::class, 'index'])->name('dashboard.newsletter.index');
-            Route::post('newsletter/bulk-email', [DashboardNewsletterController::class, 'bulkEmail'])->name('dashboard.newsletter.bulk-email');
-            Route::post('newsletter/bulk-email-all', [DashboardNewsletterController::class, 'bulkEmailAll'])->name('dashboard.newsletter.bulk-email-all');
-            Route::delete('newsletter/{newsletter}', [DashboardNewsletterController::class, 'destroy'])->name('dashboard.newsletter.destroy');
             Route::resource('developer-offers', DashboardDeveloperOfferController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::get('conversations', [DashboardConversationController::class, 'index'])->name('dashboard.conversations.index');
             Route::get('conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('dashboard.conversations.show');
