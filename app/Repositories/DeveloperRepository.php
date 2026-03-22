@@ -26,7 +26,7 @@ class DeveloperRepository
             ])
             ->withCount('recommendationsReceived')
             ->withCount('badges')
-            ->allowedFilters([
+            ->allowedFilters(...[
                 AllowedFilter::partial('name'),
                 AllowedFilter::callback('job_title.name', function ($query, $value) {
                     $values = $this->parseFilterValues($value);
@@ -160,7 +160,7 @@ class DeveloperRepository
                     $query->whereIn('developers.id', $ids);
                 }),
             ])
-            ->allowedSorts(['name', 'years_of_experience', 'created_at'])
+            ->allowedSorts(...['name', 'years_of_experience', 'created_at'])
             ->orderBy('badges_count', 'desc')
             ->orderBy('recommendations_received_count', 'desc')
             ->orderBy('created_at', 'desc')
@@ -175,7 +175,7 @@ class DeveloperRepository
     {
         $query = QueryBuilder::for(Developer::class)
             ->where('recommended_by_us', true)
-            ->allowedFilters([
+            ->allowedFilters(...[
                 AllowedFilter::partial('name'),
                 AllowedFilter::callback('job_title.name', function ($query, $value) {
                     $values = $this->parseFilterValues($value);
