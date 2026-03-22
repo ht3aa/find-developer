@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { Bug, ChevronUp, CircleHelp, X } from 'lucide-vue-next';
+import { BookOpen, Bug, ChevronUp, CircleHelp, X } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -55,6 +55,15 @@ const webSiteJsonLd = computed(() => ({
 }));
 
 const reportBugsUrl = 'https://github.com/ht3aa/find-developer';
+
+/** Surah 110 — An-Nasr (three ayahs). */
+const surah110TitleAr = 'سورة النصر (١١٠)';
+
+const surah110Ayahs = [
+    'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ',
+    'وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا',
+    'فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا',
+] as const;
 
 const WELCOME_HELP_NUDGE_KEY = 'find-developer-welcome-help-nudge-dismissed';
 
@@ -132,6 +141,41 @@ async function runWelcomeTour(): Promise<void> {
                     report it on GitHub
                 </a>
             </span>
+        </div>
+
+        <div
+            class="border-b border-border bg-muted/50 px-4 py-2 text-center text-xs text-muted-foreground"
+            role="region"
+            aria-labelledby="surah-110-heading"
+        >
+            <div
+                class="mx-auto inline-flex max-w-full min-w-0 flex-col items-center gap-1"
+            >
+                <h2
+                    id="surah-110-heading"
+                    class="inline-flex items-center justify-center gap-1 font-medium text-foreground"
+                    dir="rtl"
+                    lang="ar"
+                >
+                    {{ surah110TitleAr }}
+                    <BookOpen class="size-3 shrink-0" aria-hidden />
+                </h2>
+                <div class="w-full min-w-0 overflow-x-auto" dir="rtl" lang="ar">
+                    <p
+                        class="inline-flex min-w-min flex-nowrap items-baseline justify-center gap-x-2 whitespace-nowrap font-medium leading-snug text-foreground"
+                    >
+                        <span
+                            v-for="(ayah, index) in surah110Ayahs"
+                            :key="index"
+                            class="inline-flex items-baseline gap-0.5"
+                        >
+                            <span class="text-muted-foreground tabular-nums">{{
+                                index + 1
+                            }}.</span>{{ ayah }}
+                        </span>
+                    </p>
+                </div>
+            </div>
         </div>
 
         <div data-tour="welcome-hero">
