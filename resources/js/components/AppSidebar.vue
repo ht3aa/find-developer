@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import {
-    Award,
     BookOpen,
     Briefcase,
     ClipboardList,
@@ -35,7 +34,6 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { index as badgesIndex } from '@/routes/badges';
 import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
@@ -95,12 +93,6 @@ const allMainNavItems: NavItem[] = [
         href: developerBlogsIndex().url,
         icon: FileText,
         can: 'viewAnyDeveloperBlog',
-    },
-    {
-        title: 'Badges',
-        href: badgesIndex(),
-        icon: Award,
-        can: 'viewAnyBadge',
     },
     {
         title: 'Hackathons',

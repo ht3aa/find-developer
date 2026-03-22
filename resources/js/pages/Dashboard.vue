@@ -5,7 +5,6 @@ import { computed } from 'vue';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { index as badgesIndex } from '@/routes/badges';
 import usersRoutes from '@/routes/users';
 import { type BreadcrumbItem } from '@/types';
 
@@ -55,7 +54,7 @@ const statCards = computed(() => [
         value: stats.value.badges,
         icon: Award,
         description: 'Badges available for assignment',
-        href: badgesIndex().url,
+        href: '/admin/badges',
     },
 ]);
 </script>

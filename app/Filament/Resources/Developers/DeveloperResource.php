@@ -30,6 +30,11 @@ class DeveloperResource extends Resource
         return NavigationGroup::Developers->getLabel();
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 10;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DeveloperForm::configure($schema);

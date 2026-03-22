@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Dashboard\ActivityLogController;
@@ -111,7 +110,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
             Route::get('message-attachments/{messageAttachment}', [DashboardMessageAttachmentController::class, 'show'])->name('dashboard.message-attachments.show');
         });
 
-        Route::resource('badges', BadgeController::class)->except(['show']);
         Route::resource('hackathons', HackathonController::class)->except(['show']);
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])

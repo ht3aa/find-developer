@@ -44,7 +44,7 @@ import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
 import { dashboard, home } from '@/routes';
-import { index as badgesIndex } from '@/routes/badges';
+import { publicMethod as badgesPublic } from '@/routes/badges';
 import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
@@ -70,7 +70,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Badges',
-        href: badgesIndex(),
+        href: badgesPublic(),
         icon: Award,
     },
 ];
