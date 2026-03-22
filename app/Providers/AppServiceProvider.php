@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\ActivityPolicy;
 use App\Policies\RolePolicy;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
+        Gate::policy(Activity::class, ActivityPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
 
         Password::defaults(

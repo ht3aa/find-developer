@@ -3,7 +3,6 @@ import { Link, usePage } from '@inertiajs/vue3';
 import {
     BookOpen,
     Briefcase,
-    ClipboardList,
     FileText,
     Folder,
     FolderKanban,
@@ -33,7 +32,6 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { index as activityLogIndex } from '@/routes/dashboard/activity-log';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { index as newsletterIndex } from '@/routes/dashboard/newsletter';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
@@ -109,12 +107,6 @@ const allMainNavItems: NavItem[] = [
         href: newsletterIndex().url,
         icon: Mail,
         can: 'viewNewsletter',
-    },
-    {
-        title: 'Activity Log',
-        href: activityLogIndex().url,
-        icon: ClipboardList,
-        can: 'viewActivityLog',
     },
     {
         title: 'Recommendations',
