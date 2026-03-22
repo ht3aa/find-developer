@@ -5,7 +5,6 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Dashboard\ConversationController as DashboardConversationController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
-use App\Http\Controllers\Dashboard\DeveloperOfferController as DashboardDeveloperOfferController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
 use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
@@ -74,7 +73,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
 
-            Route::resource('developer-offers', DashboardDeveloperOfferController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::get('conversations', [DashboardConversationController::class, 'index'])->name('dashboard.conversations.index');
             Route::get('conversations/{conversation}', [DashboardConversationController::class, 'show'])->name('dashboard.conversations.show');
             Route::get('chat-messages', [DashboardMessageController::class, 'index'])->name('dashboard.messages.index');

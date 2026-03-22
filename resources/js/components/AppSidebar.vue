@@ -34,7 +34,6 @@ import {
 import { dashboard, home } from '@/routes';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import { index as developerBlogsIndex } from '@/routes/developer-blogs';
-import { index as developerOffersIndex } from '@/routes/developer-offers';
 import { index as developerProjectsIndex } from '@/routes/developer-projects';
 import rolesRoutes from '@/routes/roles';
 import { index as workExperienceIndex } from '@/routes/work-experience';
@@ -101,7 +100,7 @@ const allMainNavItems: NavItem[] = [
     },
     {
         title: 'Developer Offers',
-        href: developerOffersIndex().url,
+        href: '/admin/developer-offers',
         icon: Send,
         can: 'viewDeveloperOffers',
     },
