@@ -7,7 +7,6 @@ use App\Http\Controllers\Dashboard\ActivityLogController;
 use App\Http\Controllers\Dashboard\ConversationController as DashboardConversationController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
-use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
 use App\Http\Controllers\Dashboard\DeveloperOfferController as DashboardDeveloperOfferController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
@@ -114,10 +113,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
 
         Route::resource('badges', BadgeController::class)->except(['show']);
         Route::resource('hackathons', HackathonController::class)->except(['show']);
-
-        Route::post('developers/bulk-email', [DashboardDeveloperController::class, 'bulkEmail'])->name('developers.bulk-email');
-        Route::post('developers/bulk-email-all', [DashboardDeveloperController::class, 'bulkEmailAll'])->name('developers.bulk-email-all');
-        Route::resource('developers', DashboardDeveloperController::class)->except(['show']);
 
         Route::get('developer-profile', [DeveloperProfileController::class, 'index'])
             ->name('dashboard.developer-profile.index');

@@ -33,9 +33,9 @@ class DeveloperController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response|RedirectResponse
+    public function create(): RedirectResponse
     {
-        return Inertia::render('Developers/Create');
+        return redirect()->route('home');
     }
 
     /**

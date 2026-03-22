@@ -1,12 +1,14 @@
 <?php
 
 use App\Enums\DeveloperStatus;
+use App\Filament\Resources\Developers\Pages\EditDeveloper;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\User;
 use App\Notifications\DeveloperRejectedNotification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
+use Livewire\Livewire;
 
 test('rejecting developer requires rejection reason and sends email', function () {
     Notification::fake();
@@ -28,28 +30,12 @@ test('rejecting developer requires rejection reason and sends email', function (
         'user_id' => null,
     ]);
 
-    $response = $this->actingAs($admin)->put(route('developers.update', $developer->id), [
-        'user_id' => null,
-        'name' => $developer->name,
-        'email' => $developer->email,
-        'phone' => $developer->phone,
-        'job_title_id' => $jobTitle->id,
-        'years_of_experience' => $developer->years_of_experience,
-        'bio' => $developer->bio,
-        'portfolio_url' => $developer->portfolio_url,
-        'github_url' => $developer->github_url,
-        'linkedin_url' => $developer->linkedin_url,
-        'youtube_url' => $developer->youtube_url,
-        'is_available' => $developer->is_available,
-        'availability_type' => [],
-        'skill_names' => [],
-        'badge_names' => [],
-        'status' => 'rejected',
-        'rejection_reason' => 'Profile does not meet our quality standards.',
-        'recommended_by_us' => false,
-    ]);
-
-    $response->assertRedirect(route('developers.index'));
+    Livewire::actingAs($admin)
+        ->test(EditDeveloper::class, ['record' => $developer->id])
+        ->set('data.status', DeveloperStatus::REJECTED->value)
+        ->set('data.rejection_reason', 'Profile does not meet our quality standards.')
+        ->call('save')
+        ->assertHasNoErrors();
 
     $developer->refresh();
     expect($developer->status)->toBe(DeveloperStatus::REJECTED);
@@ -79,28 +65,12 @@ test('rejecting developer without reason fails validation', function () {
         'user_id' => null,
     ]);
 
-    $response = $this->actingAs($admin)->put(route('developers.update', $developer->id), [
-        'user_id' => null,
-        'name' => $developer->name,
-        'email' => $developer->email,
-        'phone' => $developer->phone,
-        'job_title_id' => $jobTitle->id,
-        'years_of_experience' => $developer->years_of_experience,
-        'bio' => $developer->bio,
-        'portfolio_url' => $developer->portfolio_url,
-        'github_url' => $developer->github_url,
-        'linkedin_url' => $developer->linkedin_url,
-        'youtube_url' => $developer->youtube_url,
-        'is_available' => $developer->is_available,
-        'availability_type' => [],
-        'skill_names' => [],
-        'badge_names' => [],
-        'status' => 'rejected',
-        'rejection_reason' => '',
-        'recommended_by_us' => false,
-    ]);
-
-    $response->assertSessionHasErrors('rejection_reason');
+    Livewire::actingAs($admin)
+        ->test(EditDeveloper::class, ['record' => $developer->id])
+        ->set('data.status', DeveloperStatus::REJECTED->value)
+        ->set('data.rejection_reason', '')
+        ->call('save')
+        ->assertHasErrors(['data.rejection_reason']);
 });
 
 test('updating already rejected developer does not require rejection reason', function () {
@@ -123,26 +93,12 @@ test('updating already rejected developer does not require rejection reason', fu
         'user_id' => null,
     ]);
 
-    $response = $this->actingAs($admin)->put(route('developers.update', $developer->id), [
-        'user_id' => null,
-        'name' => 'Updated Name',
-        'email' => $developer->email,
-        'phone' => $developer->phone,
-        'job_title_id' => $jobTitle->id,
-        'years_of_experience' => $developer->years_of_experience,
-        'bio' => $developer->bio,
-        'portfolio_url' => $developer->portfolio_url,
-        'github_url' => $developer->github_url,
-        'linkedin_url' => $developer->linkedin_url,
-        'youtube_url' => $developer->youtube_url,
-        'is_available' => $developer->is_available,
-        'availability_type' => [],
-        'skill_names' => [],
-        'badge_names' => [],
-        'status' => 'rejected',
-        'recommended_by_us' => false,
-    ]);
+    Livewire::actingAs($admin)
+        ->test(EditDeveloper::class, ['record' => $developer->id])
+        ->set('data.name', 'Updated Name')
+        ->set('data.status', DeveloperStatus::REJECTED->value)
+        ->call('save')
+        ->assertHasNoErrors();
 
-    $response->assertRedirect(route('developers.index'));
     Notification::assertNothingSent();
 });

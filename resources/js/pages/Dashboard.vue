@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as badgesIndex } from '@/routes/badges';
-import { index as developersIndex } from '@/routes/developers';
 import usersRoutes from '@/routes/users';
 import { type BreadcrumbItem } from '@/types';
 
@@ -42,18 +41,21 @@ const statCards = computed(() => [
         value: stats.value.developers,
         icon: Users,
         description: 'Total developers in the platform',
+        href: '/admin/developers',
     },
     {
         title: 'Users',
         value: stats.value.users,
         icon: UserCog,
         description: 'Registered user accounts',
+        href: usersRoutes.index.url(),
     },
     {
         title: 'Badges',
         value: stats.value.badges,
         icon: Award,
         description: 'Badges available for assignment',
+        href: badgesIndex().url,
     },
 ]);
 </script>
