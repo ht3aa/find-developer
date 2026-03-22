@@ -18,7 +18,6 @@ import {
     ThumbsUp,
     Trophy,
     User,
-    UserCog,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import NavFooter from '@/components/NavFooter.vue';
@@ -43,7 +42,6 @@ import { index as developerProjectsIndex } from '@/routes/developer-projects';
 import { index as developerRecommendationsIndex } from '@/routes/developer-recommendations';
 import { index as hackathonsIndex } from '@/routes/hackathons';
 import rolesRoutes from '@/routes/roles';
-import usersRoutes from '@/routes/users';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -99,12 +97,6 @@ const allMainNavItems: NavItem[] = [
         href: hackathonsIndex(),
         icon: Trophy,
         can: 'viewAnyHackathon',
-    },
-    {
-        title: 'Users',
-        href: usersRoutes.index.url(),
-        icon: UserCog,
-        can: 'viewAnyUser',
     },
     {
         title: 'Roles',

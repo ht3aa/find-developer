@@ -5,7 +5,6 @@ import { computed } from 'vue';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import usersRoutes from '@/routes/users';
 import { type BreadcrumbItem } from '@/types';
 
 type DashboardStats = {
@@ -47,7 +46,7 @@ const statCards = computed(() => [
         value: stats.value.users,
         icon: UserCog,
         description: 'Registered user accounts',
-        href: usersRoutes.index.url(),
+        href: '/admin/users',
     },
     {
         title: 'Badges',

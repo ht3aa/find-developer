@@ -14,7 +14,6 @@ use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessa
 use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
 use App\Http\Controllers\Dashboard\NewsletterController as DashboardNewsletterController;
 use App\Http\Controllers\Dashboard\RoleController;
-use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperOfferController;
@@ -82,7 +81,6 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::middleware([IsSuperAdmin::class])->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
-            Route::resource('users', UserController::class)->except(['show']);
 
             Route::prefix('hackathons/{hackathon}')->group(function () {
                 Route::resource('teams', HackathonTeamController::class)->except(['show']);

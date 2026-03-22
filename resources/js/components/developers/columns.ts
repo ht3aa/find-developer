@@ -2,11 +2,11 @@ import { Link } from '@inertiajs/vue3';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, ExternalLink, Mail, Pencil, X } from 'lucide-vue-next';
 import { h } from 'vue';
-import DeveloperController from '@/actions/App/Http/Controllers/Dashboard/DeveloperController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { AuthCan } from '@/types/auth';
 import type { DeveloperTableRow } from '@/types/developer-table';
+import DeveloperController from '@/actions/App/Http/Controllers/Dashboard/DeveloperController';
 
 const checkboxClass =
     'size-4 shrink-0 rounded-[4px] border border-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
