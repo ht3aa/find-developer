@@ -1,0 +1,48 @@
+name: Release on merge to main
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-main-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tag-and-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build release tag from merge
+        id: tag
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          set -euo pipefail
+          DATE=$(date -u +%Y.%m.%d)
+          SLUG=$(printf '%s' "$PR_TITLE" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//' | cut -c1-50 | sed 's/-$//')
+          if [ -z "$SLUG" ]; then
+            SLUG="merge"
+          fi
+          SHORT_SHA="${MERGE_SHA:0:7}"
+          TAG="${DATE}-main-pr${PR_NUMBER}-${SLUG}-${SHORT_SHA}"
+          echo "Derived tag: $TAG"
+          echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release (triggers prod deployment)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ steps.tag.outputs.tag_name }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
