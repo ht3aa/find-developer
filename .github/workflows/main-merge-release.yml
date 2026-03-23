@@ -18,6 +18,8 @@ jobs:
   tag-and-release:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
       - name: Checkout merge commit
         uses: actions/checkout@v4
@@ -44,7 +46,7 @@ jobs:
           echo "Derived tag: $NEW"
           echo "tag_name=$NEW" >> "$GITHUB_OUTPUT"
 
-      - name: Publish release (triggers prod deployment)
+      - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag_name }}
@@ -53,3 +55,42 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: tag-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PROD_SSH_KEY }}
+          script: |
+            TAG_NAME="${{ needs.tag-and-release.outputs.tag_name }}"
+            if [[ "$TAG_NAME" == "monthly-work"* ]]; then
+              echo "monthly-work tag detected, ignoring deployment..."
+              exit 0
+            fi
+
+            if [[ "$TAG_NAME" == *"main"* ]]; then
+              echo "main tag detected, proceeding with deployment..."
+            else
+              echo "Tag does not contain 'main', exiting..."
+              exit 0
+            fi
+            cd /var/www/html/find-developer
+            git fetch --tags
+            echo "tag_name: $TAG_NAME"
+            git checkout -B "release-${TAG_NAME}" "refs/tags/${TAG_NAME}"
+            sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
+            composer install --no-dev --optimize-autoloader
+            php artisan optimize:clear
+            composer dump-autoload
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan icon:cache
+            sudo supervisorctl restart all
+            sudo systemctl restart nginx php8.4-fpm
