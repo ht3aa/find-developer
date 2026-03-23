@@ -1,0 +1,60 @@
+---
+description: On each new Cursor chat, create a dedicated git branch, push to origin, open a pull request, and track upstream.
+alwaysApply: true
+---
+
+# New chat — branch, push, and PR
+
+Treat the **start of a new Cursor chat** (first time you would change the repo or run git in this thread) as a signal to isolate work on its own branch, publish it to the remote, and **open a pull request** into the default branch.
+
+## When to run
+
+- Do this **once per chat**, before the first commit or substantive edit, unless the user explicitly says to stay on the current branch or use an existing branch name.
+- If the working tree is dirty, stop and tell the user to stash/commit or resolve; do not reset their work without permission.
+
+## Branch name (the “label”)
+
+Use a single descriptive slug derived from the user’s first request (kebab-case, ASCII, max ~50 chars). Prefix with the date so branches sort and stay unique:
+
+`cursor/YYYY-MM-DD-<short-slug>`
+
+Examples:
+
+- `cursor/2025-03-23-fix-pint-workflow`
+- `cursor/2025-03-23-add-newsletter-api`
+
+If the goal is unclear, use a neutral slug like `cursor/2025-03-23-session` or ask the user for one word to use as the label.
+
+## Commands (conceptual)
+
+1. `git fetch origin`
+2. Checkout the repo default branch (usually `main`) and fast-forward: `git checkout main && git pull --ff-only` (or the branch the user names)
+3. Create and switch: `git checkout -b cursor/YYYY-MM-DD-<slug>`
+4. After the **first commit** on this branch (Git needs at least one commit to push a new branch on most hosts), push and set upstream:
+
+`git push -u origin HEAD`
+
+5. **Open a pull request** (see below). Do this after the push that publishes the branch, not before there is at least one commit.
+
+Do not create empty commits only to satisfy push unless the user asks.
+
+## Pull request
+
+After the first successful **`git push -u origin HEAD`** for this session branch:
+
+- If **`gh` CLI** is installed and authenticated:
+  - If a PR for the current branch already exists (`gh pr view` succeeds), stop; do not create a duplicate.
+  - Otherwise run **`gh pr create`** against the default base branch (usually `main`). Use non-interactive flags so it works in automation: `--base main`, `--title` (short, imperative summary of the change), `--body` (what changed, why, and tests or checks run). Omit `--head`; it defaults to the current branch.
+  - Add **`--label cursor-session`** when the label exists in the repo; if `gh` errors on the label, retry without it or mention adding the label in the PR description.
+- If **`gh` is not available** or not logged in: give the user the **compare URL** from the `git push` output, or construct `https://github.com/<owner>/<repo>/compare/main...<branch-name>`, and tell them to open “Compare & pull request” on GitHub.
+
+Skip opening a PR only if the user explicitly says not to (e.g. WIP on purpose, or no remote host).
+
+## Remote
+
+- Push to **`origin`** (the user wrote “get”; interpret as **git** / default remote).
+- Use the branch name above as the session “label”; no separate tag is required unless the user asks.
+
+## Conflicts with other instructions
+
+If the user or another rule says to use a specific branch (e.g. `feat/…`), follow that instead for this chat.
