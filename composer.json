@@ -68,6 +68,7 @@
         "lint": [
             "pint --parallel"
         ],
+        "pint": "@lint",
         "test:lint": [
             "pint --parallel --test"
         ],
