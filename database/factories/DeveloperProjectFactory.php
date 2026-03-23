@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Developer;
+use App\Models\DeveloperProject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DeveloperProject>
+ * @extends Factory<DeveloperProject>
  */
 class DeveloperProjectFactory extends Factory
 {
@@ -17,7 +19,7 @@ class DeveloperProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'developer_id' => \App\Models\Developer::factory(),
+            'developer_id' => Developer::factory(),
             'title' => fake()->sentence(3),
             'description' => fake()->paragraph(),
             'link' => fake()->url(),

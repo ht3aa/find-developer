@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Developer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class AdminDeveloperNotification extends Notification implements ShouldQueue
@@ -21,9 +22,9 @@ class AdminDeveloperNotification extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): \Illuminate\Notifications\Messages\MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
-        return (new \Illuminate\Notifications\Messages\MailMessage)
+        return (new MailMessage)
             ->subject($this->subject)
             ->view('emails.admin-developer-notification', [
                 'developer' => $this->developer,

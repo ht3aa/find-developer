@@ -2,17 +2,19 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Developer;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BulkEmailAllDevelopersRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('viewAny', \App\Models\Developer::class) ?? false;
+        return $this->user()?->can('viewAny', Developer::class) ?? false;
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

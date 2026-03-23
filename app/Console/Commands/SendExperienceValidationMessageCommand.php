@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\DeveloperStatus;
 use App\Models\Badge;
 use App\Models\Conversation;
 use App\Models\Developer;
 use App\Models\User;
 use App\Notifications\NewConversationNotification;
-use App\Enums\DeveloperStatus;
 use Illuminate\Console\Command;
 
 class SendExperienceValidationMessageCommand extends Command
@@ -44,7 +44,7 @@ experience validated
         }
 
         $developers = Developer::query()
-            ->whereDoesntHave('badges', fn($q) => $q->where('badges.id', $experienceValidatedBadge->id))
+            ->whereDoesntHave('badges', fn ($q) => $q->where('badges.id', $experienceValidatedBadge->id))
             ->where('status', DeveloperStatus::APPROVED)
             ->where('user_id', '!=', $sender->id)
             ->whereNotNull('user_id')

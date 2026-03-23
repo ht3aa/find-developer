@@ -22,12 +22,12 @@ class BadgeController extends Controller
 
         $search = $request->input('search');
         if ($search && is_string($search)) {
-            $term = '%' . addcslashes(trim($search), '%_') . '%';
+            $term = '%'.addcslashes(trim($search), '%_').'%';
             $query->where('name', 'like', $term);
         }
 
         $items = $query->get(['id', 'name'])
-            ->map(fn($b) => ['value' => $b->name, 'label' => $b->name])
+            ->map(fn ($b) => ['value' => $b->name, 'label' => $b->name])
             ->values()
             ->all();
 

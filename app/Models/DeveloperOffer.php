@@ -6,6 +6,7 @@ use App\Enums\AvailabilityType;
 use App\Enums\OfferStatus;
 use App\Observers\DeveloperOfferObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -36,13 +37,13 @@ class DeveloperOffer extends Model
     /**
      * Get developers for this offer via developer_ids.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, Developer>
+     * @return Collection<int, Developer>
      */
-    public function developers(): \Illuminate\Database\Eloquent\Collection
+    public function developers(): Collection
     {
         $ids = $this->developer_ids ?? [];
         if (empty($ids)) {
-            return new \Illuminate\Database\Eloquent\Collection;
+            return new Collection;
         }
 
         return Developer::with('jobTitle')->whereIn('id', $ids)->get();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -81,7 +82,7 @@ class Conversation extends Model
     /**
      * Get the created_at of the newest unread message for a user, or null if none.
      */
-    public function newestUnreadMessageCreatedAtFor(int $userId): ?\Carbon\Carbon
+    public function newestUnreadMessageCreatedAtFor(int $userId): ?Carbon
     {
         $participant = $this->participants()->where('user_id', $userId)->first();
 

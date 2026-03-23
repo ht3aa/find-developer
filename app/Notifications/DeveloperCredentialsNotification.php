@@ -4,8 +4,8 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class DeveloperCredentialsNotification extends Notification implements ShouldQueue
 {
@@ -20,9 +20,9 @@ class DeveloperCredentialsNotification extends Notification implements ShouldQue
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): \Illuminate\Notifications\Messages\MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject('Welcome to Find Developer - Your Account Credentials')
             ->view('emails.developer-credentials', [
                 'developer' => $notifiable,

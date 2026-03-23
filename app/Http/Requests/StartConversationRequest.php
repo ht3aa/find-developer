@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Message;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StartConversationRequest extends FormRequest
@@ -12,7 +14,7 @@ class StartConversationRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -35,7 +37,7 @@ class StartConversationRequest extends FormRequest
                     }
                     $userId = $this->user()->id;
                     $recipientId = (int) $this->input('recipient_id');
-                    $message = \App\Models\Message::with('conversation.participants')->find($value);
+                    $message = Message::with('conversation.participants')->find($value);
                     if (! $message) {
                         return;
                     }

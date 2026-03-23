@@ -4,10 +4,12 @@ namespace App\Http\Requests\Dashboard;
 
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\Scopes\ApprovedScope;
 use App\Rules\UniqueDeveloperSlug;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +30,7 @@ class UpdateDeveloperRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -37,10 +39,10 @@ class UpdateDeveloperRequest extends FormRequest
             ? $routeDeveloper
             : Developer::withoutGlobalScope(ApprovedScope::class)->find($routeDeveloper);
         $developerId = $developerModel instanceof Developer ? $developerModel->id : null;
-        $statusRejected = $this->input('status') === \App\Enums\DeveloperStatus::REJECTED->value;
+        $statusRejected = $this->input('status') === DeveloperStatus::REJECTED->value;
         $statusChangedToRejected = $statusRejected
             && $developerModel instanceof Developer
-            && $developerModel->status !== \App\Enums\DeveloperStatus::REJECTED;
+            && $developerModel->status !== DeveloperStatus::REJECTED;
 
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
@@ -76,7 +78,7 @@ class UpdateDeveloperRequest extends FormRequest
             'skill_names.*' => ['string', 'max:255'],
             'badge_names' => ['nullable', 'array'],
             'badge_names.*' => ['string', 'max:255'],
-            'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
+            'status' => ['nullable', Rule::enum(DeveloperStatus::class)],
             'rejection_reason' => [
                 $statusChangedToRejected ? 'required' : 'nullable',
                 'string',

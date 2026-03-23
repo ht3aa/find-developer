@@ -22,12 +22,12 @@ class SkillController extends Controller
 
         $search = $request->input('search');
         if ($search && is_string($search)) {
-            $term = '%' . addcslashes(trim($search), '%_') . '%';
+            $term = '%'.addcslashes(trim($search), '%_').'%';
             $query->where('name', 'like', $term);
         }
 
         $items = $query->get(['id', 'name'])
-            ->map(fn($s) => ['value' => $s->name, 'label' => $s->name])
+            ->map(fn ($s) => ['value' => $s->name, 'label' => $s->name])
             ->values()
             ->all();
 

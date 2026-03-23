@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Scopes\DeveloperScope;
 use App\Observers\DeveloperProjectObserver;
+use Database\Factories\DeveloperProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 #[ScopedBy([DeveloperScope::class])]
 class DeveloperProject extends Model
 {
-    /** @use HasFactory<\Database\Factories\DeveloperProjectFactory> */
+    /** @use HasFactory<DeveloperProjectFactory> */
     use HasFactory, LogsActivity;
 
     protected $fillable = [

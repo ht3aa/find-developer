@@ -14,6 +14,7 @@ use App\Models\Skill;
 use App\Models\User;
 use App\Notifications\DeveloperCredentialsNotification;
 use App\Rules\UniqueDeveloperSlug;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -37,7 +38,7 @@ class CreateNewUser implements CreatesNewUsers
                 'required',
                 'string',
                 'max:255',
-                new UniqueDeveloperSlug(),
+                new UniqueDeveloperSlug,
             ],
             'phone' => ['nullable', 'string', 'max:50'],
             'job_title_id' => ['required', 'integer', 'exists:job_titles,id'],
@@ -92,7 +93,7 @@ class CreateNewUser implements CreatesNewUsers
         }
 
         $cvFile = $input['cv'] ?? null;
-        if ($cvFile && $cvFile instanceof \Illuminate\Http\UploadedFile) {
+        if ($cvFile && $cvFile instanceof UploadedFile) {
             $disk = 's3';
             $path = $cvFile->store("cvs/developer-{$developer->id}", ['disk' => $disk]);
             $developer->update(['cv_path' => $path]);

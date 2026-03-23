@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Models\User;
 use App\Models\UserService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class UserServicesSeeder extends Seeder
 {
@@ -119,7 +120,7 @@ class UserServicesSeeder extends Seeder
                 UserService::create([
                     'user_id' => $client->id,
                     'name' => $serviceData['name'],
-                    'slug' => \Illuminate\Support\Str::slug($serviceData['name']).'-'.$client->id.'-'.uniqid(),
+                    'slug' => Str::slug($serviceData['name']).'-'.$client->id.'-'.uniqid(),
                     'description' => $serviceData['description'],
                     'price' => $serviceData['price'],
                     'price_currency' => $serviceData['price_currency'],

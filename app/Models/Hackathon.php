@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\StorageHelper;
+use Database\Factories\HackathonFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Support\Str;
 
 class Hackathon extends Model
 {
-    /** @use HasFactory<\Database\Factories\HackathonFactory> */
+    /** @use HasFactory<HackathonFactory> */
     use HasFactory;
 
     protected $fillable = [
