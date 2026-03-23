@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\BlogStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\DeveloperBlogCreateRequest;
 use App\Http\Requests\Dashboard\DeveloperBlogDestroyRequest;
@@ -72,7 +73,7 @@ class DeveloperBlogController extends Controller
         return Inertia::render('DeveloperBlog/Create', [
             'statusOptions' => array_map(
                 fn ($case) => ['value' => $case->value, 'label' => $case->getLabel()],
-                \App\Enums\BlogStatus::cases()
+                BlogStatus::cases()
             ),
             'canChangeStatus' => $user->isSuperAdmin(),
         ]);
@@ -96,7 +97,7 @@ class DeveloperBlogController extends Controller
         $data['developer_id'] = $developer->id;
 
         if (! $request->user()->isSuperAdmin()) {
-            $data['status'] = \App\Enums\BlogStatus::DRAFT;
+            $data['status'] = BlogStatus::DRAFT;
             $data['published_at'] = null;
         } elseif (empty($data['published_at'] ?? null) && ($data['status'] ?? '') === 'published') {
             $data['published_at'] = now();
@@ -136,7 +137,7 @@ class DeveloperBlogController extends Controller
             ],
             'statusOptions' => array_map(
                 fn ($case) => ['value' => $case->value, 'label' => $case->getLabel()],
-                \App\Enums\BlogStatus::cases()
+                BlogStatus::cases()
             ),
             'canChangeStatus' => $user->isSuperAdmin(),
         ]);

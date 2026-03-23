@@ -58,7 +58,7 @@ class WorkExperienceController extends Controller
 
         return Inertia::render('WorkExperience/Index', [
             'workExperiences' => $experiences,
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
             'can' => [
                 'updateDeveloperCompany' => $user->can('update', new DeveloperCompany),
                 'deleteDeveloperCompany' => $user->can('delete', new DeveloperCompany),
@@ -88,7 +88,7 @@ class WorkExperienceController extends Controller
             ]);
 
         return Inertia::render('WorkExperience/Create', [
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
             'parentOptions' => $parentOptions,
         ]);
     }

@@ -4,9 +4,11 @@ namespace App\Http\Requests\Dashboard;
 
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\User;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -20,7 +22,7 @@ class StoreDeveloperRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -49,7 +51,7 @@ class StoreDeveloperRequest extends FormRequest
             'skill_names.*' => ['string', 'max:255'],
             'badge_names' => ['nullable', 'array'],
             'badge_names.*' => ['string', 'max:255'],
-            'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
+            'status' => ['nullable', Rule::enum(DeveloperStatus::class)],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
         ];

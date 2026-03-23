@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Channels;
 
+use App\Notifications\Messages\MailtrapMessage;
 use App\Services\MailtrapService;
 use Exception;
 use Illuminate\Notifications\Notification;
@@ -29,7 +30,7 @@ class MailtrapChannel
             throw new Exception('Notification must implement toMailtrap method');
         }
 
-        /** @var \App\Notifications\Messages\MailtrapMessage $message */
+        /** @var MailtrapMessage $message */
         $message = $notification->toMailtrap($notifiable);
 
         // Get recipient email

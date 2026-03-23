@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Exception;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -86,9 +87,9 @@ class MailtrapService
         }
 
         try {
-            /** @var \Illuminate\Http\Client\Response $response */
+            /** @var Response $response */
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
+                'Authorization' => 'Bearer '.$this->apiToken,
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl, $payload);
 
@@ -111,7 +112,7 @@ class MailtrapService
                 'subject' => $subject,
             ]);
 
-            throw new Exception('Failed to send email via Mailtrap: ' . $response->body());
+            throw new Exception('Failed to send email via Mailtrap: '.$response->body());
         } catch (Exception $e) {
             Log::error('Mailtrap service exception', [
                 'message' => $e->getMessage(),
@@ -209,9 +210,9 @@ class MailtrapService
         try {
             $bulkApiUrl = 'https://bulk.api.mailtrap.io/api/send';
 
-            /** @var \Illuminate\Http\Client\Response $response */
+            /** @var Response $response */
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
+                'Authorization' => 'Bearer '.$this->apiToken,
                 'Content-Type' => 'application/json',
             ])->post($bulkApiUrl, $payload);
 
@@ -235,7 +236,7 @@ class MailtrapService
                 'subject' => $subject,
             ]);
 
-            throw new Exception('Failed to send bulk email via Mailtrap: ' . $response->body());
+            throw new Exception('Failed to send bulk email via Mailtrap: '.$response->body());
         } catch (Exception $e) {
             Log::error('Mailtrap bulk service exception', [
                 'message' => $e->getMessage(),

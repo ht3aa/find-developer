@@ -9,7 +9,9 @@ use App\Http\Requests\Dashboard\UpdateDeveloperProfileRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Badge;
 use App\Models\Developer;
+use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
+use App\Models\Skill;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +31,7 @@ class DeveloperProfileController extends Controller
         if (! $developer) {
             return Inertia::render('Developers/Profile', [
                 'developer' => null,
-                'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+                'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
             ]);
         }
 
@@ -41,7 +43,7 @@ class DeveloperProfileController extends Controller
 
         return Inertia::render('Developers/Profile', [
             'developer' => $developer,
-            'jobTitles' => \App\Models\JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -94,7 +96,7 @@ class DeveloperProfileController extends Controller
         if ($skillIds !== null) {
             $developer->skills()->sync($skillIds);
         } elseif ($skillNames !== null) {
-            $ids = \App\Models\Skill::whereIn('name', $skillNames)->pluck('id')->all();
+            $ids = Skill::whereIn('name', $skillNames)->pluck('id')->all();
             $developer->skills()->sync($ids);
         }
 

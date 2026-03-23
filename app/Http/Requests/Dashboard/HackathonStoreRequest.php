@@ -2,19 +2,21 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use App\Models\Hackathon;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class HackathonStoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\Hackathon::class);
+        return $this->user()->can('create', Hackathon::class);
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     protected function prepareForValidation(): void
     {

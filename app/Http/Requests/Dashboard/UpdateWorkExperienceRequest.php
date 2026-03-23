@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Dashboard;
 
 use App\Models\DeveloperCompany;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,12 +40,12 @@ class UpdateWorkExperienceRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         $developerId = $this->user()->developer->id;
-        /** @var \App\Models\DeveloperCompany $workExperience */
+        /** @var DeveloperCompany $workExperience */
         $workExperience = $this->route('work_experience');
         $excludedIds = [$workExperience->id, ...$workExperience->children()->pluck('id')];
 

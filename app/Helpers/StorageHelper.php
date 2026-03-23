@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 
 class StorageHelper
@@ -36,7 +37,7 @@ class StorageHelper
         // Fall back to temporary URL
         $expiration = $expiration ?? now()->addHours(5);
 
-        /** @var \Illuminate\Contracts\Filesystem\Filesystem $storageDisk */
+        /** @var Filesystem $storageDisk */
         $storageDisk = Storage::disk($disk);
 
         return $storageDisk->temporaryUrl($path, $expiration);

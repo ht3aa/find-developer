@@ -32,7 +32,6 @@ class DeveloperSuspendedNotification extends Notification implements ShouldQueue
             'developer' => $this->developer,
         ])->render();
 
-
         return MailtrapMessage::create()
             ->subject('Developer Profile Suspended')
             ->html($html)

@@ -29,7 +29,7 @@ class RoleController extends Controller
         $user = auth()->user();
 
         return Inertia::render('Roles/Index', [
-            'roles' => $roles->map(fn(Role $r) => [
+            'roles' => $roles->map(fn (Role $r) => [
                 'id' => $r->id,
                 'name' => $r->name,
                 'guard_name' => $r->guard_name,

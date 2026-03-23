@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Channels;
 
+use App\Notifications\Messages\MailtrapBulkMessage;
 use App\Services\MailtrapService;
 use Exception;
 use Illuminate\Notifications\Notification;
@@ -29,7 +30,7 @@ class MailtrapBulkChannel
             throw new Exception('Notification must implement toMailtrapBulk method');
         }
 
-        /** @var \App\Notifications\Messages\MailtrapBulkMessage $message */
+        /** @var MailtrapBulkMessage $message */
         $message = $notification->toMailtrapBulk($notifiable);
 
         // Get recipient emails - for bulk, we expect an array of emails

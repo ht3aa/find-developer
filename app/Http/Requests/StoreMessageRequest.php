@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Message;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMessageRequest extends FormRequest
@@ -12,7 +14,7 @@ class StoreMessageRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -28,7 +30,7 @@ class StoreMessageRequest extends FormRequest
                 'exists:messages,id',
                 function (string $attribute, mixed $value, \Closure $fail) use ($conversationId) {
                     if ($value && $conversationId) {
-                        $exists = \App\Models\Message::where('id', $value)
+                        $exists = Message::where('id', $value)
                             ->where('conversation_id', $conversationId)
                             ->exists();
                         if (! $exists) {

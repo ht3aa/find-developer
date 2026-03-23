@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\MessageAttachment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,7 +40,7 @@ class MessageController extends Controller
                 'user_type_label' => $m->user->user_type?->getLabel() ?? '—',
             ] : null,
             'body' => $m->body,
-            'body_preview' => $m->body ? \Illuminate\Support\Str::limit(strip_tags($m->body), 100) : null,
+            'body_preview' => $m->body ? Str::limit(strip_tags($m->body), 100) : null,
             'attachments_count' => $m->attachments_count,
             'created_at' => $m->created_at->toIso8601String(),
         ]);

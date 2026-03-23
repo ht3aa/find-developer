@@ -72,7 +72,6 @@ class Developer extends Model
         'availability_type' => AvailabilityTypeArray::class,
     ];
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -154,7 +153,7 @@ class Developer extends Model
     public function cvPathUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => StorageHelper::url($this->cv_path),
+            get: fn () => StorageHelper::url($this->cv_path),
         );
     }
 

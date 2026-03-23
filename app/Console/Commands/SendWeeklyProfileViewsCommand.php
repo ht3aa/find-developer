@@ -19,7 +19,7 @@ class SendWeeklyProfileViewsCommand extends Command
 
         $developers = Developer::query()
             ->withoutGlobalScopes()
-            ->withCount(['profileViews as weekly_views_count' => fn($q) => $q->where('created_at', '>=', $since)])
+            ->withCount(['profileViews as weekly_views_count' => fn ($q) => $q->where('created_at', '>=', $since)])
             ->get();
 
         if ($developers->isEmpty()) {

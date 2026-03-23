@@ -11,7 +11,7 @@ use App\Models\UserService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserAppointment>
+ * @extends Factory<UserAppointment>
  */
 class UserAppointmentFactory extends Factory
 {

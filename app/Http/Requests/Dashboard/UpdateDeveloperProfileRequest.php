@@ -4,8 +4,10 @@ namespace App\Http\Requests\Dashboard;
 
 use App\Enums\AvailabilityType;
 use App\Enums\Currency;
+use App\Enums\DeveloperStatus;
 use App\Enums\WorldGovernorate;
 use App\Rules\UniqueDeveloperSlug;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +30,7 @@ class UpdateDeveloperProfileRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -66,7 +68,7 @@ class UpdateDeveloperProfileRequest extends FormRequest
             'skill_ids.*' => ['integer', 'exists:skills,id'],
             'skill_names' => ['nullable', 'array'],
             'skill_names.*' => ['string', 'max:255'],
-            'status' => ['nullable', Rule::enum(\App\Enums\DeveloperStatus::class)],
+            'status' => ['nullable', Rule::enum(DeveloperStatus::class)],
             'recommended_by_us' => ['boolean'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'update_cv_automatic' => ['boolean'],
