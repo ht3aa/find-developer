@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Award, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import { ref } from 'vue';
 import BadgeIcon from '@/components/BadgeIcon.vue';
@@ -8,6 +8,7 @@ import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { home } from '@/routes';
 import type { Badge as BadgeType } from '@/types/badge';
 
 defineProps<{
@@ -24,6 +25,16 @@ function toggleExpand(badgeId: number) {
         next.add(badgeId);
     }
     expandedBadges.value = next;
+}
+
+function homeFilteredByBadgeUrl(badgeName: string): string {
+    return home.url({
+        query: {
+            filter: {
+                badge: badgeName,
+            },
+        },
+    });
 }
 </script>
 
@@ -104,9 +115,10 @@ function toggleExpand(badgeId: number) {
                                 >
                                     {{ badge.name }}
                                 </h3>
-                                <p
+                                <Link
                                     v-if="badge.developers_count != null"
-                                    class="text-xs text-muted-foreground"
+                                    :href="homeFilteredByBadgeUrl(badge.name)"
+                                    class="text-xs text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
                                     {{ badge.developers_count }}
                                     {{
@@ -114,7 +126,7 @@ function toggleExpand(badgeId: number) {
                                             ? 'developer'
                                             : 'developers'
                                     }}
-                                </p>
+                                </Link>
                             </div>
                         </div>
                     </CardHeader>
