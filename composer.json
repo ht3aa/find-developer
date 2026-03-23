@@ -66,11 +66,11 @@
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr --kill-others"
         ],
         "lint": [
-            "pint --parallel"
+            "vendor/bin/pint --parallel"
         ],
         "pint": "@lint",
         "test:lint": [
-            "pint --parallel --test"
+            "vendor/bin/pint --parallel --test"
         ],
         "test": [
             "@php artisan config:clear --ansi",
