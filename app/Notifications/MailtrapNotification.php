@@ -53,33 +53,10 @@ class MailtrapNotification extends Notification implements ShouldQueue
      */
     protected function getHtmlMessage(): string
     {
-        return "<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <link rel='icon' href='".e(asset('logo.svg'))."' type='image/svg+xml'>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color:rgb(0, 49, 173); color: white; padding: 20px; text-align: center; }
-        .content { padding: 20px; background-color: #f9f9f9; }
-        .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='header'>
-            <h1>".htmlspecialchars($this->subject)."</h1>
-        </div>
-        <div class='content'>
-            <p>".nl2br(htmlspecialchars($this->message))."</p>
-        </div>
-        <div class='footer'>
-            <p>This email was sent via Mailtrap</p>
-        </div>
-    </div>
-</body>
-</html>";
+        return view('emails.mailtrap-notification', [
+            'subject' => $this->subject,
+            'message' => $this->message,
+        ])->render();
     }
 
     /**
