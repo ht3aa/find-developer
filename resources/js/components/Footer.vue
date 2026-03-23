@@ -2,7 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import { Github, Heart, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
-import { home, login, privacyPolicy, register } from '@/routes';
+import { about, home, login, privacyPolicy, register } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
@@ -13,6 +13,7 @@ const supportMailto = `mailto:${supportEmail}`;
 
 const footerLinks = [
     { title: 'Home', href: home(), isMailto: false },
+    { title: 'About us', href: about(), isMailto: false },
     { title: 'Privacy policy', href: privacyPolicy(), isMailto: false },
     { title: 'Blog', href: blogs.public.index.url(), isMailto: false },
     { title: 'Badges', href: badgesPublic(), isMailto: false },

@@ -34,6 +34,11 @@ class SitemapController extends Controller
             'priority' => '0.8',
         ]);
         $urls->push([
+            'loc' => $baseUrl.'/about',
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ]);
+        $urls->push([
             'loc' => $baseUrl.'/privacy-policy',
             'changefreq' => 'yearly',
             'priority' => '0.3',

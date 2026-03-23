@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\ChatController;
@@ -61,6 +62,7 @@ Route::middleware('throttle:web')->group(function () {
         ->name('hackathons.subscribers.public');
     Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
     Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
+    Route::get('about', AboutController::class)->name('about');
     Route::get('privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 });
 
