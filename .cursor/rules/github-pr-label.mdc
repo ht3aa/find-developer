@@ -1,0 +1,29 @@
+---
+description: When creating a GitHub pull request, always add the designated automation label so Cursor-opened PRs are easy to filter.
+alwaysApply: true
+---
+
+# GitHub pull request label (Cursor agents)
+
+Whenever you **create a new GitHub pull request** for this repository (including via the pull request management tool, `gh pr create`, or the GitHub web UI on behalf of the user), you **must** attach the label **`cursor`** to that PR in the same turn, before you finish.
+
+## How to apply the label
+
+1. Prefer the GitHub CLI from the repo root after the PR exists (works on the current branch’s PR):
+
+   ```bash
+   gh pr edit --add-label cursor
+   ```
+
+2. If that fails because the label does not exist yet, create it once (requires sufficient token permissions), then retry adding it:
+
+   ```bash
+   gh label create cursor --color BFD4F2 --description "Pull request opened by a Cursor agent" 2>/dev/null || true
+   gh pr edit --add-label cursor
+   ```
+
+3. If `gh` is unavailable or authentication fails, say so explicitly in your summary and ask a maintainer to add the **`cursor`** label manually to the new PR.
+
+## Customizing the label name
+
+If this repository uses a different label (for example `ai` or `bot`), change the literal **`cursor`** in this file to match an existing repository label and keep the instructions above in sync.
