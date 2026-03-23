@@ -1,0 +1,55 @@
+name: Release on merge to main
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-main-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tag-and-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout merge commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Next semver tag (vX.X.X-main)
+        id: tag
+        run: |
+          set -euo pipefail
+          LATEST=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-main$' | sort -V | tail -1 || true)
+          if [ -z "${LATEST:-}" ]; then
+            NEW="v1.0.0-main"
+          else
+            VER="${LATEST#v}"
+            VER="${VER%-main}"
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VER"
+            PATCH=$((PATCH + 1))
+            NEW="v${MAJOR}.${MINOR}.${PATCH}-main"
+          fi
+          echo "Previous semver tag (if any): ${LATEST:-<none>}"
+          echo "Derived tag: $NEW"
+          echo "tag_name=$NEW" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release (triggers prod deployment)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ steps.tag.outputs.tag_name }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
