@@ -570,6 +570,10 @@ function developerProfileHref(developer: Developer): string | null {
     return null;
 }
 
+function developerBadgesPageUrl(developer: Developer): string {
+    return developer.badges_page_url ?? '/badges';
+}
+
 function developerTableSalaryLabel(developer: Developer): string {
     const from = developer.expected_salary_from;
     const to = developer.expected_salary_to;
@@ -1731,7 +1735,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                                         v-if="developer.badges.length > 0"
                                         class="flex flex-wrap items-center gap-1"
                                     >
-                                        <Badge
+                                        <Link
                                             v-for="(
                                                 badge, badgeIndex
                                             ) in visibleDeveloperBadges(
@@ -1741,16 +1745,26 @@ watch(viewLayout, (layout: ViewLayout) => {
                                                 badge.slug ??
                                                 `${badge.name}-${badgeIndex}`
                                             "
-                                            variant="outline"
-                                            class="max-w-[8rem] border-border/70 bg-background/80 px-2 py-0 text-[11px] font-normal text-muted-foreground"
-                                            :style="
-                                                developerBadgeInlineStyle(badge)
+                                            :href="
+                                                developerBadgesPageUrl(developer)
                                             "
+                                            class="inline-flex max-w-[8rem] shrink-0 cursor-pointer rounded-md outline-none ring-offset-background transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            @click.stop
                                         >
-                                            <span class="truncate">{{
-                                                badge.name
-                                            }}</span>
-                                        </Badge>
+                                            <Badge
+                                                variant="outline"
+                                                class="max-w-full border-border/70 bg-background/80 px-2 py-0 text-[11px] font-normal text-muted-foreground hover:bg-muted/60"
+                                                :style="
+                                                    developerBadgeInlineStyle(
+                                                        badge,
+                                                    )
+                                                "
+                                            >
+                                                <span class="truncate">{{
+                                                    badge.name
+                                                }}</span>
+                                            </Badge>
+                                        </Link>
                                         <span
                                             v-if="
                                                 visibleDeveloperBadges(

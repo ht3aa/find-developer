@@ -18,7 +18,8 @@ test('welcome page and developer directory vue include tour anchors', function (
         ->toContain('developer-card-badges')
         ->toContain('data-tour="developer-results"')
         ->toContain('startMessageToDeveloper')
-        ->toContain('canMessageDeveloper');
+        ->toContain('canMessageDeveloper')
+        ->toContain('developerBadgesPageUrl');
 
     $card = file_get_contents(resource_path('js/components/DeveloperCard.vue'));
     expect($card)
