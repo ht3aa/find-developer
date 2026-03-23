@@ -19,23 +19,30 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Build release tag from merge
+      - name: Checkout merge commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Next semver tag (vX.X.X-main)
         id: tag
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
           set -euo pipefail
-          DATE=$(date -u +%Y.%m.%d)
-          SLUG=$(printf '%s' "$PR_TITLE" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//' | cut -c1-50 | sed 's/-$//')
-          if [ -z "$SLUG" ]; then
-            SLUG="merge"
+          LATEST=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-main$' | sort -V | tail -1 || true)
+          if [ -z "${LATEST:-}" ]; then
+            NEW="v1.0.0-main"
+          else
+            VER="${LATEST#v}"
+            VER="${VER%-main}"
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VER"
+            PATCH=$((PATCH + 1))
+            NEW="v${MAJOR}.${MINOR}.${PATCH}-main"
           fi
-          SHORT_SHA="${MERGE_SHA:0:7}"
-          TAG="${DATE}-main-pr${PR_NUMBER}-${SLUG}-${SHORT_SHA}"
-          echo "Derived tag: $TAG"
-          echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Previous semver tag (if any): ${LATEST:-<none>}"
+          echo "Derived tag: $NEW"
+          echo "tag_name=$NEW" >> "$GITHUB_OUTPUT"
 
       - name: Publish release (triggers prod deployment)
         uses: softprops/action-gh-release@v2
