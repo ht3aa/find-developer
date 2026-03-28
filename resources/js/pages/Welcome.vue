@@ -162,16 +162,16 @@ async function runWelcomeTour(): Promise<void> {
                 </h2>
                 <div class="w-full min-w-0 overflow-x-auto" dir="rtl" lang="ar">
                     <p
-                        class="inline-flex min-w-min flex-nowrap items-baseline justify-center gap-x-2 whitespace-nowrap font-medium leading-snug text-foreground"
+                        class="inline-flex min-w-min flex-nowrap items-baseline justify-center gap-x-2 leading-snug font-medium whitespace-nowrap text-foreground"
                     >
                         <span
                             v-for="(ayah, index) in surah110Ayahs"
                             :key="index"
                             class="inline-flex items-baseline gap-0.5"
                         >
-                            <span class="text-muted-foreground tabular-nums">{{
-                                index + 1
-                            }}.</span>{{ ayah }}
+                            <span class="text-muted-foreground tabular-nums"
+                                >{{ index + 1 }}.</span
+                            >{{ ayah }}
                         </span>
                     </p>
                 </div>
@@ -271,14 +271,21 @@ async function runWelcomeTour(): Promise<void> {
                 <TooltipTrigger as-child>
                     <button
                         type="button"
-                        class="fixed left-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:scale-105 hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                        class="fixed bottom-6 left-6 z-50 flex size-12 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-lg transition-all hover:scale-105 hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                         aria-label="Click me if you need any help — starts a guided tour of this page"
                         @click="runWelcomeTour"
                     >
-                        <CircleHelp class="size-6 text-primary" aria-hidden="true" />
+                        <CircleHelp
+                            class="size-6 text-primary"
+                            aria-hidden="true"
+                        />
                     </button>
                 </TooltipTrigger>
-                <TooltipContent side="right" :side-offset="10" class="max-w-[16rem] text-balance">
+                <TooltipContent
+                    side="right"
+                    :side-offset="10"
+                    class="max-w-[16rem] text-balance"
+                >
                     Click me if you need any help
                 </TooltipContent>
             </Tooltip>
