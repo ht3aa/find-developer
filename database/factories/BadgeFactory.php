@@ -22,6 +22,7 @@ class BadgeFactory extends Factory
         return [
             'name' => ucfirst($name),
             'description' => fake()->optional()->sentence(),
+            'how_to_earn_description' => fake()->optional()->paragraph(),
             'icon' => 'li:rocket',
             'color' => fake()->hexColor(),
             'is_active' => true,

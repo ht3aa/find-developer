@@ -1,0 +1,30 @@
+{
+    "agents": [
+        "cursor",
+        "claude_code",
+        "codex",
+        "opencode"
+    ],
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "filament/filament",
+        "laravel/fortify",
+        "spatie/laravel-backup",
+        "spatie/laravel-permission",
+        "spatie/laravel-query-builder"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "wayfinder-development",
+        "pest-testing",
+        "inertia-vue-development",
+        "tailwindcss-development",
+        "fortify-development",
+        "laravel-backup",
+        "laravel-permission-development",
+        "laravel-query-builder"
+    ]
+}

@@ -130,33 +130,51 @@ function homeFilteredByBadgeUrl(badgeName: string): string {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent v-if="badge.description != null" class="pt-0">
-                        <p
-                            :class="[
-                                'text-sm text-muted-foreground',
-                                expandedBadges.has(badge.id)
-                                    ? ''
-                                    : 'line-clamp-3',
-                            ]"
-                        >
-                            {{ badge.description }}
-                        </p>
-                        <button
-                            type="button"
-                            class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                            @click="toggleExpand(badge.id)"
-                        >
-                            <ChevronDown
-                                v-if="!expandedBadges.has(badge.id)"
-                                class="size-3.5"
-                            />
-                            <ChevronUp v-else class="size-3.5" />
-                            {{
-                                expandedBadges.has(badge.id)
-                                    ? 'Read less'
-                                    : 'Read more'
-                            }}
-                        </button>
+                    <CardContent
+                        v-if="
+                            badge.description != null ||
+                            badge.how_to_earn_description != null
+                        "
+                        class="space-y-3 pt-0"
+                    >
+                        <div v-if="badge.description != null">
+                            <p
+                                :class="[
+                                    'text-sm text-muted-foreground',
+                                    expandedBadges.has(badge.id)
+                                        ? ''
+                                        : 'line-clamp-3',
+                                ]"
+                            >
+                                {{ badge.description }}
+                            </p>
+                            <button
+                                type="button"
+                                class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                                @click="toggleExpand(badge.id)"
+                            >
+                                <ChevronDown
+                                    v-if="!expandedBadges.has(badge.id)"
+                                    class="size-3.5"
+                                />
+                                <ChevronUp v-else class="size-3.5" />
+                                {{
+                                    expandedBadges.has(badge.id)
+                                        ? 'Read less'
+                                        : 'Read more'
+                                }}
+                            </button>
+                        </div>
+                        <div v-if="badge.how_to_earn_description != null">
+                            <p
+                                class="text-xs font-semibold uppercase tracking-wide text-foreground"
+                            >
+                                How to earn
+                            </p>
+                            <p class="mt-1 text-sm text-muted-foreground">
+                                {{ badge.how_to_earn_description }}
+                            </p>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
