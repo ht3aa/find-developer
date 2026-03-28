@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Policies\RolePolicy;
 use Carbon\CarbonImmutable;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -29,8 +30,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureFilamentFileUploads();
         $this->configureDefaults();
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Filament file uploads: store on S3 with private visibility by default.
+     */
+    protected function configureFilamentFileUploads(): void
+    {
+        FileUpload::configureUsing(function (FileUpload $component): void {
+            $component
+                ->disk('s3')
+                ->visibility('private');
+        });
     }
 
     /**

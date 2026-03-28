@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { router, usePage } from '@inertiajs/vue3';
-import { ArrowDown, Loader2, Sparkles } from 'lucide-vue-next';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { ArrowDown, Loader2, ShoppingBag, Sparkles } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -43,6 +43,9 @@ const props = withDefaults(
         description?: string;
         primaryActionLabel?: string;
         primaryActionHref?: string;
+        /** Optional second CTA (e.g. link to Shop) shown beside the primary button. */
+        secondaryActionLabel?: string;
+        secondaryActionHref?: string;
         successMessage?: string;
         /** When set, shows the newsletter signup field in the hero. */
         newsletterStoreUrl?: string;
@@ -316,16 +319,40 @@ onUnmounted(() => {
                     {{ props.description }}
                 </p>
 
-                <!-- CTA button -->
-                <Button
-                    v-if="props.primaryActionLabel != null"
-                    size="lg"
-                    class="mt-10 gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
-                    @click="scrollToSearch"
+                <!-- CTA buttons -->
+                <div
+                    v-if="
+                        props.primaryActionLabel != null ||
+                        (props.secondaryActionLabel &&
+                            props.secondaryActionHref)
+                    "
+                    class="mt-10 flex flex-wrap items-center justify-center gap-3"
                 >
-                    {{ props.primaryActionLabel }}
-                    <ArrowDown class="size-4" aria-hidden="true" />
-                </Button>
+                    <Button
+                        v-if="props.primaryActionLabel != null"
+                        size="lg"
+                        class="gap-2 rounded-xl text-base shadow-lg transition-all duration-200 hover:shadow-xl"
+                        @click="scrollToSearch"
+                    >
+                        {{ props.primaryActionLabel }}
+                        <ArrowDown class="size-4" aria-hidden="true" />
+                    </Button>
+                    <Button
+                        v-if="
+                            props.secondaryActionLabel &&
+                            props.secondaryActionHref
+                        "
+                        as-child
+                        variant="outline"
+                        size="lg"
+                        class="gap-2 rounded-xl border-primary/25 bg-background/80 text-base shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:bg-muted/50 hover:shadow-md"
+                    >
+                        <Link :href="props.secondaryActionHref">
+                            <ShoppingBag class="size-4" aria-hidden="true" />
+                            {{ props.secondaryActionLabel }}
+                        </Link>
+                    </Button>
+                </div>
 
                 <!-- Newsletter signup -->
                 <div
