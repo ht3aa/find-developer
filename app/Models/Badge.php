@@ -19,6 +19,7 @@ class Badge extends Model
         'name',
         'slug',
         'description',
+        'how_to_earn_description',
         'icon',
         'color',
         'is_active',

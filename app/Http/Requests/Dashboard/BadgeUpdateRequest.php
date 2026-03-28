@@ -37,6 +37,7 @@ class BadgeUpdateRequest extends FormRequest
                 Rule::unique('badges', 'name')->ignore($badge),
             ],
             'description' => ['nullable', 'string', 'max:1000'],
+            'how_to_earn_description' => ['nullable', 'string', 'max:5000'],
             'icon' => ['nullable', 'string', 'max:255'],
             'color' => ['nullable', 'string', 'max:50'],
             'is_active' => ['boolean'],

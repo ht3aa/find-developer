@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\UserType;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,7 +19,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, LogsActivity, Notifiable;
@@ -106,6 +108,11 @@ class User extends Authenticatable
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isSuperAdmin();
     }
 
     public function getActivitylogOptions(): LogOptions

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
 import { Award } from 'lucide-vue-next';
+import { ref } from 'vue';
 import BadgeController from '@/actions/App/Http/Controllers/BadgeController';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
@@ -21,6 +22,8 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const howToEarnDescription = ref(props.badge.how_to_earn_description ?? '');
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
@@ -103,6 +106,23 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         class="transition-colors focus-visible:ring-2"
                                     />
                                     <InputError :message="errors.description" />
+                                </div>
+
+                                <div class="grid gap-2">
+                                    <Label for="how_to_earn_description"
+                                        >How to earn</Label
+                                    >
+                                    <textarea
+                                        id="how_to_earn_description"
+                                        v-model="howToEarnDescription"
+                                        name="how_to_earn_description"
+                                        rows="4"
+                                        placeholder="Explain how developers can earn this badge"
+                                        class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                    <InputError
+                                        :message="errors.how_to_earn_description"
+                                    />
                                 </div>
                             </div>
 

@@ -23,6 +23,7 @@ class BadgeStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255', 'unique:badges,name'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'how_to_earn_description' => ['nullable', 'string', 'max:5000'],
             'icon' => ['nullable', 'string', 'max:255'],
             'color' => ['nullable', 'string', 'max:50'],
             'is_active' => ['boolean'],

@@ -93,6 +93,22 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     />
                                     <InputError :message="errors.description" />
                                 </div>
+
+                                <div class="grid gap-2">
+                                    <Label for="how_to_earn_description"
+                                        >How to earn</Label
+                                    >
+                                    <textarea
+                                        id="how_to_earn_description"
+                                        name="how_to_earn_description"
+                                        rows="4"
+                                        placeholder="Explain how developers can earn this badge"
+                                        class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                    <InputError
+                                        :message="errors.how_to_earn_description"
+                                    />
+                                </div>
                             </div>
 
                             <Separator class="lg:col-span-2" />
