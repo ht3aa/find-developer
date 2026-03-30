@@ -14,7 +14,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { about, shop } from '@/routes';
+import { shop } from '@/routes';
 import { asResourceArray } from '@/utils/asResourceArray';
 
 type ShopProduct = {
@@ -109,11 +109,9 @@ function priceDisplay(product: ShopProduct): {
     };
 }
 
-const orderMailtoHref = computed((): string | null => {
-    if (!props.orderEmail?.trim()) {
-        return null;
-    }
-    const email = props.orderEmail.trim();
+const orderMailtoHref = computed((): string => {
+    const email =
+        props.orderEmail?.trim() || 'ht3aa2001@gmail.com';
     const subject = encodeURIComponent(`Order: ${props.product.name}`);
     const body = encodeURIComponent(
         `Hi,\n\nI would like to order:\n\n${props.product.name}\n(${props.product.slug})\n\n`,
@@ -213,27 +211,22 @@ const seoImage = computed(() => sliderImageUrls(props.product)[0] ?? undefined);
                         class="rounded-xl border border-border bg-muted/30 p-4 sm:p-5"
                     >
                         <p class="text-sm text-muted-foreground">
-                            Order by email — we will follow up with details.
+                            Send the amount to Qi card
+                            <span class="font-medium text-foreground"
+                                >5862997060</span
+                            >, then email us with the product you want and attach
+                            your payment receipt.
+                        </p>
+                        <p class="mt-2 text-sm text-muted-foreground">
+                            Delivery fee between 3,000–5,000 IQD.
                         </p>
                         <div class="mt-4 flex flex-col gap-3 sm:flex-row">
                             <Button
-                                v-if="orderMailtoHref"
                                 size="lg"
                                 class="w-full sm:w-auto sm:min-w-[12rem]"
                                 as-child
                             >
                                 <a :href="orderMailtoHref">Order</a>
-                            </Button>
-                            <Button
-                                v-else
-                                size="lg"
-                                variant="secondary"
-                                class="w-full sm:w-auto sm:min-w-[12rem]"
-                                as-child
-                            >
-                                <Link :href="about.url()"
-                                    >Contact us to order</Link
-                                >
                             </Button>
                         </div>
                     </div>

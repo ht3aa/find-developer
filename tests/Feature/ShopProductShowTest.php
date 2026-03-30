@@ -14,7 +14,8 @@ test('shop product page renders for active product', function () {
     $response->assertOk();
     $response->assertInertia(fn (Assert $page) => $page
         ->component('Shop/ProductShow')
-        ->where('product.slug', 'cool-widget'));
+        ->where('product.slug', 'cool-widget')
+        ->where('orderEmail', 'ht3aa2001@gmail.com'));
 });
 
 test('shop product page returns 404 for inactive product', function () {
