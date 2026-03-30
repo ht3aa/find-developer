@@ -76,6 +76,9 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
     Route::post('hackathons/{hackathon:slug}/teams/{team}/vote', [HackathonTeamVoteController::class, 'store'])->name('hackathons.teams.vote');
 
+    Route::get('shop/{product:slug}/contact-admin', [ShopController::class, 'contactAdmin'])
+        ->name('shop.product.contact-admin');
+
     Route::get('messages', [ChatController::class, 'index'])->name('messages.index');
     Route::post('messages', [ChatController::class, 'store'])->name('messages.store');
     Route::get('messages/search-users', [ChatController::class, 'searchUsers'])->name('messages.search-users');

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
+use App\Models\Conversation;
 use App\Models\Product;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,5 +58,39 @@ class ShopController extends Controller
             'product' => ProductResource::make($product)->resolve(),
             'orderEmail' => config('shop.order_email'),
         ]);
+    }
+
+    /**
+     * Open (or resume) a Messages thread with the shop contact user for this product order.
+     */
+    public function contactAdmin(Request $request, Product $product): RedirectResponse
+    {
+        abort_unless($product->is_active, 404);
+
+        $adminEmail = config('shop.order_email');
+        $admin = User::query()->where('email', $adminEmail)->first();
+
+        if ($admin === null) {
+            return redirect()
+                ->route('shop.product.show', $product)
+                ->with('error', 'Order messaging is temporarily unavailable. Please try again later.');
+        }
+
+        $user = $request->user();
+
+        if ($user->id === $admin->id) {
+            return redirect()
+                ->route('messages.index')
+                ->with('info', 'You are the shop contact for this site.');
+        }
+
+        [$conversation] = Conversation::findOrCreateBetween($user->id, $admin->id);
+
+        return redirect()
+            ->route('messages.show', $conversation)
+            ->with(
+                'success',
+                'Message the admin here with the product you want and attach your payment receipt.',
+            );
     }
 }

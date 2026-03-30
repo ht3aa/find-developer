@@ -15,6 +15,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { shop } from '@/routes';
+import shopProduct from '@/routes/shop/product';
 import { asResourceArray } from '@/utils/asResourceArray';
 
 type ShopProduct = {
@@ -109,15 +110,9 @@ function priceDisplay(product: ShopProduct): {
     };
 }
 
-const orderMailtoHref = computed((): string => {
-    const email =
-        props.orderEmail?.trim() || 'ht3aa2001@gmail.com';
-    const subject = encodeURIComponent(`Order: ${props.product.name}`);
-    const body = encodeURIComponent(
-        `Hi,\n\nI would like to order:\n\n${props.product.name}\n(${props.product.slug})\n\n`,
-    );
-    return `mailto:${email}?subject=${subject}&body=${body}`;
-});
+const orderContactEmail = computed(
+    () => props.orderEmail?.trim() || 'ht3aa2001@gmail.com',
+);
 
 const seoDescription = computed(() => {
     const d = props.product.description?.trim();
@@ -214,11 +209,16 @@ const seoImage = computed(() => sliderImageUrls(props.product)[0] ?? undefined);
                             Send the amount to Qi card
                             <span class="font-medium text-foreground"
                                 >5862997060</span
-                            >, then email us with the product you want and attach
-                            your payment receipt.
+                            >, then message us on this platform. Open Messages to
+                            chat with the admin account
+                            <span class="font-medium text-foreground">{{
+                                orderContactEmail
+                            }}</span>
+                            — include the product you want and attach your
+                            payment receipt.
                         </p>
                         <p class="mt-2 text-sm text-muted-foreground">
-                            Delivery fee between 3,000–5,000 IQD.
+                            Free delivery.
                         </p>
                         <div class="mt-4 flex flex-col gap-3 sm:flex-row">
                             <Button
@@ -226,7 +226,12 @@ const seoImage = computed(() => sliderImageUrls(props.product)[0] ?? undefined);
                                 class="w-full sm:w-auto sm:min-w-[12rem]"
                                 as-child
                             >
-                                <a :href="orderMailtoHref">Order</a>
+                                <Link
+                                    :href="
+                                        shopProduct.contactAdmin.url(product)
+                                    "
+                                    >Message us</Link
+                                >
                             </Button>
                         </div>
                     </div>
