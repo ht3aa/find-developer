@@ -40,7 +40,9 @@ const { playQuack } = useQuackAudio();
                     />
                 </button>
             </TooltipTrigger>
-            <TooltipContent>Play quack sound</TooltipContent>
+            <TooltipContent>
+                Click to play the quack sound and go to the shop to buy one
+            </TooltipContent>
         </Tooltip>
     </TooltipProvider>
 </template>
