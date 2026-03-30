@@ -34,6 +34,7 @@ use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\PublicHackathonController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsSuperAdmin;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,8 @@ Route::middleware('throttle:web')->group(function () {
         ->name('hackathons.subscribers.public');
     Route::get('developers/{developer:slug}', [DeveloperController::class, 'show'])->name('developers.show');
     Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
+    Route::get('shop', [ShopController::class, 'index'])->name('shop');
+    Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.product.show');
     Route::get('about', AboutController::class)->name('about');
     Route::get('privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
 });
@@ -72,6 +75,9 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::post('developer-offers', [DeveloperOfferController::class, 'store'])->name('developer-offers.store');
     Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
     Route::post('hackathons/{hackathon:slug}/teams/{team}/vote', [HackathonTeamVoteController::class, 'store'])->name('hackathons.teams.vote');
+
+    Route::get('shop/{product:slug}/contact-admin', [ShopController::class, 'contactAdmin'])
+        ->name('shop.product.contact-admin');
 
     Route::get('messages', [ChatController::class, 'index'])->name('messages.index');
     Route::post('messages', [ChatController::class, 'store'])->name('messages.store');

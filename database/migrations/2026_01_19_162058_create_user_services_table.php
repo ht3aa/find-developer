@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->unsignedBigInteger('price')->nullable();
-            $table->string('price_currency')->default(Currency::IQD);
+            $table->string('price_currency')->default(Currency::IQD->value);
             $table->boolean('is_active')->default(true);
             $table->integer('time_minutes')->nullable()->comment('Time in minutes');
             $table->timestamps();

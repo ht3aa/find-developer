@@ -21,6 +21,10 @@ class StorageHelper
             return null;
         }
 
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
         $diskConfig = config("filesystems.disks.{$disk}", []);
 
         // Check if CloudFront URL is configured
