@@ -249,6 +249,11 @@ function visitProductOnKeydown(
                                         Price on request
                                     </span>
                                 </div>
+                                <p
+                                    class="mt-2 text-xs text-muted-foreground"
+                                >
+                                    Free delivery.
+                                </p>
                             </CardContent>
                         </Card>
                     </li>
