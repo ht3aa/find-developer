@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { login, register } from '@/routes';
+import { parseSalaryForForm } from '@/utils/salary';
 
 type JobTitleOption = { id: number; name: string };
 
@@ -25,6 +26,9 @@ const formData = ref<Record<string, unknown>>({
     phone: '',
     job_title: { name: '' },
     years_of_experience: 0,
+    expected_salary_from: null,
+    expected_salary_to: null,
+    salary_currency: 'IQD',
     bio: '',
     portfolio_url: '',
     github_url: '',
@@ -68,6 +72,13 @@ function submit(): void {
         skill_names: ((d.skills as { name: string }[]) ?? []).map(
             (s) => s.name,
         ),
+        expected_salary_from: parseSalaryForForm(
+            d.expected_salary_from as string | number | null | undefined,
+        ),
+        expected_salary_to: parseSalaryForForm(
+            d.expected_salary_to as string | number | null | undefined,
+        ),
+        salary_currency: (d.salary_currency as string) ?? 'IQD',
     };
     const cvFile = formRef.value?.cvFile;
     const file =

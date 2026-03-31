@@ -70,6 +70,7 @@ import {
 } from '@/lib/roleBandFilters';
 import type { Auth } from '@/types/auth';
 import type { Developer } from '@/types/developer';
+import { formatSalaryDisplay } from '@/utils/salary';
 
 const props = withDefaults(
     defineProps<{
@@ -579,15 +580,17 @@ function developerTableSalaryLabel(developer: Developer): string {
     const to = developer.expected_salary_to;
     const cur = developer.currency?.trim() ? developer.currency : '';
     const curSuffix = cur ? ` ${cur}` : '';
+    const fromFmt = formatSalaryDisplay(from);
+    const toFmt = formatSalaryDisplay(to);
 
     if (from != null && to != null) {
-        return `${from} – ${to}${curSuffix}`;
+        return `${fromFmt} – ${toFmt}${curSuffix}`;
     }
     if (from != null) {
-        return `From ${from}${curSuffix}`;
+        return `From ${fromFmt}${curSuffix}`;
     }
     if (to != null) {
-        return `Up to ${to}${curSuffix}`;
+        return `Up to ${toFmt}${curSuffix}`;
     }
 
     return '—';
