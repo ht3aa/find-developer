@@ -39,6 +39,7 @@ jobs:
             echo "tag_name: $TAG_NAME"
             git checkout -B "release-${TAG_NAME}" "refs/tags/${TAG_NAME}"
             sudo rm -f /var/www/gini-cars.au-uat.net/sooq/storage/logs/*.log
+            composer update
             composer install --no-dev --optimize-autoloader
             php artisan optimize:clear
             composer dump-autoload
