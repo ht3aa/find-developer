@@ -25,6 +25,7 @@ import {
 } from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 import type { Developer } from '@/types/developer';
+import { parseSalaryForForm } from '@/utils/salary';
 
 type JobTitleOption = { id: number; name: string };
 type UserOption = { id: number; name: string; email: string };
@@ -44,6 +45,9 @@ const formData = ref<Record<string, unknown>>({
     phone: '',
     job_title: { name: '' },
     years_of_experience: 0,
+    expected_salary_from: null,
+    expected_salary_to: null,
+    salary_currency: 'IQD',
     bio: '',
     portfolio_url: '',
     github_url: '',
@@ -98,6 +102,16 @@ watch(
             phone: dev.phone ?? '',
             job_title: dev.job_title ?? { name: '' },
             years_of_experience: dev.years_of_experience ?? 0,
+            expected_salary_from: parseSalaryForForm(
+                (dev as Record<string, unknown>).expected_salary_from,
+            ),
+            expected_salary_to: parseSalaryForForm(
+                (dev as Record<string, unknown>).expected_salary_to,
+            ),
+            salary_currency:
+                (dev as Record<string, unknown>).currency?.toString() ??
+                (dev as Record<string, unknown>).salary_currency?.toString() ??
+                'IQD',
             bio: dev.bio ?? '',
             portfolio_url: dev.portfolio_url ?? '',
             github_url: dev.github_url ?? '',
@@ -156,6 +170,13 @@ function buildPayload(): Record<string, unknown> {
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,
+        expected_salary_from: parseSalaryForForm(
+            d.expected_salary_from as string | number | null | undefined,
+        ),
+        expected_salary_to: parseSalaryForForm(
+            d.expected_salary_to as string | number | null | undefined,
+        ),
+        salary_currency: (d.salary_currency as string) ?? 'IQD',
         rejection_reason:
             d.status === 'rejected' ? (d.rejection_reason ?? '') : null,
     };

@@ -60,6 +60,8 @@ export type Developer = {
     phone?: string | null;
     expected_salary_from?: string | number | null;
     expected_salary_to?: string | number | null;
+    /** ISO currency code; persisted as `salary_currency` on the server. */
+    salary_currency?: string | null;
     currency?: string | null;
     is_available: boolean;
     bio?: string | null;

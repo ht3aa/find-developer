@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Enums\AvailabilityType;
+use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
 use App\Enums\UserType;
 use App\Models\Developer;
@@ -55,6 +56,9 @@ class CreateNewUser implements CreatesNewUsers
             'skill_names' => ['nullable', 'array'],
             'skill_names.*' => ['string', 'max:255'],
             'cv' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
+            'expected_salary_from' => ['nullable', 'integer', 'min:0'],
+            'expected_salary_to' => ['nullable', 'integer', 'min:0', 'gte:expected_salary_from'],
+            'salary_currency' => ['nullable', Rule::enum(Currency::class)],
         ];
 
         $validated = Validator::make($input, $rules)->validate();
@@ -82,6 +86,11 @@ class CreateNewUser implements CreatesNewUsers
             'availability_type' => $validated['availability_type'] ?? [],
             'status' => DeveloperStatus::PENDING,
             'recommended_by_us' => false,
+            'expected_salary_from' => $validated['expected_salary_from'] ?? null,
+            'expected_salary_to' => $validated['expected_salary_to'] ?? null,
+            'salary_currency' => isset($validated['salary_currency'])
+                ? Currency::from($validated['salary_currency'])
+                : Currency::IQD,
         ];
 
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->create($developerData);

@@ -14,6 +14,7 @@ import {
     index as developersIndex,
 } from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
+import { parseSalaryForForm } from '@/utils/salary';
 
 type UserOption = { id: number; name: string; email: string };
 type JobTitleOption = { id: number; name: string };
@@ -32,6 +33,9 @@ const formData = ref<Record<string, unknown>>({
     phone: '',
     job_title: { name: '' },
     years_of_experience: 0,
+    expected_salary_from: null,
+    expected_salary_to: null,
+    salary_currency: 'IQD',
     bio: '',
     portfolio_url: '',
     github_url: '',
@@ -87,6 +91,13 @@ function submit(): void {
         ),
         status: d.status ?? 'pending',
         recommended_by_us: d.recommended_by_us ? 1 : 0,
+        expected_salary_from: parseSalaryForForm(
+            d.expected_salary_from as string | number | null | undefined,
+        ),
+        expected_salary_to: parseSalaryForForm(
+            d.expected_salary_to as string | number | null | undefined,
+        ),
+        salary_currency: (d.salary_currency as string) ?? 'IQD',
     };
     const cvFile = formRef.value?.cvFile;
     const file =

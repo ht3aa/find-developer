@@ -25,6 +25,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { Developer } from '@/types/developer';
+import { formatSalaryDisplay } from '@/utils/salary';
 
 const props = withDefaults(
     defineProps<{
@@ -114,14 +115,16 @@ const salaryLabel = computed(() => {
     const from = d.expected_salary_from;
     const to = d.expected_salary_to;
     const cur = d.currency ?? '';
+    const fromFmt = formatSalaryDisplay(from);
+    const toFmt = formatSalaryDisplay(to);
     if (from != null && to != null) {
-        return `${from} – ${to} ${cur}`;
+        return `${fromFmt} – ${toFmt} ${cur}`.trim();
     }
     if (from != null) {
-        return `From ${from} ${cur}`;
+        return `From ${fromFmt} ${cur}`.trim();
     }
     if (to != null) {
-        return `Up to ${to} ${cur}`;
+        return `Up to ${toFmt} ${cur}`.trim();
     }
     return '';
 });

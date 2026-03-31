@@ -26,6 +26,12 @@ import { dashboard } from '@/routes';
 import { index as developerProfileIndex } from '@/routes/dashboard/developer-profile';
 import type { BreadcrumbItem } from '@/types';
 import type { Developer } from '@/types/developer';
+import {
+    formatSalaryDisplay,
+    parseSalaryDigitsInput,
+    parseSalaryForForm,
+    SALARY_CURRENCY_OPTIONS,
+} from '@/utils/salary';
 
 const availabilityTypeOptions = [
     { value: 'full-time', label: 'Full-time' },
@@ -83,13 +89,12 @@ const previewDeveloper = computed(() => {
         email: d.email,
         years_of_experience: Number(d.years_of_experience) || 0,
         phone: d.phone || null,
-        expected_salary_from: d.expected_salary_from
-            ? Number(d.expected_salary_from)
-            : null,
-        expected_salary_to: d.expected_salary_to
-            ? Number(d.expected_salary_to)
-            : null,
-        currency: d.salary_currency || null,
+        expected_salary_from: parseSalaryForForm(d.expected_salary_from),
+        expected_salary_to: parseSalaryForForm(d.expected_salary_to),
+        currency:
+            (d as Record<string, unknown>).salary_currency?.toString() ??
+            d.currency ??
+            null,
         is_available: isAvailable.value,
         bio: d.bio || null,
         portfolio_url: d.portfolio_url || null,
@@ -165,6 +170,15 @@ watch(
                 skills: [...(dev.skills ?? [])],
                 badges: [...(dev.badges ?? [])],
                 availability_type: [...(dev.availability_type ?? [])],
+                expected_salary_from: parseSalaryForForm(
+                    (dev as Record<string, unknown>).expected_salary_from,
+                ),
+                expected_salary_to: parseSalaryForForm(
+                    (dev as Record<string, unknown>).expected_salary_to,
+                ),
+                salary_currency:
+                    (dev as Record<string, unknown>).currency?.toString() ??
+                    'IQD',
             });
         } else {
             formData.value = null;
@@ -268,6 +282,23 @@ function buildPayload(): Record<string, unknown> | null {
         availability_type: (d.availability_type ?? []).map((a) => a.value),
         skill_names: (d.skills ?? []).map((s) => s.name),
         update_cv_automatic: updateCvAutomatic.value ? 1 : 0,
+        expected_salary_from: parseSalaryForForm(
+            (d as Record<string, unknown>).expected_salary_from as
+                | string
+                | number
+                | null
+                | undefined,
+        ),
+        expected_salary_to: parseSalaryForForm(
+            (d as Record<string, unknown>).expected_salary_to as
+                | string
+                | number
+                | null
+                | undefined,
+        ),
+        salary_currency:
+            ((d as Record<string, unknown>).salary_currency as string) ??
+            'IQD',
     };
     if (cvFile.value) {
         payload.cv = cvFile.value;
@@ -308,6 +339,30 @@ function submitForm(): void {
 function confirmExperienceChangeAndSubmit(): void {
     showExperienceBadgeModal.value = false;
     doSubmit();
+}
+
+function setProfileSalaryFrom(v: unknown): void {
+    if (!formData.value) {
+        return;
+    }
+    const d = formData.value as Record<string, unknown>;
+    if (v === '' || v === null || v === undefined) {
+        d.expected_salary_from = null;
+    } else {
+        d.expected_salary_from = parseSalaryDigitsInput(String(v));
+    }
+}
+
+function setProfileSalaryTo(v: unknown): void {
+    if (!formData.value) {
+        return;
+    }
+    const d = formData.value as Record<string, unknown>;
+    if (v === '' || v === null || v === undefined) {
+        d.expected_salary_to = null;
+    } else {
+        d.expected_salary_to = parseSalaryDigitsInput(String(v));
+    }
 }
 </script>
 
@@ -571,6 +626,103 @@ function confirmExperienceChangeAndSubmit(): void {
                                                 formErrors.years_of_experience
                                             "
                                         />
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div class="grid gap-2">
+                                            <Label>Expected salary (optional)</Label>
+                                            <p
+                                                class="text-xs text-muted-foreground"
+                                            >
+                                                Hidden from public view — only
+                                                visible to recruiters with CV
+                                                access.
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="grid gap-4 sm:grid-cols-2"
+                                        >
+                                            <div class="grid gap-2">
+                                                <Label for="expected_salary_from"
+                                                    >From</Label
+                                                >
+                                                <Input
+                                                    id="expected_salary_from"
+                                                    type="text"
+                                                    inputmode="numeric"
+                                                    autocomplete="off"
+                                                    name="expected_salary_from"
+                                                    placeholder="e.g. 1,500,000"
+                                                    class="transition-colors focus-visible:ring-2"
+                                                    :model-value="
+                                                        formatSalaryDisplay(
+                                                            formData.expected_salary_from,
+                                                        )
+                                                    "
+                                                    @update:model-value="
+                                                        setProfileSalaryFrom
+                                                    "
+                                                />
+                                                <InputError
+                                                    :message="
+                                                        formErrors.expected_salary_from
+                                                    "
+                                                />
+                                            </div>
+                                            <div class="grid gap-2">
+                                                <Label for="expected_salary_to"
+                                                    >To</Label
+                                                >
+                                                <Input
+                                                    id="expected_salary_to"
+                                                    type="text"
+                                                    inputmode="numeric"
+                                                    autocomplete="off"
+                                                    name="expected_salary_to"
+                                                    placeholder="e.g. 2,000,000"
+                                                    class="transition-colors focus-visible:ring-2"
+                                                    :model-value="
+                                                        formatSalaryDisplay(
+                                                            formData.expected_salary_to,
+                                                        )
+                                                    "
+                                                    @update:model-value="
+                                                        setProfileSalaryTo
+                                                    "
+                                                />
+                                                <InputError
+                                                    :message="
+                                                        formErrors.expected_salary_to
+                                                    "
+                                                />
+                                            </div>
+                                            <div class="grid gap-2 sm:col-span-2">
+                                                <Label for="salary_currency"
+                                                    >Currency</Label
+                                                >
+                                                <select
+                                                    id="salary_currency"
+                                                    v-model="
+                                                        formData.salary_currency
+                                                    "
+                                                    name="salary_currency"
+                                                    class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    <option
+                                                        v-for="opt in SALARY_CURRENCY_OPTIONS"
+                                                        :key="opt.value"
+                                                        :value="opt.value"
+                                                    >
+                                                        {{ opt.label }}
+                                                    </option>
+                                                </select>
+                                                <InputError
+                                                    :message="
+                                                        formErrors.salary_currency
+                                                    "
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="grid gap-2">

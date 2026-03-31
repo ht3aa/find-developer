@@ -7,6 +7,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import {
+    formatSalaryDisplay,
+    parseSalaryDigitsInput,
+    SALARY_CURRENCY_OPTIONS,
+} from '@/utils/salary';
 
 const availabilityTypeOptions = [
     { value: 'full-time', label: 'Full-time' },
@@ -199,6 +204,31 @@ function setRecommendedByUs(checked: boolean | string | undefined): void {
     emit('update:modelValue', next);
 }
 
+function setExpectedSalaryFrom(v: unknown): void {
+    const next = { ...formData.value };
+    if (v === '' || v === null || v === undefined) {
+        next.expected_salary_from = null;
+    } else {
+        next.expected_salary_from = parseSalaryDigitsInput(String(v));
+    }
+    emit('update:modelValue', next);
+}
+
+function setExpectedSalaryTo(v: unknown): void {
+    const next = { ...formData.value };
+    if (v === '' || v === null || v === undefined) {
+        next.expected_salary_to = null;
+    } else {
+        next.expected_salary_to = parseSalaryDigitsInput(String(v));
+    }
+    emit('update:modelValue', next);
+}
+
+function setSalaryCurrency(e: Event): void {
+    const v = (e.target as HTMLSelectElement).value;
+    emit('update:modelValue', { ...formData.value, salary_currency: v });
+}
+
 const YOUTUBE_ID_REGEX =
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
 
@@ -324,6 +354,84 @@ defineExpose({
                     class="transition-colors focus-visible:ring-2"
                 />
                 <InputError :message="errors?.years_of_experience" />
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid gap-2">
+                    <Label>Expected salary (optional)</Label>
+                    <p class="text-xs text-muted-foreground">
+                        Hidden from public view — only visible to recruiters with
+                        CV access.
+                    </p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="grid gap-2">
+                        <Label for="expected_salary_from">From</Label>
+                        <Input
+                            id="expected_salary_from"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            :model-value="
+                                formatSalaryDisplay(
+                                    formData.expected_salary_from as
+                                        | string
+                                        | number
+                                        | null
+                                        | undefined,
+                                )
+                            "
+                            placeholder="e.g. 1,500,000"
+                            class="transition-colors focus-visible:ring-2"
+                            @update:model-value="setExpectedSalaryFrom"
+                        />
+                        <InputError
+                            :message="errors?.expected_salary_from"
+                        />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="expected_salary_to">To</Label>
+                        <Input
+                            id="expected_salary_to"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            :model-value="
+                                formatSalaryDisplay(
+                                    formData.expected_salary_to as
+                                        | string
+                                        | number
+                                        | null
+                                        | undefined,
+                                )
+                            "
+                            placeholder="e.g. 2,000,000"
+                            class="transition-colors focus-visible:ring-2"
+                            @update:model-value="setExpectedSalaryTo"
+                        />
+                        <InputError :message="errors?.expected_salary_to" />
+                    </div>
+                    <div class="grid gap-2 sm:col-span-2">
+                        <Label for="salary_currency">Currency</Label>
+                        <select
+                            id="salary_currency"
+                            class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                            :value="
+                                (formData.salary_currency as string) ?? 'IQD'
+                            "
+                            @change="setSalaryCurrency"
+                        >
+                            <option
+                                v-for="opt in SALARY_CURRENCY_OPTIONS"
+                                :key="opt.value"
+                                :value="opt.value"
+                            >
+                                {{ opt.label }}
+                            </option>
+                        </select>
+                        <InputError :message="errors?.salary_currency" />
+                    </div>
+                </div>
             </div>
 
             <div class="grid gap-2">
