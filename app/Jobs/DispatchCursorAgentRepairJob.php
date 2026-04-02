@@ -36,6 +36,14 @@ class DispatchCursorAgentRepairJob implements ShouldBeUnique, ShouldQueue
         return $this->fingerprint;
     }
 
+    /**
+     * Remote branch name for `git push origin HEAD:refs/heads/...` (stable prefix + first 8 chars of dump UUID).
+     */
+    public static function remoteBranchNameForDump(string $dumpId): string
+    {
+        return 'cursor/'.now()->format('Y-m-d').'-fix-server-error-'.substr($dumpId, 0, 8);
+    }
+
     public function handle(): void
     {
         if (! config('cursor_agent.enabled')) {
@@ -63,6 +71,8 @@ class DispatchCursorAgentRepairJob implements ShouldBeUnique, ShouldQueue
         $baseBranch = config('cursor_agent.base_branch');
         $model = config('cursor_agent.model');
 
+        $remoteBranch = self::remoteBranchNameForDump($dumpId);
+
         $prompt = <<<PROMPT
 You are an automated repair run for this Laravel application.
 
@@ -71,8 +81,13 @@ Read the server error dump JSON at: {$absoluteDumpPath}
 Goals (in order):
 1. Diagnose and fix the root cause in this repository (workspace: {$workspace}).
 2. Follow AGENTS.md and CLAUDE.md if present.
-3. Create a git branch named like cursor/YYYY-MM-DD-fix-server-error-{$dumpId} from {$baseBranch}, implement the fix, run the minimal relevant tests (php artisan test with a narrow filter when possible), run vendor/bin/pint --dirty on changed PHP files.
-4. Push the branch to origin and open a pull request into {$baseBranch} using gh pr create (non-interactive flags). Title and body should summarize the bug and the fix. If gh is unavailable, commit locally and print exact commands for the human to run.
+3. From {$baseBranch} (e.g. git fetch origin && git checkout {$baseBranch} && git pull --ff-only, then git checkout -b a short-lived local branch): implement the fix, run the minimal relevant tests (php artisan test with a narrow filter when possible), run vendor/bin/pint --dirty on changed PHP files, and commit. You may keep any local branch name; the next step sets the remote branch name explicitly.
+4. Publish the fix **without renaming the current local branch**: push HEAD to a **new remote branch** using exactly this refspec pattern (replace nothing except using the branch name below):
+   git push -u origin HEAD:refs/heads/{$remoteBranch}
+   This updates origin with a new branch named {$remoteBranch} while leaving your checked-out local branch name unchanged.
+5. Open a pull request into {$baseBranch} from that remote branch, non-interactively, for example:
+   gh pr create --base {$baseBranch} --head {$remoteBranch} --title "..." --body "..."
+   Title and body should summarize the bug and the fix. If gh is unavailable, print the exact commands for a human to run.
 
 Use the Cursor Agent tools as needed. Prefer small, correct changes.
 PROMPT;
