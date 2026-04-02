@@ -25,7 +25,7 @@ return [
     | Model passed to `agent --model` (e.g. gpt-5-mini for a faster tier).
     | Run `agent --list-models` to see IDs for your account.
     */
-    'model' => env('CURSOR_AGENT_MODEL', 'composer-2-fast'),
+    'model' => env('CURSOR_AGENT_MODEL', 'composer-2'),
 
     'base_branch' => env('CURSOR_AGENT_BASE_BRANCH', 'main'),
 
