@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CompanyJobs;
 use App\Filament\Resources\CompanyJobs\Pages\CreateCompanyJob;
 use App\Filament\Resources\CompanyJobs\Pages\EditCompanyJob;
 use App\Filament\Resources\CompanyJobs\Pages\ListCompanyJobs;
+use App\Filament\Resources\CompanyJobs\RelationManagers\ApplicationsRelationManager;
 use App\Filament\Resources\CompanyJobs\Schemas\CompanyJobForm;
 use App\Filament\Resources\CompanyJobs\Tables\CompanyJobsTable;
 use App\Models\CompanyJob;
@@ -39,7 +40,7 @@ class CompanyJobResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ApplicationsRelationManager::class,
         ];
     }
 

@@ -35,6 +35,11 @@ class CompanyJobsTable
                 IconColumn::make('first_payment_qi_confirmed')
                     ->label('Qi paid')
                     ->boolean(),
+                TextColumn::make('gitea_repository_url')
+                    ->label('Gitea repository')
+                    ->url(fn (?string $state): ?string => $state)
+                    ->openUrlInNewTab()
+                    ->placeholder('—'),
                 TextColumn::make('gitea_owner')
                     ->label('Gitea owner')
                     ->placeholder('—')
