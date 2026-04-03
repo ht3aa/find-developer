@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Gitea (self-hosted Git)
+    |--------------------------------------------------------------------------
+    |
+    | Base URL of your Gitea instance (e.g. https://git.example.com) and an
+    | access token with admin scope for POST /api/v1/admin/users.
+    |
+    */
+
+    'gitea' => [
+        'url' => env('GITEA_URL'),
+        'token' => env('GITEA_TOKEN'),
+    ],
+
 ];
