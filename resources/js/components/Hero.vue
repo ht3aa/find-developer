@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { ArrowDown, Loader2, ShoppingBag, Sparkles } from 'lucide-vue-next';
+import { ArrowDown, Briefcase, Loader2, Sparkles } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -43,7 +43,7 @@ const props = withDefaults(
         description?: string;
         primaryActionLabel?: string;
         primaryActionHref?: string;
-        /** Optional second CTA (e.g. link to Shop) shown beside the primary button. */
+        /** Optional second CTA (e.g. link to Remote work) shown beside the primary button. */
         secondaryActionLabel?: string;
         secondaryActionHref?: string;
         successMessage?: string;
@@ -348,7 +348,7 @@ onUnmounted(() => {
                         class="gap-2 rounded-xl border-primary/25 bg-background/80 text-base shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-primary/40 hover:bg-muted/50 hover:shadow-md"
                     >
                         <Link :href="props.secondaryActionHref">
-                            <ShoppingBag class="size-4" aria-hidden="true" />
+                            <Briefcase class="size-4" aria-hidden="true" />
                             {{ props.secondaryActionLabel }}
                         </Link>
                     </Button>

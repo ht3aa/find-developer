@@ -13,6 +13,7 @@ use App\Jobs\AddRemoteWorkCollaboratorJob;
 use App\Models\CompanyJob;
 use App\Models\CompanyJobApplication;
 use App\Models\JobTitle;
+use App\Models\Scopes\ApprovedScope;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -108,7 +109,9 @@ class RemoteWorkController extends Controller
 
         $applications = CompanyJobApplication::query()
             ->where('company_job_id', $job->id)
-            ->with(['developer' => fn ($q) => $q->with(['jobTitle:id,name', 'user:id,name,email'])])
+            ->with(['developer' => fn ($q) => $q
+                ->withoutGlobalScope(ApprovedScope::class)
+                ->with(['jobTitle:id,name', 'user:id,name,email'])])
             ->latest()
             ->paginate(20);
 

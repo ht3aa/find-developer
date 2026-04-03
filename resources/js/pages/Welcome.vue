@@ -23,7 +23,7 @@ import {
     destroyWelcomeTour,
     startWelcomeTour,
 } from '@/composables/useWelcomeTour';
-import { shop } from '@/routes';
+import remoteWorkRoutes from '@/routes/remote-work';
 
 const DeveloperCardSection = defineAsyncComponent(
     () => import('@/components/DeveloperCardSection.vue'),
@@ -187,8 +187,8 @@ async function runWelcomeTour(): Promise<void> {
                 description="Browse vetted developers, filter by skills and experience, and connect with the best match for your team."
                 primary-action-label="Browse developers"
                 primary-action-href="#developers"
-                secondary-action-label="Shop"
-                :secondary-action-href="shop.url()"
+                secondary-action-label="Remote work"
+                :secondary-action-href="remoteWorkRoutes.index.url()"
                 :success-message="flashSuccess ?? undefined"
                 :newsletter-store-url="newsletterStoreUrl || undefined"
             />

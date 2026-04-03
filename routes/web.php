@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\ConversationController as DashboardConversati
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\DeveloperBlogController;
 use App\Http\Controllers\Dashboard\DeveloperController as DashboardDeveloperController;
+use App\Http\Controllers\Dashboard\DeveloperGiteaRepositoriesController;
 use App\Http\Controllers\Dashboard\DeveloperOfferController as DashboardDeveloperOfferController;
 use App\Http\Controllers\Dashboard\DeveloperProfileController;
 use App\Http\Controllers\Dashboard\DeveloperProjectController;
@@ -139,6 +140,9 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
             ->name('dashboard.developer-profile.update');
         Route::get('developer-profile/cv', [DeveloperProfileController::class, 'downloadCv'])
             ->name('dashboard.developer-profile.download-cv');
+
+        Route::get('gitea-repositories', [DeveloperGiteaRepositoriesController::class, 'index'])
+            ->name('dashboard.gitea-repositories.index');
 
         Route::get('remote-work', [DashboardRemoteWorkController::class, 'index'])->name('dashboard.remote-work.index');
         Route::get('remote-work/create', [DashboardRemoteWorkController::class, 'create'])->name('dashboard.remote-work.create');

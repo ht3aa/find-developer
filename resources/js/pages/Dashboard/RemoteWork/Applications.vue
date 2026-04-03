@@ -11,6 +11,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
+import developersRoutes from '@/routes/developers';
 import { dashboard } from '@/routes';
 import remoteWorkDashboard from '@/routes/dashboard/remote-work';
 import applicationRoutes from '@/routes/dashboard/remote-work/applications';
@@ -18,8 +19,10 @@ import type { BreadcrumbItem } from '@/types';
 
 type DeveloperRow = {
     id: number;
+    slug?: string | null;
     name: string;
     email: string | null;
+    status?: string;
     job_title?: { name: string } | null;
     user?: { name: string; email: string } | null;
 };
@@ -61,6 +64,18 @@ function accept(id: number): void {
 function reject(id: number): void {
     router.post(applicationRoutes.reject.url({ application: id }), {}, { preserveScroll: true });
 }
+
+function hasPublicProfile(dev: DeveloperRow): boolean {
+    return dev.status === 'approved' || dev.status === 'experience_changed';
+}
+
+/** Wayfinder `show.url()` throws if the slug argument is null/undefined. */
+function canLinkToPublicProfile(dev: DeveloperRow | null | undefined): boolean {
+    if (!dev?.slug) {
+        return false;
+    }
+    return hasPublicProfile(dev);
+}
 </script>
 
 <template>
@@ -88,6 +103,7 @@ function reject(id: number): void {
                         <TableRow>
                             <TableHead>Developer</TableHead>
                             <TableHead>Email</TableHead>
+                            <TableHead>Profile</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead class="text-right">Actions</TableHead>
                         </TableRow>
@@ -106,6 +122,28 @@ function reject(id: number): void {
                             <TableCell class="text-sm">
                                 {{ app.developer.user?.email ?? app.developer.email ?? '—' }}
                             </TableCell>
+                            <TableCell>
+                                <Button
+                                    v-if="canLinkToPublicProfile(app.developer)"
+                                    variant="link"
+                                    class="h-auto p-0"
+                                    as-child
+                                >
+                                    <Link
+                                        :href="developersRoutes.show.url(String(app.developer.slug))"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View profile
+                                    </Link>
+                                </Button>
+                                <span
+                                    v-else
+                                    class="text-xs text-muted-foreground"
+                                >
+                                    Not listed publicly
+                                </span>
+                            </TableCell>
                             <TableCell>{{ app.status }}</TableCell>
                             <TableCell class="text-right">
                                 <template v-if="app.status === 'pending'">
@@ -120,7 +158,7 @@ function reject(id: number): void {
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="applications.data.length === 0">
-                            <TableCell colspan="4" class="text-center text-muted-foreground">
+                            <TableCell colspan="5" class="text-center text-muted-foreground">
                                 No applications yet.
                             </TableCell>
                         </TableRow>

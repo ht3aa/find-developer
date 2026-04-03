@@ -73,6 +73,7 @@ class HandleInertiaRequests extends Middleware
             'viewDeveloperPhone' => $user->can('viewPhone', Developer::class),
             'viewDeveloperCv' => $user->can('viewCv', Developer::class),
             'createRemoteWorkPost' => $user->can('create', CompanyJob::class),
+            'viewGiteaRepositories' => $user->isDeveloper(),
         ] : [];
 
         $appUrl = rtrim(config('app.url'), '/');

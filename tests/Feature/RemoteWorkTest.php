@@ -1,8 +1,10 @@
 <?php
 
+use App\Enums\DeveloperStatus;
 use App\Enums\JobStatus;
 use App\Enums\UserType;
 use App\Models\CompanyJob;
+use App\Models\CompanyJobApplication;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\User;
@@ -186,4 +188,38 @@ it('lets a developer apply to an approved post', function () {
         'company_job_id' => $job->id,
         'status' => 'pending',
     ]);
+});
+
+it('shows job owner the applications page with applicant developer slug and status', function () {
+    $jobTitle = makeJobTitle();
+    $owner = User::factory()->create();
+    $job = CompanyJob::factory()->approved()->create([
+        'user_id' => $owner->id,
+        'job_title_id' => $jobTitle->id,
+    ]);
+
+    $devUser = User::factory()->create([
+        'user_type' => UserType::DEVELOPER,
+    ]);
+    $developer = Developer::factory()->create([
+        'user_id' => $devUser->id,
+        'job_title_id' => $jobTitle->id,
+        'status' => DeveloperStatus::APPROVED,
+    ]);
+
+    CompanyJobApplication::factory()->create([
+        'company_job_id' => $job->id,
+        'developer_id' => $developer->id,
+    ]);
+
+    $this->actingAs($owner);
+
+    $this->get(route('dashboard.remote-work.applications', $job))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Dashboard/RemoteWork/Applications')
+            ->has('applications.data', 1)
+            ->where('applications.data.0.developer.slug', $developer->slug)
+            ->where('applications.data.0.developer.status', DeveloperStatus::APPROVED->value)
+        );
 });

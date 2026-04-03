@@ -9,7 +9,7 @@ class CompanyJobApplicationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasVerifiedEmail();
+        return true;
     }
 
     public function view(User $user, CompanyJobApplication $application): bool
@@ -22,7 +22,7 @@ class CompanyJobApplicationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasVerifiedEmail() && $user->isDeveloper();
+        return $user->isDeveloper();
     }
 
     public function update(User $user, CompanyJobApplication $application): bool

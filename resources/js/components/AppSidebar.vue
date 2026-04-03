@@ -8,6 +8,7 @@ import {
     FileText,
     Folder,
     FolderKanban,
+    GitBranch,
     Home,
     LayoutGrid,
     Mail,
@@ -49,6 +50,7 @@ import { index as developersIndex } from '@/routes/developers';
 import { index as hackathonsIndex } from '@/routes/hackathons';
 import rolesRoutes from '@/routes/roles';
 import usersRoutes from '@/routes/users';
+import giteaRepositories from '@/routes/dashboard/gitea-repositories';
 import remoteWorkDashboard from '@/routes/dashboard/remote-work';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
@@ -93,6 +95,12 @@ const allMainNavItems: NavItem[] = [
         href: workExperienceIndex().url,
         icon: Briefcase,
         can: 'viewAnyDeveloperCompany',
+    },
+    {
+        title: 'Gitea repositories',
+        href: giteaRepositories.index.url(),
+        icon: GitBranch,
+        can: 'viewGiteaRepositories',
     },
     {
         title: 'Projects',

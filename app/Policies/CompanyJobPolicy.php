@@ -61,10 +61,6 @@ class CompanyJobPolicy
      */
     public function apply(User $user, CompanyJob $job): bool
     {
-        if (! $user->hasVerifiedEmail()) {
-            return false;
-        }
-
         if ($job->status !== JobStatus::APPROVED) {
             return false;
         }

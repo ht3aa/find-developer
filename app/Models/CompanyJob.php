@@ -105,6 +105,23 @@ class CompanyJob extends Model
         return $query->where('status', JobStatus::REJECTED);
     }
 
+    /**
+     * Web UI URL for this job's Gitea repository, or null if not provisioned or Gitea base URL is unset.
+     */
+    public function giteaRepositoryWebUrl(): ?string
+    {
+        if ($this->gitea_owner === null || $this->gitea_repo_name === null) {
+            return null;
+        }
+
+        $base = rtrim((string) config('services.gitea.url'), '/');
+        if ($base === '') {
+            return null;
+        }
+
+        return $base.'/'.rawurlencode((string) $this->gitea_owner).'/'.rawurlencode((string) $this->gitea_repo_name);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
