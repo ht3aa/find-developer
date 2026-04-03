@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
@@ -160,7 +161,7 @@ class ActivityLogController extends Controller
                 'causer_name' => $activity->causer?->name ?? $activity->causer?->email ?? null,
                 'event' => $activity->event,
                 'batch_uuid' => $activity->batch_uuid ?? null,
-                'properties' => $activity->properties?->toArray() ?? [],
+                'properties' => $this->activityPropertiesPayload($activity),
                 'created_at' => $activity->created_at->toIso8601String(),
                 'updated_at' => $activity->updated_at->toIso8601String(),
             ],
@@ -180,7 +181,21 @@ class ActivityLogController extends Controller
         }
 
         return response()->json([
-            'properties' => $activity->properties?->toArray() ?? [],
+            'properties' => $this->activityPropertiesPayload($activity),
         ]);
+    }
+
+    /**
+     * Custom data from {@see Activity::$properties} plus Spatie v5 model diffs in {@see Activity::$attribute_changes}.
+     * Legacy rows may still store attributes/old only under `properties`.
+     *
+     * @return array<string, mixed>
+     */
+    private function activityPropertiesPayload(Activity $activity): array
+    {
+        $custom = $activity->properties?->toArray() ?? [];
+        $attributeChanges = $activity->attribute_changes?->toArray() ?? [];
+
+        return array_merge($custom, $attributeChanges);
     }
 }
