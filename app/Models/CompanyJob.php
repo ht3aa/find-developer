@@ -6,6 +6,7 @@ use App\Enums\Currency;
 use App\Enums\JobStatus;
 use App\Enums\WorldGovernorate;
 use Database\Factories\CompanyJobFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -108,18 +109,20 @@ class CompanyJob extends Model
     /**
      * Web UI URL for this job's Gitea repository, or null if not provisioned or Gitea base URL is unset.
      */
-    public function giteaRepositoryWebUrl(): ?string
+    protected function giteaRepositoryUrl(): Attribute
     {
-        if ($this->gitea_owner === null || $this->gitea_repo_name === null) {
-            return null;
-        }
+        return Attribute::get(function (): ?string {
+            if ($this->gitea_owner === null || $this->gitea_repo_name === null) {
+                return null;
+            }
 
-        $base = rtrim((string) config('services.gitea.url'), '/');
-        if ($base === '') {
-            return null;
-        }
+            $base = rtrim((string) config('services.gitea.url'), '/');
+            if ($base === '') {
+                return null;
+            }
 
-        return $base.'/'.rawurlencode((string) $this->gitea_owner).'/'.rawurlencode((string) $this->gitea_repo_name);
+            return $base.'/'.rawurlencode((string) $this->gitea_owner).'/'.rawurlencode((string) $this->gitea_repo_name);
+        });
     }
 
     public function getActivitylogOptions(): LogOptions

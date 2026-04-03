@@ -35,7 +35,7 @@ class DeveloperGiteaRepositoriesController extends Controller
                 'application_id' => $app->id,
                 'job_title' => $app->companyJob->title,
                 'job_slug' => $app->companyJob->slug,
-                'repo_url' => $app->companyJob->giteaRepositoryWebUrl(),
+                'repo_url' => $app->companyJob->gitea_repository_url,
                 'gitea_owner' => $app->companyJob->gitea_owner,
                 'gitea_repo_name' => $app->companyJob->gitea_repo_name,
                 'provisioned_at' => $app->companyJob->gitea_provisioned_at?->toIso8601String(),
