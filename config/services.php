@@ -50,4 +50,17 @@ return [
         'token' => env('GITEA_TOKEN'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Qi Card (first payment verification for remote work)
+    |--------------------------------------------------------------------------
+    |
+    | Display-only destination for minimum first payment verification by admins.
+    |
+    */
+
+    'qi' => [
+        'card_number' => env('QI_CARD_NUMBER', '5862997060'),
+    ],
+
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Badge;
+use App\Models\CompanyJob;
 use App\Models\Conversation;
 use App\Models\Developer;
 use App\Models\DeveloperBlog;
@@ -71,6 +72,7 @@ class HandleInertiaRequests extends Middleware
             'viewConversations' => $user->isSuperAdmin(),
             'viewDeveloperPhone' => $user->can('viewPhone', Developer::class),
             'viewDeveloperCv' => $user->can('viewCv', Developer::class),
+            'createRemoteWorkPost' => $user->can('create', CompanyJob::class),
         ] : [];
 
         $appUrl = rtrim(config('app.url'), '/');

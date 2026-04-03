@@ -16,6 +16,7 @@ use App\Http\Controllers\Dashboard\DeveloperRecommendationController as Dashboar
 use App\Http\Controllers\Dashboard\MessageAttachmentController as DashboardMessageAttachmentController;
 use App\Http\Controllers\Dashboard\MessageController as DashboardMessageController;
 use App\Http\Controllers\Dashboard\NewsletterController as DashboardNewsletterController;
+use App\Http\Controllers\Dashboard\RemoteWorkController as DashboardRemoteWorkController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\WorkExperienceController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\PublicBadgeController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\PublicHackathonController;
+use App\Http\Controllers\RemoteWorkController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\IsSuperAdmin;
@@ -67,6 +69,8 @@ Route::middleware('throttle:web')->group(function () {
     Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.product.show');
     Route::get('about', AboutController::class)->name('about');
     Route::get('privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
+    Route::get('remote-work', [RemoteWorkController::class, 'index'])->name('remote-work.index');
+    Route::get('remote-work/{companyJob:slug}', [RemoteWorkController::class, 'show'])->name('remote-work.show');
 });
 
 Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
@@ -75,6 +79,8 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::post('developer-offers', [DeveloperOfferController::class, 'store'])->name('developer-offers.store');
     Route::post('hackathons/{hackathon:slug}/subscribe', HackathonSubscribeController::class)->name('hackathons.subscribe');
     Route::post('hackathons/{hackathon:slug}/teams/{team}/vote', [HackathonTeamVoteController::class, 'store'])->name('hackathons.teams.vote');
+
+    Route::post('remote-work/{companyJob:slug}/apply', [RemoteWorkController::class, 'apply'])->name('remote-work.apply');
 
     Route::get('shop/{product:slug}/contact-admin', [ShopController::class, 'contactAdmin'])
         ->name('shop.product.contact-admin');
@@ -133,6 +139,15 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
             ->name('dashboard.developer-profile.update');
         Route::get('developer-profile/cv', [DeveloperProfileController::class, 'downloadCv'])
             ->name('dashboard.developer-profile.download-cv');
+
+        Route::get('remote-work', [DashboardRemoteWorkController::class, 'index'])->name('dashboard.remote-work.index');
+        Route::get('remote-work/create', [DashboardRemoteWorkController::class, 'create'])->name('dashboard.remote-work.create');
+        Route::post('remote-work', [DashboardRemoteWorkController::class, 'store'])->name('dashboard.remote-work.store');
+        Route::get('remote-work/{job:slug}/edit', [DashboardRemoteWorkController::class, 'edit'])->name('dashboard.remote-work.edit');
+        Route::put('remote-work/{job:slug}', [DashboardRemoteWorkController::class, 'update'])->name('dashboard.remote-work.update');
+        Route::get('remote-work/{job:slug}/applications', [DashboardRemoteWorkController::class, 'applications'])->name('dashboard.remote-work.applications');
+        Route::post('remote-work/applications/{application}/accept', [DashboardRemoteWorkController::class, 'accept'])->name('dashboard.remote-work.applications.accept');
+        Route::post('remote-work/applications/{application}/reject', [DashboardRemoteWorkController::class, 'reject'])->name('dashboard.remote-work.applications.reject');
 
         Route::resource('work-experience', WorkExperienceController::class)->except(['show']);
         Route::resource('developer-projects', DeveloperProjectController::class)->except(['show']);

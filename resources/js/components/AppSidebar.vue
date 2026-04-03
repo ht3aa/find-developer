@@ -14,6 +14,7 @@ import {
     MessageCircle,
     MessagesSquare,
     Paperclip,
+    PenLine,
     Send,
     Shield,
     ThumbsUp,
@@ -48,6 +49,7 @@ import { index as developersIndex } from '@/routes/developers';
 import { index as hackathonsIndex } from '@/routes/hackathons';
 import rolesRoutes from '@/routes/roles';
 import usersRoutes from '@/routes/users';
+import remoteWorkDashboard from '@/routes/dashboard/remote-work';
 import { index as workExperienceIndex } from '@/routes/work-experience';
 import { type AuthCanKey, type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -68,6 +70,12 @@ const allMainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
         can: 'viewDeveloperProfile',
+    },
+    {
+        title: 'Post remote work',
+        href: remoteWorkDashboard.create.url(),
+        icon: PenLine,
+        can: 'createRemoteWorkPost',
     },
     {
         title: 'Messages',

@@ -87,3 +87,54 @@ it('suggests fallback username when local part is empty', function () {
 
     expect($service->suggestedUsernameFromEmail('@example.com'))->toStartWith('user');
 });
+
+it('creates a private repository for a user via admin api', function () {
+    config([
+        'services.gitea.url' => 'https://git.example.com',
+        'services.gitea.token' => 't0ken',
+    ]);
+
+    Http::fake([
+        'https://git.example.com/api/v1/admin/users/poster/repos' => Http::response([
+            'name' => 'remote-work-1',
+            'full_name' => 'poster/remote-work-1',
+        ], 201),
+    ]);
+
+    $result = app(GiteaService::class)->createRepositoryForUser(
+        'poster',
+        'remote-work-1',
+        'A project',
+        true,
+    );
+
+    expect($result['name'])->toBe('remote-work-1');
+
+    Http::assertSent(function ($request) {
+        $data = $request->data();
+
+        return $request->url() === 'https://git.example.com/api/v1/admin/users/poster/repos'
+            && $data['name'] === 'remote-work-1'
+            && $data['private'] === true;
+    });
+});
+
+it('adds a collaborator to a repository', function () {
+    config([
+        'services.gitea.url' => 'https://git.example.com',
+        'services.gitea.token' => 't0ken',
+    ]);
+
+    Http::fake([
+        'https://git.example.com/api/v1/repos/owner/repo/collaborators/devuser' => Http::response([], 204),
+    ]);
+
+    app(GiteaService::class)->addCollaborator('owner', 'repo', 'devuser', 'write');
+
+    Http::assertSent(function ($request) {
+        $data = $request->data();
+
+        return $request->url() === 'https://git.example.com/api/v1/repos/owner/repo/collaborators/devuser'
+            && ($data['permission'] ?? null) === 'write';
+    });
+});

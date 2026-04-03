@@ -36,6 +36,7 @@ class User extends Authenticatable implements FilamentUser
         'can_access_admin_panel',
         'user_type',
         'linkedin_url',
+        'gitea_username',
     ];
 
     /**
@@ -86,6 +87,14 @@ class User extends Authenticatable implements FilamentUser
     public function developer(): HasOne
     {
         return $this->hasOne(Developer::class);
+    }
+
+    /**
+     * @return HasMany<CompanyJob, $this>
+     */
+    public function companyJobs(): HasMany
+    {
+        return $this->hasMany(CompanyJob::class);
     }
 
     public function services(): HasMany

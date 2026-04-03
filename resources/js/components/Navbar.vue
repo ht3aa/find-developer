@@ -21,6 +21,7 @@ import { dashboard, home, login, logout, register, shop } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
+import remoteWorkRoutes from '@/routes/remote-work';
 
 const page = usePage();
 const auth = computed(
@@ -41,6 +42,7 @@ const navItems = [
     { label: 'Blog', href: blogs.public.index.url() },
     { label: 'Badges', href: badgesPublic() },
     { label: 'Hackathons', href: hackathonsPublic() },
+    { label: 'Remote work', href: remoteWorkRoutes.index.url() },
     { label: 'Charts', href: '/charts' },
 ];
 

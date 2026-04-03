@@ -82,6 +82,14 @@ class Developer extends Model
         return $this->belongsTo(JobTitle::class);
     }
 
+    /**
+     * @return HasMany<CompanyJobApplication, $this>
+     */
+    public function companyJobApplications(): HasMany
+    {
+        return $this->hasMany(CompanyJobApplication::class);
+    }
+
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class, 'developer_skill')
