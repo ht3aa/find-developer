@@ -38,7 +38,7 @@ class CompanyJobGiteaProvisioner
             throw new RuntimeException('Could not determine Gitea username for the post owner.');
         }
 
-        $repoName = 'remote-work-'.$job->id;
+        $repoName = $this->repositoryNameForJob($job);
 
         $this->gitea->createRepositoryForUser(
             $login,
@@ -128,5 +128,19 @@ class CompanyJobGiteaProvisioner
         $developer = $application->developer;
 
         $this->addDeveloperToJobRepository($job, $developer);
+    }
+
+    /**
+     * Gitea repository name matches the job's public slug, max 100 chars per API limits.
+     */
+    private function repositoryNameForJob(CompanyJob $job): string
+    {
+        $slug = trim((string) $job->slug);
+
+        if ($slug === '') {
+            return 'remote-work-'.$job->id;
+        }
+
+        return mb_substr($slug, 0, 100);
     }
 }
