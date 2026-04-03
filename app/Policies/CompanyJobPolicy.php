@@ -14,7 +14,6 @@ class CompanyJobPolicy
     public function viewAny(User $user): bool
     {
         return $user->isSuperAdmin()
-            || $user->hasVerifiedEmail()
             || $user->can('ViewAny:Jobs');
     }
 
@@ -44,7 +43,7 @@ class CompanyJobPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasVerifiedEmail();
+        return true;
     }
 
     public function update(User $user, CompanyJob $job): bool
