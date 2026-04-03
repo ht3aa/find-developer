@@ -35,4 +35,32 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Gitea (self-hosted Git)
+    |--------------------------------------------------------------------------
+    |
+    | Base URL of your Gitea instance (e.g. https://git.example.com) and an
+    | access token with admin scope for POST /api/v1/admin/users.
+    |
+    */
+
+    'gitea' => [
+        'url' => env('GITEA_URL'),
+        'token' => env('GITEA_TOKEN'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Qi Card (first payment verification for remote work)
+    |--------------------------------------------------------------------------
+    |
+    | Display-only destination for minimum first payment verification by admins.
+    |
+    */
+
+    'qi' => [
+        'card_number' => env('QI_CARD_NUMBER', '5862997060'),
+    ],
+
 ];

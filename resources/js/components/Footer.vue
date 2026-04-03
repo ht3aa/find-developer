@@ -2,10 +2,11 @@
 import { Link } from '@inertiajs/vue3';
 import { Github, Heart, Instagram, Linkedin, Send } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
-import { about, home, login, privacyPolicy, register } from '@/routes';
+import { about, home, login, privacyPolicy, register, shop } from '@/routes';
 import { publicMethod as badgesPublic } from '@/routes/badges';
 import blogs from '@/routes/blogs';
 import { publicMethod as hackathonsPublic } from '@/routes/hackathons';
+import remoteWorkRoutes from '@/routes/remote-work';
 
 const supportEmail = 'ht3aa2001@gmail.com';
 
@@ -16,8 +17,11 @@ const footerLinks = [
     { title: 'About us', href: about(), isMailto: false },
     { title: 'Privacy policy', href: privacyPolicy(), isMailto: false },
     { title: 'Blog', href: blogs.public.index.url(), isMailto: false },
+    { title: 'Shop', href: shop(), isMailto: false },
+    { title: 'Remote work', href: remoteWorkRoutes.index.url(), isMailto: false },
     { title: 'Badges', href: badgesPublic(), isMailto: false },
     { title: 'Hackathons', href: hackathonsPublic(), isMailto: false },
+    { title: 'Charts', href: '/charts', isMailto: false },
     { title: 'Support', href: supportMailto, isMailto: true },
     { title: 'Sign In', href: login(), isMailto: false },
     { title: 'Sign Up', href: register(), isMailto: false },

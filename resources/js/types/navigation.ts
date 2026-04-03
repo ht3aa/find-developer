@@ -21,7 +21,9 @@ export type AuthCanKey =
     | 'viewRecommendationsDashboard'
     | 'viewDeveloperOffers'
     | 'viewNewsletter'
-    | 'viewConversations';
+    | 'viewConversations'
+    | 'createRemoteWorkPost'
+    | 'viewGiteaRepositories';
 
 export type NavItem = {
     title: string;

@@ -39,6 +39,14 @@ class UserPolicy
     }
 
     /**
+     * Provision a matching account on Gitea for this user (Filament action).
+     */
+    public function createInGitea(User $user, User $model): bool
+    {
+        return $this->update($user, $model);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, User $model): bool

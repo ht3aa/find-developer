@@ -2,70 +2,107 @@
 
 namespace App\Policies;
 
+use App\Enums\JobStatus;
 use App\Models\CompanyJob;
 use App\Models\User;
 
 class CompanyJobPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Dashboard listing: verified users (own posts) or staff permissions.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('ViewAny:Jobs') || $user->isSuperAdmin();
+        return $user->isSuperAdmin()
+            || $user->hasVerifiedEmail()
+            || $user->can('ViewAny:Jobs');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Public detail: approved posts are visible to everyone; otherwise owner or staff.
      */
-    public function view(User $user, CompanyJob $job): bool
+    public function view(?User $user, CompanyJob $job): bool
     {
-        return $user->can('View:Jobs') || $user->isSuperAdmin();
+        if ($job->status === JobStatus::APPROVED) {
+            return true;
+        }
+
+        if ($user === null) {
+            return false;
+        }
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($user->can('View:Jobs')) {
+            return true;
+        }
+
+        return $job->user_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return $user->can('Create:Jobs') || $user->isSuperAdmin();
+        return $user->hasVerifiedEmail();
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, CompanyJob $job): bool
     {
-        return $user->can('Update:Jobs') || $user->isSuperAdmin();
+        if ($user->isSuperAdmin() || $user->can('Update:Jobs')) {
+            return true;
+        }
+
+        return $job->user_id === $user->id && $job->status === JobStatus::PENDING;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Apply to an approved post as a developer (not the owner).
      */
+    public function apply(User $user, CompanyJob $job): bool
+    {
+        if ($job->status !== JobStatus::APPROVED) {
+            return false;
+        }
+
+        if ($job->user_id === $user->id) {
+            return false;
+        }
+
+        return $user->isDeveloper();
+    }
+
+    /**
+     * Review applications for a post (owner or super admin).
+     */
+    public function manageApplications(User $user, CompanyJob $job): bool
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $job->user_id === $user->id;
+    }
+
     public function delete(User $user, CompanyJob $job): bool
     {
-        return $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $job->user_id === $user->id && $job->status === JobStatus::PENDING;
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
     public function deleteAny(User $user): bool
     {
         return $user->can('DeleteAny:Jobs') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, CompanyJob $job): bool
     {
         return $user->can('Restore:Jobs') || $user->isSuperAdmin();
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, CompanyJob $job): bool
     {
         return $user->can('ForceDelete:Jobs') || $user->isSuperAdmin();
