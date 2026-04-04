@@ -190,6 +190,28 @@ it('lets a developer apply to an approved post', function () {
     ]);
 });
 
+it('includes gitea repository url on remote work dashboard index when provisioned', function () {
+    config(['services.gitea.url' => 'https://git.example.com']);
+    $jobTitle = makeJobTitle();
+    $user = User::factory()->create();
+    CompanyJob::factory()->create([
+        'user_id' => $user->id,
+        'job_title_id' => $jobTitle->id,
+        'gitea_owner' => 'owner',
+        'gitea_repo_name' => 'my-repo',
+        'gitea_provisioned_at' => now(),
+    ]);
+    $this->actingAs($user);
+
+    $this->get(route('dashboard.remote-work.index'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Dashboard/RemoteWork/Index')
+            ->has('jobs.data', 1)
+            ->where('jobs.data.0.gitea_repository_url', 'https://git.example.com/owner/my-repo')
+        );
+});
+
 it('shows job owner the applications page with applicant developer slug and status', function () {
     $jobTitle = makeJobTitle();
     $owner = User::factory()->create();

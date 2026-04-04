@@ -30,6 +30,10 @@ class RemoteWorkController extends Controller
             ->latest()
             ->paginate(15);
 
+        $jobs->getCollection()->transform(
+            fn (CompanyJob $job): CompanyJob => $job->append('gitea_repository_url'),
+        );
+
         return Inertia::render('Dashboard/RemoteWork/Index', [
             'jobs' => $jobs,
         ]);

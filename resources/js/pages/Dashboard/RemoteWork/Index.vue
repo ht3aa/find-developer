@@ -23,6 +23,7 @@ type JobRow = {
     slug: string;
     status: string;
     created_at: string | null;
+    gitea_repository_url: string | null;
 };
 
 type Paginated = {
@@ -97,6 +98,7 @@ function statusVariant(
                         <TableRow>
                             <TableHead>Title</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead class="max-w-md">Gitea repository</TableHead>
                             <TableHead class="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -107,6 +109,18 @@ function statusVariant(
                                 <Badge :variant="statusVariant(job.status)">
                                     {{ job.status }}
                                 </Badge>
+                            </TableCell>
+                            <TableCell class="max-w-md break-all text-sm">
+                                <a
+                                    v-if="job.gitea_repository_url"
+                                    :href="job.gitea_repository_url"
+                                    class="text-primary underline-offset-4 hover:underline"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {{ job.gitea_repository_url }}
+                                </a>
+                                <span v-else class="text-muted-foreground">—</span>
                             </TableCell>
                             <TableCell class="text-right">
                                 <Button v-if="job.status === 'pending'" as-child variant="outline" size="sm">
@@ -124,7 +138,7 @@ function statusVariant(
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="jobs.data.length === 0">
-                            <TableCell colspan="3" class="text-center text-muted-foreground">
+                            <TableCell colspan="4" class="text-center text-muted-foreground">
                                 No posts yet.
                             </TableCell>
                         </TableRow>
