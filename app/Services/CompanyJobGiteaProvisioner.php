@@ -6,6 +6,7 @@ use App\Models\CompanyJob;
 use App\Models\CompanyJobApplication;
 use App\Models\Developer;
 use App\Models\User;
+use App\Notifications\GiteaAccountCredentialsNotification;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -117,6 +118,8 @@ class CompanyJobGiteaProvisioner
         }
 
         $user->forceFill(['gitea_username' => $login])->save();
+
+        $user->notify(new GiteaAccountCredentialsNotification($login, $password));
     }
 
     /**
