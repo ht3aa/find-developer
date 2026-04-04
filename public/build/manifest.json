@@ -169,6 +169,10 @@
       "assets/Hero-B0YBbwhe.css"
     ]
   },
+  "_Hero-B0YBbwhe.css": {
+    "file": "assets/Hero-B0YBbwhe.css",
+    "src": "_Hero-B0YBbwhe.css"
+  },
   "_InputError.vue_vue_type_script_setup_true_lang-Bzcw84xM.js": {
     "file": "assets/InputError.vue_vue_type_script_setup_true_lang-Bzcw84xM.js",
     "name": "InputError.vue_vue_type_script_setup_true_lang",
