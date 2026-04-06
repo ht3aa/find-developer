@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 import ChatAttachment from '@/components/chat/ChatAttachment.vue';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { formatMessageTime, getInitials } from '@/composables/useChat';
+import { formatMessageDateTime, getInitials } from '@/composables/useChat';
 import type { ChatMessage } from '@/types';
 import { transformOneTimeSecretLinks } from '@/utils/linkify';
 
@@ -96,7 +96,7 @@ const displayReplyBody = computed(() =>
                     {{ message.user.user_type_label }}
                 </Badge>
                 <span class="text-[10px] text-muted-foreground/70">
-                    {{ formatMessageTime(message.created_at) }}
+                    {{ formatMessageDateTime(message.created_at) }}
                 </span>
             </div>
 
