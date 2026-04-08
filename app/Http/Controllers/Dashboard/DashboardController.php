@@ -3,28 +3,28 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Badge;
 use App\Models\Developer;
-use App\Models\Scopes\ApprovedScope;
-use App\Models\User;
+use App\Services\DeveloperChartDataService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
     /**
-     * Display the dashboard with stats.
+     * Display the dashboard with developer charts.
      */
-    public function index(): Response
+    public function index(DeveloperChartDataService $chartData): Response
     {
-        $this->authorize('viewDeveloperProfile', auth()->user()?->developer);
+        $this->authorize(
+            'viewDeveloperProfile',
+            auth()->user()?->developer ?? Developer::class,
+        );
 
         return Inertia::render('Dashboard', [
-            'stats' => [
-                'developers' => Developer::withoutGlobalScope(ApprovedScope::class)->count(),
-                'users' => User::count(),
-                'badges' => Badge::count(),
-            ],
+            'developersByLocation' => $chartData->developersByLocation(),
+            'developersByAvailabilityType' => $chartData->developersByAvailabilityType(),
+            'averageSalaryByExperience' => $chartData->averageSalaryByExperience(),
+            'developersByJobTitle' => $chartData->developersByJobTitle(),
         ]);
     }
 }
