@@ -1229,6 +1229,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                                                     >{{ developer.name }}</span
                                                 >
                                                 <span
+                                                    v-if="developer.email"
                                                     class="line-clamp-1 text-xs text-muted-foreground"
                                                     >{{ developer.email }}</span
                                                 >

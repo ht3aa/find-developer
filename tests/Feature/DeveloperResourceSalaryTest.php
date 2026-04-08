@@ -15,6 +15,7 @@ test('guest does not receive salary fields on public developer profile', functio
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Developers/Show')
+            ->where('developer.email', null)
             ->where('developer.expected_salary_from', null)
             ->where('developer.expected_salary_to', null)
             ->where('developer.currency', null));
@@ -33,8 +34,9 @@ test('developer owner receives salary fields on public developer profile', funct
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Developers/Show')
-            ->where('developer.expected_salary_from', 1_500_000)
-            ->where('developer.expected_salary_to', 2_000_000)
+            ->where('developer.email', $developer->email)
+            ->where('developer.expected_salary_from', number_format(1_500_000))
+            ->where('developer.expected_salary_to', number_format(2_000_000))
             ->where('developer.currency', 'IQD'));
 });
 
@@ -55,7 +57,8 @@ test('user with ViewCv permission receives salary fields on public developer pro
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Developers/Show')
-            ->where('developer.expected_salary_from', 900_000)
-            ->where('developer.expected_salary_to', 1_100_000)
+            ->where('developer.email', $developer->email)
+            ->where('developer.expected_salary_from', number_format(900_000))
+            ->where('developer.expected_salary_to', number_format(1_100_000))
             ->where('developer.currency', 'IQD'));
 });

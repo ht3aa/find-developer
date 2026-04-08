@@ -380,6 +380,7 @@ const initials = computed(() =>
                             </h2>
                             <div class="flex flex-wrap gap-3">
                                 <Button
+                                    v-if="developer.email"
                                     variant="outline"
                                     as-child
                                     class="gap-2 rounded-xl"
@@ -979,6 +980,7 @@ const initials = computed(() =>
                                 class="mt-6 flex flex-col gap-3 border-t border-border pt-4"
                             >
                                 <Button
+                                    v-if="developer.email"
                                     class="w-full gap-2 rounded-xl"
                                     as-child
                                 >
