@@ -8,7 +8,7 @@ import {
     Trash2,
     Users,
 } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,7 +67,11 @@ const props = defineProps<{
     paginationTotal: number | null;
     aiPromptText: string;
     aiPromptCopied: boolean;
+    /** Narrow single-column layout for the left sidebar (vs. full-width sheet). */
+    variant?: 'panel' | 'sidebar';
 }>();
+
+const isSidebar = computed(() => props.variant === 'sidebar');
 
 const emit = defineEmits<{
     (
@@ -134,7 +138,13 @@ const roleFiltersOpen = ref(false);
 </script>
 
 <template>
-    <div class="mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6">
+    <div
+        :class="
+            isSidebar
+                ? 'w-full pb-4'
+                : 'mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6'
+        "
+    >
         <div
             class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md ring-1 shadow-black/5 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
         >
@@ -188,7 +198,7 @@ const roleFiltersOpen = ref(false);
             class="mb-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.06]"
         >
             <CollapsibleTrigger
-                class="flex w-full items-start justify-between gap-3 bg-muted/20 px-4 py-4 text-left transition-colors hover:bg-muted/30 sm:px-5 sm:py-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none focus-visible:ring-offset-background"
+                class="flex w-full items-start justify-between gap-3 bg-muted/20 px-4 py-4 text-left transition-colors hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none sm:px-5 sm:py-4"
             >
                 <div class="min-w-0 flex-1">
                     <p
@@ -232,84 +242,87 @@ const roleFiltersOpen = ref(false);
                 class="overflow-hidden border-t border-border/70 bg-muted/15"
             >
                 <div class="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
-                <div
-                    v-for="row in props.roleBandRows"
-                    :key="row.clientId"
-                    class="rounded-xl border border-border/80 bg-muted/15 p-4 shadow-sm sm:p-5"
-                >
-                    <div class="mb-3 flex items-start justify-between gap-3">
-                        <Label
-                            :for="`role-band-title-${row.clientId}`"
-                            class="text-xs font-semibold tracking-wide text-foreground/90 uppercase"
-                        >
-                            Job title
-                        </Label>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            class="size-8 shrink-0 text-muted-foreground hover:text-destructive"
-                            :aria-label="'Remove role filter row'"
-                            @click="removeRow(row.clientId)"
-                        >
-                            <Trash2 class="size-4" aria-hidden="true" />
-                        </Button>
-                    </div>
-                    <SearchableSelect
-                        :id="`role-band-title-${row.clientId}`"
-                        :model-value="row.jobTitle || null"
-                        :open="
-                            props.roleBandJobTitleOpenClientId === row.clientId
-                        "
-                        options-url="/api/job-titles"
-                        placeholder="Search job titles…"
-                        :max-options="50"
-                        @update:model-value="
-                            onRowJobTitle(row.clientId, $event)
-                        "
-                        @update:open="
-                            emit('roleBandJobTitleOpen', {
-                                clientId: row.clientId,
-                                open: $event,
-                            })
-                        "
-                    />
-                    <p
-                        class="mt-4 mb-2 text-xs font-semibold tracking-wide text-foreground/90 uppercase"
-                    >
-                        Experience
-                    </p>
                     <div
-                        class="grid grid-cols-3 gap-2 sm:gap-3"
-                        role="group"
-                        :aria-label="'Experience level for this row'"
+                        v-for="row in props.roleBandRows"
+                        :key="row.clientId"
+                        class="rounded-xl border border-border/80 bg-muted/15 p-4 shadow-sm sm:p-5"
                     >
-                        <button
-                            v-for="choice in levelChoices"
-                            :key="choice.key"
-                            type="button"
-                            :aria-pressed="row.level === choice.key"
-                            class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] sm:min-h-12 sm:px-3 sm:py-3"
-                            :class="
-                                row.level === choice.key
-                                    ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
-                                    : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
-                            "
-                            @click="setRowLevel(row.clientId, choice.key)"
+                        <div
+                            class="mb-3 flex items-start justify-between gap-3"
                         >
-                            {{ choice.label }}
-                        </button>
+                            <Label
+                                :for="`role-band-title-${row.clientId}`"
+                                class="text-xs font-semibold tracking-wide text-foreground/90 uppercase"
+                            >
+                                Job title
+                            </Label>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                class="size-8 shrink-0 text-muted-foreground hover:text-destructive"
+                                :aria-label="'Remove role filter row'"
+                                @click="removeRow(row.clientId)"
+                            >
+                                <Trash2 class="size-4" aria-hidden="true" />
+                            </Button>
+                        </div>
+                        <SearchableSelect
+                            :id="`role-band-title-${row.clientId}`"
+                            :model-value="row.jobTitle || null"
+                            :open="
+                                props.roleBandJobTitleOpenClientId ===
+                                row.clientId
+                            "
+                            options-url="/api/job-titles"
+                            placeholder="Search job titles…"
+                            :max-options="50"
+                            @update:model-value="
+                                onRowJobTitle(row.clientId, $event)
+                            "
+                            @update:open="
+                                emit('roleBandJobTitleOpen', {
+                                    clientId: row.clientId,
+                                    open: $event,
+                                })
+                            "
+                        />
+                        <p
+                            class="mt-4 mb-2 text-xs font-semibold tracking-wide text-foreground/90 uppercase"
+                        >
+                            Experience
+                        </p>
+                        <div
+                            class="grid grid-cols-3 gap-2 sm:gap-3"
+                            role="group"
+                            :aria-label="'Experience level for this row'"
+                        >
+                            <button
+                                v-for="choice in levelChoices"
+                                :key="choice.key"
+                                type="button"
+                                :aria-pressed="row.level === choice.key"
+                                class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] sm:min-h-12 sm:px-3 sm:py-3"
+                                :class="
+                                    row.level === choice.key
+                                        ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
+                                        : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
+                                "
+                                @click="setRowLevel(row.clientId, choice.key)"
+                            >
+                                {{ choice.label }}
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <Button
-                    type="button"
-                    variant="outline"
-                    class="w-full gap-2 border-dashed sm:w-auto"
-                    @click="addRoleBandRow"
-                >
-                    <Plus class="size-4" aria-hidden="true" />
-                    Add role filter
-                </Button>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        class="w-full gap-2 border-dashed sm:w-auto"
+                        @click="addRoleBandRow"
+                    >
+                        <Plus class="size-4" aria-hidden="true" />
+                        Add role filter
+                    </Button>
                 </div>
             </CollapsibleContent>
         </Collapsible>
@@ -325,7 +338,13 @@ const roleFiltersOpen = ref(false);
             </p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+            :class="
+                isSidebar
+                    ? 'grid grid-cols-1 gap-4'
+                    : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3'
+            "
+        >
             <div class="space-y-2">
                 <Label for="filter-job-title">Job title</Label>
                 <SearchableSelect
@@ -446,9 +465,7 @@ const roleFiltersOpen = ref(false);
                             normalizeSelectValue($event),
                         )
                     "
-                    @update:open="
-                        emit('update:nullFieldSelectOpen', $event)
-                    "
+                    @update:open="emit('update:nullFieldSelectOpen', $event)"
                 />
             </div>
             <div class="space-y-2">
