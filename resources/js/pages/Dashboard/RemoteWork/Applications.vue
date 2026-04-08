@@ -11,10 +11,10 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import developersRoutes from '@/routes/developers';
 import { dashboard } from '@/routes';
 import remoteWorkDashboard from '@/routes/dashboard/remote-work';
 import applicationRoutes from '@/routes/dashboard/remote-work/applications';
+import developersRoutes from '@/routes/developers';
 import type { BreadcrumbItem } from '@/types';
 
 type DeveloperRow = {

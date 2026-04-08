@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { refDebounced, useClipboard } from '@vueuse/core';
+import { refDebounced, useClipboard, useDebounceFn } from '@vueuse/core';
 import {
     Award,
     ExternalLink,
@@ -235,13 +235,10 @@ const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const hasUrlsSelectOpen = ref(false);
 const nullFieldSelectOpen = ref(false);
-/** Which role-band row’s job title combobox is open (controlled; matches sheet + dialog focus). */
-const roleBandJobTitleOpenClientId = ref<string | null>(null);
 
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
-        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -254,7 +251,6 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
-        roleBandJobTitleOpenClientId.value = null;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -266,7 +262,6 @@ function onBadgeOpenChange(open: boolean): void {
     badgeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
-        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -278,7 +273,6 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
-        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
@@ -290,7 +284,6 @@ function onHasUrlsOpenChange(open: boolean): void {
     hasUrlsSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
-        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -302,30 +295,10 @@ function onNullFieldOpenChange(open: boolean): void {
     nullFieldSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
-        roleBandJobTitleOpenClientId.value = null;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
-    }
-}
-
-function onRoleBandJobTitleOpen(payload: {
-    clientId: string;
-    open: boolean;
-}): void {
-    if (payload.open) {
-        roleBandJobTitleOpenClientId.value = payload.clientId;
-        jobTitleSelectOpen.value = false;
-        skillSelectOpen.value = false;
-        badgeSelectOpen.value = false;
-        availabilityTypeSelectOpen.value = false;
-        hasUrlsSelectOpen.value = false;
-        nullFieldSelectOpen.value = false;
-        return;
-    }
-    if (roleBandJobTitleOpenClientId.value === payload.clientId) {
-        roleBandJobTitleOpenClientId.value = null;
     }
 }
 
@@ -418,9 +391,11 @@ function loadMore(): void {
     }
 }
 
-function applyFilters(): void {
+function syncFiltersToApi(): void {
     fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
 }
+
+const debouncedSyncFiltersToApi = useDebounceFn(syncFiltersToApi, 500);
 
 function clearFilters(): void {
     searchQuery.value = '';
@@ -445,26 +420,54 @@ function clearFilters(): void {
 function onFilterJobTitleUpdate(v: string[]): void {
     roleBandRows.value = [createRoleBandRow()];
     filterJobTitle.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterSkillUpdate(v: string[]): void {
+    filterSkill.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterBadgeUpdate(v: string[]): void {
+    filterBadge.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterAvailabilityTypeUpdate(v: string[]): void {
+    filterAvailabilityType.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterHasUrlsUpdate(v: string[]): void {
+    filterHasUrls.value = v;
+    syncFiltersToApi();
+}
+
+function onIsAvailableUpdate(v: string): void {
+    isAvailable.value = v;
+    syncFiltersToApi();
+}
+
+function onIsRecommendedUpdate(v: string): void {
+    isRecommended.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterNullFieldUpdate(v: string[]): void {
+    filterNullFields.value = v;
+    syncFiltersToApi();
 }
 
 function onYearsMinUpdate(v: string): void {
     roleBandRows.value = [createRoleBandRow()];
     yearsMin.value = v;
+    debouncedSyncFiltersToApi();
 }
 
 function onYearsMaxUpdate(v: string): void {
     roleBandRows.value = [createRoleBandRow()];
     yearsMax.value = v;
-}
-
-function onRoleBandRowsUpdate(rows: UiRoleBandRow[]): void {
-    roleBandRows.value = rows;
-    if (rowsToApiBands(rows).length > 0) {
-        filterJobTitle.value = [];
-        yearsMin.value = '';
-        yearsMax.value = '';
-    }
-    fetchDevelopers(buildDevelopersApiUrl(API_BASE, getFilters()));
+    debouncedSyncFiltersToApi();
 }
 
 const filteredPageUrl = computed(() => getFilteredPageUrl(getFilters()));
@@ -736,10 +739,6 @@ watch(viewLayout, (layout: ViewLayout) => {
                     allCurrentSelected ? clearSelection() : selectAllCurrent()
                 "
                 @open-offer-form="openOfferForm"
-                :role-band-rows="roleBandRows"
-                :role-band-job-title-open-client-id="
-                    roleBandJobTitleOpenClientId
-                "
                 :filter-job-title="filterJobTitle"
                 :filter-skill="filterSkill"
                 :filter-badge="filterBadge"
@@ -760,14 +759,14 @@ watch(viewLayout, (layout: ViewLayout) => {
                 :ai-prompt-text="aiPromptText"
                 :ai-prompt-copied="aiPromptCopied"
                 @update:filter-job-title="onFilterJobTitleUpdate($event)"
-                @update:filter-skill="filterSkill = $event"
-                @update:filter-badge="filterBadge = $event"
+                @update:filter-skill="onFilterSkillUpdate($event)"
+                @update:filter-badge="onFilterBadgeUpdate($event)"
                 @update:filter-availability-type="
-                    filterAvailabilityType = $event
+                    onFilterAvailabilityTypeUpdate($event)
                 "
-                @update:filter-has-urls="filterHasUrls = $event"
-                @update:is-available="isAvailable = $event"
-                @update:is-recommended="isRecommended = $event"
+                @update:filter-has-urls="onFilterHasUrlsUpdate($event)"
+                @update:is-available="onIsAvailableUpdate($event)"
+                @update:is-recommended="onIsRecommendedUpdate($event)"
                 @update:years-min="onYearsMinUpdate($event)"
                 @update:years-max="onYearsMaxUpdate($event)"
                 @update:job-title-select-open="onJobTitleOpenChange($event)"
@@ -777,18 +776,15 @@ watch(viewLayout, (layout: ViewLayout) => {
                     onAvailabilityTypeOpenChange($event)
                 "
                 @update:has-urls-select-open="onHasUrlsOpenChange($event)"
-                @update:filter-null-field="filterNullFields = $event"
+                @update:filter-null-field="onFilterNullFieldUpdate($event)"
                 @update:null-field-select-open="onNullFieldOpenChange($event)"
-                @apply-filters="applyFilters"
                 @clear-filters="clearFilters"
                 @copy-ai-prompt="copyAiPrompt"
-                @update:role-band-rows="onRoleBandRowsUpdate($event)"
-                @role-band-job-title-open="onRoleBandJobTitleOpen($event)"
             />
             <div class="min-w-0 flex-1 space-y-6">
                 <div
                     v-if="loading && viewLayout === 'cards'"
-                    class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                    class="grid grid-cols-1 gap-6 sm:grid-cols-2"
                 >
                     <div
                         v-for="i in 6"
@@ -1010,7 +1006,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     <div
                         v-if="viewLayout === 'cards'"
                         data-tour="developer-results"
-                        class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                        class="grid grid-cols-1 gap-6 sm:grid-cols-2"
                     >
                         <DeveloperCard
                             v-for="developer in developers"

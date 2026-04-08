@@ -16,8 +16,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import type { UiRoleBandRow } from '@/lib/roleBandFilters';
-
 const DeveloperFiltersPanelContent = defineAsyncComponent(
     () => import('@/components/DeveloperFiltersPanelContent.vue'),
 );
@@ -29,8 +27,6 @@ defineProps<{
     compareIdsLength: number;
     canSelectDevelopers: boolean;
     allCurrentSelected: boolean;
-    roleBandRows: UiRoleBandRow[];
-    roleBandJobTitleOpenClientId: string | null;
     filterJobTitle: string[];
     filterSkill: string[];
     filterBadge: string[];
@@ -59,11 +55,6 @@ const emit = defineEmits<{
     (e: 'openCompareDialog'): void;
     (e: 'toggleSelectAll'): void;
     (e: 'openOfferForm'): void;
-    (
-        e: 'roleBandJobTitleOpen',
-        payload: { clientId: string; open: boolean },
-    ): void;
-    (e: 'update:roleBandRows', v: UiRoleBandRow[]): void;
     (e: 'update:filterJobTitle', v: string[]): void;
     (e: 'update:filterSkill', v: string[]): void;
     (e: 'update:filterBadge', v: string[]): void;
@@ -80,7 +71,6 @@ const emit = defineEmits<{
     (e: 'update:hasUrlsSelectOpen', v: boolean): void;
     (e: 'update:filterNullField', v: string[]): void;
     (e: 'update:nullFieldSelectOpen', v: boolean): void;
-    (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
 }>();
@@ -266,10 +256,6 @@ const emit = defineEmits<{
             <Suspense>
                 <DeveloperFiltersPanelContent
                     variant="sidebar"
-                    :role-band-rows="roleBandRows"
-                    :role-band-job-title-open-client-id="
-                        roleBandJobTitleOpenClientId
-                    "
                     :filter-job-title="filterJobTitle"
                     :filter-skill="filterSkill"
                     :filter-badge="filterBadge"
@@ -290,10 +276,6 @@ const emit = defineEmits<{
                     :pagination-total="paginationTotal"
                     :ai-prompt-text="aiPromptText"
                     :ai-prompt-copied="aiPromptCopied"
-                    @role-band-job-title-open="
-                        emit('roleBandJobTitleOpen', $event)
-                    "
-                    @update:role-band-rows="emit('update:roleBandRows', $event)"
                     @update:filter-job-title="
                         emit('update:filterJobTitle', $event)
                     "
@@ -332,7 +314,6 @@ const emit = defineEmits<{
                     @update:null-field-select-open="
                         emit('update:nullFieldSelectOpen', $event)
                     "
-                    @apply-filters="emit('applyFilters')"
                     @clear-filters="emit('clearFilters')"
                     @copy-ai-prompt="emit('copyAiPrompt')"
                 />

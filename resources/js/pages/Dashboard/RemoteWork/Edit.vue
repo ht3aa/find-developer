@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import remoteWorkDashboard from '@/routes/dashboard/remote-work';
 import type { BreadcrumbItem } from '@/types';
-import { Textarea } from '@/components/ui/textarea';
 
 type Opt = { id: number; name: string; slug: string };
 type EnumOpt = { value: string; label: string };

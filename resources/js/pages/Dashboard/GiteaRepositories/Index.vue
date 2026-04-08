@@ -11,8 +11,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import giteaRepositories from '@/routes/dashboard/gitea-repositories';
 import { dashboard } from '@/routes';
+import giteaRepositories from '@/routes/dashboard/gitea-repositories';
 import type { BreadcrumbItem } from '@/types';
 
 type RepoRow = {
