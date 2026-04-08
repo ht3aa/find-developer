@@ -75,7 +75,7 @@ const allMainNavItems: NavItem[] = [
     },
     {
         title: 'Post remote work',
-        href: remoteWorkDashboard.create.url(),
+        href: remoteWorkDashboard.index.url(),
         icon: PenLine,
         can: 'createRemoteWorkPost',
     },
