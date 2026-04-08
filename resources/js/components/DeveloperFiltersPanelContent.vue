@@ -6,7 +6,6 @@ import {
     Plus,
     Sparkles,
     Trash2,
-    Users,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
@@ -144,47 +143,6 @@ const roleFiltersOpen = ref(false);
                 : 'mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6'
         "
     >
-        <div
-            class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md ring-1 shadow-black/5 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
-        >
-            <div class="min-w-0 space-y-1">
-                <h2
-                    class="text-xl font-semibold tracking-tight text-foreground"
-                >
-                    Advanced filters
-                </h2>
-                <p class="text-sm leading-snug text-muted-foreground">
-                    Add role rows (job title + band) combined with OR, or use
-                    custom fields below.
-                </p>
-            </div>
-            <div
-                v-if="props.paginationTotal !== null"
-                class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-primary/25 bg-primary/10 px-3.5 py-2 sm:self-center"
-                aria-live="polite"
-            >
-                <div
-                    class="flex size-9 items-center justify-center rounded-lg bg-primary/15 text-primary"
-                >
-                    <Users class="size-4 shrink-0" aria-hidden="true" />
-                </div>
-                <div class="leading-tight">
-                    <span
-                        class="block text-lg font-bold tracking-tight text-foreground tabular-nums"
-                    >
-                        {{ props.paginationTotal }}
-                    </span>
-                    <span class="text-xs font-medium text-muted-foreground">
-                        matching
-                        {{
-                            props.paginationTotal === 1
-                                ? 'developer'
-                                : 'developers'
-                        }}
-                    </span>
-                </div>
-            </div>
-        </div>
         <p class="sr-only">
             Filter developers by role bands, job title, skills, badges,
             availability type, has URLs, availability status, recommended

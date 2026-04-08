@@ -3,17 +3,11 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced, useClipboard } from '@vueuse/core';
 import {
     Award,
-    Check,
     ExternalLink,
     FileText,
     FilterX,
-    LayoutGrid,
     MessageSquare,
-    Scale,
-    Search,
-    Send,
     Star,
-    Table2,
     Users,
 } from 'lucide-vue-next';
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue';
@@ -29,7 +23,6 @@ const DeveloperOfferForm = defineAsyncComponent(
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -38,12 +31,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
 import type { DeveloperFilters } from '@/lib/api';
 import {
     buildDevelopersApiUrl,
@@ -732,192 +719,23 @@ watch(viewLayout, (layout: ViewLayout) => {
                 </div>
             </div>
         </div>
-        <div
-            class="z-sticky-bar sticky top-18 mb-6 rounded-xl border border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/80"
-        >
-            <!-- Search row: primary focus -->
-            <div
-                class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-3.5"
-            >
-                <div
-                    data-tour="developer-search"
-                    class="relative flex min-w-0 flex-1 items-center rounded-lg border border-input bg-muted/30 transition-colors focus-within:border-primary focus-within:bg-background focus-within:ring-2 focus-within:ring-primary/20"
-                >
-                    <Search
-                        class="pointer-events-none absolute left-3.5 h-4 w-4 shrink-0 text-muted-foreground"
-                        aria-hidden="true"
-                    />
-                    <Input
-                        v-model="searchQuery"
-                        type="search"
-                        placeholder="Search by name, email, or skills..."
-                        class="h-10 min-w-0 flex-1 border-0 bg-transparent pr-4 pl-10 shadow-none focus-visible:ring-0"
-                        autocomplete="off"
-                    />
-                </div>
-
-                <!-- Results count + actions group -->
-                <div
-                    class="flex flex-wrap items-center gap-2 sm:gap-3 sm:border-l sm:border-border sm:pl-4"
-                >
-                    <p
-                        v-if="paginationTotal !== null"
-                        class="order-first shrink-0 text-sm font-medium text-muted-foreground tabular-nums sm:order-none"
-                        aria-live="polite"
-                    >
-                        <span class="text-foreground">{{
-                            paginationTotal
-                        }}</span>
-                        {{ paginationTotal === 1 ? 'developer' : 'developers' }}
-                    </p>
-
-                    <div
-                        data-tour="developer-view-toggle"
-                        class="inline-flex shrink-0 rounded-lg border border-border/80 bg-muted/40 p-0.5 shadow-inner"
-                        role="group"
-                        aria-label="Developer list layout"
-                    >
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            :class="[
-                                'h-8 gap-1.5 rounded-md px-2.5 sm:px-3',
-                                viewLayout === 'cards'
-                                    ? 'bg-background text-foreground shadow-sm hover:bg-background'
-                                    : 'text-muted-foreground hover:bg-transparent hover:text-foreground',
-                            ]"
-                            :aria-pressed="viewLayout === 'cards'"
-                            @click="viewLayout = 'cards'"
-                        >
-                            <LayoutGrid
-                                class="size-4 shrink-0"
-                                aria-hidden="true"
-                            />
-                            <span class="hidden sm:inline">Cards</span>
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            :class="[
-                                'h-8 gap-1.5 rounded-md px-2.5 sm:px-3',
-                                viewLayout === 'table'
-                                    ? 'bg-background text-foreground shadow-sm hover:bg-background'
-                                    : 'text-muted-foreground hover:bg-transparent hover:text-foreground',
-                            ]"
-                            :aria-pressed="viewLayout === 'table'"
-                            @click="viewLayout = 'table'"
-                        >
-                            <Table2
-                                class="size-4 shrink-0"
-                                aria-hidden="true"
-                            />
-                            <span class="hidden sm:inline">Table</span>
-                        </Button>
-                    </div>
-
-                    <!-- Compare (always visible) -->
-                    <div
-                        data-tour="developer-compare"
-                        class="flex items-center gap-1.5"
-                    >
-                        <Button
-                            v-if="compareIds.length > 0"
-                            variant="ghost"
-                            size="sm"
-                            class="h-8 gap-1.5 px-2.5 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                            @click="clearCompare"
-                        >
-                            <span class="tabular-nums"
-                                >{{ compareIds.length }}/2</span
-                            >
-                            Clear
-                        </Button>
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger as-child>
-                                    <span class="inline-flex">
-                                        <Button
-                                            :variant="
-                                                compareIds.length === 2
-                                                    ? 'default'
-                                                    : 'outline'
-                                            "
-                                            size="sm"
-                                            class="h-8 shrink-0 gap-1.5"
-                                            :disabled="compareIds.length !== 2"
-                                            @click="openCompareDialog"
-                                        >
-                                            <Scale
-                                                class="size-4"
-                                                aria-hidden="true"
-                                            />
-                                            Compare
-                                        </Button>
-                                    </span>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    {{
-                                        compareIds.length > 2
-                                            ? 'Compare only works for 2 selections'
-                                            : compareIds.length === 2
-                                              ? 'Compare selected developers'
-                                              : 'Select 2 developers to compare'
-                                    }}
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
-
-                    <template v-if="canSelectDevelopers">
-                        <div
-                            class="hidden h-4 w-px shrink-0 bg-border sm:block"
-                            aria-hidden="true"
-                        />
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            class="h-8 shrink-0 gap-1.5"
-                            @click="
-                                allCurrentSelected
-                                    ? clearSelection()
-                                    : selectAllCurrent()
-                            "
-                        >
-                            <Check
-                                v-if="allCurrentSelected"
-                                class="size-4"
-                                aria-hidden="true"
-                            />
-                            {{
-                                allCurrentSelected
-                                    ? 'Deselect all'
-                                    : 'Select all'
-                            }}
-                        </Button>
-                        <Button
-                            :variant="
-                                compareIds.length > 0 ? 'default' : 'outline'
-                            "
-                            size="sm"
-                            class="h-8 shrink-0 gap-1.5"
-                            :disabled="compareIds.length === 0"
-                            @click="openOfferForm"
-                        >
-                            <Send class="size-4" aria-hidden="true" />
-                            Send offer
-                            <span v-if="compareIds.length > 0">
-                                ({{ compareIds.length }})
-                            </span>
-                        </Button>
-                    </template>
-                </div>
-            </div>
-        </div>
 
         <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
             <DeveloperFiltersSidebar
+                :search-query="searchQuery"
+                :pagination-total="paginationTotal"
+                :view-layout="viewLayout"
+                :compare-ids-length="compareIds.length"
+                :can-select-developers="canSelectDevelopers"
+                :all-current-selected="allCurrentSelected"
+                @update:search-query="searchQuery = $event"
+                @update:view-layout="viewLayout = $event"
+                @clear-compare="clearCompare"
+                @open-compare-dialog="openCompareDialog"
+                @toggle-select-all="
+                    allCurrentSelected ? clearSelection() : selectAllCurrent()
+                "
+                @open-offer-form="openOfferForm"
                 :role-band-rows="roleBandRows"
                 :role-band-job-title-open-client-id="
                     roleBandJobTitleOpenClientId
@@ -939,7 +757,6 @@ watch(viewLayout, (layout: ViewLayout) => {
                 :show-super-admin-filters="isSuperAdminUser"
                 :filter-null-field="filterNullFields"
                 :null-field-select-open="nullFieldSelectOpen"
-                :pagination-total="paginationTotal"
                 :ai-prompt-text="aiPromptText"
                 :ai-prompt-copied="aiPromptCopied"
                 @update:filter-job-title="onFilterJobTitleUpdate($event)"
