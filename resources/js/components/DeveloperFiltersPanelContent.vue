@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import {
     createRoleBandRow,
     type ExperienceLevel,
@@ -149,11 +148,11 @@ const roleFiltersOpen = ref(false);
             class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md ring-1 shadow-black/5 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
         >
             <div class="min-w-0 space-y-1">
-                <SheetTitle
+                <h2
                     class="text-xl font-semibold tracking-tight text-foreground"
                 >
                     Advanced filters
-                </SheetTitle>
+                </h2>
                 <p class="text-sm leading-snug text-muted-foreground">
                     Add role rows (job title + band) combined with OR, or use
                     custom fields below.
@@ -186,12 +185,12 @@ const roleFiltersOpen = ref(false);
                 </div>
             </div>
         </div>
-        <SheetDescription class="sr-only">
+        <p class="sr-only">
             Filter developers by role bands, job title, skills, badges,
             availability type, has URLs, availability status, recommended
             status, years of experience, and for super admins missing profile
             fields.
-        </SheetDescription>
+        </p>
 
         <Collapsible
             v-model:open="roleFiltersOpen"
