@@ -7,7 +7,7 @@ import {
     Send,
     Table2,
 } from 'lucide-vue-next';
-import { defineAsyncComponent } from 'vue';
+import DeveloperFiltersPanelContent from '@/components/DeveloperFiltersPanelContent.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -16,9 +16,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-const DeveloperFiltersPanelContent = defineAsyncComponent(
-    () => import('@/components/DeveloperFiltersPanelContent.vue'),
-);
 
 defineProps<{
     searchQuery: string;
@@ -253,81 +250,57 @@ const emit = defineEmits<{
                 </div>
             </div>
 
-            <Suspense>
-                <DeveloperFiltersPanelContent
-                    variant="sidebar"
-                    :filter-job-title="filterJobTitle"
-                    :filter-skill="filterSkill"
-                    :filter-badge="filterBadge"
-                    :filter-availability-type="filterAvailabilityType"
-                    :filter-has-urls="filterHasUrls"
-                    :is-available="isAvailable"
-                    :is-recommended="isRecommended"
-                    :years-min="yearsMin"
-                    :years-max="yearsMax"
-                    :job-title-select-open="jobTitleSelectOpen"
-                    :skill-select-open="skillSelectOpen"
-                    :badge-select-open="badgeSelectOpen"
-                    :availability-type-select-open="availabilityTypeSelectOpen"
-                    :has-urls-select-open="hasUrlsSelectOpen"
-                    :show-super-admin-filters="showSuperAdminFilters"
-                    :filter-null-field="filterNullField"
-                    :null-field-select-open="nullFieldSelectOpen"
-                    :pagination-total="paginationTotal"
-                    :ai-prompt-text="aiPromptText"
-                    :ai-prompt-copied="aiPromptCopied"
-                    @update:filter-job-title="
-                        emit('update:filterJobTitle', $event)
-                    "
-                    @update:filter-skill="emit('update:filterSkill', $event)"
-                    @update:filter-badge="emit('update:filterBadge', $event)"
-                    @update:filter-availability-type="
-                        emit('update:filterAvailabilityType', $event)
-                    "
-                    @update:filter-has-urls="
-                        emit('update:filterHasUrls', $event)
-                    "
-                    @update:is-available="emit('update:isAvailable', $event)"
-                    @update:is-recommended="
-                        emit('update:isRecommended', $event)
-                    "
-                    @update:years-min="emit('update:yearsMin', $event)"
-                    @update:years-max="emit('update:yearsMax', $event)"
-                    @update:job-title-select-open="
-                        emit('update:jobTitleSelectOpen', $event)
-                    "
-                    @update:skill-select-open="
-                        emit('update:skillSelectOpen', $event)
-                    "
-                    @update:badge-select-open="
-                        emit('update:badgeSelectOpen', $event)
-                    "
-                    @update:availability-type-select-open="
-                        emit('update:availabilityTypeSelectOpen', $event)
-                    "
-                    @update:has-urls-select-open="
-                        emit('update:hasUrlsSelectOpen', $event)
-                    "
-                    @update:filter-null-field="
-                        emit('update:filterNullField', $event)
-                    "
-                    @update:null-field-select-open="
-                        emit('update:nullFieldSelectOpen', $event)
-                    "
-                    @clear-filters="emit('clearFilters')"
-                    @copy-ai-prompt="emit('copyAiPrompt')"
-                />
-                <template #fallback>
-                    <div
-                        class="flex min-h-[200px] items-center justify-center py-12"
-                    >
-                        <div
-                            class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                            aria-hidden
-                        />
-                    </div>
-                </template>
-            </Suspense>
+            <DeveloperFiltersPanelContent
+                variant="sidebar"
+                :filter-job-title="filterJobTitle"
+                :filter-skill="filterSkill"
+                :filter-badge="filterBadge"
+                :filter-availability-type="filterAvailabilityType"
+                :filter-has-urls="filterHasUrls"
+                :is-available="isAvailable"
+                :is-recommended="isRecommended"
+                :years-min="yearsMin"
+                :years-max="yearsMax"
+                :job-title-select-open="jobTitleSelectOpen"
+                :skill-select-open="skillSelectOpen"
+                :badge-select-open="badgeSelectOpen"
+                :availability-type-select-open="availabilityTypeSelectOpen"
+                :has-urls-select-open="hasUrlsSelectOpen"
+                :show-super-admin-filters="showSuperAdminFilters"
+                :filter-null-field="filterNullField"
+                :null-field-select-open="nullFieldSelectOpen"
+                :pagination-total="paginationTotal"
+                :ai-prompt-text="aiPromptText"
+                :ai-prompt-copied="aiPromptCopied"
+                @update:filter-job-title="emit('update:filterJobTitle', $event)"
+                @update:filter-skill="emit('update:filterSkill', $event)"
+                @update:filter-badge="emit('update:filterBadge', $event)"
+                @update:filter-availability-type="
+                    emit('update:filterAvailabilityType', $event)
+                "
+                @update:filter-has-urls="emit('update:filterHasUrls', $event)"
+                @update:is-available="emit('update:isAvailable', $event)"
+                @update:is-recommended="emit('update:isRecommended', $event)"
+                @update:years-min="emit('update:yearsMin', $event)"
+                @update:years-max="emit('update:yearsMax', $event)"
+                @update:job-title-select-open="
+                    emit('update:jobTitleSelectOpen', $event)
+                "
+                @update:skill-select-open="emit('update:skillSelectOpen', $event)"
+                @update:badge-select-open="emit('update:badgeSelectOpen', $event)"
+                @update:availability-type-select-open="
+                    emit('update:availabilityTypeSelectOpen', $event)
+                "
+                @update:has-urls-select-open="
+                    emit('update:hasUrlsSelectOpen', $event)
+                "
+                @update:filter-null-field="emit('update:filterNullField', $event)"
+                @update:null-field-select-open="
+                    emit('update:nullFieldSelectOpen', $event)
+                "
+                @clear-filters="emit('clearFilters')"
+                @copy-ai-prompt="emit('copyAiPrompt')"
+            />
         </div>
     </aside>
 </template>

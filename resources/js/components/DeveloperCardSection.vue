@@ -6,6 +6,7 @@ import {
     ExternalLink,
     FileText,
     FilterX,
+    Loader2,
     MessageSquare,
     Star,
     Users,
@@ -783,7 +784,11 @@ watch(viewLayout, (layout: ViewLayout) => {
             />
             <div class="min-w-0 flex-1 space-y-6">
                 <div
-                    v-if="loading && viewLayout === 'cards'"
+                    v-if="
+                        loading &&
+                        viewLayout === 'cards' &&
+                        developers.length === 0
+                    "
                     class="grid grid-cols-1 gap-6 sm:grid-cols-2"
                 >
                     <div
@@ -793,7 +798,11 @@ watch(viewLayout, (layout: ViewLayout) => {
                     />
                 </div>
                 <div
-                    v-else-if="loading && viewLayout === 'table'"
+                    v-else-if="
+                        loading &&
+                        viewLayout === 'table' &&
+                        developers.length === 0
+                    "
                     class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
                 >
                     <div class="overflow-x-auto">
@@ -1002,13 +1011,29 @@ watch(viewLayout, (layout: ViewLayout) => {
                         Clear filters
                     </Button>
                 </div>
-                <template v-else-if="!loading">
+                <template v-else>
                     <div
                         v-if="viewLayout === 'cards'"
                         data-tour="developer-results"
-                        class="grid grid-cols-1 gap-6 sm:grid-cols-2"
+                        class="relative"
                     >
-                        <DeveloperCard
+                        <div
+                            v-if="loading"
+                            class="absolute inset-0 z-10 flex items-start justify-center rounded-lg bg-background/45 pt-10 backdrop-blur-[1px]"
+                            aria-busy="true"
+                            role="status"
+                        >
+                            <Loader2
+                                class="size-8 shrink-0 animate-spin text-primary"
+                                aria-hidden="true"
+                            />
+                            <span class="sr-only">Loading results</span>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 gap-6 sm:grid-cols-2"
+                            :class="loading ? 'pointer-events-none opacity-60' : ''"
+                        >
+                            <DeveloperCard
                             v-for="developer in developers"
                             :key="developer.id"
                             :developer="developer"
@@ -1028,6 +1053,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                                 onCardSelectionChange(developer.id, $event)
                             "
                         />
+                        </div>
                     </div>
 
                     <div
@@ -1035,8 +1061,27 @@ watch(viewLayout, (layout: ViewLayout) => {
                         data-tour="developer-results"
                         role="region"
                         aria-label="Developers in table view"
-                        class="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
+                        class="relative overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
                     >
+                        <div
+                            v-if="loading"
+                            class="absolute inset-0 z-10 flex items-start justify-center bg-background/45 pt-10 backdrop-blur-[1px]"
+                            aria-busy="true"
+                            role="status"
+                        >
+                            <Loader2
+                                class="size-8 shrink-0 animate-spin text-primary"
+                                aria-hidden="true"
+                            />
+                            <span class="sr-only">Loading results</span>
+                        </div>
+                        <div
+                            :class="
+                                loading
+                                    ? 'pointer-events-none opacity-60'
+                                    : ''
+                            "
+                        >
                         <div
                             class="overflow-x-auto [-webkit-overflow-scrolling:touch]"
                         >
@@ -1644,6 +1689,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
+                        </div>
                         </div>
                     </div>
 
