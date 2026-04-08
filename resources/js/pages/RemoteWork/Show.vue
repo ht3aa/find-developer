@@ -7,11 +7,11 @@ import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { login } from '@/routes';
 import remoteWorkRoutes from '@/routes/remote-work';
-import { Textarea } from '@/components/ui/textarea';
 
 type JobShow = {
     id: number;

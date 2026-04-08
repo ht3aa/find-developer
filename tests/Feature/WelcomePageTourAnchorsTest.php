@@ -11,15 +11,18 @@ test('welcome page and developer directory vue include tour anchors', function (
     $directory = file_get_contents(resource_path('js/components/DeveloperCardSection.vue'));
     expect($directory)
         ->toContain('data-tour="developer-subscribe-cta"')
-        ->toContain('data-tour="developer-search"')
-        ->toContain('data-tour="developer-filters"')
-        ->toContain('data-tour="developer-view-toggle"')
-        ->toContain('data-tour="developer-compare"')
         ->toContain('developer-card-badges')
         ->toContain('data-tour="developer-results"')
         ->toContain('startMessageToDeveloper')
         ->toContain('canMessageDeveloper')
         ->toContain('developerBadgesPageUrl');
+
+    $filtersSidebar = file_get_contents(resource_path('js/components/DeveloperFiltersSidebar.vue'));
+    expect($filtersSidebar)
+        ->toContain('data-tour="developer-filters"')
+        ->toContain('data-tour="developer-search"')
+        ->toContain('data-tour="developer-view-toggle"')
+        ->toContain('data-tour="developer-compare"');
 
     $card = file_get_contents(resource_path('js/components/DeveloperCard.vue'));
     expect($card)

@@ -1,29 +1,10 @@
 <script setup lang="ts">
-import {
-    Check,
-    ChevronDown,
-    Copy,
-    Plus,
-    Sparkles,
-    Trash2,
-    Users,
-} from 'lucide-vue-next';
-import { ref } from 'vue';
+import { Check, Copy, Sparkles } from 'lucide-vue-next';
+import { computed } from 'vue';
 import SearchableSelect from '@/components/SearchableSelect.vue';
 import { Button } from '@/components/ui/button';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SheetDescription, SheetTitle } from '@/components/ui/sheet';
-import {
-    createRoleBandRow,
-    type ExperienceLevel,
-    type UiRoleBandRow,
-} from '@/lib/roleBandFilters';
 import {
     availabilityTypeOptions,
     hasUrlsOptions,
@@ -43,9 +24,6 @@ function getSelectValue(event: Event): string {
 }
 
 const props = defineProps<{
-    roleBandRows: UiRoleBandRow[];
-    /** Controlled open state for role row job title selects (one row at a time). */
-    roleBandJobTitleOpenClientId: string | null;
     filterJobTitle: string[];
     filterSkill: string[];
     filterBadge: string[];
@@ -67,14 +45,13 @@ const props = defineProps<{
     paginationTotal: number | null;
     aiPromptText: string;
     aiPromptCopied: boolean;
+    /** Narrow single-column layout for the left sidebar (vs. full-width sheet). */
+    variant?: 'panel' | 'sidebar';
 }>();
 
+const isSidebar = computed(() => props.variant === 'sidebar');
+
 const emit = defineEmits<{
-    (
-        e: 'roleBandJobTitleOpen',
-        payload: { clientId: string; open: boolean },
-    ): void;
-    (e: 'update:roleBandRows', v: UiRoleBandRow[]): void;
     (e: 'update:filterJobTitle', v: string[]): void;
     (e: 'update:filterSkill', v: string[]): void;
     (e: 'update:filterBadge', v: string[]): void;
@@ -91,228 +68,24 @@ const emit = defineEmits<{
     (e: 'update:hasUrlsSelectOpen', v: boolean): void;
     (e: 'update:filterNullField', v: string[]): void;
     (e: 'update:nullFieldSelectOpen', v: boolean): void;
-    (e: 'applyFilters'): void;
     (e: 'clearFilters'): void;
     (e: 'copyAiPrompt'): void;
 }>();
-
-function patchRow(
-    clientId: string,
-    patch: Partial<Pick<UiRoleBandRow, 'jobTitle' | 'level'>>,
-): void {
-    const next = props.roleBandRows.map((r) =>
-        r.clientId === clientId ? { ...r, ...patch } : r,
-    );
-    emit('update:roleBandRows', next);
-}
-
-function onRowJobTitle(clientId: string, v: string | string[] | null): void {
-    const raw = Array.isArray(v) ? v[0] : v;
-    patchRow(clientId, { jobTitle: raw ? String(raw) : '' });
-}
-
-function setRowLevel(clientId: string, level: ExperienceLevel): void {
-    patchRow(clientId, { level });
-}
-
-function removeRow(clientId: string): void {
-    const next = props.roleBandRows.filter((r) => r.clientId !== clientId);
-    emit('update:roleBandRows', next.length > 0 ? next : [createRoleBandRow()]);
-}
-
-function addRoleBandRow(): void {
-    emit('update:roleBandRows', [...props.roleBandRows, createRoleBandRow()]);
-}
-
-const levelChoices: { key: Exclude<ExperienceLevel, ''>; label: string }[] = [
-    { key: 'junior', label: 'Junior' },
-    { key: 'mid', label: 'Mid' },
-    { key: 'senior', label: 'Senior' },
-];
-
-const roleFiltersOpen = ref(false);
 </script>
 
 <template>
-    <div class="mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6">
-        <div
-            class="sticky top-0 z-10 mb-6 flex flex-col gap-4 rounded-2xl border border-border/80 bg-gradient-to-br from-primary/[0.07] via-card/95 to-card/95 p-4 shadow-md ring-1 shadow-black/5 ring-black/[0.04] backdrop-blur-md supports-[backdrop-filter]:via-card/90 supports-[backdrop-filter]:to-card/90 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-5 dark:ring-white/[0.06]"
-        >
-            <div class="min-w-0 space-y-1">
-                <SheetTitle
-                    class="text-xl font-semibold tracking-tight text-foreground"
-                >
-                    Advanced filters
-                </SheetTitle>
-                <p class="text-sm leading-snug text-muted-foreground">
-                    Add role rows (job title + band) combined with OR, or use
-                    custom fields below.
-                </p>
-            </div>
-            <div
-                v-if="props.paginationTotal !== null"
-                class="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-primary/25 bg-primary/10 px-3.5 py-2 sm:self-center"
-                aria-live="polite"
-            >
-                <div
-                    class="flex size-9 items-center justify-center rounded-lg bg-primary/15 text-primary"
-                >
-                    <Users class="size-4 shrink-0" aria-hidden="true" />
-                </div>
-                <div class="leading-tight">
-                    <span
-                        class="block text-lg font-bold tracking-tight text-foreground tabular-nums"
-                    >
-                        {{ props.paginationTotal }}
-                    </span>
-                    <span class="text-xs font-medium text-muted-foreground">
-                        matching
-                        {{
-                            props.paginationTotal === 1
-                                ? 'developer'
-                                : 'developers'
-                        }}
-                    </span>
-                </div>
-            </div>
-        </div>
-        <SheetDescription class="sr-only">
-            Filter developers by role bands, job title, skills, badges,
-            availability type, has URLs, availability status, recommended
-            status, years of experience, and for super admins missing profile
-            fields.
-        </SheetDescription>
-
-        <Collapsible
-            v-model:open="roleFiltersOpen"
-            class="mb-8 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.06]"
-        >
-            <CollapsibleTrigger
-                class="flex w-full items-start justify-between gap-3 bg-muted/20 px-4 py-4 text-left transition-colors hover:bg-muted/30 sm:px-5 sm:py-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none focus-visible:ring-offset-background"
-            >
-                <div class="min-w-0 flex-1">
-                    <p
-                        class="text-[11px] font-bold tracking-[0.12em] text-primary uppercase sm:text-xs"
-                    >
-                        Role filters
-                    </p>
-                    <p class="mt-1 text-sm text-muted-foreground">
-                        Each row is one job title and experience band. Multiple
-                        rows match
-                        <span class="font-medium text-foreground">any</span> row
-                        (OR). Rows with a title and level replace the custom job
-                        title and min/max years until you change those fields.
-                    </p>
-                    <div
-                        class="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground"
-                        aria-hidden="true"
-                    >
-                        <span
-                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                            >Junior ≤2 yrs</span
-                        >
-                        <span
-                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                            >Mid 3–5 yrs</span
-                        >
-                        <span
-                            class="inline-flex rounded-full bg-background px-2.5 py-1 font-medium ring-1 ring-border/80"
-                            >Senior 6+ yrs</span
-                        >
-                    </div>
-                </div>
-                <span
-                    class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-muted/50 text-muted-foreground transition-transform duration-200"
-                    :class="{ 'rotate-180': roleFiltersOpen }"
-                >
-                    <ChevronDown class="size-4" aria-hidden="true" />
-                </span>
-            </CollapsibleTrigger>
-            <CollapsibleContent
-                class="overflow-hidden border-t border-border/70 bg-muted/15"
-            >
-                <div class="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
-                <div
-                    v-for="row in props.roleBandRows"
-                    :key="row.clientId"
-                    class="rounded-xl border border-border/80 bg-muted/15 p-4 shadow-sm sm:p-5"
-                >
-                    <div class="mb-3 flex items-start justify-between gap-3">
-                        <Label
-                            :for="`role-band-title-${row.clientId}`"
-                            class="text-xs font-semibold tracking-wide text-foreground/90 uppercase"
-                        >
-                            Job title
-                        </Label>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            class="size-8 shrink-0 text-muted-foreground hover:text-destructive"
-                            :aria-label="'Remove role filter row'"
-                            @click="removeRow(row.clientId)"
-                        >
-                            <Trash2 class="size-4" aria-hidden="true" />
-                        </Button>
-                    </div>
-                    <SearchableSelect
-                        :id="`role-band-title-${row.clientId}`"
-                        :model-value="row.jobTitle || null"
-                        :open="
-                            props.roleBandJobTitleOpenClientId === row.clientId
-                        "
-                        options-url="/api/job-titles"
-                        placeholder="Search job titles…"
-                        :max-options="50"
-                        @update:model-value="
-                            onRowJobTitle(row.clientId, $event)
-                        "
-                        @update:open="
-                            emit('roleBandJobTitleOpen', {
-                                clientId: row.clientId,
-                                open: $event,
-                            })
-                        "
-                    />
-                    <p
-                        class="mt-4 mb-2 text-xs font-semibold tracking-wide text-foreground/90 uppercase"
-                    >
-                        Experience
-                    </p>
-                    <div
-                        class="grid grid-cols-3 gap-2 sm:gap-3"
-                        role="group"
-                        :aria-label="'Experience level for this row'"
-                    >
-                        <button
-                            v-for="choice in levelChoices"
-                            :key="choice.key"
-                            type="button"
-                            :aria-pressed="row.level === choice.key"
-                            class="flex min-h-11 min-w-0 flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center text-sm font-semibold tracking-tight transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] sm:min-h-12 sm:px-3 sm:py-3"
-                            :class="
-                                row.level === choice.key
-                                    ? 'border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25'
-                                    : 'border-border/90 bg-card text-foreground hover:border-primary/40 hover:bg-muted/60 hover:shadow-sm'
-                            "
-                            @click="setRowLevel(row.clientId, choice.key)"
-                        >
-                            {{ choice.label }}
-                        </button>
-                    </div>
-                </div>
-                <Button
-                    type="button"
-                    variant="outline"
-                    class="w-full gap-2 border-dashed sm:w-auto"
-                    @click="addRoleBandRow"
-                >
-                    <Plus class="size-4" aria-hidden="true" />
-                    Add role filter
-                </Button>
-                </div>
-            </CollapsibleContent>
-        </Collapsible>
+    <div
+        :class="
+            isSidebar
+                ? 'w-full pb-4'
+                : 'mx-auto w-full max-w-4xl pr-8 pb-5 sm:pr-10 sm:pb-6'
+        "
+    >
+        <p class="sr-only">
+            Filter developers by job title, skills, badges, availability type,
+            has URLs, availability status, recommended status, years of
+            experience, and for super admins missing profile fields.
+        </p>
 
         <div class="mb-4 border-b border-border/60 pb-4">
             <h2
@@ -321,11 +94,11 @@ const roleFiltersOpen = ref(false);
                 Custom filters
             </h2>
             <p class="mt-1.5 text-sm text-muted-foreground">
-                Mix and match fields, then apply.
+                Results update when you change any field below.
             </p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid w-full grid-cols-1 gap-4">
             <div class="space-y-2">
                 <Label for="filter-job-title">Job title</Label>
                 <SearchableSelect
@@ -417,7 +190,7 @@ const roleFiltersOpen = ref(false);
             </div>
             <div
                 v-if="props.showSuperAdminFilters"
-                class="space-y-2 rounded-xl border border-amber-500/35 bg-amber-500/5 p-3 sm:col-span-2"
+                class="w-full space-y-2 rounded-xl border border-amber-500/35 bg-amber-500/5 p-3"
             >
                 <Label
                     for="filter-null-field"
@@ -446,9 +219,7 @@ const roleFiltersOpen = ref(false);
                             normalizeSelectValue($event),
                         )
                     "
-                    @update:open="
-                        emit('update:nullFieldSelectOpen', $event)
-                    "
+                    @update:open="emit('update:nullFieldSelectOpen', $event)"
                 />
             </div>
             <div class="space-y-2">
@@ -509,20 +280,15 @@ const roleFiltersOpen = ref(false);
             </div>
         </div>
         <div
-            class="mt-8 flex flex-wrap items-center gap-3 border-t border-border/70 pt-6"
+            class="mt-8 flex justify-start border-t border-border/70 pt-6"
         >
             <Button
-                class="min-h-10 min-w-[9.5rem] shadow-sm"
-                @click="emit('applyFilters')"
-            >
-                Apply filters
-            </Button>
-            <Button
-                variant="ghost"
-                class="min-h-10 text-muted-foreground hover:text-foreground"
+                type="button"
+                variant="outline"
+                class="min-h-10 w-full sm:w-auto"
                 @click="emit('clearFilters')"
             >
-                Clear all
+                Clear all filters
             </Button>
         </div>
 
