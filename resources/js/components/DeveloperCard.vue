@@ -485,7 +485,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                         </TooltipProvider>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <TooltipProvider>
+                        <TooltipProvider v-if="developer.email">
                             <Tooltip>
                                 <TooltipTrigger as-child>
                                     <Button

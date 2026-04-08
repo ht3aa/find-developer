@@ -112,7 +112,7 @@ class DeveloperResource extends JsonResource
             'user_id' => $developer->user_id,
             'name' => $developer->name,
             'slug' => $developer->slug,
-            'email' => $developer->email,
+            'email' => $canViewCv ? $developer->email : null,
             'years_of_experience' => $developer->years_of_experience,
             'phone' => $canViewPhone ? $developer->phone : null,
             'expected_salary_from' => $canViewCv ? number_format($developer->expected_salary_from) : null,
