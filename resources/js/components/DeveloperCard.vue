@@ -140,10 +140,10 @@ function onThumbnailError(e: Event, videoId: string): void {
 <template>
     <Card
         :class="[
-            'group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
+            'group relative flex h-full flex-col overflow-hidden rounded-xl border-0 bg-card text-card-foreground shadow-md ring-1 transition-[box-shadow,ring-width,ring-color] duration-200 hover:shadow-lg',
             modelValue
                 ? 'ring-2 shadow-primary/10 ring-primary'
-                : 'ring-border/50 hover:ring-primary/20',
+                : 'ring-border/50 hover:ring-2 hover:ring-primary/70',
         ]"
         @mouseenter="isCardHovered = true"
         @mouseleave="isCardHovered = false"
@@ -160,7 +160,7 @@ function onThumbnailError(e: Event, videoId: string): void {
             class="absolute top-3.5 left-3.5 z-10 flex size-6 items-center justify-center rounded-md border-2 transition-all duration-200"
             :class="
                 modelValue
-                    ? 'scale-105 border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/25'
+                    ? 'border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/25 ring-2 ring-primary/30'
                     : 'border-muted-foreground/30 bg-background/90 backdrop-blur-sm hover:border-primary/60 hover:bg-primary/5'
             "
             :aria-label="`Select ${developer.name}`"
@@ -198,7 +198,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                         <TooltipTrigger as-child>
                             <Link
                                 :href="badgesPageUrl"
-                                class="inline-flex size-9 items-center justify-center rounded-lg border transition-all duration-200 hover:scale-110 hover:opacity-100"
+                                class="inline-flex size-9 items-center justify-center rounded-lg border transition-[box-shadow,ring-color] duration-200 hover:opacity-100 hover:ring-2 hover:ring-primary/35"
                                 :class="
                                     badge.color ? '' : 'border-border bg-muted'
                                 "
@@ -402,7 +402,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         variant="outline"
                                         size="icon"
                                         as-child
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                     >
                                         <a
                                             :href="developer.portfolio_url!"
@@ -426,7 +426,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         variant="outline"
                                         size="icon"
                                         as-child
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                     >
                                         <a
                                             :href="developer.github_url!"
@@ -458,7 +458,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         variant="outline"
                                         size="icon"
                                         as-child
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                     >
                                         <a
                                             :href="developer.linkedin_url!"
@@ -492,7 +492,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         variant="outline"
                                         size="icon"
                                         as-child
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                     >
                                         <a :href="`mailto:${developer.email}`">
                                             <Mail class="size-4" />
@@ -510,7 +510,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         type="button"
                                         variant="outline"
                                         size="icon"
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                         @click.stop.prevent="startConversation"
                                     >
                                         <MessageSquare class="size-4" />
@@ -527,7 +527,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                                         variant="outline"
                                         size="icon"
                                         as-child
-                                        class="size-9 rounded-lg transition-all duration-200 hover:scale-105 hover:border-primary/50 hover:bg-primary/10"
+                                        class="size-9 rounded-lg transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-primary/10"
                                     >
                                         <a
                                             :href="developer.cv_path_url!"
@@ -572,9 +572,7 @@ function onThumbnailError(e: Event, videoId: string): void {
                     >
                         <User class="size-4" />
                         View Full Profile
-                        <ChevronRight
-                            class="size-4 transition-transform group-hover:translate-x-0.5"
-                        />
+                        <ChevronRight class="size-4" />
                     </Link>
                 </Button>
             </div>

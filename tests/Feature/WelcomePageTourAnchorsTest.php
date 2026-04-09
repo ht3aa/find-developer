@@ -28,7 +28,10 @@ test('welcome page and developer directory vue include tour anchors', function (
     expect($card)
         ->toContain('developer-card-badges')
         ->toContain('startConversation')
-        ->toContain('MessageSquare');
+        ->toContain('MessageSquare')
+        ->not->toContain('hover:-translate-y-1')
+        ->not->toContain('hover:scale-105')
+        ->not->toContain('hover:scale-110');
 
     $tour = file_get_contents(resource_path('js/composables/useWelcomeTour.ts'));
     expect($tour)
