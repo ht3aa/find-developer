@@ -6,7 +6,11 @@ test('welcome page and developer directory vue include tour anchors', function (
         ->toContain('data-tour="welcome-hero"')
         ->toContain('Click me if you need any help')
         ->toContain('surah110TitleAr')
-        ->toContain('surah110Ayahs');
+        ->toContain('surah110Ayahs')
+        ->toContain('NewsletterSignup');
+
+    $newsletterSignup = file_get_contents(resource_path('js/components/NewsletterSignup.vue'));
+    expect($newsletterSignup)->toContain('Get developers spotlight in your inbox');
 
     $directory = file_get_contents(resource_path('js/components/DeveloperCardSection.vue'));
     expect($directory)

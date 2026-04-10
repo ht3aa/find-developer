@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Link, router, usePage } from '@inertiajs/vue3';
-import { ArrowDown, Briefcase, Loader2, Sparkles } from 'lucide-vue-next';
+import { Link } from '@inertiajs/vue3';
+import { ArrowDown, Briefcase, Sparkles } from 'lucide-vue-next';
 import {
     computed,
     defineAsyncComponent,
@@ -11,7 +11,6 @@ import {
 import Duck from '@/components/Duck.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const DotGrid = defineAsyncComponent(
     () => import('@/components/animations/DotGrid.vue'),
@@ -47,8 +46,6 @@ const props = withDefaults(
         secondaryActionLabel?: string;
         secondaryActionHref?: string;
         successMessage?: string;
-        /** When set, shows the newsletter signup field in the hero. */
-        newsletterStoreUrl?: string;
         /** YouTube video URL (e.g. https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID). */
         youtubeUrl?: string;
     }>(),
@@ -58,11 +55,6 @@ const props = withDefaults(
         description:
             'Browse vetted developers, filter by skills and experience, and connect with the best match for your team.',
     },
-);
-
-const page = usePage();
-const errors = computed(
-    () => (page.props.errors as Record<string, string> | undefined) ?? {},
 );
 
 function getYoutubeVideoId(url: string | undefined): string | null {
@@ -79,8 +71,6 @@ function getYoutubeVideoId(url: string | undefined): string | null {
 }
 
 const youtubeVideoId = computed(() => getYoutubeVideoId(props.youtubeUrl));
-const email = ref('');
-const submitting = ref(false);
 const verse = ref<QuranVerse | null>(null);
 let verseRefreshTimerId: ReturnType<typeof setInterval> | null = null;
 
@@ -145,21 +135,6 @@ function scrollToSearch(): void {
     } else {
         window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
     }
-}
-
-function submitNewsletter(): void {
-    if (!props.newsletterStoreUrl || !email.value.trim()) return;
-    submitting.value = true;
-    router.post(
-        props.newsletterStoreUrl,
-        { email: email.value.trim() },
-        {
-            preserveScroll: true,
-            onFinish: () => {
-                submitting.value = false;
-            },
-        },
-    );
 }
 
 onMounted(() => {
@@ -352,58 +327,6 @@ onUnmounted(() => {
                             {{ props.secondaryActionLabel }}
                         </Link>
                     </Button>
-                </div>
-
-                <!-- Newsletter signup -->
-                <div
-                    v-if="props.newsletterStoreUrl"
-                    class="mt-12 w-full max-w-md"
-                >
-                    <p class="mb-3 text-sm font-medium text-muted-foreground">
-                        Get developers spotlight in your inbox
-                    </p>
-                    <form
-                        class="flex flex-col gap-2 sm:flex-row sm:items-center"
-                        @submit.prevent="submitNewsletter"
-                    >
-                        <Input
-                            v-model="email"
-                            type="email"
-                            name="email"
-                            placeholder="you@example.com"
-                            autocomplete="email"
-                            class="flex-1"
-                            :disabled="submitting"
-                            :aria-invalid="!!errors?.email"
-                            :aria-describedby="
-                                errors?.email
-                                    ? 'newsletter-email-error'
-                                    : undefined
-                            "
-                        />
-                        <Button
-                            type="submit"
-                            class="shrink-0"
-                            :disabled="submitting || !email.trim()"
-                        >
-                            <Loader2
-                                v-if="submitting"
-                                class="size-4 animate-spin"
-                                aria-hidden
-                            />
-                            <span>{{
-                                submitting ? 'Subscribing…' : 'Subscribe'
-                            }}</span>
-                        </Button>
-                    </form>
-                    <p
-                        v-if="errors.email"
-                        id="newsletter-email-error"
-                        class="mt-2 text-sm text-destructive"
-                        role="alert"
-                    >
-                        {{ errors.email }}
-                    </p>
                 </div>
 
                 <!-- Scroll indicator -->

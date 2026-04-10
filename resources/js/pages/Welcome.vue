@@ -11,6 +11,7 @@ import {
 import Footer from '@/components/Footer.vue';
 import Hero from '@/components/Hero.vue';
 import Navbar from '@/components/Navbar.vue';
+import NewsletterSignup from '@/components/NewsletterSignup.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -190,7 +191,6 @@ async function runWelcomeTour(): Promise<void> {
                 secondary-action-label="Remote work"
                 :secondary-action-href="remoteWorkRoutes.index.url()"
                 :success-message="flashSuccess ?? undefined"
-                :newsletter-store-url="newsletterStoreUrl || undefined"
             />
         </div>
 
@@ -215,6 +215,11 @@ async function runWelcomeTour(): Promise<void> {
                 </section>
             </template>
         </Suspense>
+
+        <NewsletterSignup
+            v-if="newsletterStoreUrl"
+            :newsletter-store-url="newsletterStoreUrl"
+        />
 
         <Footer />
 
