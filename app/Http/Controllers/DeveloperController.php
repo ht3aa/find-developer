@@ -68,6 +68,10 @@ class DeveloperController extends Controller
             'projects' => fn ($q) => $q
                 ->withoutGlobalScope(DeveloperScope::class)
                 ->visible(),
+            'blogs' => fn ($q) => $q
+                ->withoutGlobalScope(DeveloperScope::class)
+                ->published()
+                ->orderByDesc('published_at'),
         ]);
         $developer->loadCount('recommendationsReceived');
 

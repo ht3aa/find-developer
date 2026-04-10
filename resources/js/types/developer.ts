@@ -50,6 +50,16 @@ export type DeveloperProject = {
     link?: string | null;
 };
 
+/** Published posts on the public developer profile (see DeveloperResource). */
+export type DeveloperPublishedBlog = {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    published_at: string | null;
+    featured_image_url: string | null;
+};
+
 export type Developer = {
     id: number;
     user_id?: number | null;
@@ -85,4 +95,5 @@ export type Developer = {
     recommendations?: DeveloperRecommendation[];
     work_experience?: WorkExperienceEntry[];
     projects?: DeveloperProject[];
+    blogs?: DeveloperPublishedBlog[];
 };

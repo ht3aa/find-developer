@@ -102,6 +102,20 @@ class DeveloperResource extends JsonResource
                 ->all()
             : [];
 
+        $blogs = $developer->relationLoaded('blogs')
+            ? $developer->blogs
+                ->map(fn ($b) => [
+                    'id' => $b->id,
+                    'title' => $b->title,
+                    'slug' => $b->slug,
+                    'excerpt' => $b->excerpt,
+                    'published_at' => $b->published_at?->toIso8601String(),
+                    'featured_image_url' => $b->feature_image_url,
+                ])
+                ->values()
+                ->all()
+            : [];
+
         $user = $request->user();
         $isOwner = $user && $user->id === $developer->user_id;
         $canViewPhone = $isOwner || ($user && $user->can('viewPhone', Developer::class));
@@ -143,6 +157,7 @@ class DeveloperResource extends JsonResource
             'recommendations' => $recommendations,
             'work_experience' => $workExperience,
             'projects' => $projects,
+            'blogs' => $blogs,
         ];
     }
 

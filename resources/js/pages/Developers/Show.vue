@@ -23,6 +23,7 @@ import Navbar from '@/components/Navbar.vue';
 import SeoHead from '@/components/SeoHead.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Tooltip,
     TooltipContent,
@@ -30,6 +31,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { home, login } from '@/routes';
+import blogRoutes from '@/routes/blogs';
 import type { Developer } from '@/types/developer';
 import { formatSalaryDisplay } from '@/utils/salary';
 
@@ -164,6 +166,14 @@ const initials = computed(() =>
         .map((n: string) => n[0])
         .join(''),
 );
+
+function formatBlogDate(iso: string | null): string {
+    if (!iso) {
+        return '';
+    }
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { dateStyle: 'medium' });
+}
 
 </script>
 
@@ -802,6 +812,70 @@ const initials = computed(() =>
                                         <ExternalLink class="size-4" />
                                     </a>
                                 </div>
+                            </div>
+                        </section>
+
+                        <!-- Blog -->
+                        <section
+                            v-if="
+                                developer.blogs && developer.blogs.length > 0
+                            "
+                        >
+                            <h2
+                                class="mb-4 flex items-center gap-2 text-lg font-semibold"
+                            >
+                                <FileText
+                                    class="size-5 shrink-0 text-muted-foreground"
+                                />
+                                Blog
+                            </h2>
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <Link
+                                    v-for="blog in developer.blogs"
+                                    :key="blog.id"
+                                    :href="
+                                        blogRoutes.public.show.url(blog.slug)
+                                    "
+                                    class="block transition-opacity hover:opacity-90"
+                                >
+                                    <Card
+                                        class="h-full overflow-hidden transition-shadow hover:shadow-md"
+                                    >
+                                        <div
+                                            v-if="blog.featured_image_url"
+                                            class="aspect-video w-full shrink-0 bg-muted"
+                                        >
+                                            <img
+                                                :src="blog.featured_image_url"
+                                                :alt="blog.title"
+                                                class="size-full object-cover"
+                                            />
+                                        </div>
+                                        <CardContent class="p-5">
+                                            <h3
+                                                class="line-clamp-2 font-semibold tracking-tight text-foreground"
+                                            >
+                                                {{ blog.title }}
+                                            </h3>
+                                            <p
+                                                v-if="blog.excerpt"
+                                                class="mt-2 line-clamp-3 text-sm text-muted-foreground"
+                                            >
+                                                {{ blog.excerpt }}
+                                            </p>
+                                            <p
+                                                v-if="blog.published_at"
+                                                class="mt-4 text-xs text-muted-foreground"
+                                            >
+                                                {{
+                                                    formatBlogDate(
+                                                        blog.published_at,
+                                                    )
+                                                }}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             </div>
                         </section>
 
