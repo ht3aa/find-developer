@@ -24,6 +24,7 @@ use App\Http\Controllers\Dashboard\WorkExperienceController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperOfferController;
 use App\Http\Controllers\DeveloperRecommendationController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HackathonAttendanceController;
 use App\Http\Controllers\HackathonController;
 use App\Http\Controllers\HackathonSubscribeController;
@@ -68,6 +69,7 @@ Route::middleware('throttle:web')->group(function () {
     Route::get('charts', [ChartsController::class, 'index'])->name('charts.public');
     Route::get('shop', [ShopController::class, 'index'])->name('shop');
     Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.product.show');
+    Route::get('feed', [FeedController::class, 'index'])->name('feed.index');
     Route::get('about', AboutController::class)->name('about');
     Route::get('privacy-policy', PrivacyPolicyController::class)->name('privacy-policy');
     Route::get('remote-work', [RemoteWorkController::class, 'index'])->name('remote-work.index');
@@ -91,6 +93,15 @@ Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
     Route::get('messages/search-users', [ChatController::class, 'searchUsers'])->name('messages.search-users');
     Route::get('messages/{conversation}', [ChatController::class, 'show'])->name('messages.show');
     Route::post('messages/{conversation}', [ChatController::class, 'sendMessage'])->name('messages.send');
+});
+
+Route::middleware(['auth', 'throttle:web'])->group(function () {
+    Route::post('feed', [FeedController::class, 'store'])->name('feed.store');
+    Route::patch('feed/{feedPost}', [FeedController::class, 'update'])->name('feed.update');
+    Route::delete('feed/{feedPost}', [FeedController::class, 'destroy'])->name('feed.destroy');
+    Route::post('feed/{feedPost}/like', [FeedController::class, 'toggleLike'])->name('feed.like');
+    Route::post('feed/{feedPost}/comments', [FeedController::class, 'storeComment'])->name('feed.comments.store');
+    Route::delete('feed/comments/{feedPostComment}', [FeedController::class, 'destroyComment'])->name('feed.comments.destroy');
 });
 
 Route::middleware(['auth', 'verified', 'throttle:web'])->group(function () {
