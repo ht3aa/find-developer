@@ -119,6 +119,27 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Message::class);
     }
 
+    /**
+     * @return HasMany<FeedPost, $this>
+     */
+    public function feedPosts(): HasMany
+    {
+        return $this->hasMany(FeedPost::class);
+    }
+
+    public function likedFeedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(FeedPost::class, 'feed_post_likes')->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<FeedPostComment, $this>
+     */
+    public function feedPostComments(): HasMany
+    {
+        return $this->hasMany(FeedPostComment::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isSuperAdmin();

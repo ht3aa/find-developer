@@ -19,6 +19,7 @@ import {
 import { useAppearance } from '@/composables/useAppearance';
 import { dashboard, home, login, logout, register, shop } from '@/routes';
 import blogs from '@/routes/blogs';
+import { index as feedIndex } from '@/routes/feed';
 import remoteWorkRoutes from '@/routes/remote-work';
 
 const page = usePage();
@@ -36,6 +37,7 @@ const authCan = computed(
 );
 const navItems = [
     { label: 'Home', href: home() },
+    { label: 'Feed', href: feedIndex.url() },
     { label: 'Shop', href: shop() },
     { label: 'Blog', href: blogs.public.index.url() },
     { label: 'Remote work', href: remoteWorkRoutes.index.url() },
