@@ -212,6 +212,7 @@ const filterAvailabilityType = ref<string[]>(
     initialFilters.availabilityType ?? [],
 );
 const filterHasUrls = ref<string[]>(initialFilters.hasUrls ?? []);
+const filterLocation = ref<string[]>(initialFilters.location ?? []);
 const filterNullFields = ref<string[]>(
     isSuperAdminUser.value ? (initialFilters.nullField ?? []) : [],
 );
@@ -235,6 +236,7 @@ const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const hasUrlsSelectOpen = ref(false);
+const locationSelectOpen = ref(false);
 const nullFieldSelectOpen = ref(false);
 
 function onJobTitleOpenChange(open: boolean): void {
@@ -244,6 +246,7 @@ function onJobTitleOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        locationSelectOpen.value = false;
         nullFieldSelectOpen.value = false;
     }
 }
@@ -255,6 +258,7 @@ function onSkillOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        locationSelectOpen.value = false;
         nullFieldSelectOpen.value = false;
     }
 }
@@ -266,6 +270,7 @@ function onBadgeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        locationSelectOpen.value = false;
         nullFieldSelectOpen.value = false;
     }
 }
@@ -277,6 +282,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        locationSelectOpen.value = false;
         nullFieldSelectOpen.value = false;
     }
 }
@@ -288,6 +294,19 @@ function onHasUrlsOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
+        locationSelectOpen.value = false;
+        nullFieldSelectOpen.value = false;
+    }
+}
+
+function onLocationOpenChange(open: boolean): void {
+    locationSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        hasUrlsSelectOpen.value = false;
         nullFieldSelectOpen.value = false;
     }
 }
@@ -300,6 +319,7 @@ function onNullFieldOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         hasUrlsSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -311,6 +331,7 @@ function getFilters(): DeveloperFilters {
         | 'badge'
         | 'availabilityType'
         | 'hasUrls'
+        | 'location'
         | 'isAvailable'
         | 'isRecommended'
         | 'ids'
@@ -321,6 +342,7 @@ function getFilters(): DeveloperFilters {
         badge: filterBadge.value,
         availabilityType: filterAvailabilityType.value,
         hasUrls: filterHasUrls.value,
+        location: filterLocation.value,
         isAvailable: isAvailable.value,
         isRecommended: isRecommended.value,
         ids: props.developerIds?.length ? props.developerIds : undefined,
@@ -406,6 +428,7 @@ function clearFilters(): void {
     filterBadge.value = [];
     filterAvailabilityType.value = [];
     filterHasUrls.value = [];
+    filterLocation.value = [];
     filterNullFields.value = [];
     isAvailable.value = 'all';
     isRecommended.value = 'all';
@@ -441,6 +464,11 @@ function onFilterAvailabilityTypeUpdate(v: string[]): void {
 
 function onFilterHasUrlsUpdate(v: string[]): void {
     filterHasUrls.value = v;
+    syncFiltersToApi();
+}
+
+function onFilterLocationUpdate(v: string[]): void {
+    filterLocation.value = v;
     syncFiltersToApi();
 }
 
@@ -745,6 +773,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 :filter-badge="filterBadge"
                 :filter-availability-type="filterAvailabilityType"
                 :filter-has-urls="filterHasUrls"
+                :filter-location="filterLocation"
                 :is-available="isAvailable"
                 :is-recommended="isRecommended"
                 :years-min="yearsMin"
@@ -754,6 +783,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                 :badge-select-open="badgeSelectOpen"
                 :availability-type-select-open="availabilityTypeSelectOpen"
                 :has-urls-select-open="hasUrlsSelectOpen"
+                :location-select-open="locationSelectOpen"
                 :show-super-admin-filters="isSuperAdminUser"
                 :filter-null-field="filterNullFields"
                 :null-field-select-open="nullFieldSelectOpen"
@@ -766,6 +796,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     onFilterAvailabilityTypeUpdate($event)
                 "
                 @update:filter-has-urls="onFilterHasUrlsUpdate($event)"
+                @update:filter-location="onFilterLocationUpdate($event)"
                 @update:is-available="onIsAvailableUpdate($event)"
                 @update:is-recommended="onIsRecommendedUpdate($event)"
                 @update:years-min="onYearsMinUpdate($event)"
@@ -777,6 +808,7 @@ watch(viewLayout, (layout: ViewLayout) => {
                     onAvailabilityTypeOpenChange($event)
                 "
                 @update:has-urls-select-open="onHasUrlsOpenChange($event)"
+                @update:location-select-open="onLocationOpenChange($event)"
                 @update:filter-null-field="onFilterNullFieldUpdate($event)"
                 @update:null-field-select-open="onNullFieldOpenChange($event)"
                 @clear-filters="clearFilters"

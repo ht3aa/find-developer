@@ -29,6 +29,7 @@ defineProps<{
     filterBadge: string[];
     filterAvailabilityType: string[];
     filterHasUrls: string[];
+    filterLocation: string[];
     isAvailable: string;
     isRecommended: string;
     yearsMin: string;
@@ -38,6 +39,7 @@ defineProps<{
     badgeSelectOpen: boolean;
     availabilityTypeSelectOpen: boolean;
     hasUrlsSelectOpen: boolean;
+    locationSelectOpen: boolean;
     showSuperAdminFilters: boolean;
     filterNullField: string[];
     nullFieldSelectOpen: boolean;
@@ -57,6 +59,7 @@ const emit = defineEmits<{
     (e: 'update:filterBadge', v: string[]): void;
     (e: 'update:filterAvailabilityType', v: string[]): void;
     (e: 'update:filterHasUrls', v: string[]): void;
+    (e: 'update:filterLocation', v: string[]): void;
     (e: 'update:isAvailable', v: string): void;
     (e: 'update:isRecommended', v: string): void;
     (e: 'update:yearsMin', v: string): void;
@@ -66,6 +69,7 @@ const emit = defineEmits<{
     (e: 'update:badgeSelectOpen', v: boolean): void;
     (e: 'update:availabilityTypeSelectOpen', v: boolean): void;
     (e: 'update:hasUrlsSelectOpen', v: boolean): void;
+    (e: 'update:locationSelectOpen', v: boolean): void;
     (e: 'update:filterNullField', v: string[]): void;
     (e: 'update:nullFieldSelectOpen', v: boolean): void;
     (e: 'clearFilters'): void;
@@ -257,6 +261,7 @@ const emit = defineEmits<{
                 :filter-badge="filterBadge"
                 :filter-availability-type="filterAvailabilityType"
                 :filter-has-urls="filterHasUrls"
+                :filter-location="filterLocation"
                 :is-available="isAvailable"
                 :is-recommended="isRecommended"
                 :years-min="yearsMin"
@@ -266,6 +271,7 @@ const emit = defineEmits<{
                 :badge-select-open="badgeSelectOpen"
                 :availability-type-select-open="availabilityTypeSelectOpen"
                 :has-urls-select-open="hasUrlsSelectOpen"
+                :location-select-open="locationSelectOpen"
                 :show-super-admin-filters="showSuperAdminFilters"
                 :filter-null-field="filterNullField"
                 :null-field-select-open="nullFieldSelectOpen"
@@ -279,6 +285,7 @@ const emit = defineEmits<{
                     emit('update:filterAvailabilityType', $event)
                 "
                 @update:filter-has-urls="emit('update:filterHasUrls', $event)"
+                @update:filter-location="emit('update:filterLocation', $event)"
                 @update:is-available="emit('update:isAvailable', $event)"
                 @update:is-recommended="emit('update:isRecommended', $event)"
                 @update:years-min="emit('update:yearsMin', $event)"
@@ -293,6 +300,9 @@ const emit = defineEmits<{
                 "
                 @update:has-urls-select-open="
                     emit('update:hasUrlsSelectOpen', $event)
+                "
+                @update:location-select-open="
+                    emit('update:locationSelectOpen', $event)
                 "
                 @update:filter-null-field="emit('update:filterNullField', $event)"
                 @update:null-field-select-open="

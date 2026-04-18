@@ -29,6 +29,7 @@ const props = defineProps<{
     filterBadge: string[];
     filterAvailabilityType: string[];
     filterHasUrls: string[];
+    filterLocation: string[];
     isAvailable: string;
     isRecommended: string;
     yearsMin: string;
@@ -38,6 +39,7 @@ const props = defineProps<{
     badgeSelectOpen: boolean;
     availabilityTypeSelectOpen: boolean;
     hasUrlsSelectOpen: boolean;
+    locationSelectOpen: boolean;
     /** Super admin: filter rows where selected columns are null/empty. */
     showSuperAdminFilters: boolean;
     filterNullField: string[];
@@ -57,6 +59,7 @@ const emit = defineEmits<{
     (e: 'update:filterBadge', v: string[]): void;
     (e: 'update:filterAvailabilityType', v: string[]): void;
     (e: 'update:filterHasUrls', v: string[]): void;
+    (e: 'update:filterLocation', v: string[]): void;
     (e: 'update:isAvailable', v: string): void;
     (e: 'update:isRecommended', v: string): void;
     (e: 'update:yearsMin', v: string): void;
@@ -66,6 +69,7 @@ const emit = defineEmits<{
     (e: 'update:badgeSelectOpen', v: boolean): void;
     (e: 'update:availabilityTypeSelectOpen', v: boolean): void;
     (e: 'update:hasUrlsSelectOpen', v: boolean): void;
+    (e: 'update:locationSelectOpen', v: boolean): void;
     (e: 'update:filterNullField', v: string[]): void;
     (e: 'update:nullFieldSelectOpen', v: boolean): void;
     (e: 'clearFilters'): void;
@@ -82,9 +86,10 @@ const emit = defineEmits<{
         "
     >
         <p class="sr-only">
-            Filter developers by job title, skills, badges, availability type,
-            has URLs, availability status, recommended status, years of
-            experience, and for super admins missing profile fields.
+            Filter developers by job title, skills, badges, location,
+            availability type, has URLs, availability status, recommended
+            status, years of experience, and for super admins missing profile
+            fields.
         </p>
 
         <div class="mb-4 border-b border-border/60 pb-4">
@@ -148,6 +153,25 @@ const emit = defineEmits<{
                         emit('update:filterBadge', normalizeSelectValue($event))
                     "
                     @update:open="emit('update:badgeSelectOpen', $event)"
+                />
+            </div>
+            <div class="space-y-2">
+                <Label for="filter-location">Location</Label>
+                <SearchableSelect
+                    id="filter-location"
+                    :model-value="props.filterLocation"
+                    :open="props.locationSelectOpen"
+                    options-url="/api/locations"
+                    placeholder="e.g. Baghdad, Erbil"
+                    multiple
+                    :max-options="50"
+                    @update:model-value="
+                        emit(
+                            'update:filterLocation',
+                            normalizeSelectValue($event),
+                        )
+                    "
+                    @update:open="emit('update:locationSelectOpen', $event)"
                 />
             </div>
             <div class="space-y-2">

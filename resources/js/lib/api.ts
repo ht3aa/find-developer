@@ -12,6 +12,8 @@ export type DeveloperFilters = {
     badge?: string[];
     availabilityType?: string[];
     hasUrls?: string[];
+    /** Governorate enum values (`WorldGovernorate`), comma-separated on the wire. */
+    location?: string[];
     isAvailable?: string;
     isRecommended?: string;
     yearsMin?: string;
@@ -74,6 +76,8 @@ export function buildDevelopersApiUrl(
         params.set('filter[availability_type]', availabilityTypeVal);
     const hasUrlsVal = toFilterValue(filters.hasUrls);
     if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
+    const locationVal = toFilterValue(filters.location);
+    if (locationVal) params.set('filter[location]', locationVal);
     if (filters.isAvailable && filters.isAvailable !== 'all')
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')
@@ -132,6 +136,7 @@ export function parseFiltersFromUrl(): DeveloperFiltersFromUrl {
         badge: parseFilterArray(filter.badge),
         availabilityType: parseFilterArray(filter.availability_type),
         hasUrls: parseFilterArray(filter.has_urls),
+        location: parseFilterArray(filter.location),
         isAvailable: filter.is_available ?? 'all',
         isRecommended: filter.is_recommended ?? 'all',
         yearsMin: useRoleBands ? '' : (filter.years_min ?? ''),
@@ -165,6 +170,8 @@ export function updateUrlWithFilters(filters: DeveloperFilters): void {
         params.set('filter[availability_type]', availabilityTypeVal);
     const hasUrlsVal = toFilterValue(filters.hasUrls);
     if (hasUrlsVal) params.set('filter[has_urls]', hasUrlsVal);
+    const locationVal = toFilterValue(filters.location);
+    if (locationVal) params.set('filter[location]', locationVal);
     if (filters.isAvailable && filters.isAvailable !== 'all')
         params.set('filter[is_available]', filters.isAvailable);
     if (filters.isRecommended && filters.isRecommended !== 'all')

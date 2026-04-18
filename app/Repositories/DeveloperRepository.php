@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -156,6 +157,23 @@ class DeveloperRepository
                         $q->whereIn('badges.name', $values);
                     });
                 }),
+                AllowedFilter::callback('location', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $valid = [];
+                    foreach ($values as $v) {
+                        $enum = WorldGovernorate::tryFrom($v);
+                        if ($enum !== null) {
+                            $valid[] = $enum->value;
+                        }
+                    }
+                    if ($valid === []) {
+                        return;
+                    }
+                    $query->whereIn('developers.location', $valid);
+                }),
                 AllowedFilter::callback('is_available', function ($query, $value) {
                     if ($value === null || $value === '') {
                         return;
@@ -289,6 +307,23 @@ class DeveloperRepository
                     $query->whereHas('badges', function ($q) use ($values) {
                         $q->whereIn('badges.name', $values);
                     });
+                }),
+                AllowedFilter::callback('location', function ($query, $value) {
+                    $values = $this->parseFilterValues($value);
+                    if (empty($values)) {
+                        return;
+                    }
+                    $valid = [];
+                    foreach ($values as $v) {
+                        $enum = WorldGovernorate::tryFrom($v);
+                        if ($enum !== null) {
+                            $valid[] = $enum->value;
+                        }
+                    }
+                    if ($valid === []) {
+                        return;
+                    }
+                    $query->whereIn('developers.location', $valid);
                 }),
                 AllowedFilter::callback('is_available', function ($query, $value) {
                     if ($value === null || $value === '') {
