@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\ConversationMessageController;
 use App\Http\Controllers\Api\DeveloperController;
 use App\Http\Controllers\Api\JobTitleController;
+use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SkillController;
 use App\Http\Middleware\OptionalSanctumAuth;
@@ -27,6 +28,7 @@ Route::middleware(['web', OptionalSanctumAuth::class])->group(function () {
     Route::get('/job-titles', [JobTitleController::class, 'index'])->name('api.job-titles.index');
     Route::get('/skills', [SkillController::class, 'index'])->name('api.skills.index');
     Route::get('/badges', [BadgeController::class, 'index'])->name('api.badges.index');
+    Route::get('/locations', [LocationController::class, 'index'])->name('api.locations.index');
     Route::get('/products', [ProductController::class, 'index'])->name('api.products.index');
 });
 
