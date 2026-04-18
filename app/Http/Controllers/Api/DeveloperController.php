@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
+use App\Models\User;
 use App\Repositories\DeveloperRepository;
 use Illuminate\Http\Request;
 
@@ -16,7 +18,7 @@ class DeveloperController extends Controller
 
     /**
      * Display a paginated listing of developers with filters.
-     * Includes total_developers and recommended_developers counts in the response.
+     * Includes total_developers, recommended_developers, and hr_users_count in the response.
      * Accepts per_page (1–500); default 12 for UI, use 500 for AI/export to get all in one response.
      */
     public function index(Request $request)
@@ -29,6 +31,7 @@ class DeveloperController extends Controller
         return DeveloperResource::collection($paginator)->additional([
             'total_developers' => Developer::count(),
             'recommended_developers' => Developer::where('recommended_by_us', true)->count(),
+            'hr_users_count' => User::where('user_type', UserType::HR)->count(),
         ]);
     }
 }

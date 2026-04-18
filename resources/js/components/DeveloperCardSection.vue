@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { refDebounced, useClipboard, useDebounceFn } from '@vueuse/core';
 import {
     Award,
+    Briefcase,
     ExternalLink,
     FileText,
     FilterX,
@@ -228,7 +229,11 @@ const nextPageUrl = ref<string | null>(null);
 /** Table YouTube cell: show embed on hover (same behavior as developer cards). */
 const tableYoutubeHoverDeveloperId = ref<number | null>(null);
 
-const stats = ref<{ total: number; recommended: number } | null>(null);
+const stats = ref<{
+    total: number;
+    recommended: number;
+    hrUsers: number;
+} | null>(null);
 const paginationTotal = ref<number | null>(null);
 
 const jobTitleSelectOpen = ref(false);
@@ -392,6 +397,7 @@ async function fetchDevelopers(url?: string, append = false): Promise<void> {
                 stats.value = {
                     total: data.total_developers,
                     recommended: data.recommended_developers,
+                    hrUsers: data.hr_users_count ?? 0,
                 };
             }
             if (data.meta?.total !== undefined) {
@@ -710,7 +716,7 @@ watch(viewLayout, (layout: ViewLayout) => {
 
         <div
             v-if="stats && !developerIds?.length"
-            class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6"
+            class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6"
         >
             <div
                 class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
@@ -747,6 +753,25 @@ watch(viewLayout, (layout: ViewLayout) => {
                     </p>
                     <p class="mt-0.5 text-sm text-muted-foreground">
                         Recommended developers
+                    </p>
+                </div>
+            </div>
+            <div
+                class="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/30 hover:shadow-md sm:p-6"
+            >
+                <div
+                    class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 transition-colors group-hover:bg-emerald-500/15 dark:text-emerald-400"
+                >
+                    <Briefcase class="size-6 sm:size-7" aria-hidden="true" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p
+                        class="text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl"
+                    >
+                        {{ stats.hrUsers }}
+                    </p>
+                    <p class="mt-0.5 text-sm text-muted-foreground">
+                        HR accounts
                     </p>
                 </div>
             </div>
