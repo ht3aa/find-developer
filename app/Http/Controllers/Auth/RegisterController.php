@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\WorldGovernorate;
 use App\Http\Controllers\Controller;
 use App\Models\JobTitle;
 use Illuminate\Auth\Events\Registered;
@@ -22,6 +23,7 @@ class RegisterController extends Controller
     {
         return Inertia::render('auth/Register', [
             'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'locations' => WorldGovernorate::selectOptions(),
         ]);
     }
 

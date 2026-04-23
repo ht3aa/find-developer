@@ -29,10 +29,12 @@ import { parseSalaryForForm } from '@/utils/salary';
 
 type JobTitleOption = { id: number; name: string };
 type UserOption = { id: number; name: string; email: string };
+type LocationOption = { value: string; label: string };
 
 type Props = {
     developer: Developer;
     jobTitles: JobTitleOption[];
+    locations: LocationOption[];
     users: UserOption[];
 };
 
@@ -61,6 +63,7 @@ const formData = ref<Record<string, unknown>>({
     recommended_by_us: false,
     cv_path_url: null,
     rejection_reason: '',
+    location: null as { value: string; label: string } | null,
 });
 
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
@@ -129,6 +132,12 @@ watch(
             recommended_by_us: dev.recommended_by_us ?? false,
             cv_path_url: dev.cv_path_url ?? null,
             rejection_reason: '',
+            location: dev.location?.value
+                ? {
+                      value: dev.location.value,
+                      label: dev.location.label,
+                  }
+                : null,
         });
     },
     { immediate: true },
@@ -177,6 +186,8 @@ function buildPayload(): Record<string, unknown> {
             d.expected_salary_to as string | number | null | undefined,
         ),
         salary_currency: (d.salary_currency as string) ?? 'IQD',
+        location:
+            (d.location as { value?: string } | null)?.value || null,
         rejection_reason:
             d.status === 'rejected' ? (d.rejection_reason ?? '') : null,
     };
@@ -250,6 +261,7 @@ function confirmRejectionSubmit(): void {
                                 v-model="formData"
                                 :errors="formErrors"
                                 :job-titles="jobTitles"
+                                :locations="locations"
                                 :users="users"
                                 show-user-select
                                 show-admin-fields

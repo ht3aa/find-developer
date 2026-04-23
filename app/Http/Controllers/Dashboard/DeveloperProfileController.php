@@ -29,14 +29,7 @@ class DeveloperProfileController extends Controller
     {
         $developer = $request->user()->developer;
 
-        $locations = collect(WorldGovernorate::cases())
-            ->map(fn (WorldGovernorate $g): array => [
-                'value' => $g->value,
-                'label' => $g->getLabel(),
-            ])
-            ->sortBy('label', SORT_NATURAL | SORT_FLAG_CASE)
-            ->values()
-            ->all();
+        $locations = WorldGovernorate::selectOptions();
 
         if (! $developer) {
             return Inertia::render('Developers/Profile', [

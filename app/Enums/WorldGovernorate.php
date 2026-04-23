@@ -146,6 +146,23 @@ enum WorldGovernorate: string
     }
 
     /**
+     * Sorted value/label pairs for select fields (registration, admin forms, profile).
+     *
+     * @return list<array{value: string, label: string}>
+     */
+    public static function selectOptions(): array
+    {
+        return collect(self::cases())
+            ->map(fn (self $g): array => [
+                'value' => $g->value,
+                'label' => $g->getLabel(),
+            ])
+            ->sortBy('label', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values()
+            ->all();
+    }
+
+    /**
      * Get all Iraqi governorates
      *
      * @return array<WorldGovernorate>

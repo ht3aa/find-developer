@@ -81,6 +81,7 @@ test('registration stores salary on developer profile', function () {
         'expected_salary_from' => 500_000,
         'expected_salary_to' => 900_000,
         'salary_currency' => 'SAR',
+        'location' => WorldGovernorate::BASRA->value,
     ])->assertRedirect();
 
     $dev = Developer::withoutGlobalScope(ApprovedScope::class)->where('email', $email)->first();
@@ -88,5 +89,6 @@ test('registration stores salary on developer profile', function () {
     expect($dev)->not->toBeNull()
         ->and($dev->expected_salary_from)->toBe(500_000)
         ->and($dev->expected_salary_to)->toBe(900_000)
-        ->and($dev->salary_currency)->toBe(Currency::SAR);
+        ->and($dev->salary_currency)->toBe(Currency::SAR)
+        ->and($dev->location)->toBe(WorldGovernorate::BASRA);
 });

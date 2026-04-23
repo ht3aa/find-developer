@@ -8,6 +8,7 @@ use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
 use App\Enums\UserType;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
@@ -50,6 +51,7 @@ class CreateNewUser implements CreatesNewUsers
             'linkedin_url' => ['nullable', 'url', 'max:500'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:developers,email', 'unique:users,email'],
             'youtube_url' => ['nullable', 'string', 'max:500'],
+            'location' => ['nullable', Rule::enum(WorldGovernorate::class)],
             'is_available' => ['boolean'],
             'availability_type' => ['nullable', 'array'],
             'availability_type.*' => [Rule::enum(AvailabilityType::class)],
@@ -82,6 +84,13 @@ class CreateNewUser implements CreatesNewUsers
             'github_url' => $validated['github_url'] ?? null,
             'linkedin_url' => $validated['linkedin_url'] ?? null,
             'youtube_url' => $validated['youtube_url'] ?? null,
+            'location' => array_key_exists('location', $validated)
+                && $validated['location'] !== null
+                && $validated['location'] !== ''
+                ? ($validated['location'] instanceof WorldGovernorate
+                    ? $validated['location']
+                    : WorldGovernorate::from((string) $validated['location']))
+                : null,
             'is_available' => (bool) ($validated['is_available'] ?? false),
             'availability_type' => $validated['availability_type'] ?? [],
             'status' => DeveloperStatus::PENDING,
