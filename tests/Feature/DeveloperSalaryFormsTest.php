@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Currency;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
@@ -42,6 +43,7 @@ test('developer profile update persists expected salary fields', function () {
         'expected_salary_from' => 1_000_000,
         'expected_salary_to' => 2_000_000,
         'salary_currency' => Currency::USD->value,
+        'location' => WorldGovernorate::BAGHDAD->value,
     ]);
 
     $response->assertSessionHasNoErrors()
@@ -51,7 +53,8 @@ test('developer profile update persists expected salary fields', function () {
 
     expect($developer->expected_salary_from)->toBe(1_000_000)
         ->and($developer->expected_salary_to)->toBe(2_000_000)
-        ->and($developer->salary_currency)->toBe(Currency::USD);
+        ->and($developer->salary_currency)->toBe(Currency::USD)
+        ->and($developer->location)->toBe(WorldGovernorate::BAGHDAD);
 });
 
 test('registration stores salary on developer profile', function () {

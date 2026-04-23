@@ -12,6 +12,8 @@ export type DeveloperJobTitle = {
 
 export type DeveloperLocation = {
     label: string;
+    /** `WorldGovernorate` enum value (e.g. `baghdad`). */
+    value?: string;
 };
 
 export type DeveloperSkill = {

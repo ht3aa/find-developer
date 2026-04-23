@@ -45,9 +45,12 @@ const availabilityTypeOptions = [
 
 type JobTitleOption = { id: number; name: string };
 
+type LocationOption = { value: string; label: string };
+
 type Props = {
     developer: Developer | null;
     jobTitles: JobTitleOption[];
+    locations: LocationOption[];
 };
 
 const props = defineProps<Props>();
@@ -107,7 +110,12 @@ const previewDeveloper = computed(() => {
             extractYoutubeVideoId(youtubeUrl) ?? d.youtube_video_id ?? null,
         badges: d.badges ?? [],
         job_title: { name: d.job_title?.name ?? '' },
-        location: d.location ? { label: d.location.label } : null,
+        location: d.location
+            ? {
+                  label: d.location.label,
+                  value: d.location.value,
+              }
+            : null,
         skills: d.skills ?? [],
         availability_type: d.availability_type ?? [],
         profile_url: d.slug ? `/developers/${d.slug}` : undefined,
@@ -141,6 +149,21 @@ const jobTitleModel = computed({
         }
         const j = props.jobTitles.find((x) => x.id.toString() === v);
         if (j) formData.value.job_title = { name: j.name };
+    },
+});
+
+const locationModel = computed({
+    get: () => formData.value?.location?.value ?? null,
+    set: (v: string | null) => {
+        if (!formData.value) return;
+        if (!v) {
+            formData.value.location = null;
+            return;
+        }
+        const loc = props.locations.find((l) => l.value === v);
+        formData.value.location = loc
+            ? { value: loc.value, label: loc.label }
+            : { value: v, label: v };
     },
 });
 
@@ -222,6 +245,7 @@ const allNewsletterRequirementsMet = computed(
 );
 
 const jobTitleSelectOpen = ref(false);
+const locationSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const cvFile = ref<File | null>(null);
@@ -238,6 +262,16 @@ const hasExperienceValidatedBadge = computed(
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
+        locationSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+    }
+}
+
+function onLocationOpenChange(open: boolean): void {
+    locationSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
@@ -247,6 +281,7 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
 }
@@ -255,6 +290,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         skillSelectOpen.value = false;
     }
 }
@@ -299,6 +335,7 @@ function buildPayload(): Record<string, unknown> | null {
         salary_currency:
             ((d as Record<string, unknown>).salary_currency as string) ??
             'IQD',
+        location: d.location?.value ?? null,
     };
     if (cvFile.value) {
         payload.cv = cvFile.value;
@@ -599,6 +636,32 @@ function setProfileSalaryTo(v: unknown): void {
                                         />
                                         <InputError
                                             :message="formErrors.job_title_id"
+                                        />
+                                    </div>
+
+                                    <div class="grid gap-2">
+                                        <Label for="location">Location</Label>
+                                        <SearchableSelect
+                                            id="location"
+                                            v-model="locationModel"
+                                            :open="locationSelectOpen"
+                                            :options="
+                                                locations.map((l) => ({
+                                                    value: l.value,
+                                                    label: l.label,
+                                                }))
+                                            "
+                                            :max-options="200"
+                                            placeholder="e.g. Baghdad"
+                                            @update:open="onLocationOpenChange"
+                                        />
+                                        <p
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            Shown on your public profile card.
+                                        </p>
+                                        <InputError
+                                            :message="formErrors.location"
                                         />
                                     </div>
 
