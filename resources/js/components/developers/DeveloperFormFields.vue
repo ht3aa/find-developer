@@ -63,8 +63,19 @@ const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const statusSelectOpen = ref(false);
+const locationSelectOpen = ref(false);
 const cvFile = ref<File | null>(null);
 const cvUploadRef = ref<InstanceType<typeof FileUpload> | null>(null);
+
+const locationModel = computed({
+    get: () => (formData.value.location as string | null | undefined) ?? null,
+    set: (v: string | null) => {
+        emit('update:modelValue', {
+            ...formData.value,
+            location: v && v !== '' ? v : null,
+        });
+    },
+});
 
 const jobTitleModel = computed({
     get: () => {
@@ -121,6 +132,7 @@ function onJobTitleOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -132,6 +144,7 @@ function onUserSelectOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -143,6 +156,7 @@ function onSkillOpenChange(open: boolean): void {
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -154,6 +168,7 @@ function onBadgeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
         statusSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -165,6 +180,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         statusSelectOpen.value = false;
+        locationSelectOpen.value = false;
     }
 }
 
@@ -176,6 +192,19 @@ function onStatusOpenChange(open: boolean): void {
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
+        locationSelectOpen.value = false;
+    }
+}
+
+function onLocationOpenChange(open: boolean): void {
+    locationSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
+        userSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        statusSelectOpen.value = false;
     }
 }
 
@@ -316,6 +345,20 @@ defineExpose({
                 <p class="text-xs text-muted-foreground">
                     Hidden from public view — only visible to recruiters.
                 </p>
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="location">Location (optional)</Label>
+                <SearchableSelect
+                    id="location"
+                    v-model="locationModel"
+                    :open="locationSelectOpen"
+                    options-url="/api/locations"
+                    placeholder="Search governorate..."
+                    :allow-clear="true"
+                    @update:open="onLocationOpenChange"
+                />
+                <InputError :message="errors?.location" />
             </div>
 
             <div class="grid gap-2">

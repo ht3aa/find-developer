@@ -43,6 +43,7 @@ const formData = ref<Record<string, unknown>>({
     name: '',
     email: '',
     phone: '',
+    location: null as string | null,
     job_title: { name: '' },
     years_of_experience: 0,
     expected_salary_from: null,
@@ -100,6 +101,7 @@ watch(
             name: dev.name,
             email: dev.email,
             phone: dev.phone ?? '',
+            location: dev.location?.value ?? null,
             job_title: dev.job_title ?? { name: '' },
             years_of_experience: dev.years_of_experience ?? 0,
             expected_salary_from: parseSalaryForForm(
@@ -155,6 +157,10 @@ function buildPayload(): Record<string, unknown> {
         years_of_experience: Number(d.years_of_experience) || 0,
         bio: d.bio ?? null,
         portfolio_url: d.portfolio_url ?? null,
+        location:
+            typeof d.location === 'string' && d.location !== ''
+                ? d.location
+                : null,
         github_url: d.github_url ?? null,
         linkedin_url: d.linkedin_url ?? null,
         youtube_url: d.youtube_url ?? null,

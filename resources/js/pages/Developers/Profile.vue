@@ -107,7 +107,29 @@ const previewDeveloper = computed(() => {
             extractYoutubeVideoId(youtubeUrl) ?? d.youtube_video_id ?? null,
         badges: d.badges ?? [],
         job_title: { name: d.job_title?.name ?? '' },
-        location: d.location ? { label: d.location.label } : null,
+        location: (() => {
+            const raw = (d as Record<string, unknown>).location;
+            if (typeof raw === 'string' && raw !== '') {
+                const saved = props.developer?.location;
+                if (saved && saved.value === raw) {
+                    return { value: saved.value, label: saved.label };
+                }
+                return { value: raw, label: raw };
+            }
+            if (
+                raw &&
+                typeof raw === 'object' &&
+                'label' in (raw as object)
+            ) {
+                return {
+                    value:
+                        (raw as { value?: string }).value ??
+                        (raw as { label: string }).label,
+                    label: (raw as { label: string }).label,
+                };
+            }
+            return null;
+        })(),
         skills: d.skills ?? [],
         availability_type: d.availability_type ?? [],
         profile_url: d.slug ? `/developers/${d.slug}` : undefined,
@@ -123,6 +145,20 @@ const youtubeUrl = computed({
     set: (v: string) => {
         if (formData.value)
             (formData.value as Record<string, unknown>).youtube_url = v || null;
+    },
+});
+
+const profileLocationModel = computed({
+    get: () => {
+        const v = formData.value as Record<string, unknown> | null;
+        if (!v) return null;
+        const loc = v.location;
+        return typeof loc === 'string' && loc !== '' ? loc : null;
+    },
+    set: (val: string | null) => {
+        if (!formData.value) return;
+        (formData.value as Record<string, unknown>).location =
+            val && val !== '' ? val : null;
     },
 });
 
@@ -166,7 +202,7 @@ watch(
                 is_available: isAvailable.value,
                 update_cv_automatic: updateCvAutomatic.value,
                 job_title: dev.job_title,
-                location: dev.location,
+                location: dev.location?.value ?? null,
                 skills: [...(dev.skills ?? [])],
                 badges: [...(dev.badges ?? [])],
                 availability_type: [...(dev.availability_type ?? [])],
@@ -222,6 +258,7 @@ const allNewsletterRequirementsMet = computed(
 );
 
 const jobTitleSelectOpen = ref(false);
+const locationSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const availabilityTypeSelectOpen = ref(false);
 const cvFile = ref<File | null>(null);
@@ -238,6 +275,16 @@ const hasExperienceValidatedBadge = computed(
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
+        locationSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+    }
+}
+
+function onLocationOpenChange(open: boolean): void {
+    locationSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
@@ -247,6 +294,7 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
     }
 }
@@ -255,6 +303,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         skillSelectOpen.value = false;
     }
 }
@@ -299,6 +348,11 @@ function buildPayload(): Record<string, unknown> | null {
         salary_currency:
             ((d as Record<string, unknown>).salary_currency as string) ??
             'IQD',
+        location:
+            typeof (d as Record<string, unknown>).location === 'string' &&
+            (d as Record<string, string>).location !== ''
+                ? (d as Record<string, string>).location
+                : null,
     };
     if (cvFile.value) {
         payload.cv = cvFile.value;
@@ -573,6 +627,24 @@ function setProfileSalaryTo(v: unknown): void {
                                             Hidden from public view — only
                                             visible to recruiters.
                                         </p>
+                                    </div>
+
+                                    <div class="grid gap-2">
+                                        <Label for="location"
+                                            >Location (optional)</Label
+                                        >
+                                        <SearchableSelect
+                                            id="location"
+                                            v-model="profileLocationModel"
+                                            :open="locationSelectOpen"
+                                            options-url="/api/locations"
+                                            placeholder="Search governorate..."
+                                            :allow-clear="true"
+                                            @update:open="onLocationOpenChange"
+                                        />
+                                        <InputError
+                                            :message="formErrors.location"
+                                        />
                                     </div>
 
                                     <div class="grid gap-2">

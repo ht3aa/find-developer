@@ -24,6 +24,9 @@ class DeveloperResource extends JsonResource
         $locationLabel = $location && method_exists($location, 'getLabel')
             ? $location->getLabel()
             : (is_object($location) && property_exists($location, 'value') ? $location->value : null);
+        $locationValue = $location && method_exists($location, 'value')
+            ? $location->value
+            : null;
 
         $availabilityType = $developer->availability_type;
         $availabilityTypeArray = is_array($availabilityType)
@@ -147,7 +150,9 @@ class DeveloperResource extends JsonResource
             'job_title' => [
                 'name' => $developer->jobTitle?->name ?? '',
             ],
-            'location' => $locationLabel !== null ? ['label' => $locationLabel] : null,
+            'location' => $locationValue !== null && $locationLabel !== null
+                ? ['value' => $locationValue, 'label' => $locationLabel]
+                : null,
             'skills' => $developer->skills->map(fn ($s) => ['name' => $s->name])->values()->all(),
             'availability_type' => $availabilityTypeArray,
             'status' => $developer->status->value,

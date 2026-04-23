@@ -8,6 +8,7 @@ use App\Enums\AvailabilityType;
 use App\Enums\Currency;
 use App\Enums\DeveloperStatus;
 use App\Enums\UserType;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
@@ -59,6 +60,7 @@ class CreateNewUser implements CreatesNewUsers
             'expected_salary_from' => ['nullable', 'integer', 'min:0'],
             'expected_salary_to' => ['nullable', 'integer', 'min:0', 'gte:expected_salary_from'],
             'salary_currency' => ['nullable', Rule::enum(Currency::class)],
+            'location' => ['nullable', Rule::enum(WorldGovernorate::class)],
         ];
 
         $validated = Validator::make($input, $rules)->validate();
@@ -91,6 +93,9 @@ class CreateNewUser implements CreatesNewUsers
             'salary_currency' => isset($validated['salary_currency'])
                 ? Currency::from($validated['salary_currency'])
                 : Currency::IQD,
+            'location' => isset($validated['location'])
+                ? WorldGovernorate::from($validated['location'])
+                : null,
         ];
 
         $developer = Developer::withoutGlobalScope(ApprovedScope::class)->create($developerData);
