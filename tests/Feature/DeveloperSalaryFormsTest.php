@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Currency;
+use App\Enums\WorldGovernorate;
 use App\Models\Developer;
 use App\Models\JobTitle;
 use App\Models\Scopes\ApprovedScope;
@@ -42,6 +43,7 @@ test('developer profile update persists expected salary fields', function () {
         'expected_salary_from' => 1_000_000,
         'expected_salary_to' => 2_000_000,
         'salary_currency' => Currency::USD->value,
+        'location' => WorldGovernorate::BAGHDAD->value,
     ]);
 
     $response->assertSessionHasNoErrors()
@@ -51,7 +53,8 @@ test('developer profile update persists expected salary fields', function () {
 
     expect($developer->expected_salary_from)->toBe(1_000_000)
         ->and($developer->expected_salary_to)->toBe(2_000_000)
-        ->and($developer->salary_currency)->toBe(Currency::USD);
+        ->and($developer->salary_currency)->toBe(Currency::USD)
+        ->and($developer->location)->toBe(WorldGovernorate::BAGHDAD);
 });
 
 test('registration stores salary on developer profile', function () {
@@ -78,6 +81,7 @@ test('registration stores salary on developer profile', function () {
         'expected_salary_from' => 500_000,
         'expected_salary_to' => 900_000,
         'salary_currency' => 'SAR',
+        'location' => WorldGovernorate::BASRA->value,
     ])->assertRedirect();
 
     $dev = Developer::withoutGlobalScope(ApprovedScope::class)->where('email', $email)->first();
@@ -85,5 +89,6 @@ test('registration stores salary on developer profile', function () {
     expect($dev)->not->toBeNull()
         ->and($dev->expected_salary_from)->toBe(500_000)
         ->and($dev->expected_salary_to)->toBe(900_000)
-        ->and($dev->salary_currency)->toBe(Currency::SAR);
+        ->and($dev->salary_currency)->toBe(Currency::SAR)
+        ->and($dev->location)->toBe(WorldGovernorate::BASRA);
 });

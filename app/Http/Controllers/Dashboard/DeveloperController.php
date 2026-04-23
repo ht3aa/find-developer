@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Enums\DeveloperStatus;
+use App\Enums\WorldGovernorate;
 use App\Helpers\DeveloperMessageHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\BulkEmailAllDevelopersRequest;
@@ -164,6 +165,7 @@ class DeveloperController extends Controller
         return Inertia::render('Developers/Create', [
             'users' => $users,
             'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'locations' => WorldGovernorate::selectOptions(),
         ]);
     }
 
@@ -234,6 +236,7 @@ class DeveloperController extends Controller
         return Inertia::render('Developers/Edit', [
             'developer' => $developer,
             'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'locations' => WorldGovernorate::selectOptions(),
             'users' => $users,
         ]);
     }

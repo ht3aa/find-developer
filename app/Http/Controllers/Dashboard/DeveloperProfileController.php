@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\WorldGovernorate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\DeveloperProfileIndexRequest;
 use App\Http\Requests\Dashboard\DownloadDeveloperCvRequest;
@@ -28,10 +29,13 @@ class DeveloperProfileController extends Controller
     {
         $developer = $request->user()->developer;
 
+        $locations = WorldGovernorate::selectOptions();
+
         if (! $developer) {
             return Inertia::render('Developers/Profile', [
                 'developer' => null,
                 'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+                'locations' => $locations,
             ]);
         }
 
@@ -44,6 +48,7 @@ class DeveloperProfileController extends Controller
         return Inertia::render('Developers/Profile', [
             'developer' => $developer,
             'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'locations' => $locations,
         ]);
     }
 

@@ -36,12 +36,14 @@ const props = withDefaults(
         modelValue: Record<string, unknown>;
         errors?: Record<string, string>;
         jobTitles: { id: number; name: string }[];
+        locations: { value: string; label: string }[];
         users?: { id: number; name: string; email: string }[];
         showUserSelect?: boolean;
         showAdminFields?: boolean;
     }>(),
     {
         errors: () => ({}),
+        locations: () => [],
         users: () => [],
         showUserSelect: false,
         showAdminFields: false,
@@ -58,6 +60,7 @@ const formData = computed({
 });
 
 const jobTitleSelectOpen = ref(false);
+const locationSelectOpen = ref(false);
 const userSelectOpen = ref(false);
 const skillSelectOpen = ref(false);
 const badgeSelectOpen = ref(false);
@@ -80,6 +83,24 @@ const jobTitleModel = computed({
         } else {
             const j = props.jobTitles.find((x) => x.id.toString() === v);
             if (j) next.job_title = { name: j.name };
+        }
+        emit('update:modelValue', next);
+    },
+});
+
+const locationModel = computed({
+    get: () =>
+        (formData.value.location as { value?: string } | null | undefined)
+            ?.value ?? null,
+    set: (v: string | null) => {
+        const next = { ...formData.value };
+        if (!v) {
+            next.location = null;
+        } else {
+            const loc = props.locations.find((l) => l.value === v);
+            next.location = loc
+                ? { value: loc.value, label: loc.label }
+                : { value: v, label: v };
         }
         emit('update:modelValue', next);
     },
@@ -116,6 +137,19 @@ const badgesModel = computed({
 function onJobTitleOpenChange(open: boolean): void {
     jobTitleSelectOpen.value = open;
     if (open) {
+        locationSelectOpen.value = false;
+        userSelectOpen.value = false;
+        skillSelectOpen.value = false;
+        badgeSelectOpen.value = false;
+        availabilityTypeSelectOpen.value = false;
+        statusSelectOpen.value = false;
+    }
+}
+
+function onLocationOpenChange(open: boolean): void {
+    locationSelectOpen.value = open;
+    if (open) {
+        jobTitleSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
@@ -128,6 +162,7 @@ function onUserSelectOpenChange(open: boolean): void {
     userSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -139,6 +174,7 @@ function onSkillOpenChange(open: boolean): void {
     skillSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         userSelectOpen.value = false;
         badgeSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -150,6 +186,7 @@ function onBadgeOpenChange(open: boolean): void {
     badgeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
         availabilityTypeSelectOpen.value = false;
@@ -161,6 +198,7 @@ function onAvailabilityTypeOpenChange(open: boolean): void {
     availabilityTypeSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
@@ -172,6 +210,7 @@ function onStatusOpenChange(open: boolean): void {
     statusSelectOpen.value = open;
     if (open) {
         jobTitleSelectOpen.value = false;
+        locationSelectOpen.value = false;
         userSelectOpen.value = false;
         skillSelectOpen.value = false;
         badgeSelectOpen.value = false;
@@ -336,6 +375,28 @@ defineExpose({
                     @update:open="onJobTitleOpenChange"
                 />
                 <InputError :message="errors?.job_title_id" />
+            </div>
+
+            <div v-if="locations.length > 0" class="grid gap-2">
+                <Label for="location">Location</Label>
+                <SearchableSelect
+                    id="location"
+                    v-model="locationModel"
+                    :open="locationSelectOpen"
+                    :options="
+                        locations.map((loc) => ({
+                            value: loc.value,
+                            label: loc.label,
+                        }))
+                    "
+                    :max-options="200"
+                    placeholder="e.g. Baghdad"
+                    @update:open="onLocationOpenChange"
+                />
+                <p class="text-xs text-muted-foreground">
+                    Shown on the public developer profile.
+                </p>
+                <InputError :message="errors?.location" />
             </div>
 
             <div class="grid gap-2">

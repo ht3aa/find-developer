@@ -12,12 +12,14 @@ import { login, register } from '@/routes';
 import { parseSalaryForForm } from '@/utils/salary';
 
 type JobTitleOption = { id: number; name: string };
+type LocationOption = { value: string; label: string };
 
 const props = withDefaults(
     defineProps<{
         jobTitles?: JobTitleOption[];
+        locations?: LocationOption[];
     }>(),
-    { jobTitles: () => [] },
+    { jobTitles: () => [], locations: () => [] },
 );
 
 const formData = ref<Record<string, unknown>>({
@@ -40,6 +42,7 @@ const formData = ref<Record<string, unknown>>({
     status: 'pending',
     recommended_by_us: false,
     cv_path_url: null,
+    location: null as { value: string; label: string } | null,
 });
 
 const formRef = ref<InstanceType<typeof DeveloperFormFields> | null>(null);
@@ -79,6 +82,8 @@ function submit(): void {
             d.expected_salary_to as string | number | null | undefined,
         ),
         salary_currency: (d.salary_currency as string) ?? 'IQD',
+        location:
+            (d.location as { value?: string } | null)?.value ?? null,
     };
     const cvFile = formRef.value?.cvFile;
     const file =
@@ -131,6 +136,7 @@ function submit(): void {
                 v-model="formData"
                 :errors="formErrors"
                 :job-titles="jobTitles"
+                :locations="locations"
             />
 
             <Button

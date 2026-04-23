@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Enums\WorldGovernorate;
 use App\Http\Responses\RegisterResponse;
 use App\Models\JobTitle;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -71,6 +72,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::registerView(fn () => Inertia::render('auth/Register', [
             'jobTitles' => JobTitle::active()->orderBy('name')->get(['id', 'name']),
+            'locations' => WorldGovernorate::selectOptions(),
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));
